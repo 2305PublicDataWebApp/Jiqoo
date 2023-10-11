@@ -123,13 +123,13 @@
                 <thead>
                   <tr>
                     <th scope="col" >#</th>
-                    <th scope="col" >아이디</th>
-                    <th scope="col" class="col1">이름</th>
-                    <th scope="col" class="col1">이메일</th>
-                    <th scope="col" class="col1">성별</th>
-                    <th scope="col" class="col1">가입유형</th>
-                    <th scope="col" >회원</th>
-                    <th scope="col" >신고</th>
+                    <th scope="col" onclick="sortTable(0)" class="hover">아이디</th>
+                    <th scope="col" onclick="sortTable(1)" class="col1 hover">이름</th>
+                    <th scope="col" onclick="sortTable(2)" class="col1 hover">이메일</th>
+                    <th scope="col" onclick="sortTable(3)" class="col1 hover">성별</th>
+                    <th scope="col" onclick="sortTable(4)" class="col1 hover">가입유형</th>
+                    <th scope="col" onclick="sortTable(5)" class="hover">회원</th>
+                    <th scope="col" onclick="sortTable(6)" class="hover">신고</th>
                     <th scope="col" >회원정보</th>
                   </tr>
                 </thead>
@@ -141,133 +141,199 @@
                     <td class="col1">일용자</td>
                     <td class="col1">khuser01@gmail.com</td>
                     <td class="col1">F</td>
-                    <td class="col1">카카오</td>
+                    <td class="col1">홈페이지</td>
                     <td>Y</td>
-                    <td>N</td>
+                    <td>10</td>
                     <td>
-                      <button type="button" class="button show-detail-btn" >조회</button>
+                      <button type="button" class="button show-detail-btn" onclick="showUserDetail();">조회</button>
                     </td>
                   </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th id="list-no" scope="row" >99</th>
-                    <td class="col3">khuser01</td>
-                    <td class="col1">일용자</td>
-                    <td class="col1">khuser01@gmail.com</td>
-                    <td class="col1">F</td>
-                    <td class="col1">카카오</td>
-                    <td class="col3">Y</td>
-                    <td class="col3">N</td>
-                    <td class="col3">
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-                  <tr style="height:0"></tr>
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser02</td> -->
+<!--                     <td class="col1">이용자</td> -->
+<!--                     <td class="col1">khuser02@gmail.com</td> -->
+<!--                     <td class="col1">M</td> -->
+<!--                     <td class="col1">네이버</td> -->
+<!--                     <td class="col3">N</td> -->
+<!--                     <td class="col3">9</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser03</td> -->
+<!--                     <td class="col1">삼용자</td> -->
+<!--                     <td class="col1">khuser03@gmail.com</td> -->
+<!--                     <td class="col1">M</td> -->
+<!--                     <td class="col1">네이버</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">1</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser04</td> -->
+<!--                     <td class="col1">사용자</td> -->
+<!--                     <td class="col1">khuser04@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">홈페이지</td> -->
+<!--                     <td class="col3">N</td> -->
+<!--                     <td class="col3">2</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser05</td> -->
+<!--                     <td class="col1">오용자</td> -->
+<!--                     <td class="col1">khuser05@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">카카오</td> -->
+<!--                     <td class="col3">N</td> -->
+<!--                     <td class="col3">0</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser06</td> -->
+<!--                     <td class="col1">육용자</td> -->
+<!--                     <td class="col1">khuser06@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">카카오</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">4</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser07</td> -->
+<!--                     <td class="col1">칠용자</td> -->
+<!--                     <td class="col1">khuser07@gmail.com</td> -->
+<!--                     <td class="col1">M</td> -->
+<!--                     <td class="col1">홈페이지</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">3</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser08</td> -->
+<!--                     <td class="col1">팔용자</td> -->
+<!--                     <td class="col1">khuser08@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">카카오</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">0</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser09</td> -->
+<!--                     <td class="col1">구용자</td> -->
+<!--                     <td class="col1">khuser09@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">홈페이지</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">7</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
+<!--                   <tr> -->
+<!--                     <th id="list-no" scope="row" >99</th> -->
+<!--                     <td class="col3">khuser10</td> -->
+<!--                     <td class="col1">십용자</td> -->
+<!--                     <td class="col1">khuser10@gmail.com</td> -->
+<!--                     <td class="col1">F</td> -->
+<!--                     <td class="col1">네이버</td> -->
+<!--                     <td class="col3">Y</td> -->
+<!--                     <td class="col3">9</td> -->
+<!--                     <td class="col3"> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
                 </tbody>
               </table>
+
+              <script>
+                function sortTable(n) {
+                  var table, rows, switching, o, x, y, shouldSwitch, dir, switchCount = 0;
+                  //dir -> 정렬방향 / shouldSwitch - > 정렬
+                    table = document.querySelector("#user-table");
+                    switching = true;  
+                    dir = "asc"; //현재 정렬을 나타냄 
+                    while (switching) {
+                    switching = false;
+                    rows = table.getElementsByTagName("TR");
+  
+                    for (o = 1; o < rows.length -1; o++) {                    
+                      shouldSwitch = false;
+                      x = rows[o].getElementsByTagName("TD")[n];
+                      y = rows[o + 1].getElementsByTagName("TD")[n];
+                      
+                      if (dir == "asc") {
+                        if (isNaN(x.innerHTML) && isNaN(y.innerHTML)) {
+                          // x와 y가 모두 문자열일 때
+                          if (x.innerHTML.localeCompare(y.innerHTML) > 0) {
+                            shouldSwitch = true;
+                            break;
+                          }
+                        } else {
+                          // x와 y 중 하나 이상이 숫자일 때
+                          if (
+                            (isNaN(x.innerHTML) ? x.innerHTML : parseFloat(x.innerHTML)) 
+                            > (isNaN(y.innerHTML) ? y.innerHTML : parseFloat(y.innerHTML))
+                          ) {
+                            shouldSwitch = true;
+                            break;
+                          }
+                        }
+                      } else if (dir == "desc") {
+                        if (isNaN(x.innerHTML) && isNaN(y.innerHTML)) {
+                          if (x.innerHTML.localeCompare(y.innerHTML) < 0) {
+                            shouldSwitch = true;
+                            break;
+                          }
+                        } else {
+                          if (
+                            (isNaN(x.innerHTML) ? x.innerHTML : parseFloat(x.innerHTML)) 
+                            < (isNaN(y.innerHTML) ? y.innerHTML : parseFloat(y.innerHTML))
+                          ) {
+                            shouldSwitch = true;
+                            break;
+                          }
+                        }
+                      }
+                    }
+  
+                    if (shouldSwitch) {
+                      rows[o].parentNode.insertBefore(rows[o + 1], rows[o]);
+                      switching = true;
+                      switchCount++;
+                    } else {
+                      if(switchCount == 0 && dir == "asc") {
+                        //정렬방향 변경
+                        dir = "desc";
+                        switching = true;
+                      }
+                    }
+                  }
+                }
+              </script>
+              
               <div id="pageNavi"> 1 2 3 4 5</div>
               <!-- End Table with stripped rows -->
                 
@@ -278,7 +344,7 @@
       </section>
 
     </main>
-      <!-- End #main -->
+    <!-- End #main -->
   <!-- </div> -->
 
 
@@ -299,6 +365,14 @@
 
   <!-- Template Main JS File -->
   <script src="../resources/assets/js/main.js"></script>
+  
+  <script>
+  	//회원상세보기로 이동
+  	function goToMyClassList(){
+		const userId = '${userId}';
+		location.href = "/admin/userDetail.do?userId="+userId;
+	}
+  </script>
 
 </body>
 

@@ -19,12 +19,11 @@
 }
 
 :root {
-  --font-default : 'IBMPlexSansKR-Regular', sans-serif;
+  --font-default :  'IBMPlexSansKR-Regular', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
-  
 }
 body {
   font-family: "Open Sans", sans-serif;
@@ -309,7 +308,7 @@ p { font-family: 'Nanum Gothic', sans-serif; }
 # Sections General
 --------------------------------------------------------------*/
 section {
-  padding: 10px 0;
+  padding: 30px 0;
   --margin: 10px;
   overflow: hidden;
 }
@@ -1265,6 +1264,7 @@ section {
 }
 
 
+
 /*--------------------------------------------------------------
 # 추가css
 --------------------------------------------------------------*/
@@ -1274,72 +1274,73 @@ section {
 --------------------------------------------------------------*/
 
 main { 
-  width : 80%;
+  width : 90%;
   margin : 0 auto;
 }
 
-
-/*--------------------------------------------------------------
-# 차트섹션
---------------------------------------------------------------*/
-.card { 
-  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+/* Card */
+.card {
+  margin: 30px 10px 10px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0px 0 10px rgba(1, 41, 112, 0.2);
 }
-
 .card-title {
   font-family: var(--font-primary);
   font-size: 2em;
   text-align: center;
 }
 
-/*--------------------------------------------------------------
-# 테이블섹션
---------------------------------------------------------------*/
 #user-main {
   margin : 0 auto;
   width : 90%;
 }
 
-/* # search */
-#search-bar {
-  margin : 3em auto 0;
-  width : 100%;
-  height : 70px;
-  background-color: #DCE775;
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items:center ;
-}
 
-select {
-  width : 100px;
-  height : 50px;
-  border-radius: 10px;
-  outline: none;
-  border:none;
-  margin: 10px;
-  padding: 10px;
+/*--------------------------------------------------------------
+# search
+--------------------------------------------------------------*/
+#search-bar {
+  margin: 0px auto;
+  width: 90%;
+  --background-color: #DCE775;
+  --border : 1px solid #ccc;
+  border-radius: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items:center ;
+  
 }
 
 #search-wrap {
-  width : 650px;
+  border : 1px solid var(--color-secondary);
+  width : 270px;
   height : 50px;
   background-color: #fff;
   border-radius: 10px;
   display: flex;
-  justify-content: space-between;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-#search-content {
-  width : 100%;
-  height :100%;
-  --background-color: #ccc;
+select {
+  --background-color: #01036f;
+  width : 90px;
+  height : 100%;
   border-radius: 10px;
   outline: none;
   border:none;
-  padding-left: 10px;
+  margin-right: 5px;
+  padding: 10px;
+}
+
+#search-content {
+  --background-color: #ccc;
+  width : 100%;
+  height :100%;
+  border-radius: 10px;
+  outline: none;
+  border:none;
+
 }
 
 #search-content:focus {
@@ -1348,9 +1349,8 @@ select {
 
 #search-button {
   background-color : var(--color-secondary);
-  --width: 20%;
-  width: 110px;
-  height: 40px;
+  width: 90px;
+  height: 85%;
   border-radius: 10px;
   border:none;
   margin: 5px;
@@ -1363,8 +1363,8 @@ select {
 }
 
 #search-button:active {
-  width: 108px;
-  height: 38px;
+  width: 88px;
+  height: 40px;
 }
 
 .bi-search {
@@ -1372,23 +1372,25 @@ select {
   color : #fff;
 }
 
-/*테이블*/
-#user-main table { 
-  --border : 1px solid #ccc;
+/*--------------------------------------------------------------
+# 테이블
+--------------------------------------------------------------*/
+main table { 
   width : 100%;
   margin : 0 auto;
   text-align: center;
   border-collapse: collapse;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-style: hidden;
+  border-bottom : 1px solid #DAE4ED;
+  --border-style: hidden;
+  border-radius: 20px;
+  --border-bottom-right-radius: 20px;
+  --border-bottom-left-radius: 20px;
   --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
   cursor : default;
-  border-bottom: 1px solid #DAE4ED;
 }
 
-#user-main table thead { 
+main table thead { 
   font-family: var(--font-default);
   font-size: 1.2em;
   --border-bottom: 2px solid  #DCE775;
@@ -1396,26 +1398,21 @@ select {
   --border-bottom: 2px solid #ccc;
 }
 
-#user-main table thead .hover:hover {
+main table thead .hover:hover {
   color : var(--color-secondary);
 }
-
-#user-main table tbody {
-  --font-family: var(--font-default);
+main table tbody {
   font-size: 1em;
 }
 
-#user-main table tr {
+tr {
   height : 55px;
-  --border-bottom: 1px solid  #DCE775;
-  border : 1px solid #DAE4ED;
-  --border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #DAE4ED;
 }
 
-#user-main table td {
-  --border-bottom: 1px solid  #DCE775;
-  --vertical-align : middle;
-  padding: 10px;
+td {
+  --border : 1px solid var(--color-secondary);
+  --padding: 5px;
   --max-width : 520px;
   white-space: nowrap;
   overflow : hidden;
@@ -1423,10 +1420,27 @@ select {
   -webkit-line-clamp: 1
 }
 
-#list-no {
+.list-no {
   font-family: var(--font-primary);
   font-size: 1.5em;
 }
+
+
+
+
+/* .img-container img:first-child {
+  position: absolute;
+  z-index: 1;
+  top:0;
+}
+
+.img-container img:nth-child(2) {
+  position: absolute;
+  z-index: 2;
+  left: 30px; 
+  top:0;
+}   */
+
 
 #pageNavi {
   font-family: var(--font-primary);
@@ -1436,6 +1450,7 @@ select {
   color : #ccc;
 }
 
+
 /*--------------------------------------------------------------
 # 버튼
 --------------------------------------------------------------*/
@@ -1444,132 +1459,54 @@ select {
   font-family: var(--font-primary);
   border-radius: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  vertical-align: middle;  
 }
 
 /*조회버튼*/
 .show-detail-btn {
-  width : 80px;
-  height : 37px;
-  border : none;
-  font-size: 1.5em;
+  width: 90px;
+  height: 35px;
   color : #fff;
-  text-align: center;
-  --vertical-align: middle;  
+  font-size: 1.5em;
+  border : none;
 }
 .show-detail-btn:active {
-  width : 78px;
-  height : 35px;
+  width: 87px;
+  height: 34px;
 }
-
-/*모달-삭제버튼*/
-.delete-btn {
-  width: 110px;
-  height: 40px;
-  color : #fff;
-  font-size: 1.5em;
-  border : none;
-  text-align: center;
-  --vertical-align: middle;  
-}
-.delete-btn:hover {
-  background-color: red;
-  color : #fff;
-}
-.delete-btn:active {
-  background-color: #fff;
-  border : 1px solid red;
-  color : red;
-  width: 108px;
-  height: 38px;
-}
-
-
-/*--------------------------------------------------------------
-# 모달
---------------------------------------------------------------*/
-#exampleModalLabel {
-  font-family: var(--font-primary);
-}
-.modal-body span {
-  font-family: var(--font-primary);
-}
-#map {
-  margin : 10px auto;
-  width : 100%;
-  height : 200px;
-  border-radius: 10px;
-  border : 1px solid #ccc;
-}
-
-#report-reason {
-  margin : 10px auto;
-  padding: 10px;
-  width : 100%;
-  height : auto;
-  border : 1px solid #EDEDED;
-  background-color: #EDEDED;
-  border-radius: 5px;
-}
-#r-title{
-  font-family: var(--font-primary);
-}
-
-#report-btn{
-  display: flex;
-  justify-content: flex-end;
-}
-
-
 
 /*--------------------------------------------------------------
 # 반응형
 --------------------------------------------------------------*/
-
 @media (max-width: 575px) {
   main, #user-main {
     width : 100%;
-    padding : 5px;
-  }
-  .card-title {
-    margin-bottom : 0;
   }
   #search-wrap {
     width : 90%;
     margin-right: 10px;
   }
-  #user-main table  { 
-    border : 1px solid #ccc;
-  }
-  .col1 {
-    width : 22%;
-  }
-  .col2 {
-    width : 33%;
-  }
-  .col3 {
-    width : 15%;
-  }
-  #user-main table thead  {
-    font-size: 1.2em;
-  }
-  #user-main table tbody{
-    font-size: 0.9em;
-  }
-  #user-main table td {
-    padding: 2px;
-    --border : 1px solid #ccc;
-  } 
-  .show-detail-btn {
-    width : 100%;
+  main table thead {
     font-size: 1em;
   }
+  main table tbody{
+    font-size: 1em;
+    width: 20%;
+  }
+  .show-detail-btn {
+    width: 90%;
+    font-size: 1.2em;
+  }
   .show-detail-btn:active {
-    width : 99%;
+    width: 89%;
+    font-size: 1.2em;
   }
   #pageNavi {
     font-size: 1.2em;
   }
+  /* td {
+  border : 1px solid #ccc;
+} */
+
 }
-
-  
-

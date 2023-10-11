@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="AdminMapper">
+
+	<!-- 회원관리페이지 총게시물수 -->
+	<select id="getListCount" resultType="_int">
+		SELECT COUNT (*) FROM MY_CLASS_LIST_TBL
+	</select>
+	
+	<!-- 회원관리페이지 총게시물수 -->
+	<select id="selectAllUser" resultType="User">
+		SELECT * FROM USER_TBL ORDER BY U_CREATE_DATE DESC
+	</select>
+
+
+
+
+</mapper>
