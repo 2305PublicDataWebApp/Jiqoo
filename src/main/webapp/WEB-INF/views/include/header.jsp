@@ -16,23 +16,30 @@
           <li><a class="nav-link" href="#">지꾸</a></li>
           <li><a class="nav-link" href="#">모꾸</a></li>
           <li><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-bell"></i></a></li>
-          <li class="dropdown"><a href="#"><i style="font-size:26px;" class="bi bi-person-circle"></i><i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="#">로그인</a></li>
-              <li><a href="#">회원가입</a></li>
-              <li><a href="#">Drop Down 3</a></li>
-              <li><a href="#">Drop Down 4</a></li>
-            </ul>
-          </li>
-          <li class="dropdown"><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-person-badge"></i></a>
-            <ul>
-              <li ><a href="#" style="font-size:1.3em;">회원 관리</a></li>
-              <li><a href="#" style="font-size:1.3em;">지꾸 관리</a></li>
-              <li><a href="#" style="font-size:1.3em;">모꾸 관리</a></li>
-              <li><a href="#" style="font-size:1.3em;">채팅방 관리</a></li>
-              <li><a href="#" style="font-size:1.3em;">로그아웃</a></li>
-            </ul>
-          </li>
+          <c:if test="${sessionScope.userId eq null}">
+	          <li class="dropdown"><a href="/user/login.do"><i style="font-size:26px;" class="bi bi-person-circle"></i><i class="bi bi-chevron-down"></i></a>
+	          </li>
+          </c:if>
+          <c:if test="${sessionScope.userId ne null && sessionScope.adminYn eq 'N'}">
+	          <li class="dropdown"><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-person-circle"></i></a>
+	            <ul>
+	              <li><a href="/user/myPage.do" style="font-size:1.3em;">마이페이지</a></li>
+	              <li><a href="/user/modify.do" style="font-size:1.3em;">회원정보수정</a></li>
+	              <li><a href="/user/logout.do" style="font-size:1.3em;">로그아웃</a></li>
+	            </ul>
+	          </li>
+          </c:if>
+          <c:if test="${sessionScope.userId ne null && sessionScope.adminYn eq 'Y'}">
+	          <li class="dropdown"><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-person-badge"></i></a>
+	            <ul>
+	              <li><a href="/admin/user.do" style="font-size:1.3em;">회원 관리</a></li>
+	              <li><a href="/admin/jiqoo.do" style="font-size:1.3em;">지꾸 관리</a></li>
+	              <li><a href="/admin/moqoo.do" style="font-size:1.3em;">모꾸 관리</a></li>
+	              <li><a href="/admin/chat.do" style="font-size:1.3em;">채팅방 관리</a></li>
+	              <li><a href="/user/logout.do" style="font-size:1.3em;">로그아웃</a></li>
+	            </ul>
+	          </li>
+          </c:if>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->

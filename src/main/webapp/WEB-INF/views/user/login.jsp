@@ -32,6 +32,9 @@
 
         <!-- login css -->
         <link href="../resources/assets/css/login.css" rel="stylesheet">
+        
+        <!-- 제이쿼리 -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     </head>
 
 
@@ -55,10 +58,8 @@
             </svg>
         </section>
         <main class="form-signin">
-            <form action="" method="post">
-                <!-- 로고 -->
-                <!-- <img class="mb-4" src="../resources/assets/img/jiqooLogo.png" alt="" width="50px">로그인 -->
-                <h1 style="margin-bottom: 30px;font-style: Black Han Sans;">로그인</h1>
+            <form action="/user/login.do" method="post">
+                <h1 style="margin-bottom: 30px;">로그인</h1>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
                     <label for="userId">아이디</label>
@@ -66,6 +67,9 @@
                 <div class="form-floating">
                     <input type="password" class="form-control" id="userPw" name="userPw" placeholder="비밀번호">
                     <label for="userPw">비밀번호</label>
+                </div>
+                <div>
+                	<p id="errorMessage" style="margin:0; color:#f7396e;"></p>
                 </div>
                 <button class="w-100 btn btn-lg" type="submit" id="loginBtn">로그인</button>
             </form>
@@ -79,7 +83,7 @@
                 <ul>
                     <li><a data-bs-toggle="modal" href="#findIdModal">아이디찾기</a></li>
                     <li><a data-bs-toggle="modal" href="#findPwModal">비밀번호찾기</a></li>
-                    <li><a href="./register.html">회원가입</a></li>
+                    <li><a href="/user/register.do">회원가입</a></li>
                 </ul>
             </div>
             
@@ -116,16 +120,14 @@
                     <div class="modal-body" style="margin-top: 20px;">
                         <img class="mb-4" src="../resources/assets/img/jiqooLogo.png" alt="" width="60px">
                         <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">비밀번호 찾기</h1>
-                        <form action="" method="post">
-                            <div class="form-floating" style="margin-top: 20px;">
-                                <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
-                                <label for="userId">아이디</label>
-                            </div>
-                            <div class="form-floating" style="margin-bottom: 20px;">
-                                <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="이메일">
-                                <label for="userEmail">이메일</label>
-                            </div>
-                        </form>
+                        <div class="form-floating" style="margin-top: 20px;">
+                            <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
+                            <label for="userId">아이디</label>
+                        </div>
+                        <div class="form-floating" style="margin-bottom: 20px;">
+                            <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="이메일">
+                            <label for="userEmail">이메일</label>
+                        </div>
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
                         <button type="button" id="findPw" class="btn">비밀번호 찾기</button>
@@ -151,5 +153,40 @@
 
         <!-- Template Main JS File -->
         <script src="../resources/assets/js/main.js"></script>
+        
+        <script>
+        	$("#loginBtn").on("click", function(){
+        		event.preventDefault();
+        		const userId = $("#userId").val();
+        		const userPw = $("#userPw").val();
+        		let errorMessage = $("#errorMessage")
+        		if(userId === "") {
+        			errorMessage.text("아이디를 입력해주세요");
+        			return;
+        		}
+        		if(userPw === "") {
+        			errorMessage.text("비밀번호를 입력해주세요");
+        			return;
+        		}
+        		$.ajax({
+        			url : "/user/login.do",
+        			data: {
+        				"userId" : userId, 
+        				"userPw" : userPw
+        			},
+        			type: "POST",
+        			success: function(data){
+        				if(data === "true") {
+	        				window.location.href="/";   					
+        				} else {
+        					errorMessage.text("아이디와 비밀번호를 다시 확인해주세요.");
+        				}
+        			},
+        			error: function(){
+        				alert("[서버오류] 관리자에게 문의바랍니다.");
+        			}
+        		})
+        	})
+        </script>
     </body>
 </html>
