@@ -50,7 +50,7 @@ public class ChatController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/list.kh", produces="application/json;charset=UTF-8;", method=RequestMethod.GET)
+	@GetMapping(value = "/chat/room", produces="application/json;charset=UTF-8;")
 	public String chatRoom(@RequestParam("chatNo") int chatNo) {
 		List<ChatMessage> chatMessageList = chatService.selectChatMessageByNo(chatNo);
 		Gson gson = new Gson();
