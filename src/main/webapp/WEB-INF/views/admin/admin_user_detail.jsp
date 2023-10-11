@@ -121,7 +121,11 @@
                 <div class="title">회원여부</div> <div class="text">Y</div>
               </div>
               <div class="d-flex">
-                <div class="title">신고누적</div> <div class="report-count">10회</div>
+                <div class="title">신고누적</div> <div class="report-count">
+                  <a class="modal-link modal-link-jq" data-bs-toggle="modal" href="#user-report-Modal" style="color:#388E3C">
+                    10회
+                  </a>
+                </div>
               </div>
               <div class="btn-wrap">
                 <div>
@@ -167,8 +171,7 @@
                 <tbody>
                   <tr>
                     <td id="list-no" scope="row" >99</td>
-                    <td>
-                      Stay in the middle
+                    <td>Stay in the middle
                       Like you a little
                       Don't want no riddle
                       말해줘 say it back, oh, say it ditto
@@ -182,8 +185,7 @@
                       Like I want somebody?
                       날 보고 웃었지만
                       Do you think about me now? yeah
-                      All the time, yeah, all the time
-                    </td>
+                      All the time, yeah, all the time</td>
                     <td>Y</td>
                     <td>N</td>
                     <td>10</td>
@@ -299,6 +301,31 @@
         </div>
 
         <!-- ======= Modal =======  -->
+        <!-- 회원신고수Modal -->
+        <div class="modal fade" id="user-report-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">khuser01</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <h5></h5>
+                <span><i class="bi bi-journal-richtext"></i>></i>(작성한 지꾸 수)</span>
+                <span><i class="bi bi-file-earmark-x"></i>(작성한 모꾸 수)</span>
+                <span><i class="bi bi-file-earmark-x"></i>(작성한 댓글 수)</span>
+                <div id="report-reason">
+                  <div id="r-title">신고사유()</div>
+                  <div></div>
+                </div>
+                <div id="report-btn">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- 지꾸Modal -->
         <div class="modal fade" id="jiqooModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">

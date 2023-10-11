@@ -1270,44 +1270,6 @@ section {
 --------------------------------------------------------------*/
 
 /*--------------------------------------------------------------
-# Side-Bar
---------------------------------------------------------------*/
-
-/* .sidebar  {
-  --margin-top : 130px;
-  top:0;
-  left :0;
-  background-color: #FFF59D;
-  width : 20%;
-  font-family: var(--font-primary);
-  font-size: 30px;
-  z-index: 1;
-  position: relative;
-  --position: absolute;
-}
-
-.sidebar ul { 
-  list-style: none;
-  text-align: center;
-  margin-top : 100px;
-}
-
-.sidebar li {
-  margin : 30px auto;
-}
-
-@media (max-width: 768px) {
-  #main-wrap {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #sidebar, #main {
-    width: 100%;
-  }
-} */
-
-/*--------------------------------------------------------------
 # Main
 --------------------------------------------------------------*/
 
@@ -1416,6 +1378,7 @@ main table {
   --border-bottom-left-radius: 20px;
   --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
+  cursor : default;
 }
 
 main table thead { 
@@ -1426,6 +1389,9 @@ main table thead {
   --border-bottom: 2px solid #ccc;
 }
 
+main table thead .hover:hover {
+  color : var(--color-secondary);
+}
 main table tbody {
   font-size: 1em;
 }
@@ -1466,6 +1432,8 @@ td {
   font-family: var(--font-primary);
   border-radius: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  vertical-align: middle;  
 }
 
 /*조회버튼*/
@@ -1475,8 +1443,6 @@ td {
   color : #fff;
   font-size: 1.5em;
   border : none;
-  text-align: center;
-  --vertical-align: middle;  
 }
 .show-detail-btn:active {
   width: 87px;
@@ -1511,7 +1477,7 @@ td {
     font-size: 1.2em;
   }
   .show-detail-btn:active {
-    width: 90%;
+    width: 89%;
     font-size: 1.2em;
   }
   #pageNavi {

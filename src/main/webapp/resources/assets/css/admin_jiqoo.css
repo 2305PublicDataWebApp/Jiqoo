@@ -1383,6 +1383,7 @@ select {
   border-style: hidden;
   --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
+  cursor : default;
 }
 
 #user-main table thead { 
@@ -1392,20 +1393,23 @@ select {
   --border-bottom: 2px solid #DAE4ED;
   --border-bottom: 2px solid #ccc;
 }
+#user-main table thead .hover:hover {
+  color : var(--color-secondary);
+}
 
 #user-main table tbody {
   --font-family: var(--font-default);
   font-size: 1em;
 }
 
-#user-main table tr {
+tr {
   height : 55px;
   --border-bottom: 1px solid  #DCE775;
   border-bottom: 1px solid #DAE4ED;
   --border-bottom: 1px solid #ccc;
 }
 
-#user-main table td {
+td {
   --vertical-align : middle;
   padding: 10px;
   --max-width : 520px;

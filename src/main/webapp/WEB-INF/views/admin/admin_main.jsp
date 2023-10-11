@@ -185,6 +185,7 @@
                   <div class="card-body">
                     <h5 class="card-title">이름뭐라고할까</h5>
                     <div id="columnchart_material" style="width : 100%; height: 640px; padding: 10px;"></div>
+
                     <script type="text/javascript">
                       google.charts.load('current', {'packages':['bar']});
                       google.charts.setOnLoadCallback(drawChart);
@@ -196,13 +197,13 @@
                           ['February', 17, 4, 2],
                           ['March', 6, 11, 3],
                           ['April', 10, 5, 3],
-                          ['May', 18, 54, 3],
-                          ['July', 10, 54, 3],
-                          ['August', 17, 57, 50],
-                          ['September', 10, 54, 3],
-                          ['October', 15, 54, 30],
-                          ['November', 13, 57, 25],
-                          ['December', 18, 54, 35]
+                          ['May', 18, 34, 3],
+                          ['July', 10, 24, 3],
+                          ['August', 17, 7, 30],
+                          ['September', 10, 24, 3],
+                          ['October', 15, 4, 30],
+                          ['November', 13, 17, 25],
+                          ['December', 18, 15, 35]
                         ]);
                 
                         var options = {
@@ -210,15 +211,15 @@
                             width: '100%' // 반응형을 위한 width 값 추가
                           },
                           colors: ['#19A7CE', '#8BC34A', '#ff771d'],
-                          vAxis: {
-                            viewWindowMode:'explicit',
-                            viewWindow: {
-                              max: 100
-                            }
-                          }
+                          // vAxis: {
+                          //   viewWindowMode:'explicit',
+                          //   viewWindow: {
+                          //     max: 100  //세로축 최대값 100으로 설정
+                          //   }
+                          // }
                         };
 
-                        //화면 줄였을때 라벨 없애기 (이걸 붙이면 그래프가 바꾼 그래프로 나오는데 안붙이면 예전 그래프로 나옴)
+                        //화면 줄였을때 라벨 없애기 
                         var mq = window.matchMedia( "(max-width: 575px)" );
                         if (mq.matches) {
                             var options = {
@@ -226,9 +227,10 @@
                                 position: 'none'
                               },
                               hAxis: {textPosition : 'none'}, // 가로축 제거
+                              colors: ['#19A7CE', '#8BC34A', '#ff771d'],
+                              
                             }   
                         }
-                        
                         var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
                 
                         chart.draw(data, google.charts.Bar.convertOptions(options));
@@ -243,6 +245,8 @@
           </div><!-- End Left side columns -->
   
           <!-- Right side columns -->
+
+
           <div class="col-lg-4">
             <!-- 지꾸모꾸 Donut Chart -->
             <div class="card">
@@ -629,7 +633,7 @@
                       </td>
                       <td>khuser02</td>
                       <td>
-                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#reportModal" >
+                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#" >
                           강백호
                         </a></td>
                       <td>F</td>
@@ -754,7 +758,6 @@
                 textareaElement.style.display = "none";
             }
           });
-
           </script>
       </section>
 

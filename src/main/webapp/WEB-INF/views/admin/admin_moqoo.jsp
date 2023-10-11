@@ -91,11 +91,11 @@
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
                   new Chart(document.querySelector('#lineChart'), {
-                    type: 'line',
                     data: {
                       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September','October','November', 'December'],
                       datasets: [{
                         label: '모꾸 등록 현황',
+                        type: 'line',
                         data: [65, 59, 80, 81, 56, 55, 40, 45,67,78,45,34],
                         fill: false,
                         borderColor: '#19A7CE',
@@ -115,7 +115,6 @@
                         fill: false,
                         backgroundColor: '#82A0D8',
                         tension: 0.1
-
                       }]
                     },
                     options: {
@@ -160,7 +159,7 @@
             </form>
 
             <!-- Table with stripped rows -->
-            <table>
+            <table id="moqoo-table">
               <colgroup>
                 <col scope="col" width ="15%"> <!-- No -->
                 <col scope="col" width ="10%" class="col1"> <!-- 작성자 -->
@@ -172,12 +171,12 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col" class="col1">작성자</th>
-                  <th scope="col" class="col2">내용</th>
-                  <th scope="col">신고</th>
-                  <th scope="col">공개</th>
-                  <th scope="col">삭제</th>
+                  <th scope="col" onclick="sortTable(0)" class="hover">No.</th>
+                  <th scope="col" onclick="sortTable(1)" class="col1 hover">작성자</th>
+                  <th scope="col" onclick="sortTable(2)" class="col2 hover">내용</th>
+                  <th scope="col" onclick="sortTable(3)" class="hover">신고</th>
+                  <th scope="col" onclick="sortTable(4)" class="hover">공개</th>
+                  <th scope="col" onclick="sortTable(5)" class="hover">삭제</th>
                   <th scope="col" class="col3">상세</th>
                 </tr>
               </thead>
@@ -185,16 +184,10 @@
                 <tr>
                   <td id="list-no" scope="row" >99</td>
                   <td >khuser02</td>
-                  <td >
-                    잔소리는 stop it, 알아서 할 게
+                  <td >잔소리는 stop it, 알아서 할 게
                     내가 뭐가 되든 내가 알아서 할 테니까 좀
                     I do what I wanna, 평범하게 살든 말든 내버려 둘래?
-                    어차피 내가 살아 내 인생 내 거니까
-                    I'm so bad, bad, 차라리 이기적일래
-                    눈치 보느라 착한 척 상처받는 것보다 백번 나아
-                    I'm just on my way, 간섭은, no, no 해
-                    말해버릴지도 몰라 너나 잘하라고
-                  </td>
+                    어차피 내가 살아 내 인생 내 거니까</td>
                   <td >10</td>
                   <td >Y</td>
                   <td >N</td>
@@ -205,9 +198,31 @@
 
                 <tr>
                   <td id="list-no" scope="row" >999</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
+                  <td >khuser03</td>
+                  <td >내가 뭐가 되든 내가 알아서 할 테니까 좀</td>
+                  <td >1</td>
+                  <td >Y</td>
+                  <td >Y</td>
+                  <td >
+                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="list-no" scope="row" >99</td>
+                  <td >khuser04</td>
+                  <td >I do what I wanna, 평범하게 살든 말든 내버려 둘래?</td>
+                  <td >8</td>
+                  <td >Y</td>
+                  <td >Y</td>
+                  <td >
+                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="list-no" scope="row" >99</td>
+                  <td >khuser05</td>
+                  <td >어차피 내가 살아 내 인생 내 거니까</td>
+                  <td>2</td>
                   <td >Y</td>
                   <td >N</td>
                   <td >
@@ -216,9 +231,31 @@
                 </tr>
                 <tr>
                   <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
+                  <td >khuser06</td>
+                  <td >I'm so bad, bad, 차라리 이기적일래</td>
+                  <td >3</td>
+                  <td >Y</td>
+                  <td >Y</td>
+                  <td >
+                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="list-no" scope="row" >99</td>
+                  <td >khuser07</td>
+                  <td >I'm so bad, bad, 차라리 이기적일래</td>
+                  <td >4</td>
+                  <td >Y</td>
+                  <td >Y</td>
+                  <td >
+                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td id="list-no" scope="row" >99</td>
+                  <td >khuser08</td>
+                  <td >눈치 보느라 착한 척 상처받는 것보다 백번 나아</td>
+                  <td >5</td>
                   <td >Y</td>
                   <td >N</td>
                   <td >
@@ -227,10 +264,10 @@
                 </tr>
                 <tr>
                   <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td>10</td>
-                  <td >Y</td>
+                  <td >khuser09</td>
+                  <td >I'm just on my way, 간섭은, no, no 해</td>
+                  <td >6</td>
+                  <td >N</td>
                   <td >N</td>
                   <td >
                     <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
@@ -238,73 +275,95 @@
                 </tr>
                 <tr>
                   <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
-                  <td >Y</td>
+                  <td >khuser10</td>
+                  <td >말해버릴지도 몰라 너나 잘하라고</td>
+                  <td >7</td>
                   <td >N</td>
+                  <td >Y</td>
                   <td >
                     <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
                   </td>
                 </tr>
                 <tr>
                   <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
+                  <td >khuser11</td>
                   <td >...................</td>
-                  <td >10</td>
+                  <td >6</td>
                   <td >Y</td>
-                  <td >N</td>
+                  <td >Y</td>
                   <td >
                     <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
                   </td>
                 </tr>
-                <tr>
-                  <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
-                  <td >Y</td>
-                  <td >N</td>
-                  <td >
-                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
-                  <td >Y</td>
-                  <td >N</td>
-                  <td >
-                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
-                  <td >Y</td>
-                  <td >N</td>
-                  <td >
-                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="list-no" scope="row" >99</td>
-                  <td >khuser02</td>
-                  <td >...................</td>
-                  <td >10</td>
-                  <td >Y</td>
-                  <td >N</td>
-                  <td >
-                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">조회</button>
-                  </td>
-                </tr>
-                <tr style="height:0"></tr>
               </tbody>
             </table>
+
+            <script>
+              function sortTable(n) {
+                var table, rows, switching, o, x, y, shouldSwitch, dir, switchCount = 0;
+                //dir -> 정렬방향 / shouldSwitch - > 정렬
+                  table = document.querySelector("#moqoo-table");
+                  switching = true;  
+                  dir = "asc"; //현재 정렬을 나타냄 
+                  while (switching) {
+                  switching = false;
+                  rows = table.getElementsByTagName("TR");
+
+                  for (o = 1; o < rows.length -1; o++) {                    
+                    shouldSwitch = false;
+                    x = rows[o].getElementsByTagName("TD")[n];
+                    y = rows[o + 1].getElementsByTagName("TD")[n];
+                    
+                    if (dir == "asc") {
+                      if (isNaN(x.innerHTML) && isNaN(y.innerHTML)) {
+                        // x와 y가 모두 문자열일 때
+                        if (x.innerHTML.localeCompare(y.innerHTML) > 0) {
+                          shouldSwitch = true;
+                          break;
+                        }
+                      } else {
+                        // x와 y 중 하나 이상이 숫자일 때
+                        if (
+                          (isNaN(x.innerHTML) ? x.innerHTML : parseFloat(x.innerHTML)) 
+                          > (isNaN(y.innerHTML) ? y.innerHTML : parseFloat(y.innerHTML))
+                        ) {
+                          shouldSwitch = true;
+                          break;
+                        }
+                      }
+                    } else if (dir == "desc") {
+                      if (isNaN(x.innerHTML) && isNaN(y.innerHTML)) {
+                        if (x.innerHTML.localeCompare(y.innerHTML) < 0) {
+                          shouldSwitch = true;
+                          break;
+                        }
+                      } else {
+                        if (
+                          (isNaN(x.innerHTML) ? x.innerHTML : parseFloat(x.innerHTML)) 
+                          < (isNaN(y.innerHTML) ? y.innerHTML : parseFloat(y.innerHTML))
+                        ) {
+                          shouldSwitch = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
+
+                  if (shouldSwitch) {
+                    rows[o].parentNode.insertBefore(rows[o + 1], rows[o]);
+                    switching = true;
+                    switchCount++;
+                  } else {
+                    if(switchCount == 0 && dir == "asc") {
+                      //정렬방향 변경
+                      dir = "desc";
+                      switching = true;
+                    }
+                  }
+                }
+              }
+            </script>
+
             <div id="pageNavi" > 1 2 3 4 5</div>
             <!-- End Table with stripped rows -->
             
