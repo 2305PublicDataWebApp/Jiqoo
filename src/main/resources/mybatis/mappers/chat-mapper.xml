@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ChatMapper">
+	<select id="selectChatRoomById" resultType="ChatRoom">
+		SELECT * FROM CHAT_ROOM_TBL
+		WHERE CHAT_NO IN (SELECT REF_CHAT_NO FROM CHAT_USER_TBL WHERE USER_ID=#{userId})
+	</select>
+	<select id="selectChatMessageByNo" resultType="ChatMessage">
+		SELECT * FROM CHAT_MSG_TBL WHERE REF_CHAT_NO = #{chatNo}
+	</select>
+</mapper>
