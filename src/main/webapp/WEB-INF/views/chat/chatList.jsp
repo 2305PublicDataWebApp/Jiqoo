@@ -50,7 +50,7 @@
 <!-- socket.js -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.5/sockjs.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <!-- =======================================================
   * Template Name: Bootslander
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -120,8 +120,8 @@
 							<div class="card-body contacts_body">
 								<ul class="contacts">
 								<c:forEach items="${chatRoomList }" var="chatRoom">
-									<li class="a_active"><input type="hidden"
-										class="chat-room-id" value="">
+									<li class="a_active" id="chat-room-${chatRoom.chatNo }"><input type="hidden"
+										class="chat-room-id" value="${chatRoom.chatNo }">
 										<div class="d-flex bd-highlight">
 											<div class="img_cont">
 												<img src="../resources/assets/img/basozan.png"
@@ -160,7 +160,7 @@
 							</div>
 							<div class='text-center'>
 								<p>
-									<span style='color: #388E3C'>채채채</span>님 환영합니다!<br>목록을
+									<span style='color: #388E3C'>${userId }</span>님 환영합니다!<br>목록을
 									클릭하여 채팅을 시작해보세요.
 								<p>
 							</div>
@@ -194,7 +194,7 @@
 								</div>
 							</div>
 							<div id="chat_body" class="card-body msg_card_body">
-								<div class="d-flex justify-content-start mb-4">
+								<!-- <div class="d-flex justify-content-start mb-4">
 									<div class="img_cont_msg">
 										<img src="../resources/assets/img/basozan.png"
 											class="rounded-circle user_img_msg">
@@ -287,7 +287,7 @@
 										<p>그래요....</p>
 										<span class="msg_time">9:12 AM, Today</span>
 									</div>
-								</div>
+								</div> -->
 							</div>
 							<div class="card-footer">
 								<div class="input-group">
@@ -368,7 +368,6 @@
 	<script>
 		$(document).ready(function() {
 			var chatMessages = $('.chat-info');
-			$('#chat_body').scrollTop(chatMessages[0].scrollHeight); // 스크롤을 항상 아래로 이동
 			chatMessages.hide();
 			$('#action_menu_btn').click(function() {
 				$('.action_menu').toggle();
@@ -379,9 +378,69 @@
 				// $('#chat_info_div').append("<div class='chat_none row d-flex justify-content-center align-items-center'><div class='text-center'><img src='../resources/assets/img/jiqooLogo.png'></div><div class='text-center'><p><span style='color:#388E3C'>채채채</span>님 환영합니다!<br>목록을 클릭하여 채팅을 시작해보세요.<p></div></div>");
 				$('.chat_none').remove();
 				$('.chat-info').show();
+				var chatRoomId = $(this).find(".chat-room-id").val();
+				$.ajax({
+					url : "/chat/room",
+					data : {
+						chatNo : chatRoomId
+					},
+					type : "GET",
+					success : function(data) {
+						var chatBody = $("#chat_body");
+						var userId = "user01";
+						chatBody.children().remove();
+						data.forEach(function(message) {
+							var isSent = message.msgSenderId == userId;
+							var messageText = message.msgContent;
+							var messageTime = message.msgSendDate;
+							
+							addMessage(isSent, messageText, messageTime);
+							
+						})
+						scrollToBottom();
+					}
+				})
 			});
 
 		});
+		function scrollToBottom() {
+		    var chatBody = $("#chat_body");
+		    chatBody.scrollTop(chatBody[0].scrollHeight);
+		}
+		function addMessage(isSent, message, time) {
+		    var chatBody = $("#chat_body");
+		    var messageContainer = $("<div>").addClass("d-flex justify-content-" + (isSent ? "end" : "start") + " mb-4");
+
+		    var imgContainer = $("<div>").addClass("img_cont_msg");
+		    var img = $("<img>").attr("src", isSent ? "../resources/assets/img/testimonials/testimonials-1.jpg" : "../resources/assets/img/basozan.png").addClass("rounded-circle user_img_msg");
+		    
+		    imgContainer.append(img);
+
+		    var messageDiv;
+		    if (isSent) {
+		        messageDiv = $("<div>").addClass("msg_cotainer_send");
+		    } else {
+		        messageDiv = $("<div>").addClass("msg_cotainer");
+		    }
+
+		    var messageText = $("<p>").text(message);
+		    var messageTime = $("<span>").addClass("msg_time_send").text(time);
+		    
+		    messageDiv.append(messageText);
+		    messageDiv.append(messageTime);
+
+		    if (isSent) {
+		        messageContainer.append(messageDiv);
+		        messageContainer.append(imgContainer);
+		    } else {
+		        messageContainer.append(imgContainer);
+		        messageContainer.append(messageDiv);
+		    }
+
+		    chatBody.append(messageContainer);
+		}
+
+
 		var selectElement = document.getElementById("reportSelect");
 		var textareaElement = document.getElementById("customReason");
 		selectElement.addEventListener("change", function() {
@@ -392,6 +451,51 @@
 			}
 		});
 	</script>
+	<!-- <script>
+		var socket;
+		var stomp;
+		var chatNo;
+		var userId = "${sessionScope.userId}";
+		var messageNo;
+		var runAjax = true
+		$(function() {
+			$("#textMessage").focus();  // 입력창 활성화
+			/* if(userId == "") {
+				alert("로그인이 필요한 서비스입니다.");
+				location.href = "/user/login.do";
+			} */
+			connect();
+			socket.onclose = close;
+			$("#textMessage").keypress(function(e) {
+				if(e.keyCode == 13) {
+					if(!e.shiftKey) {
+						e.preventDefault();
+						sendMessage();
+					}
+				}
+			});
+			
+			if(runAjax) {
+				
+				$("#chat_body").scroll(function() {
+					var scroll = $("#chat_body")[0].scrollHeight;
+					if(runAjax) {
+						if($("#chat_body").scrollTop() == 0) {
+							$.ajax({
+								type : "GET",
+								url : "/chat/room",
+								data : {
+									chatNo : chatNo
+								}
+								
+							})
+						}
+					}
+				})
+			}
+			
+		})
+	</script> -->
 	<!-- <script>
 		var uid = "${userId}"; // 사용자 ID 또는 식별자
 
