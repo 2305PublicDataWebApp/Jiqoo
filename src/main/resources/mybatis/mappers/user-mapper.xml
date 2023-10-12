@@ -21,4 +21,15 @@
 		FROM USER_TBL
 		WHERE USER_NICKNAME = #{userNickname}
 	</select>
+	
+	<select id="selectCheckEmail" resultType="_int">
+		SELECT COUNT(*) 
+		FROM USER_TBL
+		WHERE USER_EMAIL = #{userEmail}
+	</select>
+	
+	<insert id="insertUser">
+		INSERT INTO USER_TBL
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
+	</insert>
 </mapper>

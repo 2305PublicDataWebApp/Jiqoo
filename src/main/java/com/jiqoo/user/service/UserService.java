@@ -25,4 +25,18 @@ public interface UserService {
 	 */
 	int selectCheckNickname(String userNickname);
 
+	/**
+	 * 이메일 중복체크 service
+	 * @param userEmail
+	 * @return
+	 */
+	int selectCheckEmail(String userEmail);
+
+	/**
+	 * 회원가입 service
+	 * @param user
+	 * @return
+	 */
+	int insertUser(User user);
+
 }

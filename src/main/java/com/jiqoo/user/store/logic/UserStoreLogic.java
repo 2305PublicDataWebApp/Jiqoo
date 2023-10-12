@@ -27,4 +27,16 @@ public class UserStoreLogic implements UserStore{
 		return nicknameCheck;
 	}
 
+	@Override
+	public int selectCheckEmail(SqlSession sqlSession, String userEmail) {
+		int emailCheck = sqlSession.selectOne("UserMapper.selectCheckEmail", userEmail);
+		return emailCheck;
+	}
+
+	@Override
+	public int insertUser(SqlSession sqlSession, User user) {
+		int result = sqlSession.insert("UserMapper.insertUser", user);
+		return result;
+	}
+
 }

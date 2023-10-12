@@ -34,4 +34,16 @@ public class UserServiceImpl implements UserService{
 		return nicknameCheck;
 	}
 
+	@Override
+	public int selectCheckEmail(String userEmail) {
+		int emailCheck = userStore.selectCheckEmail(sqlSession, userEmail);
+		return emailCheck;
+	}
+
+	@Override
+	public int insertUser(User user) {
+		int result = userStore.insertUser(sqlSession, user);
+		return result;
+	}
+
 }

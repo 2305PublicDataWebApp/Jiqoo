@@ -19,6 +19,19 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!-- 메일 발송 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		        <exclusions>
+			        <exclusion>
+			            <groupId>org.springframework.boot</groupId>
+			            <artifactId>spring-boot-starter-logging</artifactId>
+			        </exclusion>
+		    	</exclusions>
+		</dependency>
+		
 		<!--Java에서 JSON을 쉽게 다룰 수 있게 해주는 구글 라이브러리 -->
 		<!-- GSON 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->

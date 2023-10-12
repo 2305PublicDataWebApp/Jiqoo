@@ -30,4 +30,20 @@ public interface UserStore {
 	 */
 	int selectCheckNickname(SqlSession sqlSession, String userNickname);
 
+	/**
+	 * 이메일 중복체크 Store
+	 * @param sqlSession
+	 * @param userEmail
+	 * @return
+	 */
+	int selectCheckEmail(SqlSession sqlSession, String userEmail);
+
+	/**
+	 * 회원가입 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int insertUser(SqlSession sqlSession, User user);
+
 }
