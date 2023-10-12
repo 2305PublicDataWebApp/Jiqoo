@@ -1393,17 +1393,23 @@ main {
   -webkit-line-clamp: 1
 }
 
-#list-no {
+.list-no {
   font-family: var(--font-primary);
   font-size: 1.5em;
 }
 
-#pageNavi {
+#pageNavi  {
+  display: flex;
+  justify-content: center;
+}
+#pageNavi a {
   font-family: var(--font-primary);
   margin:15px;
   text-align: center;
   font-size: 1.5em;
   color : #ccc;
+  display: flex;
+  justify-content: center;
 }
 
 

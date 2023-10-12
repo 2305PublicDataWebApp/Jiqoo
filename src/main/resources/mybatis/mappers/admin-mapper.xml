@@ -5,16 +5,65 @@
 	
 <mapper namespace="AdminMapper">
 
-	<!-- 회원관리페이지 총게시물수 -->
-	<select id="getListCount" resultType="_int">
-		SELECT COUNT (*) FROM MY_CLASS_LIST_TBL
+	<!-- 회원관리페이지 총회원수 (= 총게시물수) -->
+	<select id="getUserListCount" resultType="_int">
+		SELECT COUNT (*) FROM USER_TBL WHERE ADMIN_YN = 'N'
 	</select>
 	
-	<!-- 회원관리페이지 총게시물수 -->
+	<!-- 회원정보 리스트 -->
 	<select id="selectAllUser" resultType="User">
-		SELECT * FROM USER_TBL ORDER BY U_CREATE_DATE DESC
+		SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' ORDER BY USER_ID DESC
+	</select>
+	
+	<!-- 회원검색 총회원수 (= 총게시물수) -->
+	<select id="getUserSearchListCount" resultType="_int">
+		SELECT COUNT (*) FROM USER_TBL
+		<if test="searchCondition == 'userId'"> 
+			WHERE USER_ID LIKE '%'||#{searchKeyword}||'%' 
+		</if>
+		<if test="searchCondition == 'userName'">
+			WHERE USER_NAME LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'userEmail'">
+			WHERE USER_EMAIL LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'userNickname'">
+			WHERE USER_NICKNAME LIKE '%'||#{searchKeyword}||'%'
+		</if> 
+		<if test="searchCondition == 'userTel'">
+			WHERE USER_TEL LIKE '%'||#{searchKeyword}||'%'
+		</if>
+	</select>
+	
+	
+	<select id="searchUserByKeyword" resultType="User">
+		SELECT * FROM USER_TBL
+		<if test="searchCondition == 'userId'"> 
+			WHERE USER_ID LIKE '%'||#{searchKeyword}||'%' 
+			ORDER BY USER_ID DESC 
+		</if>
+		<if test="searchCondition == 'userName'">
+			WHERE USER_NAME LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY USER_ID DESC 
+		</if>
+		<if test="searchCondition == 'userEmail'">
+			WHERE USER_EMAIL LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY USER_ID DESC 
+		</if>
+		<if test="searchCondition == 'userNickname'">
+			WHERE USER_NICKNAME LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY USER_ID DESC 
+		</if>
+		<if test="searchCondition == 'userTel'">
+			WHERE USER_TEL LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY USER_ID DESC 
+		</if>
 	</select>
 
+	<!-- 회원정보 상세조회 -->
+	<select id="selectUserByUserId" resultType="User">
+		SELECT * FROM USER_TBL WHERE USER_ID = #{userId}
+	</select>
 
 
 
