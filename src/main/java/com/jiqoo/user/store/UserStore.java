@@ -14,4 +14,20 @@ public interface UserStore {
 	 */
 	User selectCheckLogin(SqlSession sqlSession, User user);
 
+	/**
+	 * id 중복체크 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectCheckId(SqlSession sqlSession, String userId);
+
+	/**
+	 * 닉네임 중복체크 Store
+	 * @param sqlSession
+	 * @param userNickname
+	 * @return
+	 */
+	int selectCheckNickname(SqlSession sqlSession, String userNickname);
+
 }

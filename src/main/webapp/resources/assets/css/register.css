@@ -57,8 +57,8 @@ form h4{
   margin : 40px 0 20px 0;
 }
 
-.errorMessage {
+.checkMessage {
 	margin : 7px 0 0 0;
 	float: left;
-	color:#f7396e;
+	color: #f7396e;
 }

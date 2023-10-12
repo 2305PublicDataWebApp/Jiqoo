@@ -58,7 +58,7 @@
             </svg>
         </section>
         <main class="form-signin">
-            <form action="/user/login.do" method="post">
+            <form action="/user/login" method="post">
                 <h1 style="margin-bottom: 30px;">로그인</h1>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
@@ -69,7 +69,7 @@
                     <label for="userPw">비밀번호</label>
                 </div>
                 <div>
-                	<p id="errorMessage" style="margin:0; color:#f7396e;"></p>
+                	<p id="checkMessage" style="margin:0; color:#f7396e;"></p>
                 </div>
                 <button class="w-100 btn btn-lg" type="submit" id="loginBtn">로그인</button>
             </form>
@@ -83,7 +83,7 @@
                 <ul>
                     <li><a data-bs-toggle="modal" href="#findIdModal">아이디찾기</a></li>
                     <li><a data-bs-toggle="modal" href="#findPwModal">비밀번호찾기</a></li>
-                    <li><a href="/user/register.do">회원가입</a></li>
+                    <li><a href="/user/register">회원가입</a></li>
                 </ul>
             </div>
             
@@ -159,17 +159,17 @@
         		event.preventDefault();
         		const userId = $("#userId").val();
         		const userPw = $("#userPw").val();
-        		let errorMessage = $("#errorMessage")
+        		let checkMessage = $("#checkMessage")
         		if(userId === "") {
-        			errorMessage.text("아이디를 입력해주세요");
+        			checkMessage.text("아이디를 입력해주세요");
         			return;
         		}
         		if(userPw === "") {
-        			errorMessage.text("비밀번호를 입력해주세요");
+        			checkMessage.text("비밀번호를 입력해주세요");
         			return;
         		}
         		$.ajax({
-        			url : "/user/login.do",
+        			url : "/user/login",
         			data: {
         				"userId" : userId, 
         				"userPw" : userPw
@@ -179,7 +179,7 @@
         				if(data === "true") {
 	        				window.location.href="/";   					
         				} else {
-        					errorMessage.text("아이디와 비밀번호를 다시 확인해주세요.");
+        					checkMessage.text("아이디와 비밀번호를 다시 확인해주세요.");
         				}
         			},
         			error: function(){

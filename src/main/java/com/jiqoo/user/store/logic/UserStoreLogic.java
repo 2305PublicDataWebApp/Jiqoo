@@ -15,4 +15,16 @@ public class UserStoreLogic implements UserStore{
 		return uOne;
 	}
 
+	@Override
+	public int selectCheckId(SqlSession sqlSession, String userId) {
+		int idCheck = sqlSession.selectOne("UserMapper.selectCheckId", userId);
+		return idCheck;
+	}
+
+	@Override
+	public int selectCheckNickname(SqlSession sqlSession, String userNickname) {
+		int nicknameCheck = sqlSession.selectOne("UserMapper.selectCheckNickname", userNickname);
+		return nicknameCheck;
+	}
+
 }

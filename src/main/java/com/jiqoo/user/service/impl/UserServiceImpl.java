@@ -22,4 +22,16 @@ public class UserServiceImpl implements UserService{
 		return uOne;
 	}
 
+	@Override
+	public int selectCheckId(String userId) {
+		int idCheck = userStore.selectCheckId(sqlSession, userId);
+		return idCheck;
+	}
+
+	@Override
+	public int selectCheckNickname(String userNickname) {
+		int nicknameCheck = userStore.selectCheckNickname(sqlSession, userNickname);
+		return nicknameCheck;
+	}
+
 }
