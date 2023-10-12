@@ -159,16 +159,18 @@
 										onclick="toggleCC()"></i>
 								</div>
 								<div class="category-container" style="display: none;">
-								<c:forEach var="categoryList" items="${categoryList }">
-									<div class="form-check"> 
-										<input class="form-check-input" type="radio" name="category"
-											id="${categoryList.cName }" value="${categoryList.cName }" required> <label
-											class="form-check-label" for="${categoryList.cName }"> <img
-											class="tag-img" src="${categoryList.cImgPath }"
-											alt="${categoryList.cName }">
-										</label>
+									<div class="category-list">
+										<c:forEach var="categoryList" items="${categoryList }">
+											<div class="form-check category"> 
+												<input class="form-check-input" type="radio" name="category"
+													id="${categoryList.cName }" value="${categoryList.cName }" required> <label
+													class="form-check-label" for="${categoryList.cName }"> <img
+													class="tag-img" src="${categoryList.cImgPath }"
+													alt="${categoryList.cName }">
+												</label>
+											</div>
+										</c:forEach>
 									</div>
-								</c:forEach>
 <!-- 									<div class="form-check"> -->
 <!-- 										<input class="form-check-input" type="radio" name="category" -->
 <!-- 											id="category1" value="option1" required> <label -->
