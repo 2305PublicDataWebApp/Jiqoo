@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="keywords" content="">
-        <title>지꾸 로그인</title>
+        <title>지꾸 마이페이지</title>
         
         <!-- Favicons -->
         <link href="../resources/assets/img/earth-globe.png" rel="icon">
@@ -66,10 +66,15 @@
             <div>
                 <div class="profile-header bg"></div>
                 <div class="profile-body text-center">
-                    <img alt="프로필사진" class="profile-img img-border-light" src="../resources/assets/img/testimonials/testimonials-3.jpg">
-                    <h2 class="zero-margin">바소잔</h2>
-                    <p class="zero-margin fontGray">khuser01</p><br>
-                    <p class="zero-margin fontGray">안녕? 나는 바소잔이라고 해<br>만나서 반갑고 팔로우 해라</p>
+                	<c:if test="${user.userPhotoRename eq null}">
+	                    <img alt="프로필사진" class="no-profile-img" src="../resources/assets/img/no-profile.png">
+                	</c:if>
+                	<c:if test="${user.userPhotoRename ne null}">
+	                    <img alt="프로필사진" class="profile-img img-border-light" src="../resources/puploadFiles/${user.userPhotoRename }">
+                	</c:if>
+                    <h2 class="zero-margin">${user.userNickname }</h2>
+                    <p class="zero-margin fontGray">${user.userId }</p><br>
+                    <p class="zero-margin fontGray">${user.userInfo }</p>
                     <div class="profile-cnt">
                         <div class="profile-cnt-item">
                             <div class="profile-cnt-total"><a href="#">21</a></div>
@@ -121,12 +126,14 @@
                         <!-- 탭 내용 -->
                         <div class="tab-content" id="pills-tabContent" style="margin-top: 30px;">
                             <!-- 지꾸리스트 -->
-                            <div class="tab-pane fade show active" id="jiqoo" role="tabpanel" aria-labelledby="jiqoo"> 
-                                <div class="noData">
-                                    <img src="../resources/assets/img/user/jiqooNoData.png" alt="noData" style="width: 100px;"><br><br>
-                                    <p>해당 날짜에 활동하신 내역이 없습니다!</p>
-                                </div>
-                            </div>
+                            <%-- <c:if test="${ }"> --%>
+	                            <div class="tab-pane fade show active" id="jiqoo" role="tabpanel" aria-labelledby="jiqoo"> 
+	                                <div class="noData">
+	                                    <img src="../resources/assets/img/user/jiqooNoData.png" alt="noData" style="width: 100px;"><br><br>
+	                                    <p>해당 날짜에 활동하신 내역이 없습니다!</p>
+	                                </div>
+	                            </div>
+                            <%-- </c:if> --%>
                             <!-- 모꾸리스트 -->
                             <div class="tab-pane fade" id="moqoo" role="tabpanel" aria-labelledby="moqoo">
                                 <span>총 </span><span class="greenColor">5</span>개의 <span class="greenColor">모꾸</span>를 등록하셨습니다.

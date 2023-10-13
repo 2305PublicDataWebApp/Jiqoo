@@ -17,9 +17,57 @@ public class UserServiceImpl implements UserService{
 	private UserStore userStore;
 	
 	@Override
+	public int insertUser(User user) {
+		int result = userStore.insertUser(sqlSession, user);
+		return result;
+	}
+
+	@Override
+	public int updateUserPw(User user) {
+		int tempPwResult = userStore.updateUserPw(sqlSession, user);
+		return tempPwResult;
+	}
+
+	@Override
 	public User selectCheckLogin(User user) {
 		User uOne = userStore.selectCheckLogin(sqlSession, user);
 		return uOne;
+	}
+
+	@Override
+	public int selectCheckId(String userId) {
+		int idCheck = userStore.selectCheckId(sqlSession, userId);
+		return idCheck;
+	}
+
+	@Override
+	public int selectCheckNickname(String userNickname) {
+		int nicknameCheck = userStore.selectCheckNickname(sqlSession, userNickname);
+		return nicknameCheck;
+	}
+
+	@Override
+	public int selectCheckEmail(String userEmail) {
+		int emailCheck = userStore.selectCheckEmail(sqlSession, userEmail);
+		return emailCheck;
+	}
+
+	@Override
+	public User selectFindId(User user) {
+		User uOne = userStore.selectFindId(sqlSession, user);
+		return uOne;
+	}
+
+	@Override
+	public User selectFindPw(User user) {
+		User uOne = userStore.selectFindPw(sqlSession, user);
+		return uOne;
+	}
+
+	@Override
+	public User selectUserOneById(String userId) {
+		User user = userStore.selectUserOneById(sqlSession, userId);
+		return user;
 	}
 
 }

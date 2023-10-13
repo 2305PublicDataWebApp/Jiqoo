@@ -77,13 +77,13 @@
                         </div>
                         <div class="row">
                             <div class="col-12 col-sm-3" style="text-align: left;">
-                                <label for="userNick">닉네임</label>
+                                <label for="userNickname">닉네임</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <input type="text" class="form-control" id="userNick" name="userNick" placeholder="닉네임을 입력해주세요" required>
+                                <input type="text" class="form-control" id="userNickname" name="userNickname" value="${user.userNickname }" required>
                             </div>
                             <div class="col-4 col-sm-2">
-                                <button class="btn btn-sm regBtn">중복확인</button>
+                                <button class="btn btn-sm regBtn">수정하기</button>
                             </div>    
                         </div>
                         <div class="row">
@@ -91,7 +91,7 @@
                                 <label for="userEmail">메일주소</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <input type="email" class="form-control" id="userEmail" name="userEmail" placeholder="이메일을 입력해주세요" required>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" value="${user.userEmail }" required>
                             </div>
                             <div class="col-4 col-sm-2">
                                 <button class="btn btn-sm regBtn">메일인증</button>
@@ -112,16 +112,35 @@
                             <div class="col-12 col-sm-3" style="text-align: left;">
                                 <label for="userPhoto">프로필사진</label>
                             </div>
-                            <div class="col-8 col-sm-7">
-                                <input type="file" class="form-control form-control-sm" id="userPhoto" name="userPhoto">
-                            </div>
+                           	<c:if test="${user.userPhotoRename eq null }">
+                            	<div class="col-8 col-sm-7">
+	                            	<p>등록된 사진이 없습니다.</p>
+	                                <input type="file" class="form-control form-control-sm" id="userPhoto" name="userPhoto">
+                            	</div>
+                            </c:if>
+                            <c:if test="${user.userPhotoRename ne null }">
+	                            <div class="col-8 col-sm-7">
+	                            	<div style="margin-bottom:20px;">
+	                            		<p>현재 프로필 사진</p>
+	                            		<img src="../resources/puploadFiles/${user.userPhotoRename }" class="viewPhoto" style="width:300px;">
+	                            	</div>
+	                            </div>
+	                            <div class="col-4 col-sm-2">
+	                                <button type="button" id="changePhotoBtn" class="btn btn-sm regBtn" data-bs-toggle="modal" data-bs-target="#changePhotoModal">변경하기</button>
+	                            </div>
+                            </c:if>
                         </div>
                         <div class="row">
                             <div class="col-12 col-sm-3" style="text-align: left;">
                                 <label for="userInfo">자기소개</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <textarea class="form-control" rows="3" id="userInfo" name="userInfo" placeholder="자기소개를 입력해주세요"></textarea>
+                       			<c:if test="${user.userInfo eq null }">
+                                	<textarea class="form-control" rows="3" id="userInfo" name="userInfo" placeholder="자기소개를 입력해주세요"></textarea>
+                       			</c:if>
+	                        	<c:if test="${user.userInfo ne null }">
+	                                <textarea class="form-control" rows="3" id="userInfo" name="userInfo" >${user.userInfo }</textarea>
+	                        	</c:if>
                             </div>
                         </div>
                         <button class="btn btn-block subBtn" type="submit">수정완료</button>
@@ -129,8 +148,8 @@
                         <button type="button" id="delUserBtn" class="btn btn-block" data-bs-toggle="modal" data-bs-target="#delUserModal">
                             회원탈퇴
                         </button>
+	                </form>
                     </div>
-                </form>
                 </div>
                 <!-- 회원탈퇴 Modal -->
                 <div class="modal fade" id="delUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -158,10 +177,27 @@
                             <button type="button" class="btn subBtn" data-bs-dismiss="modal">탈퇴취소</button>
                         </div>
                     </div>
-                    </div>
                 </div>
             </div>
-
+            
+            <!-- 사진변경 Modal -->
+            <div class="modal fade" id="changePhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                	<div class="modal-header">
+				    	<h5 class="modal-title">프로필 사진 변경</h5>
+				    	<button type="button" class="btn-close photo-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+				    </div>
+                    <div class="modal-body" style="margin-top: 20px;">
+			            <input type="file" class="form-control form-control-sm" id="uploadFile" name="uploadFile" accept="image/gif, image/png, image/jpeg" style="float:left;">
+                    </div>
+                    <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
+                        <button type="button" class="btn btn-sm regBtn" id="photoChange" >변경</button>
+                        <button type="button" class="btn btn-sm regBtn" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </main>
         
         <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
@@ -179,5 +215,48 @@
 
         <!-- Template Main JS File -->
         <script src="../resources/assets/js/main.js"></script>
+        
+        <script>
+        	$(function(){
+            	//처음 이미지 가져오기
+	            let photoPath = $('.profile-photo').attr('src');
+	            let myPhoto; //회원이 업로드할 이미지 담을 변수
+	            $('#uploadFile').change(function(){
+	            	myPhoto = this.files[0];
+	                if(!myPhoto){
+	                    $('.profile-photo').attr('src', photoPath);
+	                    return
+	                }
+
+	                //이미지 미리보기 처리
+	                let reader = new FileReader();
+	                reader.readAsDataURL(myPhoto);
+	
+	                reader.onload = function(){
+	                    $('.profile-photo').attr('src', reader.result);
+	                };
+            });
+            
+            // textarea 체크
+			$('#userInfo').on('input', function() {
+   			    let content = $(this).val();
+
+   			    // <br> 대신 \n 사용
+   			    content = content.replace(/<br>/g, '\n');
+
+   			    // 글자수 세기
+   			    if (content.length == 0 || content == '') {
+   			        $('.textCount').text('0자');
+   			    } else {
+   			        $('.textCount').text(content.length + '자');
+   			    }
+
+   			    // 글자수 제한
+   			    if (content.length > 150) {
+   			        $(this).val(content.substring(0, 150));
+   			        alert('글자수는 150자까지 입력 가능합니다.');
+   			    }
+   			});
+        </script>
     </body>
 </html>

@@ -57,8 +57,14 @@ form h4{
   margin : 40px 0 20px 0;
 }
 
-.errorMessage {
+.checkMessage {
 	margin : 7px 0 0 0;
 	float: left;
-	color:#f7396e;
+	color: #f7396e;
+}
+
+.viewPhoto {
+	width:300px;
+	border-radius:50%;
+	border: 4px solid #8BC34A;
 }

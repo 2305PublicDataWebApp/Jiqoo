@@ -2,9 +2,58 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+
 <mapper namespace="UserMapper">
-	<select resultType="User" id="selectCheckLogin">
-		SELECT * FROM USER_TBL WHERE USER_ID = #{userId} AND USER_PW = #{userPw} 
+	<insert id="insertUser">
+		INSERT INTO USER_TBL
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
+	</insert>
+	
+	<update id="updateUserPw">
+		UPDATE USER_TBL
+		SET USER_PW = #{userPw}
+		WHERE USER_ID = #{userId} AND USER_EMAIL = #{userEmail}
+	</update>
+	
+	<select id="selectCheckLogin" resultType="User" >
+		SELECT * 
+		FROM USER_TBL 
+		WHERE USER_ID = #{userId} AND USER_PW = #{userPw}
+	</select>
+
+	<select id="selectCheckId" resultType="_int">
+		SELECT COUNT(*) 
+		FROM USER_TBL
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectCheckNickname" resultType="_int">
+		SELECT COUNT(*) 
+		FROM USER_TBL
+		WHERE USER_NICKNAME = #{userNickname}
+	</select>
+	
+	<select id="selectCheckEmail" resultType="_int">
+		SELECT COUNT(*) 
+		FROM USER_TBL
+		WHERE USER_EMAIL = #{userEmail}
+	</select>
+	
+	<select id="selectFindId" resultType="User">
+		SELECT USER_ID, USER_NAME, USER_EMAIL
+		FROM USER_TBL
+		WHERE USER_NAME = #{userName} AND USER_EMAIL = #{userEmail}
+	</select>
+	
+	<select id="selectFindPw" resultType="User">
+		SELECT USER_ID, USER_NAME, USER_EMAIL
+		FROM USER_TBL
+		WHERE USER_ID = #{userId} AND USER_EMAIL = #{userEmail}
+	</select>
+	
+	<select id="selectUserOneById" resultType="User">
+		SELECT *
+		FROM USER_TBL
+		WHERE USER_ID = #{userId}
 	</select>
 </mapper>

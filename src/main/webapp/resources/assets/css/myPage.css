@@ -30,6 +30,15 @@ main {
   margin-left: -75px;
   top: -75px;
   border-radius: 50%;
+}
+.no-profile-img {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  left: 50%;
+  margin-left: -75px;
+  top: -75px;
+  border-radius: 50%;
 } 
 .img-md {
   width: 150px;
@@ -158,10 +167,10 @@ display: none; /* 화살표 없애기 for IE10, 11*/
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next { position: absolute; top: 5px; width: 1.8em; height: 1.8em; text-indent: -9999px; cursor: pointer }
 .ui-datepicker .ui-datepicker-prev { left: 5px; }
 .ui-datepicker .ui-datepicker-prev.ui-state-hover { background: rgba(0,0,0,0.1); border: 0; }
-.ui-datepicker .ui-datepicker-prev .ui-icon { background: url(../../img/user/arrow-button.png) 0 0 no-repeat; }
+.ui-datepicker .ui-datepicker-prev .ui-icon { background: url(../img/user/arrow-button.png) 0 0 no-repeat; }
 .ui-datepicker .ui-datepicker-next { right: 5px; }
 .ui-datepicker .ui-datepicker-next.ui-state-hover { background: rgba(0,0,0,0.1); border: 0; }
-.ui-datepicker .ui-datepicker-next .ui-icon { background: url(../../img/user/arrow-button.png) -16px 0 no-repeat; }
+.ui-datepicker .ui-datepicker-next .ui-icon { background: url(../img/user/arrow-button.png) -16px 0 no-repeat; }
 .ui-datepicker .ui-state-default { display: block; border: 0; border-radius: 15px; width: 30px; height: 30px; line-height: 30px; padding: 0; margin: 4px auto; font-size: 12px; text-align: center; background: #fff; font-weight: normal; color: #333; box-sizing: border-box; }
 .ui-datepicker .ui-state-default.ui-state-hover { background: rgba(0,0,0,0.05); }
 .ui-datepicker-today .ui-state-default { color: #8BC34A; font-weight: bold; }
