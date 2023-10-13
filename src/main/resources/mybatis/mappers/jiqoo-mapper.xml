@@ -1,10 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="JiqooMapper">
-	<select id="selectCategoryList" resultType="Category">
-		SELECT * FROM CATEGORY_TBL
-	</select>
+	<resultMap type="Jiqoo" id="JiqooResultMap">
+		<id property="jiqooNo" column="JIQOO_NO"/>
+		<result property="jiqooW3W" column="JIQOO_W3W" />
+		<result property="jiqooDate" column="JIQOO_DATE" />
+		<result property="jiqooCtgr" column="JIQOO_CTGR" />
+		<result property="jiqooTitle" column="JIQOO_TITLE" />
+		<result property="jiqooContent" column="JIQOO_CONTENT" />
+		<result property="jiqooWriter" column="JIQOO_WRITER" />
+		<result property="jOpenStatus" column="J_ALLOW_COMT" />
+		<result property="jAllowComt" column="J_OPEN_STATUS" />
+		<result property="jCreateDate" column="J_CREATE_DATE" />
+		<result property="jUpdateDate" column="J_UPDATE_DATE" />
+		<result property="jViewCount" column="J_VIEW_COUNT" />
+		<result property="jiqooLat" column="JIQOO_LAT" />
+		<result property="jiqooLng" column="JIQOO_LNG" />
+		<result property="jiqooStatus" column="JIQOO_STATUS" />
+		<collection property="user" resultMap="UserResultMap"/>
+	</resultMap>
+	
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userNickname" column="USER_NICKNAME"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+		<result property="userGender" column="USER_GENDER"/>
+		<result property="userBirth" column="USER_BIRTH"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userInfo" column="USER_INFO"/>
+		<result property="userPhotoName" column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" column="U_DELETE_DATE"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="adminYn" column="ADMIN_YN"/>
+	</resultMap>
 	<insert id="insertJiqoo">
-		INSERT INTO JIQOO_TBL VALUES(SEQ_JIQOO_NO.NEXTVAL, #{jiqooW3W }, #{jiqooDate }, #{jiqooCtgr }, #{jiqooTitle }, #{jiqooContent }, #{jiqooWriter }, #{jAllowComt }, #{jOpenStatus }, DEFAULT, DEFAULT, #{jiqooLat }, #{jiqooLng }, DEFAULT )
+		INSERT INTO JIQOO_TBL VALUES(SEQ_JIQOO_NO.NEXTVAL,
+		#{jiqooW3W }, #{jiqooDate }, #{jiqooCtgr }, #{jiqooTitle },
+		#{jiqooContent }, #{jiqooWriter }, #{jOpenStatus }, #{jAllowComt },
+		DEFAULT, DEFAULT, DEFAULT, #{jiqooLat }, #{jiqooLng }, DEFAULT )
 	</insert>
+	
+	<update id="deleteJiqoo">
+		UPDATE JIQOO_TBL SET JIQOO_STATUS = 'N' WHERE JIQOO_NO = #{jiqooNo }
+	</update>
+	
+	<update id="updateJiqoo">
+		UPDATE JIQOO_TBL SET JIQOO_NO = #{jiqooNo }, JIQOO_W3W = #{jiqooW3W }, JIQOO_DATE = #{jiqooDate }, JIQOO_CTGR = #{jiqooCtgr }, JIQOO_TITLE = #{jiqooTitle }, JIQOO_CONTENT = #{jiqooContent }, J_OPEN_STATUS = #{jOpenStatus }, J_ALLOW_COMT = #{jAllowComt }, J_UPDATE_DATE = DEFAULT, JIQOO_LAT = #{jiqooLat }, JIQOO_LNG = #{jiqooLng } 
+	</update>
+
+	<select id="selectCategoryList" resultType="Category">
+		SELECT * FROM
+		CATEGORY_TBL
+	</select>
+	
+	<select id="selectOneByNo" resultMap="JiqooResultMap">
+		SELECT J.*, U.* FROM JIQOO_TBL J
+		JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
+		WHERE J.JIQOO_NO = #{jiqooNo }
+	</select>
+
+	<select id="selectLikeCountByNo" resultType="_int">
+		SELECT COUNT(*) FROM
+		LIKE_TBL WHERE REF_POST_NO = #{jiqooNo }
+	</select>
+
+	<select id="selectCategoryByNo" resultType="Category">
+		SELECT * FROM
+		CATEGORY_TBL WHERE C_NAME = #{jiqooCName }
+	</select>
+
+	<select id="selectJiqooAllList" resultType="Jiqoo">
+		SELECT * FROM JIQOO_TBL J
+		JOIN USER_TBL U ON
+		J.JIQOO_WRITER = U.USER_ID
+		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+		ORDER BY J.JIQOO_DATE DESC
+	</select>
+
+	<select id="selectJiqooMyList" resultType="Jiqoo">
+		SELECT * FROM JIQOO_TBL J
+		JOIN USER_TBL U ON
+		J.JIQOO_WRITER = U.USER_ID
+		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+		WHERE J.JIQOO_WRITER = #{userId } AND J.JIQOO_STATUS = 'Y'
+		ORDER BY J.JIQOO_DATE DESC
+	</select>
 </mapper>

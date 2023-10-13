@@ -3,6 +3,8 @@ package com.jiqoo.jiqoo.domain;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import com.jiqoo.user.domain.User;
+
 public class Jiqoo {
 	private int jiqooNo;
 	private String jiqooW3W;
@@ -11,14 +13,22 @@ public class Jiqoo {
 	private String jiqooTitle;
 	private String jiqooContent;
 	private String jiqooWriter;
-	private String jAllowComt;
 	private String jOpenStatus;
+	private String jAllowComt;
 	private Timestamp jCreateDate;
 	private Timestamp jUpdateDate;
 	private int jViewCount;
-	private int jiqooLat;
-	private int jiqooLng;
+	private double jiqooLat;
+	private double jiqooLng;
 	private String jiqooStatus;
+	private User user;
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public int getJiqooNo() {
 		return jiqooNo;
 	}
@@ -61,17 +71,17 @@ public class Jiqoo {
 	public void setJiqooWriter(String jiqooWriter) {
 		this.jiqooWriter = jiqooWriter;
 	}
-	public String getjAllowComt() {
-		return jAllowComt;
-	}
-	public void setjAllowComt(String jAllowComt) {
-		this.jAllowComt = jAllowComt;
-	}
 	public String getjOpenStatus() {
 		return jOpenStatus;
 	}
 	public void setjOpenStatus(String jOpenStatus) {
 		this.jOpenStatus = jOpenStatus;
+	}
+	public String getjAllowComt() {
+		return jAllowComt;
+	}
+	public void setjAllowComt(String jAllowComt) {
+		this.jAllowComt = jAllowComt;
 	}
 	public Timestamp getjCreateDate() {
 		return jCreateDate;
@@ -91,16 +101,16 @@ public class Jiqoo {
 	public void setjViewCount(int jViewCount) {
 		this.jViewCount = jViewCount;
 	}
-	public int getJiqooLat() {
+	public double getJiqooLat() {
 		return jiqooLat;
 	}
-	public void setJiqooLat(int jiqooLat) {
+	public void setJiqooLat(double jiqooLat) {
 		this.jiqooLat = jiqooLat;
 	}
-	public int getJiqooLng() {
+	public double getJiqooLng() {
 		return jiqooLng;
 	}
-	public void setJiqooLng(int jiqooLng) {
+	public void setJiqooLng(double jiqooLng) {
 		this.jiqooLng = jiqooLng;
 	}
 	public String getJiqooStatus() {
@@ -113,10 +123,9 @@ public class Jiqoo {
 	public String toString() {
 		return "Jiqoo [jiqooNo=" + jiqooNo + ", jiqooW3W=" + jiqooW3W + ", jiqooDate=" + jiqooDate + ", jiqooCtgr="
 				+ jiqooCtgr + ", jiqooTitle=" + jiqooTitle + ", jiqooContent=" + jiqooContent + ", jiqooWriter="
-				+ jiqooWriter + ", jAllowComt=" + jAllowComt + ", jOpenStatus=" + jOpenStatus + ", jCreateDate="
+				+ jiqooWriter + ", jOpenStatus=" + jOpenStatus + ", jAllowComt=" + jAllowComt + ", jCreateDate="
 				+ jCreateDate + ", jUpdateDate=" + jUpdateDate + ", jViewCount=" + jViewCount + ", jiqooLat=" + jiqooLat
 				+ ", jiqooLng=" + jiqooLng + ", jiqooStatus=" + jiqooStatus + "]";
 	}
-	
 	
 }

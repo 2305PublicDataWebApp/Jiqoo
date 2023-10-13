@@ -51,19 +51,13 @@
 
 
 
-<!-- 서머노트를 위해 추가해야할 부분 -->
-<!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
+    <!-- 서머노트를 위해 추가해야할 부분 -->
+    <!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
     <script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-	integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-	crossorigin="anonymous"></script>
-<link
-	href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
-	rel="stylesheet">
-<script
-	src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 
 <!-- =======================================================
@@ -132,7 +126,7 @@
 		<button type="button" class="btn insert-jiqoo-btn"
 			data-bs-toggle="modal" data-bs-target=".modal">지꾸 +</button>
 		<!-- ======= Modal ======= -->
-		<div class="modal" tabindex="-1">
+		<div class="modal" tabindex="-1" id="insert-modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content"
 					style="background-color: #6DBE45; color: #fff;">
@@ -143,15 +137,15 @@
 					</div>
 					<div class="modal-body">
 						<!-- 게시물 입력 폼 -->
-						<form action="/jiqoo/insert.do" method="POST">
+						<form action="/jiqoo/insert" method="POST">
 							<div class="mb-3 col-lg-5 mx-auto location-container">
 								<input type="text" class="form-control" id="location"
-									name="location" value="할아버지.집.가고싶다" readonly>
+									name="jiqooW3W" value="" readonly>
 								<button id="open-map-btn">+</button>
 							</div>
 							<div class="mb-3 row date-tag-container">
 								<div class="date-container col-md-3">
-									<input type="date" class="form-control" id="date" name="date"
+									<input type="date" class="form-control" id="date" name="jiqooDate"
 										required>
 								</div>
 								<div class="col-md-2 c-btn">
@@ -162,8 +156,8 @@
 									<div class="category-list">
 										<c:forEach var="categoryList" items="${categoryList }">
 											<div class="form-check category"> 
-												<input class="form-check-input" type="radio" name="category"
-													id="${categoryList.cName }" value="${categoryList.cName }" required> <label
+												<input class="form-check-input" type="radio" name="jiqooCtgr"
+													 value="${categoryList.cName }" required> <label
 													class="form-check-label" for="${categoryList.cName }"> <img
 													class="tag-img" src="${categoryList.cImgPath }"
 													alt="${categoryList.cName }">
@@ -180,30 +174,30 @@
 <!-- 										</label> -->
 <!-- 									</div> -->
 								</div>
-
 							</div>
+							<input type="hidden" id="lat" name="jiqooLat">
+							<input type="hidden" id="lng" name="jiqooLng">
+							<input type="hidden" id="jiqoo-writer" name="jiqooWriter" value="${sessionScope.userId }">
 							<div class="mb-3">
-								<input type="text" class="form-control" id="title" name="title"
+								<input type="text" class="form-control" id="title" name="jiqooTitle"
 									placeholder="제목" required>
 							</div>
-							<div class="mb-3">
-								<textarea id="summernote" name="content" required></textarea>
-							</div>
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" role="switch"
-									id="publicSwitch" checked> <label
-									class="form-check-label" for="publicSwitch">공개 여부</label>
-							</div>
-							<div class="form-check form-switch">
-								<input class="form-check-input" type="checkbox" role="switch"
-									id="commentSwitch" checked> <label
-									class="form-check-label" for="commentSwitch">댓글 허용</label>
+					           <div class="mb-3">
+				                <textarea id="summernote" name="jiqooContent" required></textarea>
+				              </div>
+							 <div class="mb-3 form-switch">
+				                <input type="checkbox" class="form-check-input" id="private" name="jOpenStatus" value="N">
+				                <label class="form-check-label" for="private">비공개</label>
+				              </div>
+				              <div class="mb-3 form-switch">
+				                <input type="checkbox" class="form-check-input" id="allowComments" name="jAllowComt" value="Y" checked>
+				                <label class="form-check-label" for="allowComments">댓글 허용</label>
+				              </div>
+							<div class="modal-footer">
+								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+								<button type="submit" class="btn insert">등록</button>
 							</div>
 						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn reset" data-bs-dismiss="modal">취소</button>
-						<button type="button" class="btn insert">등록</button>
 					</div>
 				</div>
 			</div>
@@ -230,8 +224,8 @@
 	<!-- Template Main JS File -->
 	<script src="../resources/assets/js/main.js"></script>
 
-	<!-- 썸머노트 -->
-	<script>
+<!-- 썸머노트 -->
+  <script>
     $(document).ready(function() {
     //여기 아래 부분
         $('#summernote').summernote({
@@ -254,8 +248,36 @@
                     ['view', ['fullscreen', 'help']]
                 ],
                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+                callbacks:{ 
+                    onImageUpload : function(files){ 
+                       uploadSummernoteImageFile(files[0],this); 
+                   } 
+                } 
         });
+        function uploadSummernoteImageFile(file,editor){ 
+            data = new FormData(); 
+            data.append("file",file); 
+            $.ajax({ 
+        data:data, 
+        type:"POST", 
+        url:"/uploadSummernoteImageFile", 
+        /* dataType:"JSON", */ 
+        enctype:'multipart/form-data',
+        contentType:false, 
+        processData:false
+        
+    }).done(function(data) {
+    	console.log(data)
+    	var imgNode = $("<img>");
+    	imgNode.attr("src", data);
+    	$(".note-editable").append(imgNode);
+    }).fail(function(a,b,c){
+    	console.log(a);
+    	console.log(b);
+    	console.log(c);
+    });
+        }
     });
 </script>
 
@@ -271,6 +293,7 @@
   });
 </script>
 
+
 	<!-- 카카오맵 -->
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=86452fa459f600c914e3aa3a57039abd"></script>
@@ -280,7 +303,7 @@
 // 버튼 클릭 시 팝업 창 열기
 document.getElementById("open-map-btn").onclick = function() {
   // 팝업 창을 열기 위한 윈도우.open 함수 사용
-  window.open("popup_map.html", "Popup", "width=1200,height=800,resizable=no");
+  window.open("popupW3WMap", "Popup", "width=1200,height=800,resizable=no");
 };
 
 </script>
@@ -319,6 +342,8 @@ document.getElementById("open-map-btn").onclick = function() {
       $("#my-map").hide();
   });
 </script>
+
+
 </body>
 
 </html>

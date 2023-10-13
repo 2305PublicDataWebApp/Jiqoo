@@ -237,7 +237,6 @@ html, body {
 # option
 --------------------------------------------------------------*/
 .category-container {
-  text-align: center;
   border: 1px solid #ced4da;
   border-radius: 5px;
   padding: 0.375rem 0.75rem;
@@ -245,6 +244,8 @@ html, body {
 
 .tag-img {
   width: 40px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .date-tag-container {
@@ -259,7 +260,6 @@ html, body {
 
 .c-btn {
   cursor: pointer;
-  width: 123px;
   border: 1px solid var(--bs-border-color);
   border-radius: 5px;
   text-align: center;
@@ -268,8 +268,8 @@ html, body {
 }
 
 .category-container {
-  width: 330px;
-  height: auto;
+  width: 280px;
+  height: ato;
   background-color: white;
   position: absolute;
   top: 135px;
@@ -277,19 +277,20 @@ html, body {
   z-index: 1;
   box-shadow: rgba(0, 0, 0, 0.1);
 }
-
-.category-list {
-	 display: flex;
-  	flex-wrap: wrap;
+.form-check {
+  display: inline-block !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
 }
 
-.form-check.category {
-    margin: 10px; /* 요소 간격 조절 */
-    margin: 10px; flex: 0 0 calc(20% - 20px); max-width: calc(20% - 20px); box-sizing: border-box;
-    padding: 5px;
+.form-switch .form-check-input:checked {
+  /* 체크된 경우의 배경색 */
+  background-color: #6DBE45; 
+  /* 체크된 경우의 테두리 색상 */
+  border-color: #6DBE45; 
 }
 
-.form-check-input {
+.form-check .form-check-input:not(#private):not(#allowComments) {
   display: none;
 }
 
