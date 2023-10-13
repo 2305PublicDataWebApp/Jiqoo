@@ -61,7 +61,7 @@
             <div class="container">
                 <div class="input-form mx-auto">
                     <h1 style="margin-bottom: 30px;">회원가입</h1>
-                    <form id="regiForm" action="/user/register" method="POST">
+                    <form id="regiForm" action="/user/register" method="POST" enctype="multipart/form-data">
                         <h4>필수입력사항</h4>
                         <div class="row">
                             <div class="col-12 col-sm-3" style="text-align: left;">
@@ -189,7 +189,10 @@
                                 <label for="userPhoto">프로필사진</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <input type="file" class="form-control form-control-sm" id="userPhoto" name="userPhoto">
+                                <input type="file" class="form-control form-control-sm" id="userPhoto" name="uploadFile" onclick="photoAlert()" accept="image/gif, image/jpeg, image/png">
+                            </div>
+                            <div>
+                            	<p class="checkMessage" id="photoMsg"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -197,11 +200,11 @@
                                 <label for="userInfo">자기소개</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <textarea class="form-control" rows="3" id="userInfo" name="userInfo" placeholder="자기소개를 입력해주세요. 150자 제한"></textarea>
+                                <textarea class="form-control" rows="3" id="userInfo" name="userInfo" maxlength="150" placeholder="자기소개를 입력해주세요. 150자 제한"></textarea>
                             </div>
                         </div>
                         <div style="justify-content: center;">
-                            <button class="btn btn-block subBtn" type="button" onclick="registerBtn();">가입 완료</button>
+                            <button class="btn btn-block subBtn" type="button" onclick="registerBtn();">가입완료</button>
                             <button class="btn btn-block subBtn" onclick="history.back();" type="button">뒤로가기</button>
                         </div>
                     </form>
@@ -260,7 +263,10 @@
 			function showEmailCheckMsg(message, color) {
 			    $("#mailCheckMsg").html(message).css('color', color);
 			}
-			
+			// 사진업로드 체크메시지
+			function showPhotoMsg(message, color) {
+			    $("#photoMsg").html(message).css('color', color);
+			}
 			// id 유효성체크
 			function idCheck() {
 			    let userId = $("#userId").val();
@@ -319,19 +325,30 @@
 			function pwReCheck() {
 			    let userPw = $("#userPw").val();
 			    let userPwCheck = $("#userPwCheck").val();
-			    if($("#idMsg").css('color') !== "rgb(139, 195, 74)"){
-			    	if (userPw ==="") {
-				    	showPwMsg("* 비밀번호를 입력해주세요.", "#f7396e");
-				    	showPwCheckMsg("* 비밀번호를 입력해주세요.", "#f7396e");
+			    
+	            if(userPw === '' && userPwCheck === '') {
+	                window.alert('비밀번호를 입력해주세요.');
+			    	showPwMsg("* 비밀번호를 입력해주세요.", "#f7396e");
+			    	showPwCheckMsg("* 비밀번호를 입력해주세요.", "#f7396e");
+	                return;
+	            }
+	            if(userPwCheck === userPw) {
+					showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
+	            } else {
+				    showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
+				    return;
+	            }
+	            
+/* 			    if($("#pwCheckMsg").css('color') !== "rgb(139, 195, 74)"){
+			    	if (userPw === "") {
 				    } else if (!pwRegExp.test(userPw)){
 			    		showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
-				    	showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
 				    } else if (userPwCheck != userPw) {
 				    	showPwCheckMsg("* 비밀번호가 일치하지 않습니다.", "#f7396e");
 					}
 			    }  else {
 					showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
-				}
+				} */
 			    
 			}
 			
@@ -400,7 +417,9 @@
 			        }
 			    });
 			}
-			let checkNum;
+   			
+			let checkCode; // 인증번호 전역변수로 선언
+			
    			// 메일 중복 체크 및 인증메일 발송 
         	function emailDuplicate(){
 			    showEmailMsg("* 잠시만 기다려주세요.", "#f7396e");
@@ -413,9 +432,10 @@
 			    		success: function(response){
 			                if (response.isDuplicate) {
 			                    alert("중복된 이메일입니다.");
+			    				showEmailMsg("* 다른 이메일을 입력해주세요.", "#f7396e");
 			                } else {
-			                	checkNum = response.checkNum;
-			                	console.log(checkNum);
+			                	checkCode = response.checkCode;
+			                	console.log(checkCode);
 			                    alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
 			    				showEmailMsg("* 메일발송완료. 발송된 인증번호를 입력해주세요.", "#f7396e");
 			                }
@@ -429,19 +449,55 @@
 			    }
         	}
    			
+   			//인증번호
         	function codeCheck() {
         		const userEmailCheck = $("#userEmailCheck").val();
-        		if(checkNum == null) {
+        		if(checkCode == null) {
         			showEmailMsg("* 이메일인증을 진행해주세요", "#f7396e");
-        		} else if(userEmailCheck != checkNum) {
+        		} else if(userEmailCheck != checkCode) {
         			showEmailCheckMsg("* 인증번호가 일치하지 않습니다.", "#f7396e");
         			$("#userEmailCheck").focus();
-        		} else if(userEmailCheck == checkNum) {
+        		} else if(userEmailCheck == checkCode) {
         			showEmailMsg("* 이메일인증완료", "rgb(139, 195, 74)");
         			showEmailCheckMsg("* 인증번호가 일치합니다.", "rgb(139, 195, 74)");
         		}
         	}
+    		
+      		// 전화번호정규식
+            function oninputPhone(target) {
+                target.value = target.value
+                    .replace(/[^0-9]/g, '') //숫자를 제외한 모든 문자 제거
+                    .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
+            }
+      		
+   			// 사진 알림창
+   			function photoAlert(){
+   				alert("본인 사진을 업로드하시면 모임 참가 확률이 올라갑니다!")
+       			showPhotoMsg("* 본인 사진을 업로드하시면 모임 참가 확률이 올라갑니다!", "rgb(139, 195, 74)");
+   			}
    			
+   			// textarea 입력체크
+   			$('#userInfo').on('input', function() {
+   			    let content = $(this).val();
+
+   			    // <br> 대신 \n 사용
+   			    content = content.replace(/<br>/g, '\n');
+
+   			    // 글자수 세기
+   			    if (content.length == 0 || content == '') {
+   			        $('.textCount').text('0자');
+   			    } else {
+   			        $('.textCount').text(content.length + '자');
+   			    }
+
+   			    // 글자수 제한
+   			    if (content.length > 150) {
+   			        // 150자를 초과하면 150자까지 자르고 경고 표시
+   			        $(this).val(content.substring(0, 150));
+   			        alert('글자수는 150자까지 입력 가능합니다.');
+   			    }
+   			});
+   		
       		// 회원가입 필수입력정보체크
       		function registerBtn(){
       			event.preventDefault();
@@ -486,20 +542,10 @@
 			            $("#mailMsg").focus();
 			            return;
 			        } else {
-					    $("#regiForm").submit();			        	
+					    $("#regiForm").submit();
 			        }
 			    }
 			}
-      		
-      		
-      		
-      		// 전화번호정규식
-            function oninputPhone(target) {
-                target.value = target.value
-                    .replace(/[^0-9]/g, '') //숫자를 제외한 모든 문자 제거
-                    .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
-            }
-      		
         </script>
     </body>
 </html>

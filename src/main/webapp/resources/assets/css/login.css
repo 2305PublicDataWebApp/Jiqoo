@@ -80,3 +80,8 @@
   color: white; 
   background-color: #8BC34A;
 }
+
+.checkMessage {
+	margin : 7px 0 0 0;
+	color: #f7396e;
+}

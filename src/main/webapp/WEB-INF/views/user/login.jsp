@@ -94,19 +94,20 @@
                     <div class="modal-body" style="margin-top: 20px;">
                         <img class="mb-4" src="../resources/assets/img/jiqooLogo.png" alt="" width="60px">
                         <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">아이디 찾기</h1>
-                        <form action="" method="post">
-                            <div class="form-floating" style="margin-top: 20px;">
-                                <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
-                                <label for="userId">아이디</label>
-                            </div>
-                            <div class="form-floating" style="margin-bottom: 20px;">
-                                <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="이메일">
-                                <label for="userEmail">이메일</label>
-                            </div>
-                        </form>
+                        <div class="form-floating" style="margin-top: 20px;">
+                            <input type="text" class="form-control" id="findIdName" name="userName" placeholder="이름">
+                            <label for="userName">이름</label>
+                        </div>
+                        <div class="form-floating" style="margin-bottom: 20px;">
+                            <input type="text" class="form-control" id="findIdEmail" name="userEmail" placeholder="이메일">
+                            <label for="userEmail">이메일</label>
+                        </div>
+                        <div class="form-floating">
+                        	<p class="checkMessage" id="findIdMsg"></p>
+                        </div>
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
-                        <button type="button" id="findId" class="btn">아이디 찾기</button>
+                        <button type="button" id="findId" class="btn" onclick="findId()">아이디 찾기</button>
                         <button type="button" class="btn" data-bs-dismiss="modal">창닫기</button>
                     </div>
                 </div>
@@ -121,16 +122,19 @@
                         <img class="mb-4" src="../resources/assets/img/jiqooLogo.png" alt="" width="60px">
                         <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">비밀번호 찾기</h1>
                         <div class="form-floating" style="margin-top: 20px;">
-                            <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
+                            <input type="text" class="form-control" id="findPwId" name="userId" placeholder="아이디">
                             <label for="userId">아이디</label>
                         </div>
                         <div class="form-floating" style="margin-bottom: 20px;">
-                            <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="이메일">
+                            <input type="text" class="form-control" id="findPwEmail" name="userEmail" placeholder="이메일">
                             <label for="userEmail">이메일</label>
+                        </div>
+                        <div class="form-floating">
+                        	<p class="checkMessage" id="findPwMsg"></p>
                         </div>
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
-                        <button type="button" id="findPw" class="btn">비밀번호 찾기</button>
+                        <button type="button" id="findPw" class="btn" onclick="findPw()">비밀번호 찾기</button>
                         <button type="button" class="btn" data-bs-dismiss="modal">창닫기</button>
                     </div>
                 </div>
@@ -155,6 +159,84 @@
         <script src="../resources/assets/js/main.js"></script>
         
         <script>
+			// id 찾기 결과 메시지
+			function showFindIdMsg(message, color) {
+			    $("#findIdMsg").html(message).css('color', color);
+			}
+			
+			// pw 찾기 결과 메시지
+			function showFindPwMsg(message, color){
+			    $("#findPwMsg").html(message).css('color', color);
+			}
+			
+			// pw찾기
+			function findPw() {
+        		const userId = $("#findPwId").val();
+				const userEmail = $("#findPwEmail").val();
+        		if(userId === "") {
+        			showFindPwMsg("아이디를 입력해주세요.", "#f7396e");
+        			return;
+        		}
+        		if(userEmail === "") {
+        			showFindPwMsg("이메일을 입력해주세요.", "#f7396e");
+        			return;
+        		}
+        		showFindPwMsg("정보를 확인하고 있습니다.", "#f7396e");
+        		$.ajax({
+        			url : "/user/findPw",
+        			data: {
+        				"userId" : userId, 
+        				"userEmail" : userEmail
+        			},
+        			type: "POST",
+        			success: function(result){
+        				if(result === "fail") {
+        					showFindPwMsg("일치하는 정보가 없습니다.", "#f7396e");
+        				} else {
+        					showFindPwMsg(result, "rgb(139, 195, 74)");
+        				}
+        			},
+        			error: function(){
+        				alert("[서버오류] 관리자에게 문의바랍니다.");
+       					showFindPwMsg("[서버오류] 새로고침 후 다시 인증바랍니다.", "#f7396e");
+        			}
+        		})
+			}
+			
+			// id찾기
+			function findId() {
+        		const userName = $("#findIdName").val();
+				const userEmail = $("#findIdEmail").val();
+        		if(userName === "") {
+     				showFindIdMsg("이름을 입력해주세요.", "#f7396e");
+        			return;
+        		}
+        		if(userEmail === "") {
+     				showFindIdMsg("이메일을 입력해주세요.", "#f7396e");
+        			return;
+        		}
+        		$.ajax({
+        			url : "/user/findId",
+        			data: {
+        				"userName" : userName, 
+        				"userEmail" : userEmail
+        			},
+        			type: "POST",
+        			success: function(result){
+        				if(result === "fail") {
+        					showFindIdMsg("일치하는 정보가 없습니다.", "#f7396e");
+        				} else {
+        					const findId = result;
+        					showFindIdMsg("아이디 조회 결과 : " + findId, "rgb(139, 195, 74)");
+        				}
+        			},
+        			error: function(){
+        				alert("[서버오류] 관리자에게 문의바랍니다.");
+        			}
+        		})
+			}        
+        
+        
         	$("#loginBtn").on("click", function(){
         		event.preventDefault();
         		const userId = $("#userId").val();
