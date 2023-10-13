@@ -6,15 +6,15 @@
     <div class="container d-flex align-items-center justify-content-between">
 
       <div class="logo">
-        <a href="/"><img src="../resources/assets//img/jiqooLogo.png"></a>
+        <a href="/"><img src="../resources/assets/img/jiqooLogo.png"></a>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
 
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link" href="#">지꾸</a></li>
-          <li><a class="nav-link" href="#">모꾸</a></li>
+          <li><a class="nav-link" href="/jiqoo/list">지꾸</a></li>
+          <li><a class="nav-link" href="/moqoo/moqoo">모꾸</a></li>
           <li><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-bell"></i></a></li>
           <c:if test="${sessionScope.userId eq null}">
 	          <li class="dropdown"><a href="/user/login"><i style="font-size:26px;" class="bi bi-person-circle"></i><i class="bi bi-chevron-down"></i></a>
