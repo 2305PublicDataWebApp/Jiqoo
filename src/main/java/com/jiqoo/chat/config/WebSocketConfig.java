@@ -16,17 +16,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/chat").setAllowedOriginPatterns("http://localhost:9999").withSockJS();
+		registry.addEndpoint("/chat/list").setAllowedOriginPatterns("http://127.0.0.1:9999").withSockJS();
 	}
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
-		config.enableSimpleBroker("/sub");
-		config.setApplicationDestinationPrefixes("/pub");
+		config.enableSimpleBroker("/toppic");
+		config.setApplicationDestinationPrefixes("/app");
 	}
 
-	@Bean
-	public WebSocketHandler chatHandler() {
-		return new ChatHandler();
-	}
+//	@Bean
+//	public WebSocketHandler chatHandler() {
+//		return new ChatHandler();
+//	}
 }

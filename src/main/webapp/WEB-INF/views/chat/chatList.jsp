@@ -120,8 +120,8 @@
 							<div class="card-body contacts_body">
 								<ul class="contacts">
 								<c:forEach items="${chatRoomList }" var="chatRoom">
-									<li class="a_active" id="chat-room-${chatRoom.chatNo }"><input type="hidden"
-										class="chat-room-id" value="${chatRoom.chatNo }">
+									<li class="a_active" id="chat-room-${chatRoom.chatRoom.chatNo }"><input type="hidden"
+										class="chat-room-id" value="${chatRoom.chatRoom.chatNo }">
 										<div class="d-flex bd-highlight">
 											<div class="img_cont">
 												<img src="../resources/assets/img/basozan.png"
@@ -130,15 +130,17 @@
 											</div>
 											<div class="user_info">
 												<div class="col d-flex justify-content-between">
-													<span>${chatRoom.chatName }</span><br>
+													<span>${chatRoom.chatRoom.chatName }</span><br>
 													<p class="user_info_time"
-														style="font-size: 16px; color: #5f5f5f;">${chatRoom.cCreateDate }</p>
+														style="font-size: 16px; color: #5f5f5f;">${chatRoom.chatRoom.cCreateDate }</p>
 												</div>
 												<div class="col d-flex justify-content-between">
 													<p>그래요</p>
-													<p
+													<c:if test="${chatRoom.unreadMsgCount != 0 }">
+													<p id="unreadCount-${chatRoom.chatRoom.chatNo }"
 													style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">
-													1</p>
+													${chatRoom.unreadMsgCount }</p>
+													</c:if>
 												</div>
 											</div>
 										</div>
@@ -194,100 +196,7 @@
 								</div>
 							</div>
 							<div id="chat_body" class="card-body msg_card_body">
-								<!-- <div class="d-flex justify-content-start mb-4">
-									<div class="img_cont_msg">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img_msg">
-									</div>
-									<div class="msg_cotainer">
-										<p>안녕하세요!</p>
-										<span class="msg_time">8:40 AM, Today</span>
-									</div>
-								</div>
-								<div class="d-flex justify-content-end mb-4">
-									<div class="msg_cotainer_send">
-										<p>안녕하세요~</p>
-										<span class="msg_time_send">8:55 AM, Today</span>
-									</div>
-									<div class="img_cont_msg">
-										<img
-											src="../resources/assets/img/testimonials/testimonials-1.jpg"
-											class="rounded-circle user_img_msg">
-									</div>
-								</div>
-								<div class="d-flex justify-content-start mb-4">
-									<div class="img_cont_msg">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img_msg">
-									</div>
-									<div class="msg_cotainer">
-										<p>몇살이세요?</p>
-										<span class="msg_time">9:00 AM, Today</span>
-									</div>
-								</div>
-								<div class="d-flex justify-content-end mb-4">
-									<div class="msg_cotainer_send">
-										<p>서른인데.. 아줌마 나이 잘먹지?</p>
-										<span class="msg_time_send">9:05 AM, Today</span>
-									</div>
-									<div class="img_cont_msg">
-										<img
-											src="../resources/assets/img/testimonials/testimonials-1.jpg"
-											class="rounded-circle user_img_msg">
-									</div>
-								</div>
-								<div class="d-flex justify-content-start mb-4">
-									<div class="img_cont_msg">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img_msg">
-									</div>
-									<div class="msg_cotainer">
-										<p>네..</p>
-										<span class="msg_time">9:07 AM, Today</span>
-									</div>
-								</div>
-								<div class="d-flex justify-content-end mb-4">
-									<div class="msg_cotainer_send">
-										<p>잘가</p>
-										<span class="msg_time_send">9:10 AM, Today</span>
-									</div>
-									<div class="img_cont_msg">
-										<img
-											src="../resources/assets/img/testimonials/testimonials-1.jpg"
-											class="rounded-circle user_img_msg">
-									</div>
-								</div>
-								<div class="d-flex justify-content-start mb-4">
-									<div class="img_cont_msg">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img_msg">
-									</div>
-									<div class="msg_cotainer">
-										<p>그래요....</p>
-										<span class="msg_time">9:12 AM, Today</span>
-									</div>
-								</div>
-								<div class="d-flex justify-content-end mb-4">
-									<div class="msg_cotainer_send">
-										<p>잘가</p>
-										<span class="msg_time_send">9:10 AM, Today</span>
-									</div>
-									<div class="img_cont_msg">
-										<img
-											src="../resources/assets/img/testimonials/testimonials-1.jpg"
-											class="rounded-circle user_img_msg">
-									</div>
-								</div>
-								<div class="d-flex justify-content-start mb-4">
-									<div class="img_cont_msg">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img_msg">
-									</div>
-									<div class="msg_cotainer">
-										<p>그래요....</p>
-										<span class="msg_time">9:12 AM, Today</span>
-									</div>
-								</div> -->
+								
 							</div>
 							<div class="card-footer">
 								<div class="input-group">
@@ -295,6 +204,7 @@
 										<span class="input-group-text attach_btn"><i
 											class="bi bi-paperclip"></i></span>
 									</div>
+
 									<textarea name="" class="form-control type_msg"
 										placeholder="메시지를 입력해주세요." id="textMessage"></textarea>
 									<div class="input-group-append">
@@ -366,6 +276,10 @@
 	<!-- Template Main JS File -->
 	<script src="../resources/assets/js/main.js"></script>
 	<script>
+		var chatNo;
+		var userId = "${sessionScope.userId}"; // 사용자 ID
+		var stompClient = null;
+		var chatRoomId;
 		$(document).ready(function() {
 			var chatMessages = $('.chat-info');
 			chatMessages.hide();
@@ -378,7 +292,9 @@
 				// $('#chat_info_div').append("<div class='chat_none row d-flex justify-content-center align-items-center'><div class='text-center'><img src='../resources/assets/img/jiqooLogo.png'></div><div class='text-center'><p><span style='color:#388E3C'>채채채</span>님 환영합니다!<br>목록을 클릭하여 채팅을 시작해보세요.<p></div></div>");
 				$('.chat_none').remove();
 				$('.chat-info').show();
-				var chatRoomId = $(this).find(".chat-room-id").val();
+				disconnectWebSocket();
+				chatRoomId = $(this).find(".chat-room-id").val();
+				
 				$.ajax({
 					url : "/chat/room",
 					data : {
@@ -387,7 +303,6 @@
 					type : "GET",
 					success : function(data) {
 						var chatBody = $("#chat_body");
-						var userId = "user01";
 						chatBody.children().remove();
 						data.forEach(function(message) {
 							var isSent = message.msgSenderId == userId;
@@ -395,18 +310,47 @@
 							var messageTime = message.msgSendDate;
 							
 							addMessage(isSent, messageText, messageTime);
-							
+							$("#unreadCount-" + chatRoomId).text("");
+							$("#unreadCount-" + chatRoomId).hide();
 						})
+						// 웹소켓 연결 초기화
+						console.log(chatRoomId);
+	        			connect(chatRoomId);
 						scrollToBottom();
 					}
 				})
+				
 			});
 
 		});
+		$(window).on('beforeunload', function() {
+		    disconnectWebSocket();
+		});
+		function disconnectWebSocket() {
+			if (stompClient) {
+		        stompClient.disconnect(); // 현재 연결 해제
+		        console.log(chatRoomId + "번 방의 연결이 해제되었습니다.");
+		        $.ajax({
+		        	url : "/chat/disconnect",
+		        	data : {
+		        		refChatNo : chatRoomId,
+		        		userId : userId
+		        	},
+		        	type : "POST",
+		        	success : function(data) {
+		        		if(data == "success") {
+		        			console.log("마지막 접속시간 업데이트 성공");
+		        		}
+		        	}
+		        })
+		        stompClient = null; // 연결 객체 초기화
+		    }
+		}
 		function scrollToBottom() {
 		    var chatBody = $("#chat_body");
 		    chatBody.scrollTop(chatBody[0].scrollHeight);
 		}
+		
 		function addMessage(isSent, message, time) {
 		    var chatBody = $("#chat_body");
 		    var messageContainer = $("<div>").addClass("d-flex justify-content-" + (isSent ? "end" : "start") + " mb-4");
@@ -439,7 +383,111 @@
 
 		    chatBody.append(messageContainer);
 		}
+		 // 웹소켓 연결 초기화
+	    function connect(chatRoomId) {
+	        var socket = new SockJS('http://127.0.0.1:9999/chat/list');
+	        stompClient = Stomp.over(socket);
+	        stompClient.connect({}, function(frame) {
+	            console.log('Connected: ' + frame);
+	            /* stompClient.send('/toppic/chatRoom-'+ chatRoomId,{},JSON.stringify({refChatNo : chatNo, msgSenderId : userId}),function(test){
+					
+				})	 */
+			
+	            stompClient.subscribe('/toppic/chat/chatRoom-' + chatRoomId, function(message) {
+	                var messageData = JSON.parse(message.body);
+	                console.log(messageData);
+	                var isCurrentUser = (messageData.msgSenderId === userId);
+	                var messageText = messageData.msgContent;
+	                if (!isCurrentUser) {
+	                    var messageText = messageData.msgContent;
+	                    addMessage(isCurrentUser, messageText, getCurrentTime());
+	                    updateUnreadMessageCount();
+	                }
+ 
+	                scrollToBottom();
+	                
+	            });
+	        });
+	        stompClient.onclose = function(event) {
+	            console.log('WebSocket connection closed:', event);
 
+	            // 여기에서 연결이 끊겼을 때 수행해야 할 작업을 수행합니다.
+	            // 예를 들어, 재연결 시도 또는 사용자에게 알림 표시 등의 작업을 수행할 수 있습니다.
+	        };
+	    }
+
+	    // 메시지 수신
+	    function receiveMessage(message) {
+	        
+	        var isSent = message.sender === userId;
+
+	        addMessage(isSent, message, getCurrentTime());
+	        scrollToBottom();
+	    }
+	    
+	    function updateUnreadMessageCount() {
+		    $.ajax({
+		        url: "/chat/unreadCount/" + chatRoomId + "/" + userId,
+		        type: "GET",
+		        success: function(unreadCount) {
+		            if (unreadCount > 0) {
+		                // 안읽은 메시지가 있을 때 처리
+		                $("#unreadCount-" + chatRoomId).text(unreadCount);
+		                $("#unreadCount-" + chatRoomId).show(); // 숨겨진 카운트를 표시
+		            } else {
+		                // 안읽은 메시지가 없을 때 처리
+		                $("#unreadCount-" + chatRoomId).text("");
+		                $("#unreadCount-" + chatRoomId).hide(); // 카운트를 숨김
+		            }
+		        }
+		    });
+		}
+
+	    // 현재 시간 문자열 반환
+	    function getCurrentTime() {
+	        var now = new Date();
+	        var hours = now.getHours();
+	        var minutes = now.getMinutes();
+	        var ampm = hours >= 12 ? 'PM' : 'AM';
+	        hours = hours % 12;
+	        hours = hours ? hours : 12;
+	        minutes = minutes < 10 ? '0' + minutes : minutes;
+	        var currentTime = hours + ':' + minutes + ' ' + ampm;
+	        return currentTime;
+	    }
+
+
+	 // 메시지 전송
+        function sendMessage() {
+            var message = $("#textMessage").val();
+			if(message == "") {
+				alert("내용을 입력해주세요.");
+				return false;
+			}
+            // 메시지를 서버로 전송
+            stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
+            	refChatNo : chatRoomId,
+            	msgSenderId: userId,
+            	msgContent: message
+            }));
+            
+            var currentTime = getCurrentTime();
+            addMessage(true, message, currentTime);
+            scrollToBottom();
+            $("#textMessage").val("");
+            $("#textMessage").focus();
+        }
+
+	    // "메시지 보내기" 버튼 클릭 시 메시지 전송
+	    $("#send_btn").click(sendMessage);
+
+	    // Enter 키를 눌러 메시지 전송
+	    $("#textMessage").keypress(function (e) {
+	        if (e.which == 13) { // Enter key
+	            e.preventDefault();
+	            sendMessage();
+	        }
+	    });
 
 		var selectElement = document.getElementById("reportSelect");
 		var textareaElement = document.getElementById("customReason");
@@ -450,6 +498,7 @@
 				textareaElement.style.display = "none";
 			}
 		});
+		
 	</script>
 	<!-- <script>
 		var socket;
