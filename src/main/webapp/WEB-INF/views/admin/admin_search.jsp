@@ -43,7 +43,7 @@
 
 <!-- Template CSS File -->
 <!-- <link href="../resources/assets/css/admin.css" rel="stylesheet"> -->
-<link href="../resources/assets/css/admin_user.css" rel="stylesheet">
+<link href="../resources/assets/css/admin_search.css" rel="stylesheet">
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
@@ -96,17 +96,24 @@
 					<div id="user-main">
 
 						<!--서치바-->
+
 						<div id="search-bar">
 							<form action="/admin/usersearch" method="get">
 								<div id="search-wrap"
 									class="d-flex justify-content-center align-items-center">
 									<select name="searchCondition">
-										<option value="userId">아이디</option>
-										<option value="userName">이름</option>
-										<option value="userEmail">이메일</option>
-										<option value="userNickname">닉네임</option>
-										<option value="userTel">연락처</option>
-									</select> <input type="search" name="searchKeyword" id="search-content">
+										<option value="userId"
+											<c:if test="${searchCondition eq 'userId'}">selected</c:if>>아이디</option>
+										<option value="userName"
+											<c:if test="${searchCondition eq 'userName'}">selected</c:if>>이름</option>
+										<option value="userEmail"
+											<c:if test="${searchCondition eq 'userEmail'}">selected</c:if>>이메일</option>
+										<option value="userNickname"
+											<c:if test="${searchCondition eq 'userNickname'}">selected</c:if>>닉네임</option>
+										<option value="userTel"
+											<c:if test="${searchCondition eq 'userTel'}">selected</c:if>>연락처</option>
+									</select> <input type="search" name="searchKeyword" id="search-content"
+										value="${searchKeyword }">
 									<button type="submit" id="search-button">
 										<i class="bi bi-search"></i>
 									</button>
@@ -152,30 +159,29 @@
 							</thead>
 
 							<tbody>
-								<c:forEach var="userList" items="${userList}" varStatus="i">
+								<c:forEach var="search" items="${searchUserList }" varStatus="i">
 									<tr>
 										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
 										<!-- 순수넘버링 -->
-										<td>${userList.userId }</td>
-										<td class="col1">${userList.userName }</td>
-										<td class="col1">${userList.userEmail }</td>
-										<td class="col1"><c:if
-												test="${userList.userGender eq ''}"> - </c:if> <c:if
-												test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
+										<td>${search.userId }</td>
+										<td class="col1">${search.userName }</td>
+										<td class="col1">${search.userEmail }</td>
+										<td class="col1"><c:if test="${search.userGender eq ''}"> - </c:if>
+											<c:if test="${search.userGender ne null}"> ${search.userGender} </c:if>
 										</td>
 										<td class="col1"><c:if
-												test="${userList.platformType eq 'normarl'}"> 홈페이지 </c:if></td>
-										<td>${userList.userStatus }</td>
+												test="${search.platformType eq 'normarl'}"> 홈페이지 </c:if></td>
+										<td>${search.userStatus }</td>
 										<td>10</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
-												onclick="showUserDetail('${userList.userId}');">조회</button>
+												onclick="showUserDetail('${search.userId}');">조회</button>
 										</td>
 									</tr>
 								</c:forEach>
 							</tbody>
 						</table>
-						<!-- End Table with stripped rows -->
+
 						<script>
 							function sortTable(n) {
 								var table, rows, switching, o, x, y, shouldSwitch, dir, switchCount = 0;
@@ -245,19 +251,23 @@
 								}
 							}
 						</script>
-						
-						<!-- 페이지네비 -->
+						<!-- End Table with stripped rows -->
+
 						<div id="pageNavi">
 							<c:if test="${pInfo.startNavi != 1}">
-								<c:url var="prevUrl" value="/admin/userlist">
+								<c:url var="prevUrl" value="/admin/usersearch">
 									<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<a href="${prevUrl}"><i class="bi bi-caret-left"></i>&nbsp;&nbsp;</a>
 							</c:if>
 							<c:forEach begin="${pInfo.startNavi}" end="${pInfo.endNavi}"
 								var="p">
-								<c:url var="pageUrl" value="/admin/userlist">
+								<c:url var="pageUrl" value="/admin/usersearch">
 									<c:param name="page" value="${p}"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<c:choose>
 									<c:when test="${p == pInfo.currentPage}">
@@ -273,8 +283,10 @@
 								</c:choose>
 							</c:forEach>
 							<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
-								<c:url var="nextUrl" value="/admin/userlist">
+								<c:url var="nextUrl" value="/admin/usersearch">
 									<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>

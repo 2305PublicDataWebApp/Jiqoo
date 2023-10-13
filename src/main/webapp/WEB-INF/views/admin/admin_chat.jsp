@@ -71,15 +71,20 @@
 
   <!-- <div id="main-wrap" class="d-flex justify-content-center" > -->
 
-     <main id="main">
+
+    <main id="main">
 
       <section class="section">
         <div class="row">
+          <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 380px;  margin: 15px auto;">
+            <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">단체채팅방</button>
+            <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">개인채팅방</button>
+          </div>
 
-<!--=====********************************단체채팅방********************************=====-->
-          <div class="col-lg-7 ">
+          <!--=====단체채팅방=====-->
+          <div class="col-lg-12 group-chat">
             
-            <h5 class="card-title" style="margin:20px auto">단체채팅방</h5>
+            <!-- <h4 class="card-title" style="margin:20px auto">단체채팅방</h4> -->
             <!-- <div id="group-part"> -->
               <!--서치바-->
               <div id="search-bar" >
@@ -212,9 +217,9 @@
           </div>
 
 <!--=====********************************개인채팅방********************************=====-->
-          <div class="col-lg-5 ">
+          <div class="col-lg-12 personal-chat" style="display:none">
             
-            <h5 class="card-title" style="margin:20px auto">개인채팅방</h5>
+            <!-- <h5 class="card-title" style="margin:20px auto">개인채팅방</h5> -->
             <!-- <div id="group-part"> -->
               <!--서치바-->
               <div id="search-bar" >
@@ -338,14 +343,55 @@
                   }
                 }
               </script>
+
+              <script>
+                const groupListBtn = document.querySelector('#group-list');
+                const personalListBtn = document.querySelector('#personal-list'); 
+
+                const groupChatTable = document.querySelector('.group-chat');
+                const personalChatTable = document.querySelector('.personal-chat');
+
+                personalListBtn.addEventListener('click', () => {
+                  personalChatTable.style.display = 'block';
+                  groupChatTable.style.display = 'none';
+
+                  groupListBtn.style.backgroundColor = '#fff';
+                  groupListBtn.style.color = '#8BC34A';
+
+                });
+
+                groupListBtn.addEventListener('click', () => {
+                  groupChatTable.style.display = 'block';
+                  personalChatTable.style.display = 'none';
+                
+                  groupListBtn.style.backgroundColor = '#8BC34A';
+                  groupListBtn.style.color = '#fff';
+                });
+
+                // 버튼 클릭 이벤트 처리
+                function toggleButton(buttonNumber) {
+                  var buttons = document.querySelectorAll('.btn-get-started');
+                  for (var i = 0; i < buttons.length; i++) {
+                      if (i === buttonNumber - 1) {
+                          buttons[i].classList.add('active');
+                      } else {
+                          buttons[i].classList.remove('active');
+                      }
+                  }
+              }
+            </script>
+              
+              
               <!-- End Table with stripped rows -->
+                
+            
           </div>
   
         </div>
       </section>
 
     </main>
-    <!-- End #main -->
+      <!-- End #main -->
   <!-- </div> -->
 
 

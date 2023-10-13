@@ -1393,37 +1393,48 @@ main {
   -webkit-line-clamp: 1
 }
 
-#list-no {
+.list-no {
   font-family: var(--font-primary);
   font-size: 1.5em;
 }
 
-#pageNavi {
+#pageNavi  {
+  display: flex;
+  justify-content: center;
+}
+#pageNavi a {
   font-family: var(--font-primary);
   margin:15px;
   text-align: center;
   font-size: 1.5em;
   color : #ccc;
+  display: flex;
+  justify-content: center;
 }
 
 
 /**/
-#moqoo-table{
-  width : 1000px;
-  height : 300px;
-  border : 1px solid #ccc;
-  border-radius: 20px;
-  margin: 0 auto;
-}
+/* #moqoo-table{ */
+/*   width : 1000px; */
+/*   height : 300px; */
+/*   border : 1px solid #ccc; */
+/*   border-radius: 20px; */
+/*   margin: 0 auto; */
+/* } */
+
+/* #cmt-table { */
+/*   width : 1000px; */
+/*   height : 300px; */
+/*   border : 1px solid red; */
+/*   border-radius: 20px; */
+/*   margin: 0 auto; */
+/* } */
+/**/
+
 
 #cmt-table {
-  width : 1000px;
-  height : 300px;
-  border : 1px solid red;
-  border-radius: 20px;
-  margin: 0 auto;
+	 border : 1px solid red;
 }
-/**/
 
 /*--------------------------------------------------------------
 # 버튼
@@ -1460,6 +1471,34 @@ main {
   height: 48px;
 }
 
+/* 복원버튼 */
+.revival-btn {
+  background-color: #ccc; 
+  color : #fff;
+  width: 130px;
+  height: 50px;
+  border : none;
+  font-size: 1.5em;
+  text-align: center;
+  padding : 2px;
+  margin : 10px 20px 10px 10px;
+}
+
+.revival-btn:hover{
+  background-color: red;
+  color : #fff;
+}
+
+.revival-btn:active{
+  background-color: #fff;
+  border : 1px solid red;
+  color : red;
+  width: 128px;
+  height: 48px;
+}
+
+
+
 /*메뉴버튼*/
 .btn-get-started {
   font-family: var(--font-primary);
@@ -1488,6 +1527,8 @@ main {
   background: #8BC34A;
   color: #fff;
 }
+
+
 
 /*조회버튼*/
 .show-detail-btn {

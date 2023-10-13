@@ -1305,17 +1305,6 @@ main {
   align-items:center ;
 }
 
-
-
-#search-wrap {
-  width : 650px;
-  height : 50px;
-  background-color: #fff;
-  border-radius: 10px;
-  display: flex;
-  justify-content: space-between;
-}
-
 select {
   width : 100px;
   height : 50px;
@@ -1324,6 +1313,15 @@ select {
   border:none;
   margin: 10px;
   padding: 10px;
+}
+
+#search-wrap {
+  width : 650px;
+  height : 50px;
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 #search-content {
