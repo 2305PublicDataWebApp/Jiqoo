@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.chat.domain.ChatUser;
 
 public interface ChatService {
 
@@ -24,5 +25,38 @@ public interface ChatService {
 	 * @return List<ChatMessage>
 	 */
 	List<ChatMessage> selectChatMessageByNo(int chatNo);
+
+	/**
+	 * 채팅 메시지 등록 Service
+	 * 
+	 * @param chatMessage
+	 * @return int
+	 */
+	int insertChatMessage(ChatMessage chatMessage);
+
+	/**
+	 * 채팅방 연결 해제시 마지막 접속시간 업데이트 Service
+	 * 
+	 * @param chatUser
+	 * @return int
+	 */
+	int updateChatLastDate(ChatUser chatUser);
+
+	/**
+	 * 읽지 않은 메시지 갯수 조회 Service
+	 * 
+	 * @param userId
+	 * @param chatNo
+	 * @return
+	 */
+	int selectCountUnreadMsg(String userId, int chatNo);
+
+	/**
+	 * 읽지 않은 메시지 갯수 Service
+	 * 
+	 * @param chatUser
+	 * @return
+	 */
+	int selectUnreadMsgCount(ChatUser chatUser);
 
 }

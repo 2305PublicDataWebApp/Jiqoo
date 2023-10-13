@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ChatMapper">
+	<insert id="insertChatMessage">
+		INSERT INTO CHAT_MSG_TBL VALUES(SEQ_MSG_NO.NEXTVAL, #{refChatNo}, #{msgSenderId}, #{msgContent}, DEFAULT)
+	</insert>
+	<update id="updateChatLastDate">
+		UPDATE CHAT_USER_TBL SET CHAT_LAST_DATE = DEFAULT WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId}
+	</update>
 	<select id="selectChatRoomById" resultType="ChatRoom">
 		SELECT * FROM CHAT_ROOM_TBL
 		WHERE CHAT_NO IN (SELECT REF_CHAT_NO FROM CHAT_USER_TBL WHERE USER_ID=#{userId})
 	</select>
 	<select id="selectChatMessageByNo" resultType="ChatMessage">
 		SELECT * FROM CHAT_MSG_TBL WHERE REF_CHAT_NO = #{chatNo}
+	</select>
+	<select id="selectCountUnreadMsg" resultType="java.lang.Integer" parameterType="Map">
+		SELECT COUNT(*) FROM CHAT_MSG_TBL
+		JOIN CHAT_USER_TBL USING(REF_CHAT_NO)
+		WHERE REF_CHAT_NO = #{chatNo} AND USER_ID = #{userId} AND CHAT_LAST_DATE &lt; MSG_SEND_DATE
+	</select>
+	<select id="selectUnreadMsgCount" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM CHAT_MSG_TBL
+		JOIN CHAT_USER_TBL USING(REF_CHAT_NO)
+		WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId} AND CHAT_LAST_DATE &lt; MSG_SEND_DATE
 	</select>
 </mapper>
