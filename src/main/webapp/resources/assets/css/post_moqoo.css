@@ -246,6 +246,27 @@ p {
   align-items: end;
 }
 
+.c-btn {
+  cursor: pointer;
+  width: 123px;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 5px;
+  text-align: center;
+  padding: 5px;
+  position: relative;
+}
+
+.category-container {
+  width: 330px;
+  height: 200px;
+  background-color: white;
+  position: absolute;
+  top: 135px;
+  right: 16px;
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.1);
+}
+
 .form-check {
   display: inline-block !important;
   padding-left: 10px !important;
@@ -266,6 +287,189 @@ p {
   filter: none; /* 필터 제거 (원래 색상으로 표시) */
   transform: scale(1.1); /* 선택된 이미지 크기 확대 (선택한 이미지는 여전히 커집니다) */
   transition: transform 0.2s ease-in-out; /* 부드럽게 확대/축소하는 애니메이션 추가 */
+}
+
+/*--------------------------------------------------------------
+# modal
+--------------------------------------------------------------*/
+/* 모달 헤더 스타일 */
+.modal-header {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-bottom: none;
+}
+
+/* 모달 헤더 닫기 버튼 스타일 */
+.modal-header .btn-close {
+  color: #fff;
+}
+
+/* 모달 내용 스타일 */
+.modal-body {
+  background-color: #fff; /* 내용 배경색 */
+  color: #333; /* 내용 텍스트 색상 */
+}
+
+/* 모달 푸터 스타일 */
+.modal-footer {
+  background-color: var(--color-primary);
+  border-top: none;
+}
+
+/* 모달 푸터 버튼 스타일 */
+.modal-footer .btn-secondary {
+  background-color: #fff;
+  color: #333;
+}
+
+/* 모달 푸터 '게시물 등록' 버튼 스타일 */
+.insert {
+  background-color: #FFF59D;
+  transition: all 0.4s;
+}
+
+.insert:hover {
+  background-color: #388E3C;
+  color: #fff;
+}
+
+.reset {
+  background-color: #fff;
+  transition: all 0.4s;
+}
+
+.reset:hover {
+  background-color: #61686e;
+  color: #fff;
+}
+
+.reset,  .insert {
+  width: 80px;
+}
+
+
+/* input w3w배경 */
+#list-location {
+  border-radius: 8px;
+  background-color: var(--color-primary);
+  padding: 10px 15px;
+  /* margin-bottom: 25px; */
+  color: white;
+  text-align: center;
+}
+
+
+.form-switch .form-check-input:checked {
+  /* 체크된 경우의 배경색 */
+  background-color: #6DBE45; 
+  /* 체크된 경우의 테두리 색상 */
+  border-color: #6DBE45; 
+}
+
+.form-switch .form-check-input:not(:checked) {
+  /* 체크되지 않은 경우의 배경색 */
+  background-color: #fff; 
+  /* 체크되지 않은 경우의 테두리 색상 */
+  border-color: #6DBE45; 
+}
+
+/*----
+/* 값을 보여주는 요소 스타일 */
+.location-container {
+  display: flex;
+  background-color: #4CAF50; /* 초록색 배경 */
+  border-radius: 5px;
+  margin-bottom: 35px !important;
+}
+
+
+.location:hover {
+  background-color: #45a049; /* 마우스 호버 시 배경색 변경 */
+}
+
+#location {
+  background-color: #4CAF50;
+  font-size: 18px;
+  border: none;
+  text-align: center;
+  /* border-radius: 15px; */
+  color: white;
+}
+
+#open-map-btn {
+  width: 50px;
+  cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+}
+
+#open-map-btn:hover {
+  background-color: #333;
+  color: white;
+  transition: background-color 0.3s ease-in-out;
+}
+
+
+.modal-body select {
+  width: 100%;
+  margin-bottom: 5px;
+  outline: none;
+}
+.modal-body textarea {
+  width: 100%;
+  resize : none;
+  outline: none;
+}
+.modal-footer .btn {
+  font-family: var(--font-primary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.send-report {
+  background-color: var(--color-secondary);
+  color:  #fff;
+}
+.send-report:hover {
+  border : 1px solid var(--color-secondary);
+  color:  var(--color-secondary);
+}
+.send-report:active {
+  color:  var(--color-secondary);
+}
+
+
+/* -----------------------------
+/* 파일 업로드 버튼 바꾸기 */
+
+/* 실제로 표시되는 파일 업로드 버튼 숨기기 */
+.custom-file-input {
+  display: none;
+}
+
+/* 스타일을 적용할 버튼 디자인 */
+.custom-button {
+  width: 100px;
+  border-radius: 8px;
+  background-color: #5ebf61; /* 원하는 색상으로 변경 */
+  color: #fff; /* 버튼 텍스트 색상 */
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* 버튼에 호버 효과 추가 */
+.custom-button:hover {
+  background-color: #43b247; /* 호버 시 배경색 변경 */
+}
+
+#fileInfo {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* font-weight: bold; */
+  line-height: 44px;
 }
 
 
@@ -330,15 +534,17 @@ p {
   }
 
 
-    #location {  /* w3w디자인 */
-        /* width: 30%; */
-        background-color: var(--color-primary);
-        border-radius: 10px;
-        color: white;
-        text-align: center;
-        margin-bottom: 40px;
-        padding: 10px 15px;
-    }
+    #post-location {  /* w3w디자인 */
+      font-size: 2em;
+      width: 246px;
+      font-weight: bold;
+      box-shadow: inset 0 -21px 0 #FFED7C;
+      background: linear-gradient(to top, #FFC107 40%, transparent 40%);
+      color: black;
+      text-align: center;
+      margin-bottom: 10px;
+      }
+
 
   #post-title {
       font-size: 30px;
@@ -389,18 +595,19 @@ p {
         color: #888;
       }
 
-      .heart-container {
-        position: relative;
-      }
-        .heart {
-          position: absolute;
-          right: 15px;
-          bottom: 0;
-        }
-
   /* .content {
     margin-bottom: 15px;
   } */
+
+  .author-type {
+    margin-right: 15px;
+    border-radius: 10px;
+    border: 1px solid #ff0019;
+    font-size: 7px;
+    font-weight: bold;
+    padding: 4px;
+    color: #ff0019;
+  }
 
   #content {
     padding-top: 20px;
@@ -421,15 +628,22 @@ p {
     margin: 40px 0;
   } */
 
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+
   .button-container {
     display: flex;
     justify-content: flex-end;
   }
     .post-btn {
-      width: 95px;
-      height: 45px;
+      width: 80px;
+      height: 35px;
       background-color: #8BC34A;
       padding: 5px 10px;
+      margin-left: 10px;
       color: white;
       border: none;
       border-radius: 5px;
@@ -442,17 +656,43 @@ p {
     }
 
     .post-btn:hover {
-      background-color: #8bc34acd;
-      color: white;
+        background-color: #388E3C;
+        color: white;
     }
 
-  .button-container {
-    display: flex;
-    justify-content: flex-end;
-  }
-    .postbtn {
-      width: 80px;
-      height: 35px;
+    .heart-container {
+      display: inline-block;
+      text-align: end;
+    }
+    
+    .heart {
+      width: 25px;
+    }
+    
+    .heart-count {
+      color: #9da3a8;
+    }
+    
+    .heart:hover {
+      transform: scale(1.2); /* 10% 크기 증가 */
+      transition: transform 0.2s; /* 부드러운 애니메이션 효과 추가 */
+      cursor: pointer;
+    }
+    
+    .heart:active {
+      transform: scale(0.9); /* 10% 크기 증가 */
+      transition: transform 0.05s; /* 부드러운 애니메이션 효과 추가 */
+    }
+
+    #participate {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #participate-btn {
+      width: 90px;
+      height: 40px;
       background-color: #8BC34A;
       padding: 5px 10px;
       margin-left: 10px;
@@ -461,287 +701,149 @@ p {
       border-radius: 5px;
       cursor: pointer;
       transition: 0.3s;
-      font-size: 15px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .postbtn:hover {
-      background-color: #8bc34acd;
+    #participate-btn:hover {
+      background-color: #388E3C;
       color: white;
-    }
-
+  }
 
 
 /* 댓글 스타일 */
-.comments {
-  border-top: 1px solid #e0e0e0;
-  /* margin-bottom: 50px; */
+
+.comment-list {
+  list-style-type: none;
+  padding: 0;
 }
 
 .comment {
-  border-bottom: 1px solid #e0e0e0;
-  border-radius: 5px;
-  /* margin-bottom: 20px; */
-  background-color: white;
+    position: relative; /* 부모 요소를 상대적으로 위치시킴 */
 }
 
-  .comment-header {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    /* background-color: #f5f5f5; */
-  }
-
-    .comment-profile img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-
-    .etc {
-      position: relative;
-    }
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        width: 50px;
-        border:1px solid #0acf4c;
-        border-radius: 10px;
-      }
-      .report-dropdown {
-        list-style: none;
-        padding: 0;
-      }
-
-    .comt {
-      display: block;
-      color: #333;
-      /* margin-right: 5px; */
-      text-align: center;
-    }
-
-      .comment-author {
-        font-weight: bold;
-        margin-right: 10px;
-      }
-
-      .comment-date {
-        color: #777;
-        margin-right: 10px;
-      }
-
-    .comment-reply {
-      flex: 1;
-      /* background-color: #6cb01e;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
-      cursor: pointer;
-      margin-left: auto; */
-    }
-
-    .comment-reply :hover {
-      color: #6cb01eb8;
-    }
-
-  .comment-text {
-    padding: 0 10px 10px 65px;
-    color: #333;
-  }
-
-/* 대댓글 폼 스타일 */
-.re-comment-form {
-  display: none;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-  /* position: relative; */
+.comment .mini-dots {
+    position: absolute; /* 자식 요소를 절대적으로 위치시킴 */
+    top: 5px; /* 원하는 위치 설정 (위쪽 여백) */
+    right: 15px; /* 원하는 위치 설정 (왼쪽 여백) */
+    width: 15px;
 }
 
-.recomment-text {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  width: 98%;
-  resize: none;
+.comment-list li:first-child {
+  border-top: 1px solid #ddd; /* border-top 스타일을 원하는 스타일로 설정합니다. */
 }
 
-#submit-btn2 {
-  width: 80px;
-  height: 35px;
-  background-color: #8BC34A;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 10px;
-  /* float: right; */
-  /* position: absolute; */
-  /* right: 5px;
-  bottom: 5px; */
-}
-
-#submit-btn2:hover {
-  background-color: #5A9216;
-}
-
-/* 댓글 수정 폼 스타일 */
-.re-comt-mod-form {
-  display: none;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-  /* position: relative; */
-}
-
-.re-comt-mod-text {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  width: 98%;
-  resize: none;
-}
-
-/* #comment-text:focus {
-  border-color: #007bff;
-} */
-
-.btn-div {
+.comment {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column; /* 이 부분이 내용을 아래로 내리는 역할을 합니다. */
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
-#submit-btn1 {
-  width: 80px;
-  height: 35px;
-  background-color: #8BC34A;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+
+.user-info {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.date {
+  font-size: 14px;
+  color: #777;
+  margin-right: 10px;
+}
+
+.comt {
+  color: #333;
+  margin-right: 10px;
+}
+
+.comment-text {
   margin: 10px;
-  /* float: right; */
-  /* position: absolute; */
-  /* right: 5px;
-  bottom: 5px; */
 }
 
-#submit-btn1:hover {
-  background-color: #5A9216;
+.comment-page-container {
+  text-align: center;
+  letter-spacing: 10px;
+  margin-bottom: 40px;
+  color: #b9b9b9;
 }
 
-
+/* 팝업 스타일 */
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+}
 
 /* 대댓글 스타일 */
-.re-comment {
-  border-bottom: 1px solid #e0e0e0;
-  /* border: none; */
-  background-color: #fcfff0;
-  margin: 0;
-  padding: 10px;
-}
 
-.re-comment-header {
-  display: flex;
-  align-items: center;
-  padding-bottom: 10px;
-  /* background-color: #f5f5f5; */
-}
-
-.re-comment-text {
-  padding: 0 10px 0 75px;
-  color: #333;
-}
-
-/* 대댓글 수정 폼 스타일 */
-.re-comt-mod-form {
-  display: none;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-  /* position: relative; */
-}
-
-.re-comt-mod-text {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  width: 98%;
-  resize: none;
-}
-
-/* #comment-text:focus {
-  border-color: #007bff;
+/* .reply-comment {
+  background-color: #eaeff1;
+  padding-left: 30px;
 } */
-
-.btn-div {
-  display: flex;
-  justify-content: flex-end;
+/* 대댓글에 왼쪽 여백 및 "ㄴ" 표시 스타일 설정 */
+.comment.reply-comment {
+  background-color: #f5f5f5; /* 원하는 배경색으로 설정 */
+  padding-left: 60px; /* 왼쪽 여백 설정 */
+  position: relative; /* 가상 요소를 위한 상대 위치 설정 */
 }
-#re-submit-btn {
-  width: 80px;
-  height: 35px;
-  background-color: #8BC34A;
-  color: white;
-  border: none;
-  border-radius: 5px;
+
+/* 대댓글의 "ㄴ" 표시 스타일 */
+.comment.reply-comment::before {
+  content: "ㄴ";
+    position: absolute;
+    top: 22px;
+    left: 25px;
+    /* font-weight: bold; */
+    color: #bdbdbd;
+    font-size: 16px;
+}
+
+/* 신고하기 버튼 스타일 */
+.mini-dots {
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin: 10px;
-  /* float: right; */
-  /* position: absolute; */
-  /* right: 5px;
-  bottom: 5px; */
-}
-
-#re-submit-btn:hover {
-  background-color: #5A9216;
 }
 
 
 /* 댓글 폼 스타일 */
 .comment-form {
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  /* display: flex; */
-  flex-direction: column;
-  align-items: center;
-  margin: 50px 0;
-  /* position: relative; */
-}
-
-#comment-text {
-  flex: 1;
-  border: none;
+  border: 1px solid #C2D1D9;
+  border-radius: 10px;
+  margin-bottom: 50px;
   padding: 10px;
-  outline: none;
-  transition: border-color 0.3s ease;
-  width: 98%;
-  resize: none;
-}
-
-/* #comment-text:focus {
-  border-color: #007bff;
-} */
-
-.btn-div {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: flex-end;
 }
+
+.comment-form textarea {
+  border: none; /* 테두리 제거 */
+  outline: none; /* 아웃라인 제거 */
+  resize: none; /* 크기 조절 비활성화 */
+  width: 80%;
+  height: auto;
+}
+
 #submit-btn {
   width: 80px;
   height: 35px;
@@ -751,14 +853,121 @@ p {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 10px;
-  /* float: right; */
-  /* position: absolute; */
-  /* right: 5px;
-  bottom: 5px; */
+  right: 5px;
+  bottom: 5px;
 }
 
 #submit-btn:hover {
+  background-color: #5A9216;
+}
+
+
+/* 댓글 수정 폼 스타일 */
+.mod-comment-form {
+  border: 1px solid #C2D1D9;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.mod-comment-form textarea {
+  border: none; /* 테두리 제거 */
+  outline: none; /* 아웃라인 제거 */
+  resize: none; /* 크기 조절 비활성화 */
+  width: 80%;
+  height: auto;
+}
+
+#mod-submit-btn {
+  width: 80px;
+  height: 35px;
+  background-color: #8BC34A;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  right: 5px;
+  bottom: 5px;
+}
+
+#mod-submit-btn:hover {
+  background-color: #5A9216;
+}
+
+
+/* 대댓글 폼 스타일 */
+.re-comment-form {
+  border: 1px solid #C2D1D9;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.re-comment-form textarea {
+  border: none; /* 테두리 제거 */
+  outline: none; /* 아웃라인 제거 */
+  resize: none; /* 크기 조절 비활성화 */
+  width: 80%;
+  height: auto;
+}
+
+#re-submit-btn {
+  width: 80px;
+  height: 35px;
+  background-color: #8BC34A;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  right: 5px;
+  bottom: 5px;
+}
+
+#re-submit-btn:hover {
+  background-color: #5A9216;
+}
+
+
+/* 대댓글 수정 폼 스타일 */
+.re-mod-comment-form {
+  border: 1px solid #C2D1D9;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.re-mod-comment-form textarea {
+  border: none; /* 테두리 제거 */
+  outline: none; /* 아웃라인 제거 */
+  resize: none; /* 크기 조절 비활성화 */
+  width: 80%;
+  height: auto;
+}
+
+#re-mod-submit-btn {
+  width: 80px;
+  height: 35px;
+  background-color: #8BC34A;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  right: 5px;
+  bottom: 5px;
+}
+
+#re-mod-submit-btn:hover {
   background-color: #5A9216;
 }
 
@@ -842,7 +1051,301 @@ p {
   }
 }
 
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+#header {
+  height: 130px;
+  transition: all 0.5s;
+  z-index: 997;
+  transition: all 0.5s;
+  background: #8BC34A;
+}
 
+#header.header-transparent {
+  background: transparent;
+}
+
+#header.header-scrolled {
+  background: #fff;
+  height: 100px;
+  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+}
+
+#header .logo h1 {
+  font-size: 28px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+}
+
+#header .logo h1 a,
+#header .logo h1 a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+#header .logo img {
+  padding: 0;
+  margin: 0;
+  max-height: 80px;
+}
+
+/*--------------------------------------------------------------
+# Navigation Menu
+--------------------------------------------------------------*/
+/**
+* Desktop Navigation 
+*/
+.navbar {
+  padding: 0;
+}
+
+.navbar ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.navbar li {
+  position: relative;
+}
+
+.navbar a,
+.navbar a:focus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 10px 30px;
+  font-size: 26px;
+  font-weight: 500;
+  font-family: var(--font-primary);
+  color: rgba(0, 0, 0, 0.712);
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.navbar a i,
+.navbar a:focus i {
+  font-size: 12px;
+  line-height: 0;
+  margin-left: 5px;
+}
+
+.navbar>ul>li>a:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 3px;
+  left: 30px;
+  background-color: #388E3C;
+  visibility: hidden;
+  width: 0px;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.navbar a:hover:before,
+.navbar li:hover>a:before,
+.navbar .active:before {
+  visibility: visible;
+  width: 25px;
+}
+
+.navbar a:hover,
+.navbar .active,
+.navbar .active:focus,
+.navbar li:hover>a {
+  color: #388E3C;
+}
+
+.navbar .dropdown ul {
+  display: block;
+  position: absolute;
+  left: 30px;
+  top: calc(100% + 30px);
+  margin: 0;
+  padding: 10px 0;
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  background: #fff;
+  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+  transition: 0.3s;
+  border-radius: 4px;
+}
+
+.navbar .dropdown ul li {
+  min-width: 200px;
+}
+
+.navbar .dropdown ul a {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+  color: black;
+}
+
+.navbar .dropdown ul a i {
+  font-size: 12px;
+}
+
+.navbar .dropdown ul a:hover,
+.navbar .dropdown ul .active:hover,
+.navbar .dropdown ul li:hover>a {
+  color: #388E3C;
+}
+
+.navbar .dropdown:hover>ul {
+  opacity: 1;
+  top: 100%;
+  visibility: visible;
+}
+
+.navbar .dropdown .dropdown ul {
+  top: 0;
+  left: calc(100% - 30px);
+  visibility: hidden;
+}
+
+.navbar .dropdown .dropdown:hover>ul {
+  opacity: 1;
+  top: 0;
+  left: 100%;
+  visibility: visible;
+}
+
+@media (max-width: 1366px) {
+  .navbar .dropdown .dropdown ul {
+    left: -90%;
+  }
+
+  .navbar .dropdown .dropdown:hover>ul {
+    left: -100%;
+  }
+}
+
+/**
+* Mobile Navigation 
+*/
+.mobile-nav-toggle {
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  display: none;
+  line-height: 0;
+  transition: 0.5s;
+}
+
+@media (max-width: 991px) {
+  .mobile-nav-toggle {
+    display: block;
+  }
+
+  .navbar ul {
+    display: none;
+  }
+}
+
+.navbar-mobile {
+  position: fixed;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: #8bc34a73;
+  transition: 0.3s;
+  z-index: 999;
+}
+
+.navbar-mobile .mobile-nav-toggle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.navbar-mobile ul {
+  display: block;
+  position: absolute;
+  top: 55px;
+  right: 15px;
+  bottom: 15px;
+  left: 15px;
+  padding: 10px 0;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow-y: auto;
+  transition: 0.3s;
+}
+
+.navbar-mobile>ul>li>a:before {
+  left: 20px;
+}
+
+.navbar-mobile a,
+.navbar-mobile a:focus {
+  padding: 10px 20px;
+  font-size: 15px;
+  color: #0205a1;
+}
+
+.navbar-mobile a:hover,
+.navbar-mobile .active,
+.navbar-mobile li:hover>a {
+  color: #3f43fd;
+}
+
+.navbar-mobile .getstarted,
+.navbar-mobile .getstarted:focus {
+  margin: 15px;
+}
+
+.navbar-mobile .dropdown ul,
+.navbar-mobile .dropdown .dropdown ul {
+  position: static;
+  display: none;
+  margin: 10px 20px;
+  padding: 10px 0;
+  z-index: 99;
+  opacity: 1;
+  visibility: visible;
+  background: #fff;
+  box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
+}
+
+.navbar-mobile .dropdown ul li,
+.navbar-mobile .dropdown .dropdown ul li {
+  min-width: 200px;
+}
+
+.navbar-mobile .dropdown ul a,
+.navbar-mobile .dropdown .dropdown ul a {
+  padding: 10px 20px;
+}
+
+.navbar-mobile .dropdown ul a i,
+.navbar-mobile .dropdown .dropdown ul a i {
+  font-size: 12px;
+}
+
+.navbar-mobile .dropdown ul a:hover,
+.navbar-mobile .dropdown ul .active:hover,
+.navbar-mobile .dropdown ul li:hover>a,
+.navbar-mobile .dropdown .dropdown ul a:hover,
+.navbar-mobile .dropdown .dropdown ul .active:hover,
+.navbar-mobile .dropdown .dropdown ul li:hover>a {
+  color: #1acc8d;
+}
+
+.navbar-mobile .dropdown>.dropdown-active,
+.navbar-mobile .dropdown .dropdown>.dropdown-active {
+  display: block;
+}
 
 /*--------------------------------------------------------------
 # Hero Section
@@ -1971,3 +2474,157 @@ section {
   }
 }
 
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+#footer {
+  background: var(--color-primary);
+  padding: 0 0 30px 0;
+  color: #fff;
+  font-size: 14px;
+}
+
+#footer a {
+  color : #fff;
+}
+
+#footer .footer-top {
+  padding: 60px 0 0 0;
+}
+
+#footer .footer-top .footer-info {
+  color: #fff;
+  text-align: center;
+}
+
+#footer .footer-top .footer-info h3 {
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  padding: 2px 0 2px 0;
+  line-height: 1;
+  font-weight: 700;
+}
+
+#footer .footer-top .footer-info p {
+  font-size: 14px;
+  line-height: 24px;
+  margin-bottom: 0;
+  font-family: "Montserrat", sans-serif;
+}
+
+#footer .footer-top .social-links a {
+  font-size: 18px;
+  display: inline-block;
+  color: #fff;
+  line-height: 1;
+  padding: 8px 0;
+  margin-right: 4px;
+  border-radius: 50%;
+  text-align: center;
+  width: 36px;
+  height: 36px;
+  transition: 0.3s;
+}
+
+#footer .footer-top .social-links a:hover {
+  background: #FFD808;
+  color: #fff;
+  text-decoration: none;
+}
+
+#footer .footer-top h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+#footer .footer-top .footer-links {
+  margin-bottom: 30px;
+}
+
+#footer .footer-top .footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#footer .footer-top .footer-links ul i {
+  padding-right: 2px;
+  color: #FFD808;
+  font-size: 18px;
+  line-height: 1;
+}
+
+#footer .footer-top .footer-links ul li {
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+#footer .footer-top .footer-links ul li:first-child {
+  padding-top: 0;
+}
+
+#footer .footer-top .footer-links ul a {
+  color: #fff;
+  transition: 0.3s;
+  display: inline-block;
+  line-height: 1;
+}
+
+#footer .footer-top .footer-links ul a:hover {
+  color: #4be8b0;
+}
+
+#footer .footer-top .footer-newsletter form {
+  margin-top: 30px;
+  background: #fff;
+  padding: 6px 10px 6px 15px;
+  position: relative;
+  border-radius: 50px;
+}
+
+#footer .footer-top .footer-newsletter form input[type=email] {
+  border: 0;
+  padding: 4px;
+  width: calc(100% - 110px);
+}
+
+#footer .footer-top .footer-newsletter form input[type=submit] {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: 0;
+  border: 0;
+  background: none;
+  font-size: 16px;
+  padding: 0 20px;
+  background: #1acc8d;
+  color: #fff;
+  transition: 0.3s;
+  border-radius: 50px;
+}
+
+#footer .footer-top .footer-newsletter form input[type=submit]:hover {
+  background: #149f6e;
+}
+
+#footer .copyright {
+  text-align: center;
+  padding-top: 30px;
+}
+
+#footer .credits {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #fff;
+}
+
+@media (max-width: 575px) {
+  #footer .footer-top .footer-info {
+    margin: -20px 0 30px 0;
+  }
+}

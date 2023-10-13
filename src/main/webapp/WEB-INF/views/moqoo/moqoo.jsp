@@ -11,20 +11,113 @@
 <title>지꾸 : No.1 지도 다이어리</title>
 
 <style>
-    .wrap {position: absolute;left: 0;bottom: 70px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
-    .wrap * {padding: 0;margin: 0;}
-    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
-    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
-    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
-    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-    .info .close:hover {cursor: pointer;}
-    .info .body {position: relative;overflow: hidden;}
-    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
-    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
-    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
-    .info .link {color: #5085BB;}
+.wrap {
+	position: absolute;
+	left: 0;
+	bottom: 70px;
+	width: 288px;
+	height: 132px;
+	margin-left: -144px;
+	text-align: left;
+	overflow: hidden;
+	font-size: 12px;
+	font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+	line-height: 1.5;
+}
+
+.wrap * {
+	padding: 0;
+	margin: 0;
+}
+
+.wrap .info {
+	width: 286px;
+	height: 120px;
+	border-radius: 5px;
+	border-bottom: 2px solid #ccc;
+	border-right: 1px solid #ccc;
+	overflow: hidden;
+	background: #fff;
+}
+
+.wrap .info:nth-child(1) {
+	border: 0;
+	box-shadow: 0px 1px 2px #888;
+}
+
+.info .title {
+	padding: 5px 0 0 10px;
+	height: 30px;
+	background: #eee;
+	border-bottom: 1px solid #ddd;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.info .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #888;
+	width: 17px;
+	height: 17px;
+	background:
+		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+
+.info .close:hover {
+	cursor: pointer;
+}
+
+.info .body {
+	position: relative;
+	overflow: hidden;
+}
+
+.info .desc {
+	position: relative;
+	margin: 13px 0 0 90px;
+	height: 75px;
+}
+
+.desc .ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.desc .jibun {
+	font-size: 11px;
+	color: #888;
+	margin-top: -2px;
+}
+
+.info .img {
+	position: absolute;
+	top: 6px;
+	left: 5px;
+	width: 73px;
+	height: 71px;
+	border: 1px solid #ddd;
+	color: #888;
+	overflow: hidden;
+}
+
+.info:after {
+	content: '';
+	position: absolute;
+	margin-left: -12px;
+	left: 50%;
+	bottom: 0;
+	width: 22px;
+	height: 12px;
+	background:
+		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')
+}
+
+.info .link {
+	color: #5085BB;
+}
 </style>
 
 
@@ -91,6 +184,7 @@
 
 <body>
 	<jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
+	
 	<section id="hero">
 		<svg class="hero-waves" xmlns="http://www.w3.org/2000/svg"
 			xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 "
@@ -116,11 +210,7 @@
 
 
 	<main id="main">
-		<!-- ======= Tab Section ======= -->
-		<!-- <section id="tab" class="d-flex flex-column flex-md-row">
-        <div id="my-tab">내꾸만 보기</div>
-        <div id="other-tab">남꾸도 보기</div>
-      </section> -->
+		<!--  ========= Tap Section========= -->
 		<div class="main-container" data-aos="fade-in">
 			<div id="tab">
 				<button id="btn-map" class="btn-get-started scrollto">지도</button>
@@ -148,112 +238,51 @@
 
 
 		<!-- ======= Map Section ======= -->
-		<div id="map" class="col-sm-12 mx-auto" ></div>
+		<div id="map" class="col-sm-12 mx-auto"></div>
 
 		<button type="button" class="btn insert-jiqoo-btn"
-			data-bs-toggle="modal" data-bs-target=".modal">모꾸 +</button>		
-		<!-- <div class="modal-div">
-      <button type="button" class="open-modal btn btn-primary" data-bs-toggle="modal" data-bs-target=".modal">모꾸 만들기</button>
-    </div> -->
+			data-bs-toggle="modal" data-bs-target=".modal">모꾸 +</button>
+
 
 		<!-- ======= List Section ======= -->
 		<div id="container" data-aos=fade-in>
 
 			<!-- 결과 목록 아이템 -->
-			<div class="row result-item">
-				<div class="post-header">
-					<div class="list-location">졸려.할아버지.잠와</div>
-					<div class="report-button">
-						<img id="dots" src="../resources/assets/img/dots.png" alt=""
-							onclick="toggleReportDiv()">
-					</div>
-					<div id="report-div" style="display: none;">
-						<div id="report-text" onclick="reportUser()">
-							<a href="javascript:void(0);" class="comt "
-								data-bs-toggle="modal" data-bs-target=".fade" id="report-btn">신고하기</a>
+			<c:forEach var="moqooList" items="${moqooList }">
+				<c:url var="post_moqooUrl" value="/moqoo/post_moqoo">
+					<c:param name="moqooNo" value="${moqooList.moqooNo }"></c:param>
+				</c:url>
+				<div class="row result-item">
+					<div class="post-header">
+						<div class="list-location">${moqooList.moqooW3W }</div>
+						<div class="report-button">
+							<img id="dots" src="../resources/assets/img/dots.png" alt="" onclick="toggleReportDiv()">
 						</div>
-						<i class="bi bi-exclamation-circle"></i>
+						<div id="report-div" style="display: none;">
+							<div id="report-text" onclick="reportUser()">신고하기</div>
+							<i class="bi bi-exclamation-circle"></i>
+						</div>
 					</div>
-				</div>
-				<div id="profile-img" class="col-sm-12">
-					<img src="../resources/assets/img/준표2.png" alt="프로필 이미지"
-						class="profile-image">
-				</div>
-				<a href="post_moqoo.html" class="post-a">
-					<div class="col-md-10">
-						<div class="title">게시물 제목</div>
-						<div class="content">게시물 내용 ㅇㄴㅇㅇㅇㄴㄹㅇㄹxzdfdfdsfsfdfdss</div>
-						<div class="row">
-							<div class="author col-lg-3 col-md-12">소진소진</div>
-							<div class="info col-lg-6 col-md-12">yyyy-mm-dd hh-mm</div>
-							<div class="heart-container col-lg-3 col-md-12">
-								<img class="heart" src="../resources/assets/img/heart(full).png"
-									alt="">
+					<div id="profile-img" class="col-sm-12">
+						<img src="${moqooList.user.userPhotoPath }" alt="프로필 이미지"
+							class="profile-image">
+					</div>
+					<a href="${post_moqooUrl }" class="post-a">
+						<div class="col-md-10">
+							<div class="title">${moqooList.moqooTitle }</div>
+							<div class="content">${moqooList.moqooContent }</div>
+							<div class="row">
+								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickName }</div>
+								<div class="info col-lg-6 col-md-12">${moqooList.moqooDate }</div>
+								<div class="heart-container col-lg-3 col-md-12">
+									<img class="heart"
+										src="../resources/assets/img/heart(full).png" alt="">
+								</div>
 							</div>
 						</div>
-					</div>
-				</a>
-			</div>
-			<div class="row result-item">
-				<div class="post-header">
-					<div class="list-location">졸려.할아버지.잠와</div>
-					<div class="report-button">
-						<img id="dots" src="../resources/assets/img/dots.png" alt=""
-							onclick="toggleReportDiv()">
-					</div>
-					<div id="report-div" style="display: none;">
-						<div id="report-text" onclick="reportUser()">신고하기</div>
-						<i class="bi bi-exclamation-circle"></i>
-					</div>
-				</div>
-				<div id="profile-img" class="col-sm-12">
-					<img src="../resources/assets/img/준표2.png" alt="프로필 이미지"
-						class="profile-image">
-				</div>
-				<div class="col-md-12">
-					<a href="post_moqoo.html" class="post-a">
-						<div class="title">게시물 제목</div>
-						<div class="content">게시물 내용 ㅇㄴㅇㅇㅇㄴㄹㅇㄹxzdfdfdsfsfdfdss</div>
 					</a>
-					<div class="row">
-						<div class="author col-lg-3 col-md-12">소진소진</div>
-						<div class="info col-lg-6 col-md-12">yyyy-mm-dd hh-mm</div>
-						<div class="heart-container col-lg-3 col-md-12">
-							<img class="heart" src="../resources/assets/img/heart(full).png"
-								alt="">
-						</div>
-					</div>
 				</div>
-			</div>
-			<div class="row result-item">
-				<div class="post-header">
-					<div class="list-location">졸려.할아버지.잠와</div>
-					<div class="report-button">
-						<img id="dots" src="../resources/assets/img/dots.png" alt=""
-							onclick="toggleReportDiv()">
-					</div>
-					<div id="report-div" style="display: none;">
-						<div id="report-text" onclick="reportUser()">신고하기</div>
-						<i class="bi bi-exclamation-circle"></i>
-					</div>
-				</div>
-				<div id="profile-img" class="col-sm-12">
-					<img src="../resources/assets/img/준표2.png" alt="프로필 이미지"
-						class="profile-image">
-				</div>
-				<div class="col-md-12">
-					<div class="title">게시물 제목</div>
-					<div class="content">게시물 내용 ㅇㄴㅇㅇㅇㄴㄹㅇㄹxzdfdfdsfsfdfdss</div>
-					<div class="row">
-						<div class="author col-lg-3 col-md-12">소진소진</div>
-						<div class="info col-lg-6 col-md-12">yyyy-mm-dd hh-mm</div>
-						<div class="heart-container col-lg-3 col-md-12">
-							<img class="heart" src="../resources/assets/img/heart(full).png"
-								alt="">
-						</div>
-					</div>
-				</div>
-			</div>
+			</c:forEach>
 		</div>
 
 
@@ -269,94 +298,57 @@
 					</div>
 					<div class="modal-body">
 						<!-- 게시물 입력 폼 -->
-						<form>
+						<form action="moqoo/insert" method="post"
+							enctype="multipart/form-data">
 							<div class="mb-3 col-lg-5 mx-auto location-container">
 								<input type="text" class="form-control" id="location"
-									name="location" value="할아버지.집.가고싶다" readonly>
+									name="moqooW3W" value="할아버지.집.가고싶다" readonly>
 								<button id="open-map-btn">+</button>
 							</div>
 							<div class="mb-3 row date-tag-container">
 								<div class="date-container col-md-3">
-									<input type="date" class="form-control" id="date" name="date"
-										required>
+									<input type="date" class="form-control" id="date"
+										name="moqooDay" required>
 								</div>
 								<div class="col-md-2 c-btn">
 									<span>카테고리</span> <i class="bi bi-caret-down-fill"
 										onclick="toggleCC()"></i>
 								</div>
 								<div class="category-container" style="display: none;">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category1" value="option1" required> <label
-											class="form-check-label" for="category1"> <img
-											class="tag-img" src="../resources/assets/img/rice.png"
-											alt="밥">
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category2" value="option2" required> <label
-											class="form-check-label" for="category2"> <img
-											class="tag-img" src="../resources/assets/img/alcohol.png"
-											alt="술">
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category3" value="option3" required> <label
-											class="form-check-label" for="category3"> <img
-											class="tag-img" src="../resources/assets/img/study.png"
-											alt="공부">
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category4" value="option4" required> <label
-											class="form-check-label" for="category4"> <img
-											class="tag-img" src="../resources/assets/img/exercise.png"
-											alt="운동">
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category5" value="option5" required> <label
-											class="form-check-label" for="category5"> <img
-											class="tag-img" src="../resources/assets/img/movie.png"
-											alt="영화">
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="category"
-											id="category6" value="option6" required> <label
-											class="form-check-label" for="category6"> <img
-											class="tag-img" src="../resources/assets/img/pet.png"
-											alt="반려동물">
-										</label>
+									<div class="category-list">
+										<c:forEach var="categoryList" items="${categoryList }">
+											<div class="form-check category">
+												<input class="form-check-input" type="radio" name="category"
+													id="${categoryList.cName }" value="${categoryList.cName }"
+													required> <label class="form-check-label"
+													for="${categoryList.cName }"> <img class="tag-img"
+													src="${categoryList.cImgPath }"
+													alt="${categoryList.cName }">
+												</label>
+											</div>
+										</c:forEach>
 									</div>
 								</div>
-								<!-- 다른 옵션들도 동일한 방식으로 추가 -->
-							</div>
-
-							<div class="mb-3">
-								<input type="text" class="form-control" id="title" name="title"
-									placeholder="제목" required>
-							</div>
-							<div class="mb-3" style="display: flex;">
-								<div>
-									<input type="file" class="custom-file-input" id="thum"
-										name="uploadFile" placeholder="썸네일" required> <label
-										for="thum" class="custom-button">파일 선택</label>
+								<div class="mb-3">
+									<input type="text" class="form-control" id="title"
+										name="moqooTitle" placeholder="제목" required>
 								</div>
-								<!-- 파일 정보 표시 영역 -->
-								<div id="fileInfo"></div>
-							</div>
-							<div class="mb-3">
-								<textarea id="summernote" name="content" required></textarea>
-							</div>
-							<div class="mb-3">
-								<input type="number" min="2" max="8" class="form-control"
-									id="people" name="people" placeholder="참여인원" required>
-							</div>
+								<div class="mb-3" style="display: flex;">
+									<div>
+										<input type="file" class="custom-file-input" id="thum"
+											name="uploadFile" placeholder="썸네일" required> <label
+											for="thum" class="custom-button">파일 선택</label>
+									</div>
+									<!-- 파일 정보 표시 영역 -->
+									<div id="fileInfo"></div>
+								</div>
+								<div class="mb-3">
+									<textarea id="summernote" name="moqooContent" required></textarea>
+								</div>
+								<div class="mb-3">
+									<input type="number" min="2" max="8" class="form-control"
+										id="people" name="moqooJoin" placeholder="참여인원" required>
+								</div>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -454,7 +446,8 @@
   </script>
 
 	<!-- 카카오맵 -->
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee58f1de69883c91d0d43b37d1a713ff&libraries=services,clusterer,drawing"></script>
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee58f1de69883c91d0d43b37d1a713ff&libraries=services,clusterer,drawing"></script>
 	<script>
     // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
     var infowindow = new kakao.maps.InfoWindow({zIndex:1});
@@ -560,7 +553,7 @@
     // 버튼 클릭 시 팝업 창 열기
     document.getElementById("open-map-btn").onclick = function() {
       // 팝업 창을 열기 위한 윈도우.open 함수 사용
-      window.open("popup_map.html", "Popup", "width=1200,height=800,resizable=no");
+      window.open("popup_map", "Popup", "width=1200,height=800,resizable=no");
     };
   </script>
 
@@ -571,7 +564,7 @@
     }
   </script>
 
-	<script>
+	<script type="text/javascript">
   // JavaScript 코드를 추가합니다.
   const radioButtons = document.querySelectorAll('.form-check-input');
   const imageLabels = document.querySelectorAll('.form-check-label');
@@ -622,21 +615,39 @@
           previousButton = this;
       });
   });
+ 
+	    
+// 	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
+// 	  // 현재 날짜를 가져오는 함수
+// 	  function getTodayDate() {
+// 	      const today = new Date();
+// 	      const year = today.getFullYear();
+// 	      const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+// 	      const day = today.getDate().toString().padStart(2, '0');
+// 	      return `${year}-${month}-${day}`;
+// 	  }
+	
+// 	  // 오늘 날짜를 가져와서 dateInput 요소의 min 속성에 할당
+// 	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
+	
+	
+	  // ■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
+	  // 파일 선택 이벤트 리스너 추가
+	  document.getElementById('thum').addEventListener('change', function () {
+	    // 선택된 파일 가져오기
+	    const selectedFile = this.files[0];
+	
+	    // 파일 정보 표시
+	    if (selectedFile) {
+	        document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
+	    } else {
+	        document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
+	    }
+	  });
 
-
-  // 파일 선택 이벤트 리스너 추가
-  document.getElementById('thum').addEventListener('change', function () {
-    // 선택된 파일 가져오기
-    const selectedFile = this.files[0];
-
-    // 파일 정보 표시
-    if (selectedFile) {
-        document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
-    } else {
-        document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
-    }
-  });
+  
 </script>
+
 	<script>
   function toggleReportDiv() {
     const reportDiv = document.getElementById("report-div");

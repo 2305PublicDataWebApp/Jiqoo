@@ -57,7 +57,7 @@
     <div id="map">
         <what3words-map
           id="w3w-map"
-          api_key="RVOKZN3U"
+          api_key="5SGMAF36"
           map_api_key="AIzaSyDT4QB__1EdEWo0BUhOUH6XEN4nKpwE57E"
           disable_default_ui
           fullscreen_control
@@ -83,6 +83,7 @@
           <div slot="current-location-control" id="current-location-container">
               <button>Current Location</button>
           </div>
+          <button id="convert-button">변환</button>
         </what3words-map>
       </div>
       <button id="convert-button">변환</button>
@@ -95,9 +96,7 @@
             // 현재 창을 닫습니다.
             window.close();
         }
-    </script>
-
-<!-- <script>
+        
     // Google Maps Geocoding 서비스 초기화
     var geocoder = new google.maps.Geocoder();
 
@@ -145,6 +144,6 @@
             addressElement.textContent = "도로명 주소: (주소를 입력해주세요)";
         }
     });
-</script> -->
+</script>
 </body>
 </html>
