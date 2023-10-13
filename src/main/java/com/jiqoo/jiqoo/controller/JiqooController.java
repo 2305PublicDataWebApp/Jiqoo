@@ -1,17 +1,32 @@
 package com.jiqoo.jiqoo.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.JsonObject;
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.service.JiqooService;
+import com.jiqoo.user.domain.User;
 
 @Controller
 public class JiqooController {
@@ -19,43 +34,188 @@ public class JiqooController {
 	@Autowired
 	private JiqooService jiqooService;
 
-	@GetMapping("/jiqoo/list.do")
-	public ModelAndView showInsertJiqooForm(ModelAndView mv) {
+	@GetMapping("/jiqoo/list")
+	public String showJiqooList(Model model, HttpSession session) {
 		try {
+			String userId = (String) session.getAttribute("userId");
+			List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+			List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
 			List<Category> categoryList = jiqooService.selectCategoryList();
 			if (categoryList != null) {
-				mv.addObject("categoryList", categoryList);
-				mv.setViewName("jiqoo/jiqoo");
+				model.addAttribute("categoryList", categoryList);
+				model.addAttribute("jiqooAllList", jiqooAllList);
+				model.addAttribute("jiqooMyList", jiqooMyList);
+				return "jiqoo/jiqoo";
 			} else {
-				mv.addObject("msg", "게시물 리스트 조회 실패");
-				mv.addObject("url", "/");
-				mv.setViewName("common/result");
+				model.addAttribute("msg", "게시물 리스트 조회 실패");
+				model.addAttribute("url", "/");
+				return "common/message";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			mv.addObject("url", "/");
-			mv.setViewName("common/result");
+			model.addAttribute("url", "/");
+			return "common/message";
 		}
-		return mv;
 	}
 
-	@PostMapping("/jiqoo/insert.do")
-	public ModelAndView insertJiqoo(ModelAndView mv, @ModelAttribute Jiqoo jiqoo) {
+	@GetMapping("/jiqoo/popupW3WMap")
+	public String showPopupMap(Model model) {
+		return "jiqoo/popup_map";
+	}
+
+	@PostMapping("/jiqoo/insert")
+	public String insertJiqoo(Model model, @ModelAttribute Jiqoo jiqoo) {
 		try {
+			String allowComt = jiqoo.getjAllowComt();
+			String openStatus = jiqoo.getjOpenStatus();
+
+			allowComt = allowComt != null ? "Y" : "N";
+			openStatus = openStatus != null ? "Y" : "N";
+			jiqoo.setjAllowComt(allowComt);
+			jiqoo.setjOpenStatus(openStatus);
 			int result = jiqooService.insertJiqoo(jiqoo);
 			if (result > 0) {
-				mv.setViewName("redirect:/jiqoo/jiqoo.do");
+				return "redirect:/jiqoo/list";
 			} else {
-				mv.addObject("msg", "게시물 등록 실패");
-				mv.addObject("url", "/jiqoo/list.do");
-				mv.setViewName("common/result");
+				model.addAttribute("msg", "게시물 등록 실패");
+				model.addAttribute("url", "/jiqoo/list");
+				return "common/message";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			mv.addObject("msg", e.getMessage());
-			mv.addObject("url", "/jiqoo/list.do");
-			mv.setViewName("common/result");
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "/jiqoo/list");
+			return "common/message";
 		}
-		return mv;
 	}
+
+	@GetMapping("/jiqoo/detail")
+	public String showJiqooDetail(@RequestParam("jiqooNo") int jiqooNo, Model model) {
+		try {
+			Jiqoo jiqoo = jiqooService.selectOneByNo(jiqooNo);
+			String jiqooCName = jiqoo.getJiqooCtgr();
+			Category category = jiqooService.selectCategoryByNo(jiqooCName);
+			int likeCount = jiqooService.selectLikeCountByNo(jiqooNo);
+			List<Category> categoryList = jiqooService.selectCategoryList();
+			if (jiqoo != null) {
+				model.addAttribute("jiqoo", jiqoo);
+				model.addAttribute("likeCount", likeCount);
+				model.addAttribute("categoryList", categoryList);
+				model.addAttribute("category", category);
+				return "jiqoo/post_jiqoo";
+			} else {
+				model.addAttribute("msg", "게시물 조회에 실패하였습니다.");
+				model.addAttribute("url", "/jiqoo/list");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "/jiqoo/list");
+			return "common/message";
+		}
+	}
+
+	@GetMapping("/jiqoo/delete")
+	public String deleteJiqoo(@RequestParam("jiqooNo") int jiqooNo, Model model) {
+		try {
+			int result = jiqooService.deleteJiqoo(jiqooNo);
+			if (result > 0) {
+				model.addAttribute("msg", "게시물이 삭제되었습니다.");
+				model.addAttribute("url", "/jiqoo/list");
+				return "common/message";
+			} else {
+				model.addAttribute("msg", "게시물 삭제에 실패하였습니다.");
+				model.addAttribute("url", "/jiqoo/list");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "/jiqoo/list");
+			return "common/message";
+		}
+	}
+
+	@PostMapping("/jiqoo/update")
+	public String updateJiqoo(@ModelAttribute Jiqoo jiqoo, Model model) {
+		try {
+			int result = jiqooService.updateJiqoo(jiqoo);
+			if (result > 0) {
+				model.addAttribute("msg", "게시물이 수정되었습니다.");
+				model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+				return "common/message";
+			}else {
+				model.addAttribute("msg", "게시물 수정에 실패하였습니다.");
+				model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+			return "common/message";
+		}
+	}
+
+	@ResponseBody
+	@PostMapping("/uploadSummernoteImageFile")
+	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
+			HttpServletRequest request) {
+//	    JsonObject jsonObject = new JsonObject();
+		String src = "";
+		try {
+			String originalFileName = multipartFile.getOriginalFilename();
+			String root = request.getSession().getServletContext().getRealPath("resources");
+			// 이미지를 저장할 경로
+			String savePath = root + "\\summerImageFiles";
+
+			// 디렉토리 생성 코드
+			File targetFile = new File(savePath);
+			if (!targetFile.exists()) {
+				targetFile.mkdirs();
+			}
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+			String jiqooFileRename = sdf.format(new Date(System.currentTimeMillis())) + "." + extension;
+
+			// 이미지 저장 코드
+			multipartFile.transferTo(new File(savePath + "\\" + jiqooFileRename));
+
+			System.out.println(savePath);
+
+			src = "../resources/summerImageFiles/" + jiqooFileRename;
+//	        jsonObject.addProperty("url", "../resources/summerImageFiles" + jiqooFileRename); 
+//	        jsonObject.addProperty("originName", originalFileName); 
+//	        jsonObject.addProperty("responseCode", "success"); 
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//	    return jsonObject; 
+		return src;
+	}
+
+//	public PageInfo getPageInfo(int currentPage, int totalCount) {
+//		PageInfo pi = null;
+//		int recordCountPerPage = 8;
+//		int naviCountPerPage = 10;
+//		int naviTotalCount;
+//		int startNavi;
+//		int endNavi;
+//		
+//		naviTotalCount = (int)((double)totalCount/recordCountPerPage + 0.9);
+//		// Math.ceil((double)totalCount/recordCountPerPage)
+//		// currentPage값이 1~5일때 startNavi가 1로 고정되도록 구해주는 식
+//		startNavi = (((int)((double)currentPage/naviCountPerPage+0.9))-1)*naviCountPerPage + 1;
+//		endNavi = startNavi + naviCountPerPage - 1;
+//		// endNavi는 startNavi에 무조건 naviCountPerPage값을 더하므로 실제 최댓값보다 커질 수 있음.
+//		if(endNavi > naviTotalCount) {
+//			endNavi = naviTotalCount;
+//		}
+//		pi = new PageInfo(currentPage, recordCountPerPage, naviCountPerPage, startNavi, endNavi, totalCount, naviTotalCount);
+//		return pi;
+//	}
 }

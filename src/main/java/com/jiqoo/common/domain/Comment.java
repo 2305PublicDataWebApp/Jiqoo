@@ -1,5 +1,11 @@
 package com.jiqoo.common.domain;
 
-public class Comment {
+import java.sql.Timestamp;
 
+public class Comment {
+//	int comtNo;
+//	String comtContent;
+//	String comtWriter;
+//	Timestamp comtDate;
+//	Timestamp 
 }
