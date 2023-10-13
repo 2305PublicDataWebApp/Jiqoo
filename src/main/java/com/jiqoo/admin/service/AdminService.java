@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.jiqoo.common.domain.PageInfo;
+import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.user.domain.User;
 
 public interface AdminService {
@@ -42,6 +44,48 @@ public interface AdminService {
 	 * @return
 	 */
 	public User selectUserByUserId(String userId);
+
+	/**
+	 * 회원 강제탈퇴
+	 * @param userId
+	 * @return
+	 */
+	public Integer deleteUserByAdmin(String userId);
+
+	/**
+	 * 강퇴회원 부활
+	 * @param userId
+	 * @return
+	 */
+	public Integer reviveUserByAdmin(String userId);
+
+	/**
+	 * 회원별 총 지꾸수
+	 * @return
+	 */
+	public Integer getUserJiqooListCount(String jiqooWriter);
+
+	/**
+	 * 회원별 지꾸 리스트 
+	 * @param pInfo
+	 * @return
+	 */
+	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String userId);
+
+	/**
+	 * 회원별 모꾸수
+	 * @param userId
+	 * @return
+	 */
+	public Integer getUserMoqooListCount(String moqooWriter);
+
+	/**
+	 * 회원별 모꾸 리스트 
+	 * @param pInfoMoqoo
+	 * @param userId
+	 * @return
+	 */
+	public List<Moqoo> showUserMoqooList(PageInfo pInfoMoqoo, String userId);
 
 
 	

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.admin.store.AdminStore;
 import com.jiqoo.common.domain.PageInfo;
+import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.user.domain.User;
 
 @Service
@@ -63,5 +65,61 @@ public class AdminServiceImpl implements AdminService {
 		User user = adminStore.selectUserByUserId(sqlSession, userId);
 		return user;
 	}
+
+	/**
+	 * 회원 강제탈퇴
+	 */
+	@Override
+	public Integer deleteUserByAdmin(String userId) {
+		Integer result = adminStore.deleteUserByAdmin(sqlSession, userId);
+		return result;
+	}
+
+	/**
+	 * 강퇴회원 복원
+	 */
+	@Override
+	public Integer reviveUserByAdmin(String userId) {
+		Integer result = adminStore.reviveUserByAdmin(sqlSession, userId);
+		return result;
+	}
+
+	/**
+	 * 회원별 총 지꾸수
+	 */
+	@Override
+	public Integer getUserJiqooListCount(String jiqooWriter) {
+		Integer result = adminStore.getUserJiqooListCount(sqlSession, jiqooWriter);
+		return result;
+	}
+
+	/**
+	 * 회원별 지꾸 리스트 
+	 */
+	@Override
+	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String userId) {
+		List<Jiqoo> uJiqooList = adminStore.showUserJiqooList(sqlSession, pInfoJiqoo, userId);
+		return uJiqooList;
+	}
+
+	/**
+	 * 회원별 모꾸 수 
+	 */
+	@Override
+	public Integer getUserMoqooListCount(String moqooWriter) {
+		Integer result = adminStore.getUserMoqooListCount(sqlSession, moqooWriter);
+		return result;
+	}
+
+	/**
+	 * 회원별 모꾸 리스트 
+	 */
+	@Override
+	public List<Moqoo> showUserMoqooList(PageInfo pInfoMoqoo, String userId) {
+		List<Moqoo> uMoqooList = adminStore.showUserMoqooList(sqlSession, pInfoMoqoo, userId);
+		return uMoqooList;
+	}
+
+
 
 }

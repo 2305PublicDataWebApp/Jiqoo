@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 import com.jiqoo.common.domain.PageInfo;
+import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.user.domain.User;
 
 public interface AdminStore {
@@ -54,5 +56,50 @@ public interface AdminStore {
 	 * @return
 	 */
 	public User selectUserByUserId(SqlSession sqlSession, String userId);
+
+	/**
+	 * 회원 강제탈퇴
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	public Integer deleteUserByAdmin(SqlSession sqlSession, String userId);
+
+	public Integer reviveUserByAdmin(SqlSession sqlSession, String userId);
+
+	/**
+	 * 회원별 총 지꾸수
+	 * @param sqlSession
+	 * @param jiqoo
+	 * @return
+	 */
+	public Integer getUserJiqooListCount(SqlSession sqlSession, String jiqooWriter);
+
+	/**
+	 * 회원별 지꾸 리스트 
+	 * @param sqlSession
+	 * @param pInfo
+	 * @return
+	 */
+	public List<Jiqoo> showUserJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo, String userId);
+
+	/**
+	 * 회원별 모꾸수
+	 * @param sqlSession
+	 * @param moqooWriter
+	 * @return
+	 */
+	public Integer getUserMoqooListCount(SqlSession sqlSession, String moqooWriter);
+
+	/**
+	 * 회원별 모꾸 리스트 
+	 * @param sqlSession
+	 * @param pInfoMoqoo
+	 * @param userId
+	 * @return
+	 */
+	public List<Moqoo> showUserMoqooList(SqlSession sqlSession, PageInfo pInfoMoqoo, String userId);
+
+
 
 }

@@ -1305,15 +1305,7 @@ main {
   align-items:center ;
 }
 
-select {
-  width : 100px;
-  height : 50px;
-  border-radius: 10px;
-  outline: none;
-  border:none;
-  margin: 10px;
-  padding: 10px;
-}
+
 
 #search-wrap {
   width : 650px;
@@ -1322,6 +1314,16 @@ select {
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
+}
+
+select {
+  width : 100px;
+  height : 50px;
+  border-radius: 10px;
+  outline: none;
+  border:none;
+  margin: 10px;
+  padding: 10px;
 }
 
 #search-content {
@@ -1463,11 +1465,11 @@ td {
 --------------------------------------------------------------*/
 @media (max-width: 575px) {
   main, #user-main {
-    width : 100%;
+    width : 95%;
   }
   #search-wrap {
-    width : 90%;
-    margin-right: 10px;
+  	width : 95%;
+    margin: 10px;
   }
   .col1 {
     display: none;

@@ -175,7 +175,7 @@
 								</c:forEach>
 							</tbody>
 						</table>
-
+						<!-- End Table with stripped rows -->
 						<script>
 							function sortTable(n) {
 								var table, rows, switching, o, x, y, shouldSwitch, dir, switchCount = 0;
@@ -245,8 +245,8 @@
 								}
 							}
 						</script>
-						<!-- End Table with stripped rows -->
-
+						
+						<!-- 페이지네비 -->
 						<div id="pageNavi">
 							<c:if test="${pInfo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userlist">
