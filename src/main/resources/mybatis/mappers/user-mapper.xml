@@ -9,16 +9,28 @@
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
 	</insert>
 	
+	<update id="updateUser">
+		UPDATE USER_TBL
+		SET USER_NICKNAME = #{userNickname}, USER_EMAIL = #{userEmail}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}
+		WHERE USER_ID = #{userId}
+	</update>
+	
 	<update id="updateUserPw">
 		UPDATE USER_TBL
 		SET USER_PW = #{userPw}
-		WHERE USER_ID = #{userId} AND USER_EMAIL = #{userEmail}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="deleteUser">
+		UPDATE USER_TBL
+		SET USER_STATUS = 'N'
+		WHERE USER_ID = #{userId}
 	</update>
 	
 	<select id="selectCheckLogin" resultType="User" >
 		SELECT * 
 		FROM USER_TBL 
-		WHERE USER_ID = #{userId} AND USER_PW = #{userPw}
+		WHERE USER_ID = #{userId} AND USER_PW = #{userPw} AND USER_STATUS='Y'
 	</select>
 
 	<select id="selectCheckId" resultType="_int">

@@ -16,6 +16,24 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
+	public int updateUser(SqlSession sqlSession, User user) {
+		int result = sqlSession.update("UserMapper.updateUser", user);
+		return result;
+	}
+
+	@Override
+	public int updateUserPw(SqlSession sqlSession, User user) {
+		int tempPwResult = sqlSession.update("UserMapper.updateUserPw", user);
+		return tempPwResult;
+	}
+
+	@Override
+	public int deleteUser(SqlSession sqlSession, String userId) {
+		int result = sqlSession.update("UserMapper.deleteUser", userId);
+		return result;
+	}
+
+	@Override
 	public User selectCheckLogin(SqlSession sqlSession, User user) {
 		User uOne = sqlSession.selectOne("UserMapper.selectCheckLogin", user);
 		return uOne;
@@ -52,15 +70,10 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public int updateUserPw(SqlSession sqlSession, User user) {
-		int tempPwResult = sqlSession.update("UserMapper.updateUserPw", user);
-		return tempPwResult;
-	}
-
-	@Override
 	public User selectUserOneById(SqlSession sqlSession, String userId) {
 		User user = sqlSession.selectOne("UserMapper.selectUserOneById", userId);
 		return user;
 	}
+
 
 }
