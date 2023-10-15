@@ -11,6 +11,7 @@ import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.store.ChatStore;
+import com.jiqoo.user.domain.User;
 
 @Repository
 public class ChatStoreLogic implements ChatStore{
@@ -34,6 +35,15 @@ public class ChatStoreLogic implements ChatStore{
 	}
 
 	@Override
+	public int insertChatUserByChatNo(SqlSession sqlSession, int chatNo, String userId) {
+		Map<String, Object> userMap = new HashMap<>();
+		userMap.put("chatNo", chatNo);
+		userMap.put("userId", userId);
+		int result = sqlSession.insert("ChatMapper.insertChatUserByChatNo", userMap);
+		return result;
+	}
+
+	@Override
 	public int updateChatLastDate(SqlSession sqlSession, ChatUser chatUser) {
 		int result = sqlSession.update("ChatMapper.updateChatLastDate", chatUser);
 		return result;
@@ -51,6 +61,33 @@ public class ChatStoreLogic implements ChatStore{
 	@Override
 	public int selectUnreadMsgCount(SqlSession sqlSession, ChatUser chatUser) {
 		int result = sqlSession.selectOne("ChatMapper.selectUnreadMsgCount", chatUser);
+		return result;
+	}
+
+	@Override
+	public User selectMsgSenderInfo(SqlSession sqlSession, String userId) {
+		User user = sqlSession.selectOne("ChatMapper.selectMsgSenderInfo", userId);
+		return user;
+	}
+
+	@Override
+	public List<User> selectAllUserByChatNo(SqlSession sqlSession, int chatNo) {
+		List<User> userList = sqlSession.selectList("ChatMapper.selectAllUserByChatNo", chatNo);
+		return userList;
+	}
+
+	@Override
+	public List<User> selectUsersByKeyword(SqlSession sqlSession, int chatNo,  String user) {
+		Map<String, Object> userMap = new HashMap<>();
+		userMap.put("chatNo", chatNo);
+		userMap.put("user", user);
+		List<User> userList = sqlSession.selectList("ChatMapper.selectUsersByKeyword", userMap);
+		return userList;
+	}
+
+	@Override
+	public int deleteChatUserById(SqlSession sqlSession, ChatUser chatUser) {
+		int result = sqlSession.delete("ChatMapper.deleteChatUserById", chatUser);
 		return result;
 	}
 

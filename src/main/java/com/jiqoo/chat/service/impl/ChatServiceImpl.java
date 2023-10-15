@@ -13,6 +13,7 @@ import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.service.ChatService;
 import com.jiqoo.chat.store.ChatStore;
+import com.jiqoo.user.domain.User;
 
 @Service
 public class ChatServiceImpl implements ChatService{
@@ -25,6 +26,12 @@ public class ChatServiceImpl implements ChatService{
 	@Override
 	public int insertChatMessage(ChatMessage chatMessage) {
 		int result = chatStore.insertChatMessage(sqlSession, chatMessage);
+		return result;
+	}
+
+	@Override
+	public int insertChatUserByChatNo(int chatNo, String userId) {
+		int result = chatStore.insertChatUserByChatNo(sqlSession, chatNo, userId);
 		return result;
 	}
 
@@ -55,6 +62,30 @@ public class ChatServiceImpl implements ChatService{
 	@Override
 	public int selectUnreadMsgCount(ChatUser chatUser) {
 		int result = chatStore.selectUnreadMsgCount(sqlSession, chatUser);
+		return result;
+	}
+
+	@Override
+	public User selectMsgSenderInfo(String userId) {
+		User user = chatStore.selectMsgSenderInfo(sqlSession, userId);
+		return user;
+	}
+
+	@Override
+	public List<User> selectAllUserByChatNo(int chatNo) {
+		List<User> userList = chatStore.selectAllUserByChatNo(sqlSession, chatNo);
+		return userList;
+	}
+
+	@Override
+	public List<User> selectUsersByKeyword(int chatNo, String user) {
+		List<User> userList = chatStore.selectUsersByKeyword(sqlSession, chatNo, user);
+		return userList;
+	}
+
+	@Override
+	public int deleteChatUserById(ChatUser chatUser) {
+		int result = chatStore.deleteChatUserById(sqlSession, chatUser);
 		return result;
 	}
 

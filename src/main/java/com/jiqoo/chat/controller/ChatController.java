@@ -1,9 +1,11 @@
 package com.jiqoo.chat.controller;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +16,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.invocation.reactive.ReturnValueHandlerConfigurer;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +37,7 @@ import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatRoomWithUnreadCount;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.service.ChatService;
+import com.jiqoo.user.domain.User;
 
 @Controller
 public class ChatController {
@@ -52,7 +57,7 @@ public class ChatController {
 			// 로그인 하지 않았을 경우 로그인 페이지로 이동
 			if(session.getAttribute("userId") == null) {
 				model.addAttribute("msg", "로그인이 필요한 서비스입니다.");
-				model.addAttribute("url", "/user/login.do");
+				model.addAttribute("url", "/user/login");
 				return "common/message";
 			}else {
 				// 참여한 채팅방 리스트
@@ -64,6 +69,15 @@ public class ChatController {
 					ChatRoomWithUnreadCount chatRoomWithUnreadCount = new ChatRoomWithUnreadCount(chatRoom, unreadMsgCount);
 					chatRoomWithCountList.add(chatRoomWithUnreadCount);
 				}
+				// 현재 날짜/시간
+		        Date now = new Date();
+		        // 현재 날짜/시간 출력
+		        System.out.println(now); // Thu May 03 14:43:32 KST 2022
+		        // 포맷팅 정의
+		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		        // 포맷팅 적용
+		        String currentDate = sdf.format(now);
+				model.addAttribute("currentDate", currentDate);
 				model.addAttribute("chatRoomList", chatRoomWithCountList);
 			}
 			return "chat/chatList";
@@ -116,6 +130,62 @@ public class ChatController {
 			return "error";
 		}
 	}
+	// 메시지 ID로 정보 조회
+	@ResponseBody
+	@GetMapping("/chat/userinfo")
+	public String selectMsgSenderInfo(@RequestParam String userId) {
+		User user = chatService.selectMsgSenderInfo(userId);
+		Gson gson = new Gson();
+		return gson.toJson(user);
+	}
+	
+	// 채팅방별 참여자 조회
+	@ResponseBody
+	@GetMapping("/chat/users")
+	public String selectAllUserByChatNo(@RequestParam int chatNo) {
+		List<User> userList = chatService.selectAllUserByChatNo(chatNo);
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(userList));
+		return gson.toJson(userList);
+	}
+	
+	// 초대할 유저 검색
+	@ResponseBody
+	@GetMapping("/chat/user-search")
+	public String selectUsersByKeyword(@RequestParam int chatNo, @RequestParam String user) {
+		List<User> userList = chatService.selectUsersByKeyword(chatNo, user);
+		Gson gson = new Gson();
+		return gson.toJson(userList);
+	}
+	
+	// 초대한 유저 채팅방에 추가
+	@ResponseBody
+	@PostMapping("/chat/invite-users")
+	public String insertChatUserByChatNo(@RequestBody Map<String, Object> requestData) {
+	    int result = 0;
+	    int chatNo = Integer.parseInt((String) requestData.get("chatNo"));
+	    List<String> selectedUserIds = (List<String>) requestData.get("selectedUserIds");
+	    for (String userId : selectedUserIds) {
+	        result += chatService.insertChatUserByChatNo(chatNo, userId);
+	    }
+	    if (result >= selectedUserIds.size()) {
+	        return "success";
+	    } else {
+	        return "fail";
+	    }
+	}
+	
+	@ResponseBody
+	@GetMapping("/chat/delete-chat-user")
+	public String deleteChatUser(@ModelAttribute ChatUser chatUser, Model model) {
+		int result = chatService.deleteChatUserById(chatUser);
+		if(result > 0) {
+			return "success";
+		}else {
+			return "fail";
+		}
+	}
+	
 //	@MessageMapping(value = "/chat/chatRoom-{refChatNo}")
 //	public void receiveMessage(ChatMessage message, @DestinationVariable int refChatNo) {
 //		template.convertAndSend("/toppic/chat/chatRoom-" + refChatNo, message);
