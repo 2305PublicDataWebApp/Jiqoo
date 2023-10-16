@@ -177,7 +177,7 @@
 	                        <c:if test="${user.userPhotoRename ne null }">
 	                         <div class="col-8 col-sm-7 text-start">
 	                         	<div style="margin-bottom:20px;">
-	                         		<img src="../resources/puploadFiles/${user.userPhotoRename }" class="viewPhoto" style="width:300px;">
+	                         		<img src="${user.userPhotoPath }" class="viewPhoto" style="width:300px;">
 	                         	</div>
 	                         </div>
 	                         <div class="col-4 col-sm-2">

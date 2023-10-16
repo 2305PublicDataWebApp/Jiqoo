@@ -70,7 +70,7 @@
 	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png">
                 	</c:if>
                 	<c:if test="${user.userPhotoRename ne null}">
-	                	<img alt="프로필사진" class="profile-img img-border-light" src="../resources/puploadFiles/${user.userPhotoRename }">
+	                	<img alt="프로필사진" class="profile-img img-border-light" src="${user.userPhotoPath }">
                 	</c:if>
                 	<c:if test="${user.userId eq sessionScope.userId}">
                 	<div class="icon-relative">

@@ -455,30 +455,32 @@ public class UserController {
 	// 프로필사진 저장 메소드
 	private Map<String, Object> saveFile(HttpServletRequest request, MultipartFile uploadFile) throws Exception {
 		Map<String, Object> userPhotoMap = new HashMap<String, Object>();
-		// 1. 파일명 저장
-		String fileName = uploadFile.getOriginalFilename();
+		// resources 경로 구하기
 		String root = request.getSession().getServletContext().getRealPath("resources");
-		// 업로드파일 저장할 폴더경로 변수 저장
-		String saveFolder = root + "\\puploadFiles";
+		// 저장폴더에 파일 저장->업로드 파일 경로생성
+		String savePath = root + "\\puploadFiles";
+		// 파일명 저장
+		String fileName = uploadFile.getOriginalFilename();
+		// 파일 확장자 구하기
+		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		// 파일리네임
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String fileRename = "p" + sdf.format(new Date(System.currentTimeMillis())) + "." + extension;
 		// 저장폴더 없을 경우 생성
-		File folder = new File(saveFolder);
+		File folder = new File(savePath);
 		if (!folder.exists()) {
 			folder.mkdir();
 		}
-		// 2. 파일리네임
-		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-		String fileRename = "p" + sdf.format(new Date(System.currentTimeMillis())) + "." + extension;
-
-		// 3. 저장폴더에 파일 저장->업로드 파일 경로생성
-		String savePath = saveFolder + "\\" + fileRename;
-		File file = new File(savePath); // 파일 생성
+		// 파일저장
+		File file = new File(savePath+"\\"+fileRename); // 파일 생성
 		uploadFile.transferTo(file); // 파일저장
-
-		// 4. Map저장
+		System.out.println("파일이름 : " + fileName);
+		System.out.println("파일리네임 : " + fileRename);
+		System.out.println("파일경로 : " + savePath);
+		// Map저장
 		userPhotoMap.put("fileName", fileName);
 		userPhotoMap.put("fileRename", fileRename);
-		userPhotoMap.put("filePath", savePath);
+		userPhotoMap.put("filePath", "../resources/puploadFiles/"+fileRename);
 
 		return userPhotoMap;
 	}
