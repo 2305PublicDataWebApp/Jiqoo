@@ -1,7 +1,11 @@
 package com.jiqoo.user.store;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 
 public interface UserStore {
@@ -93,5 +97,45 @@ public interface UserStore {
 	 * @return
 	 */
 	User selectUserOneById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로워 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowersCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowingCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로워 리스트 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<Follow> selectFollowersListById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 리스트 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<Follow> selectFollowingsListById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 여부 판단 Store
+	 * @param sqlSession
+	 * @param followMap
+	 * @return
+	 */
+	int selectFollowStatus(SqlSession sqlSession, Map<String, Object> followMap);
 
 }

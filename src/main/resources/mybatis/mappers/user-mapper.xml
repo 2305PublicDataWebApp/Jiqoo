@@ -68,4 +68,14 @@
 		FROM USER_TBL
 		WHERE USER_ID = #{userId}
 	</select>
+	
+	<select id="selectFollowersListById" resultType="User">
+		SELECT * FROM USER_TBL
+		WHERE USER_ID IN (SELECT FROM_USER_ID FROM FOLLOW_TBL WHERE TO_USER_ID = #{userId})
+	</select>
+	
+	<select id="selectFollowingsListById" resultType="User">
+		SELECT * FROM USER_TBL
+		WHERE USER_ID IN (SELECT TO_USER_ID FROM FOLLOW_TBL WHERE FROM_USER_ID = #{userId})
+	</select>
 </mapper>

@@ -1,9 +1,13 @@
 package com.jiqoo.user.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.UserService;
 import com.jiqoo.user.store.UserStore;
@@ -80,6 +84,36 @@ public class UserServiceImpl implements UserService{
 	public User selectUserOneById(String userId) {
 		User user = userStore.selectUserOneById(sqlSession, userId);
 		return user;
+	}
+
+	@Override
+	public int selectFollowersCount(String userId) {
+		int followersCount = userStore.selectFollowersCount(sqlSession, userId);
+		return followersCount;
+	}
+
+	@Override
+	public int selectFollowingCount(String userId) {
+		int followingCount = userStore.selectFollowingCount(sqlSession, userId);
+		return followingCount;
+	}
+
+	@Override
+	public List<Follow> selectFollowersListById(String userId) {
+		List<Follow> followersList = userStore.selectFollowersListById(sqlSession, userId);
+		return followersList;
+	}
+
+	@Override
+	public List<Follow> selectFollowingsListById(String userId) {
+		List<Follow> followingsList = userStore.selectFollowingsListById(sqlSession, userId);
+		return followingsList;
+	}
+
+	@Override
+	public int selectFollowStatus(Map<String, Object> followMap) {
+		int isFollowing = userStore.selectFollowStatus(sqlSession, followMap);
+		return isFollowing;
 	}
 
 

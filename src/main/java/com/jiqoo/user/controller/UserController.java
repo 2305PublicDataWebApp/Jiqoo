@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.UserService;
 
@@ -38,6 +40,7 @@ public class UserController {
 	@Autowired
 	private JavaMailSenderImpl mailSender;
 
+	
 	// 회원가입
 	@PostMapping("/register")
 	public ModelAndView insertUser(ModelAndView mv, @ModelAttribute User user,
@@ -349,7 +352,24 @@ public class UserController {
 			if (userId != "" && userId != null) {
 				user = userService.selectUserOneById(userId);
 				if (user != null) {
+					//팔로워, 팔로잉 수 & 리스트
+					int followersCount = userService.selectFollowersCount(userId);
+	                int followingsCount = userService.selectFollowingCount(userId);
+	                List<Follow> followersList = userService.selectFollowersListById(userId);
+	                List<Follow> followingsList = userService.selectFollowingsListById(userId);
+
+	                // 팔로우 상태를 판단하여 "following" 속성 설정
+					/*
+					 * for (Follow follower : followersList) { boolean isFollowing = false; for
+					 * (Follow following : followingsList) { if
+					 * (follower.getFromUserId().equals(following.getToUserId())) { isFollowing =
+					 * true; break; } } follower.setFollowing(isFollowing); }
+					 */
+	                user.setFollowers(followersCount);
+	                user.setFollowings(followingsCount);
 					model.addAttribute("user", user);
+					model.addAttribute("followersList", followersList);
+					model.addAttribute("followingsList", followingsList);
 					return "user/myPage";
 				} else {
 					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");

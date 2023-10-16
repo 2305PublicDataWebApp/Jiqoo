@@ -127,9 +127,10 @@ main {
 	width: 70px;
 	height: 70px;
 	border-radius: 50%;
+}
+.modal-profile-border {
 	border: 3px solid #8BC34A;
 }
-
 .list-sort {
 	display: flex;
 	flex-direction: column;

@@ -22,7 +22,9 @@ public class User {
 	private char userStatus;
 	private String adminYn;
 	
-	
+	private int followers; //나를 팔로우한 사람들
+	private int followings; //내가 팔로우한 사람들
+
 	public User() {
 		super();
 	}
@@ -137,7 +139,23 @@ public class User {
 		this.adminYn = adminYn;
 	}
 	
-	
+	public int getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(int followers) {
+		this.followers = followers;
+	}
+
+	public int getFollowings() {
+		return followings;
+	}
+
+	public void setFollowings(int followings) {
+		this.followings = followings;
+	}
+
+
 	@Override
 	public String toString() {
 		return "회원 [아이디=" + userId + ", 비밀번호=" + userPw + ", 이름=" + userName + ", 닉네임="
