@@ -42,7 +42,7 @@ public class JiqooComtController {
 	   //댓글 작성
 	   @PostMapping("/jiqoo/insertComt")
 	   @ResponseBody
-	   public String insertComment(int jiqooNo, int userNo, String comtContent) {
+	   public String insertComment(int jiqooNo, String userNo, String comtContent) {
 	      Comment comment = new Comment();
 	      comment.setRefPostNo(jiqooNo);
 	      comment.setComtWriter(userNo);
