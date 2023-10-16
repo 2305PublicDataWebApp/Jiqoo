@@ -50,6 +50,13 @@ p {
 /*--------------------------------------------------------------
 # Modal
 --------------------------------------------------------------*/
+/* #joinUl { */
+/* 	padding: 0 !important; */
+/* } */
+/* .infoModal { */
+/* 	list-style: none; */
+/* } */
+
 
 .open-modal {
   background-color: #71c55d;
@@ -685,9 +692,34 @@ p {
     }
 
     #participate {
+      position: relative;
       display: flex;
       justify-content: center;
       margin-top: 20px;
+    }
+    
+    #joinInfo {
+      position: absolute;
+      left : -10px;
+      width: 90px;
+      height: 40px;
+      background-color: #8BC34A;
+      padding: 5px 10px;
+      margin-left: 10px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #joinInfo:hover {
+      background-color: #388E3C;
+      color: white;
     }
 
     #participate-btn {
@@ -710,7 +742,7 @@ p {
     #participate-btn:hover {
       background-color: #388E3C;
       color: white;
-  }
+    }
 
 
 /* 댓글 스타일 */

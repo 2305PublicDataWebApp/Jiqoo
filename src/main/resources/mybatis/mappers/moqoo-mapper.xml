@@ -19,7 +19,6 @@
 		<result property="moqooLat" column="MOQOO_LAT"/>
 		<result property="moqooLng" column="MOQOO_LNG"/>
 		<result property="moqooStatus" column="MOQOO_STATUS"/>
-		<result property="cName" column="C_NAME"/>
 		<collection property="user" resultMap="UserResultMap"></collection>
 	</resultMap>
 	
@@ -46,15 +45,35 @@
 	
 	<!-- view count 일단 default로 둠 -->
 	<insert id="insertMoqoo">
-		INSERT INTO MOQOO_TBL VALUES(SEQ_MOQOO_NO.NEXTVAL, #{category }, #{moqooW3W }, #{moqooTitle }, #{moqooContent }, #{moqooWriter }, #{moqooDay }, #{moqooJoin }, DEFAULT, DEFAULT, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT, #{cName } )
+		INSERT INTO MOQOO_TBL VALUES(SEQ_MOQOO_NO.NEXTVAL, #{moqooW3W }, #{moqooDay }, #{category }, #{moqooTitle }, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, #{moqooContent }, #{moqooJoin }, #{moqooWriter }, DEFAULT, DEFAULT, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT )
 	</insert>
 	
+	<update id="updateMoqoo">
+		UPDATE MOQOO_TBL SET MOQOO_W3W = #{moqooW3W }, MOQOO_DAY = #{moqooDay }, MOQOO_TAGS = #{category }, MOQOO_TITLE = #{moqooTitle }, MOQOO_THUM_NAME = #{moqooThumName }, MOQOO_THUM_RENAME = #{moqooThumRename }, MOQOO_THUM_PATH = #{moqooThumPath }, MOQOO_CONTENT = #{moqooContent }, MOQOO_JOIN = #{moqooJoin }, M_UPDATE_DATE = DEFAULT, M_VIEW_COUNT = DEFAULT, MOQOO_LAT = #{moqooLat }, MOQOO_LNG = #{moqooLng }, MOQOO_STATUS = DEFAULT WHERE MOQOO_NO = #{moqooNo}
+	</update>
+	
+	<update id="deleteMoqoo">
+		UPDATE MOQOO_TBL SET MOQOO_STATUS = 'N' WHERE MOQOO_NO = #{moqooNo } 
+	</update>
+
 	<select id="showSelectMoqooList" resultMap="MoqooResultMap">
 <!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = #{moqooWriter } WHERE MOQOO_STATUS = 'Y' -->
 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_STATUS = 'Y'
 	</select>
 	
-	<select id="selectMoqooByNo" resultMap="MoqooResultMap">
+	<select id="selectOneByNo" resultMap="MoqooResultMap">
 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_NO = #{moqooNo} AND MOQOO_STATUS = 'Y'
+	</select>
+
+	<select id="selectCategoryList" resultType="Category">
+		SELECT * FROM CATEGORY_TBL
+	</select>
+	
+	<select id="selectCategoryByNo" resultType="Category">
+		SELECT * FROM CATEGORY_TBL WHERE C_NAME = #{moqooCName }
+	</select>
+	
+	<select id="selectLikeCountByNo" resultType="_int">
+		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{moqooNo } AND REF_BOARD_TYPE = 'M'
 	</select>
 </mapper>

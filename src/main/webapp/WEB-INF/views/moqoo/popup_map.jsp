@@ -4,12 +4,43 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- W3W -->
-    <script type="module" defer src="https://cdn.what3words.com/javascript-components@4.1.0/dist/what3words/what3words.esm.js"></script>
-    <script nomodule defer src="https://cdn.what3words.com/javascript-components@4.1.0/dist/what3words/what3words.js"></script> 
-    <title>장소 선택</title>
+    <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>지꾸 : No.1 지도 다이어리</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="../resources/assets/img/earth-globe.png" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="../resources/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="../resources/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  
+  <!-- 부트스트랩 CSS -->
+  
+  <!-- 부트스트랩 JavaScript 및 jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  
+  <!-- Template Main CSS File -->
+  <link href="../resources/assets/css/jiqoo.css" rel="stylesheet">
+  <link href="../resources/assets/css/header.css" rel="stylesheet">
+  <link href="../resources/assets/css/footer.css" rel="stylesheet">
+
+	<!-- W3W -->
+    <script type="module" async src="https://cdn.what3words.com/javascript-components@4.1.6/dist/what3words/what3words.esm.js"></script>
+	<script nomodule async src="https://cdn.what3words.com/javascript-components@4.1.6/dist/what3words/what3words.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
         :root {
@@ -51,10 +82,30 @@
             border: none;
             box-shadow:  rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
         }
+        #search-input {
+        	position: relative;
+        }
+        
+        #info-btn {
+            width: 40px;
+		    position: absolute;
+		    right: 9px;
+		    top: 9px;
+		    border-radius: 5px;
+		    background-color: #adbecf;
+		    color: white;
+		    font-size: 15px;
+		    padding: 5px;
+		    border: none;
+		    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+		    cursor: pointer;
+		    }
+		    
         </style>
 </head>
 <body>
-    <div id="map">
+    <main id="main">
+         <div id="map">
         <what3words-map
           id="w3w-map"
           api_key="5SGMAF36"
@@ -78,72 +129,41 @@
                   placeholder="Find your address"
                   autocomplete="off"
               />
+			  <button id="info-btn" style="position: absolute;"><i class="bi bi-check-lg"></i></button>
               </what3words-autosuggest>
           </div>
           <div slot="current-location-control" id="current-location-container">
               <button>Current Location</button>
           </div>
-          <button id="convert-button">변환</button>
         </what3words-map>
       </div>
-      <button id="convert-button">변환</button>
-        <div id="coordinates">좌표:</div>
-        <div id="address">도로명 주소:</div>
-      <button onclick="closePopup()">팝업 닫기</button>
-      <script>
-        // 팝업 닫기 함수
-        function closePopup() {
-            // 현재 창을 닫습니다.
-            window.close();
-        }
-        
-    // Google Maps Geocoding 서비스 초기화
-    var geocoder = new google.maps.Geocoder();
+  </main><!-- End #main -->
+  
+  
+  <script>
+    // 팝업 닫기 함수
+    function closePopup() {
+      const w3wMap = document.getElementById("w3w-map");
+      const locationInput = document.getElementById("search-input").value;
 
-    // 입력 필드와 결과를 표시할 요소 가져오기
-    var inputElement = document.getElementById("search-input");
-    var coordinatesElement = document.getElementById("coordinates");
-    var addressElement = document.getElementById("address");
-    var convertButton = document.getElementById("convert-button");
+      // 현재 좌표와 w3w 주소를 가져옴
+      w3wMap.getLat().then(latitude => {
+        w3wMap.getLng().then(longitude => {
+          // 모달로 데이터 전달
+          const modal = window.opener.document.getElementById('insert-modal');
+          modal.querySelector('#lat').value = latitude;
+          modal.querySelector('#lng').value = longitude;
+          modal.querySelector('#location').value = locationInput;
 
-    // 변환 버튼 클릭 시 이벤트 핸들러
-    convertButton.addEventListener("click", function() {
-        var inputValue = inputElement.value;
+          // 팝업 닫기
+          window.close();
+        });
+      });
+    }
 
-        // 빈 문자열이 아닌 경우에만 변환 요청 보냄
-        if (inputValue.trim() !== "") {
-            // 3 단어 주소를 좌표로 변환
-            what3words.api.convertToCoordinates(inputValue)
-                .then(function(response) {
-                    var coordinates = response.geometry.coordinates;
-                    var latitude = coordinates[1];
-                    var longitude = coordinates[0];
-                    coordinatesElement.textContent = "좌표: " + latitude + ", " + longitude;
-
-                    // 좌표를 사용하여 도로명 주소를 가져오기
-                    var latlng = new google.maps.LatLng(latitude, longitude);
-                    geocoder.geocode({ 'latLng': latlng }, function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            if (results[0]) {
-                                var formattedAddress = results[0].formatted_address;
-                                addressElement.textContent = "도로명 주소: " + formattedAddress;
-                            } else {
-                                addressElement.textContent = "도로명 주소를 찾을 수 없음";
-                            }
-                        } else {
-                            addressElement.textContent = "도로명 주소를 찾을 수 없음";
-                        }
-                    });
-                })
-                .catch(function(error) {
-                    coordinatesElement.textContent = "변환 실패: " + error.message;
-                    addressElement.textContent = "도로명 주소: (변환 실패)";
-                });
-        } else {
-            coordinatesElement.textContent = "";
-            addressElement.textContent = "도로명 주소: (주소를 입력해주세요)";
-        }
+    document.querySelector("#info-btn").addEventListener("click", function () {
+      closePopup();
     });
-</script>
+  </script>
 </body>
 </html>

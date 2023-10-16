@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -85,150 +87,177 @@
     <!-- ======= Post ======= -->
     <div id="post" class="col-md-12 col-xxl-10 mx-auto">
       <div class="post-header">
-        <div id="post-location" class="mx-auto">어르신.현재.숲속</div>
+        <div id="post-location" class="mx-auto">${moqoo.moqooW3W }</div>
         <div class="report-button">
-          <img class="dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
+          <img class="dots" src="../resources/assets/img/dots.png" alt="" onclick="toggleReportDiv(this)">
           <div id="report-div" style="display: none;">
             <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
               <i class="bi bi-exclamation-circle"></i>
           </div>  
         </div>
       </div>
-      <div id="post-title">부대찌개 맛집</div>
+      <div id="post-title">${moqoo.moqooTitle }</div>
         <div id="writer-info">
           <div id="post-profile" class="col-lg-2 col-md-3 col-sm-3">
-            <img src="../../assets/img/profile/준표2.png" alt="프로필 이미지" class="profile-image">
+            <img src="${moqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image">
           </div>
           <div id="post-nick" class="col-lg-10 col-md-9 col-sm-9">
-            <div id="writer-name">배준표</div>
+            <div id="writer-name">${moqoo.user.userNickname }</div>
+            <input type="hidden" id="moqoo-writer" name="moqooWriter" value="${sessionScope.userId }">
             <div class="row">
-              <div class="info post-date col-lg-6 col-md-12">yyyy-mm-dd hh-mm</div>
+              <div class="info post-date col-lg-6 col-md-12">${moqoo.moqooDate }</div>
               <div class="info view-count col-lg-3 col-md-12">조회 140</div>
             </div>
           </div>
         </div>
       <hr>
-      	<div id="content">넘무 맛있다 배부르다</div>
+      	<div id="content">${moqoo.moqooContent }</div>
       
 	    <!-- 지도 들어갈 자리 -->
 	    <div id="map">
 	
 	    </div>
 	    <div>
-	      <p>모일 날짜 : <span>${moqooList.moqooDay }</span></p>
-	      <p>참여인원 : <span>${moqooList.moqooJoin }</span>/8</p>
+	      <p>모일 날짜 : <span>${moqoo.moqooDay }</span></p>
+	      <p>참여인원 : <span>3</span>/${moqoo.moqooJoin }</p>
 	    </div>
 	
 	    <div class="post-footer">
 	      <div class="heart-container">
-	        <img class="heart" src="../../assets/img/etc/heart(full).png" alt="">
+	        <img class="heart" src="../resources/assets/img/heart(empty).png" alt="">
 	        <span class="heart-count">14</span>
 	      </div>
 	      <div class="button-container">
-	        <button class="btn post-btn open-modal" data-bs-toggle="modal" data-bs-target=".modal"  id="modify-btn">수정</button>
-	        <button class="btn post-btn" id="delete-btn">삭제</button>
+			<c:if test="${moqoo.moqooWriter eq userId }">
+			    <c:url var="moqooDelUrl" value="/moqoo/delete">
+				  <!-- 내가 쓴 게시글만 지울 수 있게 확인하기 위한 코드 -->
+				  <c:param name="moqooNo" value="${moqoo.moqooNo }"></c:param>
+				  <c:param name="moqooWriter" value="${moqoo.moqooWriter }"></c:param>
+				</c:url>
+		          <button class="btn post-btn open-modal" data-bs-toggle="modal" data-bs-target=".modal"  id="modify-btn">수정</button>
+		          <button class="btn post-btn" id="delete-btn" onclick="deleteMoqoo('${moqooDelUrl }');">삭제</button>
+	      	</c:if>
 	      </div>
 	    </div>
 	    <div id="participate">
+	      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
 	      <button class="btn post-btn" id="participate-btn">참여하기</button>
 	    </div>
-	  </div>
-
-      <!-- ======= Modal ======= -->
-      <div class="modal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content" style="background-color: #6DBE45; color: #fff;">
-            <div class="modal-header">
-              <h5 class="modal-title">게시물 입력</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <!-- 게시물 입력 폼 -->
-              <form>
-                <div class="mb-3 col-lg-5 mx-auto location-container">
-                  <input type="text" class="form-control" id="location" name="location" value="할아버지.집.가고싶다" readonly>
-                  <button id="open-map-btn">+</button>
-                </div>
-                <div class="mb-3 row date-tag-container">
-                  <div class="date-container col-md-3">
-                    <input type="date" class="form-control" id="date" name="date" required>
-                  </div>
-                  <div class="col-md-2 c-btn">
-                    <span>카테고리</span>
-                    <i class="bi bi-caret-down-fill" onclick="toggleCC()"></i>
-                  </div>
-                    <div class="category-container" style="display: none;">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category1" value="option1" required>
-                        <label class="form-check-label" for="category1">
-                          <img class="tag-img" src="../../assets/img/rice.png" alt="밥">
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category2" value="option2" required>
-                        <label class="form-check-label" for="category2">
-                          <img class="tag-img" src="../../assets/img/alcohol.png" alt="술">
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category3" value="option3" required>
-                        <label class="form-check-label" for="category3">
-                          <img class="tag-img" src="../../assets/img/study.png" alt="공부">
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category4" value="option4" required>
-                        <label class="form-check-label" for="category4">
-                          <img class="tag-img" src="../../assets/img/exercise.png" alt="운동">
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category5" value="option5" required>
-                        <label class="form-check-label" for="category5">
-                          <img class="tag-img" src="../../assets/img/movie.png" alt="영화">
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category6" value="option6" required>
-                        <label class="form-check-label" for="category6">
-                          <img class="tag-img" src="../../assets/img/pet.png" alt="반려동물">
-                        </label>
-                      </div>
-                    </div>
-                    <!-- 다른 옵션들도 동일한 방식으로 추가 -->
-               	  </div>
-              
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="title" name="title" placeholder="제목" required>
-                  </div>
-                  <div class="mb-3" style="display: flex;">
-                    <div>
-                      <input type="file" class="custom-file-input" id="thum" name="uploadFile" placeholder="썸네일" required>
-                      <label for="thum" class="custom-button">파일 선택</label>
-                    </div>
-                    <!-- 파일 정보 표시 영역 -->
-                    <div id="fileInfo"></div>
-                  </div>
-                  <div class="mb-3">
-                    <textarea id="summernote" name="content" required></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <input type="number" min="2" max="8" class="form-control" id="people" name="people" placeholder="참여인원" required>
-                  </div>
-                </form>
+	  
+	  
+	  
+	  <!-- 참여현황 모달 -->
+        <div class="modal joinInfo" id="joinModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-md">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">참여 현황</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <table>
+              	  <tr>
+   			        <td><img src="${moqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image"></td>
+   			        <td>아이디 : ${moqooUser.moqooUserId }</td>
+   			        <td>나이 :  ${moqoo.user.userBirth }</td>
+   			        <td>성별 : ${moqoo.user.userGender }</td>
+   			        <td><button onclick="ok();">승인</button><button onclick="sorry();">거절</button></td>
+       		      </tr>
+                </table>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn reset" data-bs-dismiss="modal">취소</button>
-                <button type="button" class="btn insert">등록</button>
+                <button type="button" class="btn send-report">보내기</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ======= Modal ======= -->
+      <div class="modal" tabindex="-1" id="insert-modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content"
+					style="background-color: #6DBE45; color: #fff;">
+					<div class="modal-header">
+						<h5 class="modal-title">게시물 입력</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<!-- 게시물 수정 폼 -->
+						<form action="/moqoo/update" method="post" id="moqooForm" enctype="multipart/form-data">
+							<input type="hidden" name="moqooNo" value="${moqoo.moqooNo }">
+							<div class="mb-3 col-lg-5 mx-auto location-container">
+								<input type="text" class="form-control" id="location"
+									name="moqooW3W" value="${moqoo.moqooW3W }" readonly>
+								<button id="open-map-btn">+</button>
+							</div>
+							<div class="mb-3 row date-tag-container">
+								<div class="date-container col-md-3">
+									<input type="date" class="form-control" id="date" name="moqooDay" value="${moqoo.moqooDay }" required>
+								</div>
+								<div class="col-md-2 c-btn">
+									<span>카테고리</span> <i class="bi bi-caret-down-fill"
+										onclick="toggleCC()"></i>
+								</div>
+								<div class="category-container" style="display: none;">
+									<div class="category-list">
+										<c:forEach var="categoryList" items="${categoryList }">
+											<div class="form-check category">
+												<input class="form-check-input" type="radio" name="category"
+													id="${categoryList.cName }" value="${categoryList.cName }" required> 
+													<label class="form-check-label"
+													for="${categoryList.cName }"> <img class="tag-img"
+													src="${categoryList.cImgPath }"
+													alt="${categoryList.cName }">
+												</label>
+											</div>
+										</c:forEach>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="lat" name="moqooLat" value="${moqoo.moqooLat }">
+							<input type="hidden" id="lng" name="moqooLng" value="${moqoo.moqooLng }">
+							<input type="hidden" id="moqoo-writer" name="moqooWriter" value="${sessionScope.userId }">
+							<div class="mb-3">
+								<input type="text" class="form-control" id="title" name="moqooTitle" placeholder="제목" value="${moqoo.moqooTitle }" required>
+							</div>
+							<div class="mb-3" style="display: flex;">
+								<div>
+									<input type="file" class="custom-file-input" id="thum"
+										name="uploadFile" placeholder="썸네일" required> 
+										<label for="thum" class="custom-button">파일 선택</label>
+										<!-- 		기존 업로드 파일 체크할 때 사용 --><!-- 파일은 수정 안 할 때 필요함  -->
+										<input type="hidden" name="moqooThumName"   value="${moqoo.moqooThumName }">
+										<input type="hidden" name="moqooThumRename" value="${moqoo.moqooThumRename }">
+										<input type="hidden" name="moqooThumPath"   value="${moqoo.moqooThumPath }">
+								</div>
+								<!-- 파일 정보 표시 영역 -->
+								<div id="fileInfo"></div>
+							</div>
+							<div class="mb-3">
+								<textarea id="summernote" name="moqooContent" required>${moqoo.moqooContent }</textarea>
+							</div>
+							<div class="mb-3">
+								<input type="number" min="2" max="8" class="form-control"
+									id="people" name="moqooJoin" placeholder="참여인원" value="${moqoo.moqooJoin }" required>
+							</div>
+							<div class="modal-footer">
+								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+								<button type="submit" class="btn insert">등록</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<!-- 댓글 -->
         <div class="comment-section col-md-12 col-xxl-10 mx-auto">
-		  <span>댓글</span><span>3 댓글 갯수</span>
+		  <span>댓글</span><span>3</span>
           <ul class="comment-list">
+          <c:forEach var="comt" items="${comtList }">
             <li class="comment">
 			  <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
 			  <div id="report-div" style="display: none;">
@@ -236,9 +265,9 @@
 				  <i class="bi bi-exclamation-circle"></i>
 			  </div>
 			  <div class="user-info">
-                <img src="../../assets/img/profile/준표프사.png" alt="User 1">
-                <span class="username">준표</span>
-                <span class="date">2023-10-07</span>
+                <img src="${moqoo.user.userPhotoPath }" alt="User 1">
+                <span class="username">${moqoo.user.userNickname }</span>
+                <span class="date">${comt.comtDate }</span>
                 <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a>
                 <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
                 <a href="#" class="comt">삭제</a>
@@ -248,19 +277,18 @@
                 <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
                 <i class="bi bi-exclamation-circle"></i>
               </div>
-              <p class="comment-text">첫번째 댓글임~~~~~~~~~~~~~~~~~~~~</p>
+              <p class="comment-text">${comt.comtContent }</p>
               <!-- ■■■■■ 댓글 수정 폼 ■■■■■ -->
               <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>value값</textarea>
+                <textarea>${comt.comtContent }</textarea>
                 <button class="btn postbtn" id="mod-submit-btn">등록</button>
               </form>
               <!-- ■■■■■ 대댓글 입력 폼 ■■■■■ -->
               <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>value값</textarea>
+                <textarea>댓글을 입력하세요</textarea>
                 <button class="btn postbtn" id="re-comt-submit-btn">등록</button>
               </form>
             </li>
-<!--             // 첫번째 댓글의 답글 -->
             <li class="comment reply-comment">
               <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
               <div id="report-div" style="display: none;">
@@ -268,14 +296,14 @@
                 <i class="bi bi-exclamation-circle"></i>
               </div>
               <div class="user-info">
-                <img src="../../assets/img/profile/준표프사.png" alt="User 2">
-                <span class="username">지후</span>
-                <span class="date">2023-10-06</span>
+                <img src="${moqoo.user.userPhotoPath }" alt="User 2">
+                <span class="username">${moqoo.user.userNickname }</span>
+                <span class="date">${comt.comtDate }</span>
                 <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a>
                 <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
                 <a href="#" class="comt">삭제</a>
               </div>
-              <p class="comment-text">나눈 첫번째 댓글의 답글~~~~~~~~</p>
+              <p class="comment-text">${comt.comtContent }</p>
               <!-- 대댓글 입력 폼 -->
               <form action="" method="" class="re-comment-form col-md-12 col-xxl-10 mx-auto">
                 <textarea></textarea>
@@ -283,28 +311,13 @@
               </form>
               <!-- 대댓글 수정 폼 -->
               <form action="" method="" class="re-mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>value값</textarea>
+                <textarea>${comt.comtContent }</textarea>
                 <button class="btn postbtn" id="re-mod-submit-btn">등록</button>
               </form>
             </li>
+          </c:forEach>
+<!--             // 첫번째 댓글의 답글 -->
             <!--  --크게 forEach하고 답글만 따로 또 forEach하면 되나?----여기까지 반복------------------------ -->
-            
-            <li class="comment">
-              <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
-              <div id="report-div" style="display: none;">
-                <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
-                <i class="bi bi-exclamation-circle"></i>
-              </div>
-              <div class="user-info">
-                <img src="../../assets/img/profile/준표프사.png" alt="User 2">
-                <span class="username">지후</span>
-                <span class="date">2023-10-06</span>
-                <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a>
-                <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
-                <a href="#" class="comt">삭제</a>
-              </div>
-              <p class="comment-text">나눈 두번째 댓글~~~~~~~~~~~~</p>
-            </li>
           </ul>
         </div>
         <!-- 페이징처리할 div -->
@@ -349,6 +362,7 @@
           </div>
         </div>
       </div>
+     </div>
     </main><!-- End #main -->
     
     <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
@@ -367,116 +381,189 @@
   <!-- Template Main JS File -->
   <script src="../resources/assets/js/main.js"></script>
 
+
+  <script>
+  	function deleteMoqoo(moqooDelUrl) {
+		location.href = moqooDelUrl
+	}
+  </script>
   <!-- 썸머노트 -->
-<script>
-  $(document).ready(function() {
-  //여기 아래 부분
-      $('#summernote').summernote({
-          height: 300,                 // 에디터 높이
-          minHeight: null,             // 최소 높이
-          maxHeight: null,             // 최대 높이
-          focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-          lang: "ko-KR",					// 한글 설정
-          placeholder: '내용을 입력하세요.',	//placeholder 설정
-          toolbar: [
-                  // [groupName, [list of button]]
-                  ['fontname', ['fontname']],
-                  ['fontsize', ['fontsize']],
-                  ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-                  ['color', ['forecolor','color']],
-                  ['table', ['table']],
-                  ['para', ['ul', 'ol', 'paragraph']],
-                  ['height', ['height']],
-                  ['insert',['picture','link','video']],
-                  ['view', ['fullscreen', 'help']]
-              ],
-              fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-              fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+	<script>
+    $(document).ready(function() {
+    //여기 아래 부분
+        $('#summernote').summernote({
+            height: 300,                 // 에디터 높이
+            minHeight: null,             // 최소 높이
+            maxHeight: null,             // 최대 높이
+            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            lang: "ko-KR",					// 한글 설정
+            placeholder: '내용을 입력하세요.',	//placeholder 설정
+            toolbar: [
+                    // [groupName, [list of button]]
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+                    ['color', ['forecolor','color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert',['picture','link','video']],
+                    ['view', ['fullscreen', 'help']]
+                ],
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+		        callbacks:{ 
+		            onImageUpload : function(files){ 
+		               uploadSummernoteImageFile(files[0],this); 
+		           } 
+		        } 
+        });
+        function uploadSummernoteImageFile(file,editor){ 
+            data = new FormData(); 
+            data.append("file",file); 
+            $.ajax({ 
+        data:data, 
+        type:"POST", 
+        url:"moqoo/uploadSummernoteImageFile", 
+        /* dataType:"JSON", */ 
+        enctype:'multipart/form-data',
+        contentType:false, 
+        processData:false
+        
+      }).done(function(data) {
+      	console.log(data)
+      	var imgNode = $("<img>");
+      	imgNode.attr("src", data);
+      	$(".note-editable").append(imgNode);
+      }).fail(function(a,b,c){
+      	console.log(a);
+      	console.log(b);
+      	console.log(c);
       });
-  });
-</script>
+          }
+    
+    });
+  </script>
 
 <!-- 카카오맵 -->
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=86452fa459f600c914e3aa3a57039abd"></script>
-<script>
-  // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
-  var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+	<script type="text/javascript"
+		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee58f1de69883c91d0d43b37d1a713ff&libraries=services,clusterer,drawing"></script>
+	<script>
+    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
-  var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-      mapOption = { 
-          center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
-          level: 3 // 지도의 확대 레벨
-      };
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = { 
+            center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };
 
-  // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-  var map = new kakao.maps.Map(mapContainer, mapOption); 
-
-  var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
-    imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+    var map = new kakao.maps.Map(mapContainer, mapOption); 
+    
+    
+ 	// ■■■■■■■■■■■■■ 지도 위에 마커 생성하기 ■■■■■■■■■■■■■
+    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
+    imageSize = new kakao.maps.Size(50, 60), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-      
-  // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-  var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-      markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
 
-  // 마커를 생성합니다
-  var marker = new kakao.maps.Marker({
-      position: markerPosition, 
-      image: markerImage // 마커이미지 설정 
-  });
+	// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+	    markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+	
+	// 마커를 생성합니다
+	var marker = new kakao.maps.Marker({
+	  position: markerPosition,
+	  image: markerImage // 마커이미지 설정 
+	});
+	
+	// 마커가 지도 위에 표시되도록 설정합니다
+	marker.setMap(map);  
+	
+	// 커스텀 오버레이에 표시할 컨텐츠 입니다
+	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
+	// 별도의 이벤트 메소드를 제공하지 않습니다 
+	var content = '<div class="wrap">' + 
+	            '    <div class="info">' + 
+	            '        <div class="title">' + 
+	            '            카카오 스페이스닷원' + 
+	            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+	            '        </div>' + 
+	            '        <div class="body">' + 
+	            '            <div class="img">' +
+	            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+	            '           </div>' + 
+	            '            <div class="desc">' + 
+	            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
+	            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
+	            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+	            '            </div>' + 
+	            '        </div>' + 
+	            '    </div>' +    
+	            '</div>';
+	
+    // 마커 위에 커스텀오버레이를 표시합니다
+   	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+   	var overlay = new kakao.maps.CustomOverlay({
+   	    content: content,
+//    	    map: map,  // 커스텀 오버레이 숨김
+   	    position: marker.getPosition()       
+   	});
+	
+	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+	kakao.maps.event.addListener(marker, 'click', function() {
+	    overlay.setMap(map);
+	});
+	    
+	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+	function closeOverlay() {
+	    overlay.setMap(null);     
+	}    
+    
+    
 
-  // 마커가 지도 위에 표시되도록 설정합니다
-  marker.setMap(map);  
+//     // 장소 검색 객체를 생성합니다
+//     var ps = new kakao.maps.services.Places(); 
 
-  // 장소 검색 객체를 생성합니다
-  var ps = new kakao.maps.services.Places(); 
+//     // 키워드로 장소를 검색합니다
+//     ps.keywordSearch('이태원 맛집', placesSearchCB); 
 
-  // 키워드로 장소를 검색합니다
-  ps.keywordSearch('이태원 맛집', placesSearchCB); 
+//     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+//     function placesSearchCB (data, status, pagination) {
+//         if (status === kakao.maps.services.Status.OK) {
 
-  // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-  function placesSearchCB (data, status, pagination) {
-      if (status === kakao.maps.services.Status.OK) {
+//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+//             // LatLngBounds 객체에 좌표를 추가합니다
+//             var bounds = new kakao.maps.LatLngBounds();
 
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-          // LatLngBounds 객체에 좌표를 추가합니다
-          var bounds = new kakao.maps.LatLngBounds();
+//             for (var i=0; i<data.length; i++) {
+//                 displayMarker(data[i]);    
+//                 bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+//             }       
 
-          for (var i=0; i<data.length; i++) {
-              displayMarker(data[i]);    
-              bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-          }       
+//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+//             map.setBounds(bounds);
+//         } 
+//     }
+    
+ 	
+  </script>
+  
+  <script>
+    // 버튼 클릭 시 팝업 창 열기
+    document.getElementById("open-map-btn").onclick = function() {
+      // 팝업 창을 열기 위한 윈도우.open 함수 사용
+      window.open("popup_map", "Popup", "width=1200,height=800,resizable=no");
+    };
+  </script>
 
-          // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-          map.setBounds(bounds);
-      } 
-  }
-
-  // 지도에 마커를 표시하는 함수입니다
-  function displayMarker(place) {
-      
-      // 마커를 생성하고 지도에 표시합니다
-      var marker = new kakao.maps.Marker({
-          map: map,
-          position: new kakao.maps.LatLng(place.y, place.x) 
-      });
-
-      // 마커에 클릭이벤트를 등록합니다
-      kakao.maps.event.addListener(marker, 'click', function() {
-          // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-          infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-          infowindow.open(map, marker);
-      });
+  <script>
+    // 카테고리 열기
+    function toggleCC() {
+      const categoryContainer = document.querySelector(".category-container");
+      categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
     }
-</script>
-
-<script>
-  // 카테고리 열기
-  function toggleCC() {
-    const categoryContainer = document.querySelector(".category-container");
-    categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
-  }
-</script>
+  </script>
 
 <script>
   // JavaScript 코드를 추가합니다.
@@ -489,19 +576,43 @@
     });
   });
 
-  // dropdown
-  function toggleDropdown() {
-    var dropdown = document.getElementById("dropdown");
-    if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-    } else {
-        dropdown.style.display = "block";
-    }
-  }
+  
+  
+  // 이전 날짜 선택 안되게
+  $("#moqooForm").submit(function(e) {
+      var now = new Date();
+      var selectDate = new Date($("#date").val());
+		let pmContent = $("#summernote");
+		let regContent = pmContent.val().replace(/<[^>]*>/g, '');
+      // 종료일이 시작일보다 과거이거나 같은 경우 유효성 체크 메시지 표시
+      if (selectDate < now) {
+			e.preventDefault();
+          alert("과거의 날짜는 선택할 수 없습니다.");
+      } else if (regContent === null || regContent.trim().length === 0) {
+			e.preventDefault();
+			alert("내용을 입력해주세요");
+		} else {
+			submit(); // submit 함수 호출 (변경된 코드에는 없지만 필요한 경우 추가하세요)
+		}
+  });
 
-  // 이미지 요소를 클릭하면 toggleDropdown 함수를 호출
-  var dotsImage = document.getElementById("report-dots");
-  dotsImage.addEventListener("click", toggleDropdown);
+  
+  
+//   // 이미지 요소를 클릭하면 toggleDropdown 함수를 호출
+//   var dotsImage = document.getElementById("report-dots");
+//   dotsImage.addEventListener("click", toggleDropdown);
+  
+// //dropdown
+//   function toggleDropdown() {
+//     var dropdown = document.getElementById("dropdown");
+//     if (dropdown.style.display === "block") {
+//         dropdown.style.display = "none";
+//     } else {
+//         dropdown.style.display = "block";
+//     }
+//   }
+
+
 
   // 댓글 수정 & 답글 버튼 누를 때 동작
   var replyFormVisible = false; // 대댓글 폼 상태 변수
@@ -545,19 +656,6 @@
     }
   }
 
-  // 파일 선택 이벤트 리스너 추가
-  document.getElementById('thum').addEventListener('change', function () {
-  
-    // 선택된 파일 가져오기
-  const selectedFile = this.files[0];
-
-  // 파일 정보 표시
-  if (selectedFile) {
-      document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
-  } else {
-      document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
-  }
-  });
 
   // 신고버튼 등장
   var rePortVisible = false;  // 신고 div 상태 변수
@@ -587,31 +685,51 @@
 
 
 
+//■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
   // 파일 선택 이벤트 리스너 추가
   document.getElementById('thum').addEventListener('change', function () {
-    
-  // 선택된 파일 가져오기
-  const selectedFile = this.files[0];
+    // 선택된 파일 가져오기
+    const selectedFile = this.files[0];
 
-  // 파일 정보 표시
-  if (selectedFile) {
-      document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
-  } else {
-      document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
-  }
-  });
-
-
-  // 신고 모달
-  var selectElement = document.getElementById("reportSelect");
-  var textareaElement = document.getElementById("customReason");
-  selectElement.addEventListener("change", function() {
-    if (selectElement.value === "etc") {
-      textareaElement.style.display = "block";
+    // 파일 정보 표시
+    if (selectedFile) {
+        document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
     } else {
-      textareaElement.style.display = "none";
+        document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
     }
   });
+
+</script>
+
+<script>
+	$(document).ready(function(){
+		var joinBtn = $("#participate-btn");
+		joinBtn.on("click",function(){
+			var refMoqooNo = "${moqoo.moqooNo }";
+			var userId = "${sessionScope.userId}";
+			
+			$.ajax({
+				url : "/moqoo/post",
+				data : {refMoqooNo : refMoqooNo, userId : userId},
+				type : "POST",
+				success : function(data){
+					if(data == "true"){
+						alert("참여신청이 완료되었습니다.");
+					}
+					else if(data == "false"){
+						alert("참여신청이 완료되지 않았습니다.");
+					}
+					else {
+						alert("오류! 관리자에게 문의 바랍니다.");
+					}
+					
+				},
+				error : function(){
+					alert("관리자에게 문의 바랍니다.");
+				}
+			});
+		});
+	});
 </script>
 </body>
 

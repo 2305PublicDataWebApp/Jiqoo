@@ -21,10 +21,9 @@ public class Moqoo {
 	private Timestamp moqooDate;
 	private  Timestamp mUpdateDate;
 	private int mViewCount;
-	private int moqooLat;
-	private int moqooLng;
+	private double moqooLat;
+	private double moqooLng;
 	private char moqooStatus;
-	private String cName;
 	private User user;  // user컬럼 목록
 	
 	
@@ -112,16 +111,16 @@ public class Moqoo {
 	public void setmViewCount(int mViewCount) {
 		this.mViewCount = mViewCount;
 	}
-	public int getMoqooLat() {
+	public double getMoqooLat() {
 		return moqooLat;
 	}
-	public void setMoqooLat(int moqooLat) {
+	public void setMoqooLat(double moqooLat) {
 		this.moqooLat = moqooLat;
 	}
-	public int getMoqooLng() {
+	public double getMoqooLng() {
 		return moqooLng;
 	}
-	public void setMoqooLng(int moqooLng) {
+	public void setMoqooLng(double moqooLng) {
 		this.moqooLng = moqooLng;
 	}
 	public char getMoqooStatus() {
@@ -130,12 +129,12 @@ public class Moqoo {
 	public void setMoqooStatus(char moqooStatus) {
 		this.moqooStatus = moqooStatus;
 	}
-	public String getcName() {
-		return cName;
-	}
-	public void setcName(String cName) {
-		this.cName = cName;
-	}
+//	public String getcName() {
+//		return cName;
+//	}
+//	public void setcName(String cName) {
+//		this.cName = cName;
+//	}
 	public User getUser() {
 		return user;
 	}
@@ -150,7 +149,7 @@ public class Moqoo {
 				+ moqooDay + ", 참여자=" + moqooJoin + ", 모임작성일=" + moqooDate + ", 모임수정일=" + mUpdateDate
 				+ ", 썸네일=" + moqooThumName + ", 썸네일새이름=" + moqooThumRename + ", 썸네일주소="
 				+ moqooThumPath + ", 조회수=" + mViewCount + ", 위도=" + moqooLat + ", 경도=" + moqooLng
-				+ ", 사용여부=" + moqooStatus + ", 카테고리이름=" + cName + ", 유저컬럼들=" + user + "]";
+				+ ", 사용여부=" + moqooStatus + ", 유저컬럼들=" + user + "]";
 	}
 	
 }

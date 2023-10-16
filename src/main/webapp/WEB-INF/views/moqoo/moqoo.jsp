@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -272,8 +273,10 @@
 							<div class="title">${moqooList.moqooTitle }</div>
 							<div class="content">${moqooList.moqooContent }</div>
 							<div class="row">
-								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickName }</div>
-								<div class="info col-lg-6 col-md-12">${moqooList.moqooDate }</div>
+								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickname }</div>
+								
+								<div class="info col-lg-6 col-md-12">
+									<fmt:formatDate pattern="yyyy-MM-dd" value="${moqooList.moqooDate }"/></div>
 								<div class="heart-container col-lg-3 col-md-12">
 									<img class="heart"
 										src="../resources/assets/img/heart(full).png" alt="">
@@ -617,18 +620,18 @@
   });
  
 	    
-// 	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
-// 	  // 현재 날짜를 가져오는 함수
-// 	  function getTodayDate() {
-// 	      const today = new Date();
-// 	      const year = today.getFullYear();
-// 	      const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-// 	      const day = today.getDate().toString().padStart(2, '0');
-// 	      return `${year}-${month}-${day}`;
-// 	  }
+	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
+	  // 현재 날짜를 가져오는 함수
+	  function getTodayDate() {
+	      const today = new Date();
+	      const year = today.getFullYear();
+	      const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+	      const day = today.getDate().toString().padStart(2, '0');
+	      return `${year}-${month}-${day}`;
+	  }
 	
-// 	  // 오늘 날짜를 가져와서 dateInput 요소의 min 속성에 할당
-// 	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
+	  // 오늘 날짜를 가져와서 dateInput 요소의 min 속성에 할당
+	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
 	
 	
 	  // ■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
