@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
+import com.jiqoo.user.domain.User;
 
 public interface ChatService {
 
@@ -35,12 +36,29 @@ public interface ChatService {
 	int insertChatMessage(ChatMessage chatMessage);
 
 	/**
+	 * 유저 아이디로 채팅방 초대 Service
+	 * 
+	 * @param chatNo
+	 * @param userId
+	 * @return int
+	 */
+	int insertChatUserByChatNo(int chatNo, String userId);
+
+	/**
 	 * 채팅방 연결 해제시 마지막 접속시간 업데이트 Service
 	 * 
 	 * @param chatUser
 	 * @return int
 	 */
 	int updateChatLastDate(ChatUser chatUser);
+
+	/**
+	 * 채팅방 나가기 Service 
+	 * 
+	 * @param chatUser
+	 * @return int
+	 */
+	int deleteChatUserById(ChatUser chatUser);
 
 	/**
 	 * 읽지 않은 메시지 갯수 조회 Service
@@ -55,8 +73,33 @@ public interface ChatService {
 	 * 읽지 않은 메시지 갯수 Service
 	 * 
 	 * @param chatUser
-	 * @return
+	 * @return int
 	 */
 	int selectUnreadMsgCount(ChatUser chatUser);
+
+	/**
+	 * 메시지 ID로 유저 정보 조회 Service
+	 * 
+	 * @param userId
+	 * @return User
+	 */
+	User selectMsgSenderInfo(String userId);
+
+	/**
+	 * 채팅방별 전체 참여자 조회 Service
+	 * 
+	 * @param chatNo
+	 * @return List<User>
+	 */
+	List<User> selectAllUserByChatNo(int chatNo);
+
+	/**
+	 * 초대할 유저 검색 Service
+	 * @param chatNo 
+	 * 
+	 * @param user
+	 * @return List<User>
+	 */
+	List<User> selectUsersByKeyword(int chatNo, String user);
 
 }

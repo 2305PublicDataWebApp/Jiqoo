@@ -1,18 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ChatMapper">
+	<resultMap type="ChatRoom" id="chatRoomResultMap">
+		<id 		property="chatNo" 			column="CHAT_NO"/>
+		<result 	property="chatName" 		column="CHAT_NAME"/>
+		<result 	property="refMoqooNo" 		column="REF_MOQOO_NO"/>
+		<result 	property="cCreateDate" 		column="C_CREATE_DATE"/>
+		<collection property="chatMessage" 		resultMap="chatMessageResultMap"></collection>
+	</resultMap>
+	<resultMap type="ChatMessage" id="chatMessageResultMap">
+		<id 	property="msgNo" 		column="MSG_NO"/>
+		<result property="refChatNo" 	column="REF_CHAT_NO"/>
+		<result property="msgSenderId" 	column="MSG_SENDER_ID"/>
+		<result property="msgContent" 	column="MSG_CONTENT"/>
+		<result property="msgSendDate" 	column="MSG_SEND_DATE"/>
+		<collection property="user" resultMap="userResultMap"></collection>
+	</resultMap>
+	<resultMap type="User" id="userResultMap">
+		<id 	property="userId" 			column="USER_ID"/>
+		<result property="userPw" 			column="USER_PW"/>
+		<result property="userName" 		column="USER_NAME"/>
+		<result property="userNickname" 	column="USER_NICKNAME"/>
+		<result property="userEmail" 		column="USER_EMAIL"/>
+		<result property="platformType" 	column="PLATFORM_TYPE"/>
+		<result property="userGender" 		column="USER_GENDER"/>
+		<result property="userBirth" 		column="USER_BIRTH"/>
+		<result property="userTel" 			column="USER_TEL"/>
+		<result property="userInfo" 		column="USER_INFO"/>
+		<result property="userPhotoName" 	column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" 	column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" 	column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" 		column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" 		column="U_DELETE_DATE"/>
+		<result property="userStatus" 		column="USER_STATUS"/>
+		<result property="adminYn" 			column="ADMIN_YN"/>
+	</resultMap>
 	<insert id="insertChatMessage">
 		INSERT INTO CHAT_MSG_TBL VALUES(SEQ_MSG_NO.NEXTVAL, #{refChatNo}, #{msgSenderId}, #{msgContent}, DEFAULT)
+	</insert>
+	<insert id="insertChatUserByChatNo" parameterType="Map">
+		INSERT INTO CHAT_USER_TBL VALUES(#{chatNo}, #{userId}, DEFAULT)
 	</insert>
 	<update id="updateChatLastDate">
 		UPDATE CHAT_USER_TBL SET CHAT_LAST_DATE = DEFAULT WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId}
 	</update>
-	<select id="selectChatRoomById" resultType="ChatRoom">
-		SELECT * FROM CHAT_ROOM_TBL
-		WHERE CHAT_NO IN (SELECT REF_CHAT_NO FROM CHAT_USER_TBL WHERE USER_ID=#{userId})
+	<delete id="deleteChatUserById">
+		DELETE FROM CHAT_USER_TBL WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId}
+	</delete>
+	<select id="selectChatRoomById" resultMap="chatRoomResultMap">
+		SELECT *
+		FROM CHAT_ROOM_TBL R
+		JOIN CHAT_MSG_TBL M ON R.CHAT_NO = M.REF_CHAT_NO
+		WHERE M.MSG_NO = (
+		    SELECT MAX(MSG_NO)
+		    FROM CHAT_MSG_TBL
+		    WHERE REF_CHAT_NO = R.CHAT_NO
+		) AND R.CHAT_NO IN (SELECT REF_CHAT_NO FROM CHAT_USER_TBL WHERE USER_ID=#{userId})
 	</select>
-	<select id="selectChatMessageByNo" resultType="ChatMessage">
-		SELECT * FROM CHAT_MSG_TBL WHERE REF_CHAT_NO = #{chatNo}
+	<select id="selectChatMessageByNo" resultMap="chatMessageResultMap">
+		SELECT * FROM CHAT_MSG_TBL
+		JOIN USER_TBL ON MSG_SENDER_ID = USER_ID
+		WHERE REF_CHAT_NO = #{chatNo}
 	</select>
 	<select id="selectCountUnreadMsg" resultType="java.lang.Integer" parameterType="Map">
 		SELECT COUNT(*) FROM CHAT_MSG_TBL
@@ -23,5 +71,19 @@
 		SELECT COUNT(*) FROM CHAT_MSG_TBL
 		JOIN CHAT_USER_TBL USING(REF_CHAT_NO)
 		WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId} AND CHAT_LAST_DATE &lt; MSG_SEND_DATE
+	</select>
+	<select id="selectMsgSenderInfo" resultType="User">
+		SELECT * FROM USER_TBL WHERE USER_ID = #{userId}
+	</select>
+	<select id="selectAllUserByChatNo" resultType="User">
+		SELECT U.* FROM CHAT_USER_TBL CU
+		JOIN USER_TBL U ON CU.USER_ID = U.USER_ID
+		WHERE CU.REF_CHAT_NO = #{chatNo}
+	</select>
+	<select id="selectUsersByKeyword" parameterType="Map" resultType="User">
+		SELECT * FROM 
+		(SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' AND USER_STATUS = 'Y' 
+				AND USER_ID NOT IN (SELECT USER_ID FROM CHAT_USER_TBL WHERE REF_CHAT_NO = #{chatNo}))
+		WHERE USER_ID LIKE '%'||#{user}||'%' OR USER_NICKNAME LIKE '%'||#{user}||'%'
 	</select>
 </mapper>

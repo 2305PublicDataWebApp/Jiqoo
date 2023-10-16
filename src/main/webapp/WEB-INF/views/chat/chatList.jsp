@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -122,6 +123,7 @@
 								<c:forEach items="${chatRoomList }" var="chatRoom">
 									<li class="a_active" id="chat-room-${chatRoom.chatRoom.chatNo }"><input type="hidden"
 										class="chat-room-id" value="${chatRoom.chatRoom.chatNo }">
+										<input type="hidden" class="chat-room-name" value="${chatRoom.chatRoom.chatName }">
 										<div class="d-flex bd-highlight">
 											<div class="img_cont">
 												<img src="../resources/assets/img/basozan.png"
@@ -131,11 +133,25 @@
 											<div class="user_info">
 												<div class="col d-flex justify-content-between">
 													<span>${chatRoom.chatRoom.chatName }</span><br>
-													<p class="user_info_time"
-														style="font-size: 16px; color: #5f5f5f;">${chatRoom.chatRoom.cCreateDate }</p>
+													<fmt:formatDate value="${chatRoom.chatRoom.chatMessage.msgSendDate}" pattern="yyyy-MM-dd" var="formattedDate" />
+													<c:choose>
+													  <c:when test="${formattedDate == currentDate}">
+													    <!-- 오늘인 경우 -->
+													    <fmt:formatDate value="${chatRoom.chatRoom.chatMessage.msgSendDate}" pattern="a h:mm" var="formattedTime" />
+													    <p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">${formattedTime}</p>
+													  </c:when>
+													  <c:otherwise>
+													    <!-- 오늘이 아닌 경우 -->
+													    <p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">${formattedDate}</p>
+													  </c:otherwise>
+													</c:choose>
+													
+													
+													<%-- <p class="user_info_time"
+														style="font-size: 16px; color: #5f5f5f;">${chatRoom.chatRoom.chatMessage.msgSendDate }</p> --%>
 												</div>
 												<div class="col d-flex justify-content-between">
-													<p>그래요</p>
+													<p>${chatRoom.chatRoom.chatMessage.msgContent }</p>
 													<c:if test="${chatRoom.unreadMsgCount != 0 }">
 													<p id="unreadCount-${chatRoom.chatRoom.chatNo }"
 													style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">
@@ -162,7 +178,7 @@
 							</div>
 							<div class='text-center'>
 								<p>
-									<span style='color: #388E3C'>${userId }</span>님 환영합니다!<br>목록을
+									<span style='color: #388E3C'>${userNickName }</span>님 환영합니다!<br>목록을
 									클릭하여 채팅을 시작해보세요.
 								<p>
 							</div>
@@ -176,8 +192,8 @@
 											class="online_icon"></span>
 									</div>
 									<div class="user_info">
-										<span>바소잔</span>
-										<p>온라인</p>
+										<span id="chatName"></span>
+										<p id="chat-users"></p>
 									</div>
 
 								</div>
@@ -187,7 +203,10 @@
 									<ul>
 										<li><a href="#"><i class="bi bi-person-vcard"></i>
 												프로필 보기</a></li>
-										<li><a href="#"><i class="bi bi-x-circle"></i> 채팅방
+										<li><a href="#" data-bs-toggle="modal" data-bs-target="#inviteModal">
+											<i class="bi bi-person-add"></i> 초대하기</a>
+										</li>
+										<li><a href="javascript:void(0)" onClick="chatRoomOut();"><i class="bi bi-x-circle"></i> 채팅방
 												나가기</a></li>
 										<li><a href="#" data-bs-toggle="modal"
 											data-bs-target="#reportModal"><i
@@ -208,8 +227,10 @@
 									<textarea name="" class="form-control type_msg"
 										placeholder="메시지를 입력해주세요." id="textMessage"></textarea>
 									<div class="input-group-append">
-										<span class="input-group-text send_btn"><i
-											class="bi bi-send"></i></span>
+										<a href="javascript:void(0)" id="send_btn">
+											<span class="input-group-text send_btn"><i
+												class="bi bi-send"></i></span>
+										</a>
 									</div>
 								</div>
 							</div>
@@ -218,6 +239,34 @@
 				</div>
 			</div>
 		</section>
+		<!-- 사용자 추가 Modal -->
+		<div class="modal fade" id="inviteModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="exampleModalLabel">초대하기</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body col">
+						<div>
+							<input type="text" class="form-control" name="user-input" id="user-input" placeholder="아이디나 닉네임을 입력해주세요.">
+						</div>
+						<div id="result" class="row">
+							<table id="resultTable" align="center">
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="inviteUsersButton" class="btn send-report">완료</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- 신고 Modal -->
 		<div class="modal fade" id="reportModal" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -278,8 +327,12 @@
 	<script>
 		var chatNo;
 		var userId = "${sessionScope.userId}"; // 사용자 ID
+		var userPhotoPath = "${sessionScope.userPhotoPath}";
+		var userNickname = "${sessionScope.userNickName}";
 		var stompClient = null;
 		var chatRoomId;
+		// 변수를 사용하여 이전 메시지의 날짜를 추적
+        var previousDate = null;
 		$(document).ready(function() {
 			var chatMessages = $('.chat-info');
 			chatMessages.hide();
@@ -294,29 +347,55 @@
 				$('.chat-info').show();
 				disconnectWebSocket();
 				chatRoomId = $(this).find(".chat-room-id").val();
-				
+				chatRoomName = $(this).find(".chat-room-name").val();
+				$("#chatName").text(chatRoomName);
 				$.ajax({
-					url : "/chat/room",
+					url : "/chat/users",
 					data : {
 						chatNo : chatRoomId
 					},
 					type : "GET",
+					dataType: 'json',
 					success : function(data) {
-						var chatBody = $("#chat_body");
-						chatBody.children().remove();
-						data.forEach(function(message) {
-							var isSent = message.msgSenderId == userId;
-							var messageText = message.msgContent;
-							var messageTime = message.msgSendDate;
-							
-							addMessage(isSent, messageText, messageTime);
-							$("#unreadCount-" + chatRoomId).text("");
-							$("#unreadCount-" + chatRoomId).hide();
+						var users = "참여자 : "; // 사용자 목록을 저장할 변수 초기화
+				        for (var i = 0; i < data.length; i++) {
+				            users += data[i].userNickname + " ";
+				        }
+						$("#chat-users").text(users);
+						$.ajax({
+							url : "/chat/room",
+							data : {
+								chatNo : chatRoomId
+							},
+							type : "GET",
+							success : function(data) {
+								var chatBody = $("#chat_body");
+								chatBody.children().remove();
+								data.forEach(function(message) {
+									var isSent = message.msgSenderId == userId;
+									var messageText = message.msgContent;
+									var messageTime = message.msgSendDate;
+									// 현재 메시지의 날짜를 가져오고, 그 날짜와 이전 메시지의 날짜를 비교
+				                    var messageDate = new Date(messageTime);
+				                 
+		
+				                    if (previousDate === null || !areDatesEqual(previousDate, messageDate)) {
+				                        // 날짜가 바뀌면 새로운 날짜 표시를 추가
+				                        chatBody.append(createDateDisplay(messageDate));
+				                        previousDate = messageDate;
+				                    }
+				                    var senderNickname = message.user.userNickname;
+				                    var senderPhotoPath = message.user.userPhotoPath;
+									addMessage(isSent, senderNickname, senderPhotoPath, messageText, formatTimestamp(messageTime));
+									$("#unreadCount-" + chatRoomId).text("");
+									$("#unreadCount-" + chatRoomId).hide();
+								})
+								// 웹소켓 연결 초기화
+								console.log(chatRoomId);
+			        			connect(chatRoomId);
+								scrollToBottom();
+							}
 						})
-						// 웹소켓 연결 초기화
-						console.log(chatRoomId);
-	        			connect(chatRoomId);
-						scrollToBottom();
 					}
 				})
 				
@@ -326,6 +405,31 @@
 		$(window).on('beforeunload', function() {
 		    disconnectWebSocket();
 		});
+		// 날짜 비교 함수
+	    function areDatesEqual(date1, date2) {
+	        return (
+	            date1.getFullYear() === date2.getFullYear() &&
+	            date1.getMonth() === date2.getMonth() &&
+	            date1.getDate() === date2.getDate()
+	        );
+	    }
+
+	    // 날짜 표시를 생성하는 함수
+	    function createDateDisplay(date) {
+	        var dateDisplay = document.createElement("div");
+	        dateDisplay.className = "date-display d-flex justify-content-center";
+	        var text = document.createElement("p");
+	        text.style.backgroundColor = "var(--color-default)";
+	        text.style.padding = "5px";
+	        text.style.borderRadius = "15px";
+	        text.textContent = formatDate(date);
+	        dateDisplay.appendChild(text);
+	        return dateDisplay;
+	    }
+	    function formatDate(date) {
+	        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+	        return new Date(date).toLocaleDateString(undefined, options);
+	    }
 		function disconnectWebSocket() {
 			if (stompClient) {
 		        stompClient.disconnect(); // 현재 연결 해제
@@ -350,13 +454,30 @@
 		    var chatBody = $("#chat_body");
 		    chatBody.scrollTop(chatBody[0].scrollHeight);
 		}
+		function formatTimestamp(timestamp) {
+			var date = new Date(timestamp); // SQL timestamp를 JavaScript Date 객체로 변환
+		    var today = new Date(); // 현재 날짜 및 시간을 가져옵니다
+
+/* 		    // 오늘 날짜와 메시지 날짜를 비교하여 처리합니다
+		    if (date.toDateString() === today.toDateString()) {*/
+ 		        // 오늘 보낸 메시지인 경우, 시간만 표시
+	        var options = { hour: '2-digit', minute: '2-digit' };
+	        return date.toLocaleTimeString(undefined, options);
+		   /*  } else { */
+		        // 오늘이 아닌 경우, 날짜 및 시간 표시
+		        /* var options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+		        return date.toLocaleString(undefined, options);
+		    } */
+		}
 		
-		function addMessage(isSent, message, time) {
+		function addMessage(isSent, senderNickname, senderPhotoPath, message, time) {
 		    var chatBody = $("#chat_body");
-		    var messageContainer = $("<div>").addClass("d-flex justify-content-" + (isSent ? "end" : "start") + " mb-4");
+		    var messageContainer = $("<div>").addClass("d-flex justify-content-" + (isSent ? "end" : "start align-items-center") + " mb-4");
 
 		    var imgContainer = $("<div>").addClass("img_cont_msg");
-		    var img = $("<img>").attr("src", isSent ? "../resources/assets/img/testimonials/testimonials-1.jpg" : "../resources/assets/img/basozan.png").addClass("rounded-circle user_img_msg");
+		    userPhotoPath = userPhotoPath != "" ? userPhotoPath : "../resources/assets/img/no-profile.png";
+		    senderPhotoPath = senderPhotoPath != null ? senderPhotoPath : "../resources/assets/img/no-profile.png";
+		    var img = $("<img>").attr("src", isSent ? userPhotoPath : senderPhotoPath).addClass("rounded-circle user_img_msg");
 		    
 		    imgContainer.append(img);
 
@@ -367,21 +488,40 @@
 		        messageDiv = $("<div>").addClass("msg_cotainer");
 		    }
 
+		    var messageSender = $("<span>").text(senderNickname);
 		    var messageText = $("<p>").text(message);
 		    var messageTime = $("<span>").addClass("msg_time_send").text(time);
 		    
-		    messageDiv.append(messageText);
-		    messageDiv.append(messageTime);
-
-		    if (isSent) {
-		        messageContainer.append(messageDiv);
-		        messageContainer.append(imgContainer);
-		    } else {
-		        messageContainer.append(imgContainer);
-		        messageContainer.append(messageDiv);
-		    }
-
-		    chatBody.append(messageContainer);
+		    messageSender.css({
+		        marginLeft: '10px',         // 텍스트 색상
+		        fontSize: '12px',      // 글꼴 크기
+		        color: '#388e3c'     // 글꼴 굵기
+		    });
+			if(senderPhotoPath == "out" || message.includes("채팅방을 나갔습니다.")) {
+				messageText = $("<span>").text(senderNickname + "님이 채팅방을 나갔습니다.");
+				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+				alertDiv.append(messageText);
+				chatBody.append(alertDiv);
+			}else if(message.includes("님이 초대되었습니다.")){
+				messageText = $("<span>").text(senderNickname + "님이 초대되었습니다.");
+				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+				alertDiv.append(messageText);
+				chatBody.append(alertDiv);
+			}else {
+			    if (isSent) {
+			    	messageDiv.append(messageText);
+				    messageDiv.append(messageTime);
+			        messageContainer.append(messageDiv);
+			        messageContainer.append(imgContainer);
+			    } else {
+			    	messageDiv.append(messageSender);
+			    	messageDiv.append(messageText);
+				    messageDiv.append(messageTime);
+			        messageContainer.append(imgContainer);
+			        messageContainer.append(messageDiv);
+			    }
+			    chatBody.append(messageContainer);
+			}
 		}
 		 // 웹소켓 연결 초기화
 	    function connect(chatRoomId) {
@@ -398,9 +538,11 @@
 	                console.log(messageData);
 	                var isCurrentUser = (messageData.msgSenderId === userId);
 	                var messageText = messageData.msgContent;
+	                var messageSenderNickname = messageData.msgSenderNickname;
+	                var messageSenderPhotoPath = messageData.msgSenderPhotoPath;
 	                if (!isCurrentUser) {
 	                    var messageText = messageData.msgContent;
-	                    addMessage(isCurrentUser, messageText, getCurrentTime());
+	                    addMessage(isCurrentUser, messageSenderNickname, messageSenderPhotoPath, messageText, getCurrentTime());
 	                    updateUnreadMessageCount();
 	                }
  
@@ -417,13 +559,13 @@
 	    }
 
 	    // 메시지 수신
-	    function receiveMessage(message) {
+	    /* function receiveMessage(message) {
 	        
 	        var isSent = message.sender === userId;
 
 	        addMessage(isSent, message, getCurrentTime());
 	        scrollToBottom();
-	    }
+	    } */
 	    
 	    function updateUnreadMessageCount() {
 		    $.ajax({
@@ -442,7 +584,6 @@
 		        }
 		    });
 		}
-
 	    // 현재 시간 문자열 반환
 	    function getCurrentTime() {
 	        var now = new Date();
@@ -455,8 +596,7 @@
 	        var currentTime = hours + ':' + minutes + ' ' + ampm;
 	        return currentTime;
 	    }
-
-
+		
 	 // 메시지 전송
         function sendMessage() {
             var message = $("#textMessage").val();
@@ -468,11 +608,13 @@
             stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
             	refChatNo : chatRoomId,
             	msgSenderId: userId,
-            	msgContent: message
+            	msgContent: message,
+            	msgSenderNickname : userNickname,
+            	msgSenderPhotoPath : userPhotoPath
             }));
             
             var currentTime = getCurrentTime();
-            addMessage(true, message, currentTime);
+            addMessage(true, userNickname, userPhotoPath, message, currentTime);
             scrollToBottom();
             $("#textMessage").val("");
             $("#textMessage").focus();
@@ -483,7 +625,7 @@
 
 	    // Enter 키를 눌러 메시지 전송
 	    $("#textMessage").keypress(function (e) {
-	        if (e.which == 13) { // Enter key
+	        if (e.which == 13 && !e.shiftKey) { // Enter key
 	            e.preventDefault();
 	            sendMessage();
 	        }
@@ -498,126 +640,128 @@
 				textareaElement.style.display = "none";
 			}
 		});
-		
-	</script>
-	<!-- <script>
-		var socket;
-		var stomp;
-		var chatNo;
-		var userId = "${sessionScope.userId}";
-		var messageNo;
-		var runAjax = true
-		$(function() {
-			$("#textMessage").focus();  // 입력창 활성화
-			/* if(userId == "") {
-				alert("로그인이 필요한 서비스입니다.");
-				location.href = "/user/login.do";
-			} */
-			connect();
-			socket.onclose = close;
-			$("#textMessage").keypress(function(e) {
-				if(e.keyCode == 13) {
-					if(!e.shiftKey) {
-						e.preventDefault();
-						sendMessage();
+		// user 검색
+		$("#user-input").on('input', function (e) {
+			var inputText = $(this).val();
+			if(inputText != "") {
+				$.ajax({
+					url : "/chat/user-search",
+					data : {
+						chatNo : chatRoomId,
+						user : inputText 
+					},
+					type : "GET",
+					dataType : 'json',
+					success : function(data) {
+						var resultContainer = $("#resultTable tbody");
+					    console.log(data);
+					    // 검색 결과를 초기화
+					    resultContainer.children().remove();
+					    
+					    // 검색 결과를 반복해서 HTML로 생성 및 추가
+					    for (var i = 0; i < data.length; i++) {
+					        var user = data[i];
+					        console.log(user);
+					        // 사용자 정보를 표시하는 HTML 생성
+					        var userPath = user.userPhotoPath == null ? "../resources/assets/img/no-profile.png" : user.userPhotoPath;
+					        var userHtml = /* `
+					            <div class="col-12 d-flex justify-content-around align-items-center user-search-result">
+					                <img class="img_cont_msg" src=`+userPath+`>
+					                <span>`+user.userId+`</span>
+					                <span>`+user.userNickname+`</span>
+					                <input type="checkbox" class="user-checkbox" value=`+user.userId+`>
+					            </div>
+					        `; */
+					        `<tr>
+					        	<td><img class="img_cont_msg" src=`+userPath+`></td>
+					        	<td>`+user.userId+`</td>
+					        	<td>`+user.userNickname+`</td>
+					        	<td><input type="checkbox" class="user-checkbox" value=`+user.userId+`></td>
+					        </tr>`;
+					        
+					        
+					        // HTML을 결과 영역에 추가
+					        resultContainer.append(userHtml);
+					    }
 					}
-				}
-			});
-			
-			if(runAjax) {
-				
-				$("#chat_body").scroll(function() {
-					var scroll = $("#chat_body")[0].scrollHeight;
-					if(runAjax) {
-						if($("#chat_body").scrollTop() == 0) {
-							$.ajax({
-								type : "GET",
-								url : "/chat/room",
-								data : {
-									chatNo : chatNo
-								}
-								
-							})
+				})
+			}
+		})
+		// 채팅방 유저 초대
+		$("#inviteUsersButton").on('click', function () {
+	    // 선택한 유저들의 아이디 또는 고유한 식별자를 가져옵니다.
+		    var selectedUserIds = [];
+		    $(".user-checkbox:checked").each(function () {
+		        selectedUserIds.push($(this).val());
+		    });
+			console.log(selectedUserIds);
+		    // 서버로 선택한 유저들을 초대하는 요청을 보냅니다.
+		    if($("#user-input").val() == "" || selectedUserIds.length == 0) {
+		    	alert("초대할 회원을 선택해주세요.");
+		    	return;
+		    }else {
+			    $.ajax({
+			        url: "/chat/invite-users",
+			        type: "POST",
+			        data: JSON.stringify({
+			            chatNo: chatRoomId,
+			            selectedUserIds: selectedUserIds
+			        }),
+			        contentType: "application/json",
+			        success: function (data) {
+			        	// 성공 메시지를 alert로 표시
+			            alert("초대에 성공했습니다.");
+			            $("#user-input").val("");
+			            $("#result").children().remove();
+			            // #inviteModal을 닫기
+			            $('#inviteModal').modal('hide');
+			            var before = $("#chat-users").text();
+			        	for(var i = 0; i < selectedUserIds.length; i++) {
+				            stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
+				            	refChatNo : chatRoomId,
+				            	msgSenderId: selectedUserIds[i],
+				            	msgContent: selectedUserIds[i] + "님이 초대되었습니다.",
+				            	msgSenderNickname : selectedUserIds[i],
+				            	msgSenderPhotoPath : ""
+				            }));
+				        	before += selectedUserIds[i] + " ";
+			        	}
+			        	$("#chat-users").text(before);
+			            // 생성한 메시지를 chat_body에 추가
+						
+			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
+			            scrollToBottom();
+			        }
+			    });
+		    }
+		});
+		// 채팅방 나가기
+		function chatRoomOut() {
+			if(confirm('정말 이 채팅방에서 나가시겠습니까?')) {
+				$.ajax({
+					url : "/chat/delete-chat-user",
+					data : {
+						refChatNo : chatRoomId,
+						userId : userId
+					},
+					type : "GET",
+					success : function(data) {
+						if(data == "success"){
+							alert(chatRoomId + "번 방을 삭제하였습니다.");
+							stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
+				            	refChatNo : chatRoomId,
+				            	msgSenderId: userId,
+				            	msgContent: userId + "님이 채팅방을 나갔습니다.",
+				            	msgSenderNickname : userNickname,
+				            	msgSenderPhotoPath : "out"
+				            }));
+							location.reload(true);
 						}
 					}
 				})
 			}
-			
-		})
-	</script> -->
-	<!-- <script>
-		var uid = "${userId}"; // 사용자 ID 또는 식별자
-
-		function createMessage(isSent, messageText) {
-			var messageContainer = document.createElement('div');
-			messageContainer.className = 'd-flex justify-content-'
-					+ (isSent ? 'end' : 'start') + ' mb-4';
-
-			var messageClass = 'msg_cotainer' + (isSent ? '_send' : '');
-
-			var messageDiv = document.createElement('div');
-			messageDiv.className = messageClass;
-			messageDiv.innerHTML = messageText; // 메시지 내용 추가
-
-			messageContainer.appendChild(messageDiv);
-
-			var imgContainer = document.createElement('div');
-			imgContainer.className = 'img_cont_msg';
-			// 이미지 요소 추가
-
-			messageContainer.appendChild(imgContainer);
-
-			// chat_body에 메시지 컨테이너 추가
-			document.getElementById('chat_body').appendChild(messageContainer);
 		}
-
-		var sock = new SockJS("http://localhost:9999/echo");
-		var stompClient = Stomp.over(sock);
-
-		$(".chat-room").on(
-				"click",
-				function() {
-					var chatRoomId = $(this).data("chatNo");
-
-					stompClient.connect({}, function(frame) {
-						stompClient.subscribe("/topic/" + chatRoomId, function(
-								response) {
-							var message = response.body;
-							createMessage(false, message); // 받은 메시지를 생성 및 표시
-						});
-
-						// 클라이언트 채팅방 입장 시 사용자 ID와 채팅방 ID 전송
-						stompClient.send("/app/join/" + chatRoomId, {}, JSON
-								.stringify({
-									'userId' : uid
-								}));
-					});
-				});
-
-		$("#txtMessage").on(
-				"keypress",
-				function(e) {
-					if (e.keyCode == 13 && !e.shiftKey) {
-						e.preventDefault();
-						var message = $("#txtMessage").val();
-						if (message == "") {
-							alert("메시지를 입력하세요.");
-							$("#txtMessage").focus();
-							return;
-						}
-
-						createMessage(true, message); // 보낸 메시지를 생성 및 표시
-
-						// 서버로 메시지 보내기
-						stompClient.send("/app/send/" + chatRoomId, {}, JSON
-								.stringify({
-									'userId' : uid,
-									'message' : message
-								}));
-						$("#txtMessage").val("");
-					}
-				});
-	</script> -->
+	</script>
 </body>
 
 </html>

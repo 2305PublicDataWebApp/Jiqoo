@@ -2,6 +2,8 @@ package com.jiqoo.chat.domain;
 
 import java.sql.Timestamp;
 
+import com.jiqoo.user.domain.User;
+
 public class ChatMessage {
 
 	private int msgNo;
@@ -9,6 +11,9 @@ public class ChatMessage {
 	private String msgSenderId;
 	private String msgContent;
 	private Timestamp msgSendDate;
+	private String msgSenderNickname;
+	private String msgSenderPhotoPath;
+	private User user;
 
 	public int getMsgNo() {
 		return msgNo;
@@ -48,6 +53,30 @@ public class ChatMessage {
 
 	public void setMsgSendDate(Timestamp msgSendDate) {
 		this.msgSendDate = msgSendDate;
+	}
+
+	public String getMsgSenderNickname() {
+		return msgSenderNickname;
+	}
+
+	public void setMsgSenderNickname(String msgSenderNickname) {
+		this.msgSenderNickname = msgSenderNickname;
+	}
+
+	public String getMsgSenderPhotoPath() {
+		return msgSenderPhotoPath;
+	}
+
+	public void setMsgSenderPhotoPath(String msgSenderPhotoPath) {
+		this.msgSenderPhotoPath = msgSenderPhotoPath;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override
