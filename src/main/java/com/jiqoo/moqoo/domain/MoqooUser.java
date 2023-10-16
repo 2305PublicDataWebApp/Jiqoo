@@ -6,6 +6,12 @@ public class MoqooUser {
 	private String refUserId;
 	
 	
+	public MoqooUser(int refMoqooNo, String refUserId) {
+		super();
+		this.refMoqooNo = refMoqooNo;
+		this.refUserId = refUserId;
+	}
+	
 	public int getRefMoqooNo() {
 		return refMoqooNo;
 	}

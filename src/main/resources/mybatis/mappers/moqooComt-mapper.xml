@@ -14,6 +14,7 @@
 <!-- 	<select id="selectMoqooByNo" resultType="Moqoo"> -->
 <!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_NO = #{moqooNo} AND MOQOO_STATUS = 'Y' -->
 <!-- 	</select> -->
+	
 	<select id="selectComtList" resultType="Comment">
 		SELECT * FROM COMT_TBL WHERE REF_POST_NO = #{refPostNo } AND C_BOARD_TYPE = 'M' AND COMT_STATUS = 'Y'
 	</select>

@@ -6,7 +6,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jiqoo.common.domain.Category;
 import com.jiqoo.moqoo.domain.Moqoo;
+import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooService;
 import com.jiqoo.moqoo.store.MoqooStore;
 import com.jiqoo.user.domain.User;
@@ -33,9 +35,47 @@ public class MoqooServiceImpl implements MoqooService {
 	}
 
 	@Override
-	public Moqoo selectMoqooByNo(Integer moqooNo) {
-		Moqoo moqoo = moqooStore.selectMoqooByNo(sqlSession, moqooNo);
+	public Moqoo selectOneByNo(Integer moqooNo) {
+		Moqoo moqoo = moqooStore.selectOneByNo(sqlSession, moqooNo);
 		return moqoo;
 	}
+
+	@Override
+	public List<Category> selectCategoryList() {
+		List<Category> categoryList = moqooStore.selectCategoryList(sqlSession);
+		return categoryList;
+	}
+
+	@Override
+	public Category selectCategoryByNo(String moqooCName) {
+		Category category = moqooStore.selectCategoryByNo(sqlSession, moqooCName);
+		return category;
+	}
+
+	@Override
+	public int selectLikeCountByNo(int moqooNo) {
+		int result = moqooStore.selectLikeCountByNo(sqlSession, moqooNo);
+		return result;
+	}
+
+	@Override
+	public int updateMoqoo(Moqoo moqoo) {
+		int result = moqooStore.updateMoqoo(sqlSession, moqoo);
+		return result;
+	}
+
+	@Override
+	public int deleteMoqoo(int moqooNo) {
+		int result = moqooStore.deleteMoqoo(sqlSession, moqooNo);
+		return result;
+	}
+
+	@Override
+	public int insertMoqooPost(MoqooUser moqooUser) {
+		int result = moqooStore.insertMoqooPost(sqlSession, moqooUser);
+		return result;
+	}
+
+
 
 }
