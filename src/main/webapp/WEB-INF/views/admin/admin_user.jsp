@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -164,7 +165,8 @@
 												test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
 										</td>
 										<td class="col1"><c:if
-												test="${userList.platformType eq 'normarl'}"> 홈페이지 </c:if></td>
+												test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
+										</td>
 										<td>${userList.userStatus }</td>
 										<td>10</td>
 										<td>
@@ -279,6 +281,8 @@
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
 						</div>
+						<!-- End 페이지네비 -->
+						${userO}
 
 					</div>
 				</div>
@@ -318,6 +322,16 @@
 		function showUserDetail(userId) {
 			location.href = "/admin/userdetail?userId=" + userId;
 		}
+		
+		//userStatus가 'A'일때 (=강제탈퇴당했을 때) 빨갛게 표기
+// 		var userStatus = ${userOne.userStatus}
+// 		var trList = table.getElementsByTagName("TR");
+// 		if (userStatus.includes('A')) {
+// 		    for (var i = 0; i < trList.length; i++) {
+// 		        trList[i].style.color = 'red';
+// 		    }
+// 		}
+		
 	</script>
 
 </body>

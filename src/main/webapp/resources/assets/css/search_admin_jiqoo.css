@@ -19,11 +19,12 @@
 }
 
 :root {
-  --font-default :  'IBMPlexSansKR-Regular', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
+  
 }
 body {
   font-family: "Open Sans", sans-serif;
@@ -131,7 +132,6 @@ p { font-family: 'Nanum Gothic', sans-serif; }
     transition-delay: 0 !important;
   }
 }
-
 
 
 /*--------------------------------------------------------------
@@ -308,7 +308,7 @@ p { font-family: 'Nanum Gothic', sans-serif; }
 # Sections General
 --------------------------------------------------------------*/
 section {
-  padding: 30px 0;
+  padding: 10px 0;
   --margin: 10px;
   overflow: hidden;
 }
@@ -1264,7 +1264,6 @@ section {
 }
 
 
-
 /*--------------------------------------------------------------
 # 추가css
 --------------------------------------------------------------*/
@@ -1278,17 +1277,27 @@ main {
   margin : 0 auto;
 }
 
+
+/*--------------------------------------------------------------
+# 차트섹션
+--------------------------------------------------------------*/
+.card { 
+  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
+
 .card-title {
   font-family: var(--font-primary);
   font-size: 2em;
   text-align: center;
 }
 
+/*--------------------------------------------------------------
+# 테이블섹션
+--------------------------------------------------------------*/
 #user-main {
   margin : 0 auto;
   width : 90%;
 }
-
 
 /*--------------------------------------------------------------
 # search
@@ -1366,48 +1375,49 @@ select {
   color : #fff;
 }
 
-/*--------------------------------------------------------------
-# 테이블
---------------------------------------------------------------*/
-main table { 
+/*테이블*/
+#user-main table { 
   width : 100%;
   margin : 0 auto;
   text-align: center;
   border-collapse: collapse;
-  --border : 1px solid #ccc;
-  --border-style: hidden;
-  --border-bottom-right-radius: 20px;
-  --border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-style: hidden;
   --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
   cursor : default;
 }
 
-main table thead { 
+#user-main table thead { 
   font-family: var(--font-default);
   font-size: 1.2em;
   --border-bottom: 2px solid  #DCE775;
   --border-bottom: 2px solid #DAE4ED;
   --border-bottom: 2px solid #ccc;
 }
-
-main table thead .hover:hover {
+#user-main table thead .hover:hover {
   color : var(--color-secondary);
 }
-main table tbody {
+
+#user-main table tbody {
+  --font-family: var(--font-default);
   font-size: 1em;
 }
 
 tr {
   height : 55px;
+  --border-bottom: 1px solid  #DCE775;
   border-bottom: 1px solid #DAE4ED;
+  --border-bottom: 1px solid #ccc;
 }
+
 tbody tr:hover {
   color : var(--color-primary);
 }
 
-
 td {
+  --vertical-align : middle;
   padding: 10px;
   --max-width : 520px;
   white-space: nowrap;
@@ -1416,6 +1426,8 @@ td {
   -webkit-line-clamp: 1;
   --border : 1px solid #ccc;
 }
+
+
 
 .list-no {
   font-family: var(--font-primary);
@@ -1436,8 +1448,6 @@ td {
   justify-content: center;
 }
 
-
-
 /*--------------------------------------------------------------
 # 버튼
 --------------------------------------------------------------*/
@@ -1446,26 +1456,88 @@ td {
   font-family: var(--font-primary);
   border-radius: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  vertical-align: middle;  
 }
 
 /*조회버튼*/
 .show-detail-btn {
-  width: 90px;
-  height: 35px;
+  width : 80px;
+  height : 37px;
+  border : none;
+  font-size: 1.5em;
+  color : #fff;
+  text-align: center;
+  --vertical-align: middle;  
+}
+.show-detail-btn:active {
+  width : 78px;
+  height : 35px;
+}
+
+/*모달-삭제버튼*/
+.delete-btn {
+  width: 110px;
+  height: 40px;
   color : #fff;
   font-size: 1.5em;
   border : none;
+  text-align: center;
+  --vertical-align: middle;  
 }
-.show-detail-btn:active {
-  width: 87px;
-  height: 34px;
+.delete-btn:hover {
+  background-color: red;
+  color : #fff;
 }
+.delete-btn:active {
+  background-color: #fff;
+  border : 1px solid red;
+  color : red;
+  width: 108px;
+  height: 38px;
+}
+
+
+/*--------------------------------------------------------------
+# 모달
+--------------------------------------------------------------*/
+#exampleModalLabel {
+  font-family: var(--font-primary);
+}
+.modal-body span {
+  font-family: var(--font-primary);
+}
+#map {
+  margin : 10px auto;
+  padding: 10px;
+  width : 100%;
+  height : auto;
+  border-radius: 10px;
+  border : 1px solid #ccc;
+}
+
+#report-reason {
+  margin : 10px auto;
+  padding: 10px;
+  width : 100%;
+  height : auto;
+  border : 1px solid #EDEDED;
+  background-color: #EDEDED;
+  border-radius: 5px;
+}
+#r-title{
+  font-family: var(--font-primary);
+}
+
+#report-btn{
+  display: flex;
+  justify-content: flex-end;
+}
+
+
 
 /*--------------------------------------------------------------
 # 반응형
 --------------------------------------------------------------*/
+
 @media (max-width: 575px) {
   main, #user-main {
     width : 95%;
@@ -1474,32 +1546,45 @@ td {
   	width : 95%;
     margin: 10px;
   }
-  .col1 {
-    display: none;
-    visibility: hidden;
-    width: 0%;
-  }
-  main table thead {
-    font-size: 1.2em;
-  }
-  main table tbody{
-    font-size: 1em;
-    width: 20%;
+  .card-title {
+    margin-bottom : 0;
   }
 
-  .show-detail-btn {
-    width: 90%;
+  #user-main table  { 
+    --border : 1px solid #ccc;
+  }
+  .col1 {
+    width : 22%;
+  }
+  .col2 {
+    width : 33%;
+  }
+  .col3 {
+    width : 12%;
+  }
+   .col4 {
+    width : 3%;
+  }
+  #user-main table thead  {
     font-size: 1.2em;
   }
+  #user-main table tbody{
+    font-size: 0.9em;
+  }
+  #user-main table td {
+    padding: 2px;
+    --border : 1px solid #ccc;
+  } 
+  .show-detail-btn {
+    width : 100%;
+    font-size: 1em;
+  }
   .show-detail-btn:active {
-    width: 89%;
-    font-size: 1.2em;
+    width : 99%;
   }
   #pageNavi {
     font-size: 1.2em;
   }
-  /* td {
-  border : 1px solid #ccc;
-} */
-
 }
+
+  

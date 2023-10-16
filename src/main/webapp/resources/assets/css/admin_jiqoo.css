@@ -1299,7 +1299,9 @@ main {
   width : 90%;
 }
 
-/* # search */
+/*--------------------------------------------------------------
+# search
+--------------------------------------------------------------*/
 #search-bar {
   margin : 3em auto 0;
   width : 100%;
@@ -1312,15 +1314,7 @@ main {
   align-items:center ;
 }
 
-select {
-  width : 100px;
-  height : 50px;
-  border-radius: 10px;
-  outline: none;
-  border:none;
-  margin: 10px;
-  padding: 10px;
-}
+
 
 #search-wrap {
   width : 650px;
@@ -1331,6 +1325,16 @@ select {
   justify-content: space-between;
 }
 
+select {
+  width : 100px;
+  height : 50px;
+  border-radius: 10px;
+  outline: none;
+  border:none;
+  margin: 10px;
+  padding: 10px;
+}
+
 #search-content {
   width : 100%;
   height :100%;
@@ -1338,7 +1342,7 @@ select {
   border-radius: 10px;
   outline: none;
   border:none;
-  padding-left: 10px;
+  --padding-left: 10px;
 }
 
 #search-content:focus {
@@ -1371,9 +1375,10 @@ select {
   color : #fff;
 }
 
-/*테이블*/
+/*--------------------------------------------------------------
+# 테이블
+--------------------------------------------------------------*/
 #user-main table { 
-  --border : 1px solid #ccc;
   width : 100%;
   margin : 0 auto;
   text-align: center;
@@ -1409,27 +1414,39 @@ tr {
   --border-bottom: 1px solid #ccc;
 }
 
+tbody tr:hover {
+  color : var(--color-primary);
+}
+
 td {
-  --vertical-align : middle;
   padding: 10px;
   --max-width : 520px;
   white-space: nowrap;
   overflow : hidden;
   text-overflow : ellipsis;
-  -webkit-line-clamp: 1
+  -webkit-line-clamp: 1;
+  --border : 1px solid #ccc;
 }
 
-#list-no {
+
+
+.list-no {
   font-family: var(--font-primary);
   font-size: 1.5em;
 }
 
-#pageNavi {
+#pageNavi  {
+  display: flex;
+  justify-content: center;
+}
+#pageNavi a {
   font-family: var(--font-primary);
   margin:15px;
   text-align: center;
   font-size: 1.5em;
   color : #ccc;
+  display: flex;
+  justify-content: center;
 }
 
 /*--------------------------------------------------------------
@@ -1489,13 +1506,15 @@ td {
 .modal-body span {
   font-family: var(--font-primary);
 }
-#map {
-  margin : 10px auto;
-  width : 100%;
-  height : 200px;
+.map {
+  --width : 100%;
+  --height : 300px;
+  --max-height : 500px;
   border-radius: 10px;
   border : 1px solid #ccc;
+  margin : 10px auto;
 }
+
 
 #report-reason {
   margin : 10px auto;
@@ -1515,9 +1534,7 @@ td {
   justify-content: flex-end;
 }
 
-td{
-  --border : 1px solid #ccc;
-}
+
 
 /*--------------------------------------------------------------
 # 반응형
@@ -1525,18 +1542,18 @@ td{
 
 @media (max-width: 575px) {
   main, #user-main {
-    width : 100%;
-    padding : 5px;
+    width : 95%;
+  }
+  #search-wrap {
+  	width : 95%;
+    margin: 10px;
   }
   .card-title {
     margin-bottom : 0;
   }
-  #search-wrap {
-    width : 90%;
-    margin-right: 10px;
-  }
+
   #user-main table  { 
-    border : 1px solid #ccc;
+    --border : 1px solid #ccc;
   }
   .col1 {
     width : 22%;
@@ -1545,7 +1562,10 @@ td{
     width : 33%;
   }
   .col3 {
-    width : 15%;
+    width : 12%;
+  }
+   .col4 {
+    width : 3%;
   }
   #user-main table thead  {
     font-size: 1.2em;
@@ -1570,3 +1590,17 @@ td{
 }
 
   
+ .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .wrap * {padding: 0;margin: 0;}
+    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+    .info .close:hover {cursor: pointer;}
+    .info .body {position: relative;overflow: hidden;}
+    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    .info .link {color: #5085BB;}

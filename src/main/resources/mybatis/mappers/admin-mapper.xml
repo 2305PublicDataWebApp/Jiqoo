@@ -12,7 +12,7 @@
 	
 	<!-- 회원정보 리스트 -->
 	<select id="selectAllUser" resultType="User">
-		SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' ORDER BY USER_ID DESC
+		SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' ORDER BY U_CREATE_DATE DESC
 	</select>
 	
 	<!-- 회원검색 총회원수 (= 총게시물수) -->
@@ -67,7 +67,7 @@
 	
 	<!-- 회원강제 탈퇴 -->
 	<update id="deleteUserByAdmin">
-		UPDATE USER_TBL SET USER_STATUS = 'N', U_DELETE_DATE = SYSTIMESTAMP WHERE USER_ID = #{userId}
+		UPDATE USER_TBL SET USER_STATUS = 'A', U_DELETE_DATE = SYSTIMESTAMP WHERE USER_ID = #{userId}
 	</update>
 	
 	<!-- 강퇴회원 복원 -->
@@ -94,7 +94,282 @@
 	<select id="showUserMoqooList" resultType="Moqoo">
 		SELECT * FROM MOQOO_TBL WHERE MOQOO_WRITER = #{moqooWriter} ORDER BY MOQOO_NO DESC
 	</select>
+	
+	<!-- 지꾸관리페이지 총 지꾸수 (= 총게시물수) -->
+	<select id="getJiqooListCount" resultType="_int">
+		SELECT COUNT (*) FROM JIQOO_TBL 
+	</select>
 
+	<!-- 총 지꾸 리스트 -->
+	<select id="selectAllJiqoo" resultType="Jiqoo">
+		SELECT * FROM JIQOO_TBL ORDER BY JIQOO_NO DESC
+	</select>
+	
+	<!-- 지꾸검색 총 지꾸수 (= 총게시물수) -->
+	<select id="getJiqooSearchListCount" resultType="_int">
+		SELECT COUNT (*) FROM JIQOO_TBL
+		<if test="searchCondition == 'jiqooWriter'"> 
+			WHERE JIQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
+		</if>
+		<if test="searchCondition == 'jiqooTitle'">
+			WHERE JIQOO_TITLE LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'jiqooContent'">
+			WHERE JIQOO_CONTENT LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'jiqooCtgr'">
+			WHERE JIQOO_CTGR LIKE '%'||#{searchKeyword}||'%'
+		</if> 
+		<if test="searchCondition == 'jiqooW3W'">
+			WHERE JIQOO_W3W LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'jiqooNo'">
+			WHERE JIQOO_NO LIKE '%'||#{searchKeyword}||'%'
+		</if>
+	</select>
+	
+	<!-- 지꾸검색 리스트  -->
+	<select id="searchJiqooByKeyword" resultType="Jiqoo">
+		SELECT * FROM JIQOO_TBL
+		<if test="searchCondition == 'jiqooWriter'"> 
+			WHERE JIQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
+			ORDER BY JIQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'jiqooTitle'">
+			WHERE JIQOO_TITLE LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY JIQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'jiqooContent'">
+			WHERE JIQOO_CONTENT LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY JIQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'jiqooCtgr'">
+			WHERE JIQOO_CTGR LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY JIQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'jiqooW3W'">
+			WHERE JIQOO_W3W LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY JIQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'jiqooNo'">
+			WHERE JIQOO_NO LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY JIQOO_NO DESC 
+		</if>
+	</select>
+	
+	<!-- 모꾸관리페이지 총 모꾸수 (= 총게시물수) -->
+	<select id="getMoqooListCount" resultType="_int">
+		SELECT COUNT (*) FROM MOQOO_TBL 
+	</select>
 
+	<!-- 모꾸관리페이지 총 모꾸 리스트 -->
+	<select id="selectAllMoqoo" resultType="moqoo">
+		SELECT * FROM MOQOO_TBL ORDER BY MOQOO_NO DESC
+	</select>
+	
+	
+	<!-- 모꾸검색 총 모꾸수 (= 총게시물수) -->
+	<select id="getMoqooSearchListCount" resultType="_int">
+		SELECT COUNT (*) FROM MOQOO_TBL
+		<if test="searchCondition == 'moqooWriter'"> 
+			WHERE MOQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
+		</if>
+		<if test="searchCondition == 'moqooTitle'">
+			WHERE MOQOO_TITLE LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'moqooContent'">
+			WHERE MOQOO_CONTENT LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'category'">
+			WHERE MOQOO_TAGS LIKE '%'||#{searchKeyword}||'%'
+		</if> 
+		<if test="searchCondition == 'moqooW3W'">
+			WHERE MOQOO_W3W LIKE '%'||#{searchKeyword}||'%'
+		</if>
+		<if test="searchCondition == 'moqooNo'">
+			WHERE MOQOO_NO LIKE '%'||#{searchKeyword}||'%'
+		</if>
+	</select>
+	
+	<!-- 모꾸검색 리스트  -->
+	<select id="searchMoqooByKeyword" resultType="Moqoo">
+		SELECT * FROM MOQOO_TBL
+		<if test="searchCondition == 'moqooWriter'"> 
+			WHERE MOQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
+			ORDER BY MOQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'moqooTitle'">
+			WHERE MOQOO_TITLE LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY MOQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'moqooContent'">
+			WHERE MOQOO_CONTENT LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY MOQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'category'">
+			WHERE MOQOO_TAGS LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY MOQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'moqooW3W'">
+			WHERE MOQOO_W3W LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY MOQOO_NO DESC 
+		</if>
+		<if test="searchCondition == 'moqooNo'">
+			WHERE MOQOO_NO LIKE '%'||#{searchKeyword}||'%'
+			ORDER BY MOQOO_NO DESC 
+		</if>
+	</select>
+	
+	
+	<!-- 지꾸 강제삭제 -->
+	<update id="deleteJiqooByAdmin">
+		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = #{jiqooNo}
+	</update>
+	
+	
+	<!-- 모꾸 강제삭제 -->
+	<update id="deleteMoqooByAdmin">
+		UPDATE MOQOO_TBL SET MOQOO_STATUS ='A'  WHERE MOQOO_NO = #{moqooNo}
+	</update>
+	
+	
+<!-- 	<select id="selectOneJiqoo" resultType="Jiqoo"> -->
+<!-- 		SELECT * FROM JIQOO_TBL WHERE JIQOO_NO = #{jiqooNo} -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectOneUser" resultType="User"> -->
+<!-- 		SELECT * FROM USER_TBL WHERE USER_ID = #{userId} -->
+<!-- 	</select> -->
+	
+	<!--===== 지꾸 증감 카드 =====-->
+	<!-- 당일 등록된 지꾸 수  -->
+	<select id="todayInsertJiqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM JIQOO_TBL
+		WHERE TRUNC(J_CREATE_DATE) = TRUNC(SYSDATE)
+	</select>
+	
+	<!-- 전일 등록된 지꾸 수  -->
+	<select id="yesterdayInsertJiqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM JIQOO_TBL
+		WHERE TRUNC(J_CREATE_DATE) = TRUNC(SYSDATE-1)
+	</select>
+	
+	<!--===== 모꾸증감카드 =====-->
+	<!-- 당일 등록된 모꾸 수  -->
+	<select id="todayInsertMoqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM MOQOO_TBL
+		WHERE TRUNC(MOQOO_DATE) = TRUNC(SYSDATE)
+	</select>
+	
+	<!-- 전일 등록된 모꾸 수  -->
+	<select id="yesterdayInsertMoqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM MOQOO_TBL
+		WHERE TRUNC(MOQOO_DATE) = TRUNC(SYSDATE-1)
+	</select>
+	
+	<!--===== 회원증감카드 =====-->
+	<!-- 당일 가입한 회원 수  -->
+	<select id="todayJoinUserCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM USER_TBL
+		WHERE TRUNC(U_CREATE_DATE) = TRUNC(SYSDATE)
+	</select>
+	
+	<!-- 전일 가입한 회원 수  -->
+	<select id="yesterdayJoinUserCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM USER_TBL
+		WHERE TRUNC(U_CREATE_DATE) = TRUNC(SYSDATE-1)
+	</select>
+	
+	
+	<!--===== 지꾸모꾸비 차트 =====-->
+	<!-- 유지중인 지꾸 총 개수  -->
+	<select id="usingJiqooCount" resultType="_int">
+		SELECT COUNT (*) FROM JIQOO_TBL 
+		WHERE JIQOO_STATUS = 'Y' AND J_CREATE_DATE >= '2023-10-06 00:00:00'
+	</select>
+	
+	<!-- 유지중인 모꾸 총 개수  -->
+	<select id="usingMoqooCount" resultType="_int">
+		SELECT COUNT (*) FROM MOQOO_TBL 
+		WHERE MOQOO_STATUS = 'Y' AND MOQOO_DATE >= '2023-10-06 00:00:00'
+	</select>
+	
+	
+	<!--===== 성비차트 =====-->
+	<!-- 현재 가입유지중인 회원 성비  -->
+	<select id="userGenderList" resultType="User">
+		SELECT USER_GENDER, COUNT(*) AS COUNT 
+		FROM (SELECT * FROM USER_TBL 
+      			WHERE U_CREATE_DATE >= '2023-10-06 00:00:00' AND ADMIN_YN = 'N')
+    	GROUP BY USER_GENDER ORDER BY COUNT DESC
+	</select>
+	
+	
+	<!-- 채팅방관리_ 총 채팅방 수 (= 총게시물수) -->
+	<select id="getChatRoomListCount" resultType="_int">
+		SELECT COUNT (*) FROM CHAT_ROOM_TBL 
+	</select>
+	
+	<!-- 채팅방관리_ 총 채팅방 리스트 -->
+<!-- 	<select id="selectAllChatRoom" resultType="ChatRoom"> -->
+<!-- 		SELECT * FROM CHAT_ROOM_TBL  -->
+<!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
+<!-- 		ORDER BY C_CREATE_DATE DESC -->
+<!-- 	</select> -->
+
+	<!-- 당일 가입한 회원 리스트  -->
+	<select id="todayUserList" resultType="User">
+		SELECT * FROM USER_TBL
+		WHERE TRUNC(U_CREATE_DATE) = TRUNC(SYSDATE)
+		ORDER BY U_CREATE_DATE DESC
+	</select>
+	
+	<!-- 당일 등록된 지꾸 리스트  -->
+	<select id="todayJiqooList" resultType="Jiqoo">
+		SELECT * FROM JIQOO_TBL
+		WHERE TRUNC(J_CREATE_DATE) = TRUNC(SYSDATE)
+		ORDER BY JIQOO_NO DESC
+	</select>
+	
+	<!-- 당일 등록된 모꾸 리스트  -->
+	<select id="todayMoqooList" resultType="Moqoo">
+		SELECT * FROM MOQOO_TBL
+		WHERE TRUNC(MOQOO_DATE) = TRUNC(SYSDATE)
+		ORDER BY MOQOO_NO DESC
+	</select>
+	
+	
+	<!-- 현재 가입중인 회원 나이대 비율  -->
+	<select id="userAgeList" resultType="User">
+		SELECT
+		  CASE
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 0 AND 19 THEN '0-19'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 20 AND 29 THEN '20-29'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 30 AND 39 THEN '30-39'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) > 40 THEN '40+'
+		  END AS age_group,
+		  EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) AS age,
+		  COUNT(*) AS COUNT
+		FROM USER_TBL
+		WHERE USER_STATUS = 'Y'
+		GROUP BY
+		  CASE
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 0 AND 19 THEN '0-19'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 20 AND 29 THEN '20-29'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) BETWEEN 30 AND 39 THEN '30-39'
+		    WHEN EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH) > 40 THEN '40+'
+		  END,
+		  EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM USER_BIRTH)
+		ORDER BY age_group
+	</select>
+	
+	
+	
 
 </mapper>
