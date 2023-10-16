@@ -118,7 +118,7 @@
                                 <input type="text" class="form-control" id="userNickname" name="userNickname" oninput="nickCheck()" placeholder="한글, 영문, 숫자만 2~10자 입력">
                             </div>
                             <div class="col-4 col-sm-2">
-                                <button class="btn btn-sm regBtn" id="nicknameCheck" type="button" onclick="nickDuplicate()">중복확인</button>
+                                <button class="btn btn-sm regBtn" id="nicknameCheck" type="button" onclick="nickDuplicate()">중복체크</button>
                             </div>    
                              <div>
                             	<p class="checkMessage" id="nicknameMsg"></p>
@@ -155,7 +155,7 @@
                         <h4>선택입력사항</h4>
                         <div class="row">
                             <div class="col-12 col-sm-3" style="text-align: left;">
-                                <label for="userGender">성별</label>
+                                <label for="genderM">성별</label>
                             </div>
                             <div class="col-12 col-sm-6 text-left">
                                 <label class="radio-label" style="float: left;">
@@ -174,6 +174,9 @@
                                 <label class="radio-label" style="float: left;">
                                     <input type="date" id="userBirth" name="userBirth">
                                 </label>
+                            </div>
+                            <div>
+                                <p class="checkMessage" id="birthError"></p>
                             </div>
                         </div>
                         <div class="row">
@@ -200,7 +203,7 @@
                                 <label for="userInfo">자기소개</label>
                             </div>
                             <div class="col-8 col-sm-7">
-                                <textarea class="form-control" rows="3" id="userInfo" name="userInfo" maxlength="150" placeholder="자기소개를 입력해주세요. 150자 제한"></textarea>
+                               <textarea class="form-control" id="userInfo" name="userInfo" rows="3" cols="20" wrap="hard" maxlength="150" placeholder="자기소개를 입력해주세요. 150자 제한"></textarea>
                             </div>
                         </div>
                         <div style="justify-content: center;">
@@ -230,7 +233,7 @@
         <script>
    			// 정규식
    			const idRegExp = /^(?=.*[a-z])(?=.*\d)[a-z0-9]{6,15}$/; //(?=.*[a-z])(?=.*\d) : 소문자, 숫자는 하나 이상 들어가야 함
-   			const pwRegExp = /^(?=.*[a-z])(?=.*\d)[a-z0-9]{6,20}$/;
+   			const pwRegExp = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,20}$/;
    			const nameRegExp = /^[가-힣]{2,4}$/;
    			const nicknameRegExp = /^(?!^\d+$)[a-zA-Z0-9가-힣]{2,10}$/;
    			const emailRegExp = /^[a-zA-Z0-9]{4,20}@[a-z]+\.[a-z]{3}/g;
@@ -271,9 +274,9 @@
 			function idCheck() {
 			    let userId = $("#userId").val();
 			    if (!idRegExp.test(userId)) {
-		            showIdMsg("* 아이디는 영문, 숫자 조합 6 ~ 15자 입력해주세요.", "#f7396e");
+		            showIdMsg("* 아이디는 영문, 숫자 조합 6 ~ 15자 입력해주세요.", "red");
 				} else {
-		            showIdMsg("* 아이디 중복검사를 진행해주세요.", "#f7396e");
+		            showIdMsg("* 아이디 중복검사를 진행해주세요.", "red");
 				}
 			}
    			// id중복체크
@@ -282,13 +285,13 @@
 			    const userId = $("#userId").val();
 			
 			    if (!userId) {
-			    	showIdMsg("* 아이디를 입력해주세요.", "#f7396e");
+			    	showIdMsg("* 아이디를 입력해주세요.", "red");
 			        return;
 			    }
 			
 			    /* if (!idRegExp.test(userId) || userId.length < 6 || userId.length > 15)  */
 			    if (!idRegExp.test(userId)) {
-			    	showIdMsg("* 아이디는 영문, 숫자 조합 6 ~ 15자 입력해주세요.", "#f7396e");
+			    	showIdMsg("* 아이디는 영문, 숫자 조합 6 ~ 15자 입력해주세요.", "red");
 			        $("#userId").focus();
 			        return;
 			    }
@@ -299,7 +302,7 @@
 			        type: "GET",
 			        success: function (result) {
 			            if (result > 0) {
-			            	showIdMsg("* 사용할 수 없는 아이디입니다.", "#f7396e");
+			            	showIdMsg("* 사용할 수 없는 아이디입니다.", "red");
 			        		$("#userId").focus();
 			            } else {
 			            	showIdMsg("* 사용가능한 아이디입니다.", "rgb(139, 195, 74)");
@@ -315,7 +318,7 @@
 			function pwCheck() {
 			    let userPw = $("#userPw").val();
 			    if (!pwRegExp.test(userPw)) {
-			    	showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
+			    	showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
 				} else {
 					showPwMsg("* 사용가능한 비밀번호입니다.", "rgb(139, 195, 74)");
 				}
@@ -328,35 +331,34 @@
 			    
 	            if(userPw === '' && userPwCheck === '') {
 	                window.alert('비밀번호를 입력해주세요.');
-			    	showPwMsg("* 비밀번호를 입력해주세요.", "#f7396e");
-			    	showPwCheckMsg("* 비밀번호를 입력해주세요.", "#f7396e");
+			    	showPwMsg("* 비밀번호를 입력해주세요.", "red");
+			    	showPwCheckMsg("* 비밀번호를 입력해주세요.", "red");
 	                return;
 	            }
-	            if(userPwCheck === userPw) {
+/* 	            if(userPwCheck === userPw) {
 					showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
 	            } else {
-				    showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
+				    showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
+				    return;
+	            } */
+	            if (pwRegExp.test(userPwCheck)) {
+		            if(userPwCheck === userPw) {
+						showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
+		            }  else {
+					    showPwCheckMsg("* 비밀번호가 일치하지 않습니다.", "red");
+					    return;
+		            }
+	            } else {
+				    showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
 				    return;
 	            }
-	            
-/* 			    if($("#pwCheckMsg").css('color') !== "rgb(139, 195, 74)"){
-			    	if (userPw === "") {
-				    } else if (!pwRegExp.test(userPw)){
-			    		showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "#f7396e");
-				    } else if (userPwCheck != userPw) {
-				    	showPwCheckMsg("* 비밀번호가 일치하지 않습니다.", "#f7396e");
-					}
-			    }  else {
-					showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
-				} */
-			    
 			}
 			
 			// 이름 유효성체크
 			function nameCheck() {
 			    let userName = $("#userName").val();
 			    if (!nameRegExp.test(userName)) {
-			    	showNameMsg("* 올바른 이름을 입력해주세요.", "#f7396e");
+			    	showNameMsg("* 올바른 이름을 입력해주세요.", "red");
 				} else {
 					showNameMsg("* 이름 입력 완료", "rgb(139, 195, 74)");
 				}
@@ -366,18 +368,18 @@
 			function nickCheck() {
 			    let userNickname = $("#userNickname").val();
 			    if (!nicknameRegExp.test(userNickname)) {
-			    	showNickMsg("* 닉네임은 한글, 영문, 숫자 2~10자 입력해주세요.<br><p style='text-align: left;'>(숫자만 입력 불가)<p>", "#f7396e");
+			    	showNickMsg("* 닉네임은 한글, 영문, 숫자 2~10자 입력해주세요.<br><p style='text-align: left;'>(숫자만 입력 불가)<p>", "red");
 				} else {
-					showNickMsg("* 닉네임 중복검사를 진행해주세요.", "#f7396e");
+					showNickMsg("* 닉네임 중복검사를 진행해주세요.", "red");
 				}
 			}
 			// 이메일 유효성체크
 			function emailCheck() {
 			    let userEmail = $("#userEmail").val();
 			    if (!emailRegExp.test(userEmail)) {
-			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "#f7396e");
+			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "red");
 				} else {
-					showEmailMsg("* 메일인증을 진행해주세요.", "#f7396e");
+					showEmailMsg("* 메일인증을 진행해주세요.", "red");
 				}
 			}
 			
@@ -388,13 +390,13 @@
 			    const userNickname = $("#userNickname").val();
 			
 			    if (!userNickname) {
-			    	showNickMsg("* 닉네임을 입력해주세요.", "#f7396e");
+			    	showNickMsg("* 닉네임을 입력해주세요.", "red");
 			        return;
 			    }
 			    
 			    /* if (!nicknameRegExp.test(userNickname) || userId.length < 2 || userId.length > 10) */
 			    if (!nicknameRegExp.test(userNickname)) {
-			    	showNickMsg("* 닉네임은 한글, 영문, 숫자 2~10자 입력해주세요.<br><p style='text-align: left;'>(숫자만 입력 불가)<p>", "#f7396e");
+			    	showNickMsg("* 닉네임은 한글, 영문, 숫자 2~10자 입력해주세요.<br><p style='text-align: left;'>(숫자만 입력 불가)<p>", "red");
 			        $("#userNickname").focus();
 			        return;
 			    }
@@ -405,7 +407,7 @@
 			        type: "GET",
 			        success: function (result) {
 			            if (result > 0) {
-			            	showNickMsg("* 사용할 수 없는 닉네임입니다.", "#f7396e");
+			            	showNickMsg("* 사용할 수 없는 닉네임입니다.", "red");
 			        		$("#userNickname").focus();
 			            } else {
 			            	showNickMsg("* 사용가능한 닉네임입니다.", "rgb(139, 195, 74)");
@@ -422,7 +424,7 @@
 			
    			// 메일 중복 체크 및 인증메일 발송 
         	function emailDuplicate(){
-			    showEmailMsg("* 잠시만 기다려주세요.", "#f7396e");
+			    showEmailMsg("* 잠시만 기다려주세요.", "red");
 			    const userEmail = $("#userEmail").val();
 			    if(userEmail != "") {
 			    	$.ajax({
@@ -432,12 +434,12 @@
 			    		success: function(response){
 			                if (response.isDuplicate) {
 			                    alert("중복된 이메일입니다.");
-			    				showEmailMsg("* 다른 이메일을 입력해주세요.", "#f7396e");
+			    				showEmailMsg("* 다른 이메일을 입력해주세요.", "red");
 			                } else {
 			                	checkCode = response.checkCode;
 			                	console.log(checkCode);
 			                    alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
-			    				showEmailMsg("* 메일발송완료. 발송된 인증번호를 입력해주세요.", "#f7396e");
+			    				showEmailMsg("* 메일발송완료. 발송된 인증번호를 입력해주세요.", "red");
 			                }
 			    		},
 			    		error : function(){
@@ -445,7 +447,7 @@
 			    		}
 			    	})
 			    } else {
-			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "#f7396e");
+			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "red");
 			    }
         	}
    			
@@ -453,9 +455,9 @@
         	function codeCheck() {
         		const userEmailCheck = $("#userEmailCheck").val();
         		if(checkCode == null) {
-        			showEmailMsg("* 이메일인증을 진행해주세요", "#f7396e");
+        			showEmailMsg("* 이메일인증을 진행해주세요", "red");
         		} else if(userEmailCheck != checkCode) {
-        			showEmailCheckMsg("* 인증번호가 일치하지 않습니다.", "#f7396e");
+        			showEmailCheckMsg("* 인증번호가 일치하지 않습니다.", "red");
         			$("#userEmailCheck").focus();
         		} else if(userEmailCheck == checkCode) {
         			showEmailMsg("* 이메일인증완료", "rgb(139, 195, 74)");
@@ -477,11 +479,8 @@
    			}
    			
    			// textarea 입력체크
-   			$('#userInfo').on('input', function() {
+   			$('#userInfo').on('input', function(event) {
    			    let content = $(this).val();
-
-   			    // <br> 대신 \n 사용
-   			    content = content.replace(/<br>/g, '\n');
 
    			    // 글자수 세기
    			    if (content.length == 0 || content == '') {
@@ -498,6 +497,31 @@
    			    }
    			});
    		
+   		// 유효성 검사 함수
+   			function validateBirth() {
+   			    var userBirth = document.getElementById("userBirth").value;
+   			    var birthError = document.getElementById("birthError");
+
+   			    if (!userBirth) {
+   			        birthError.textContent = ""; // 아무 내용도 입력하지 않았을 때 오류 메시지 표시하지 않음
+   			        return true; // 선택 사항이므로 유효한 상태
+   			    } else {
+   			        var selectedDate = new Date(userBirth);
+   			        var currentDate = new Date();
+
+   			        if (selectedDate > currentDate) {
+   			            birthError.textContent = "* 유효하지 않은 날짜입니다.";
+   			            return false;
+   			        } else {
+   			            birthError.textContent = "";
+   			            return true;
+   			        }
+   			    }
+   			}
+
+   			// 이벤트 핸들러를 등록
+   			document.getElementById("userBirth").addEventListener("input", validateBirth);
+   			
       		// 회원가입 필수입력정보체크
       		function registerBtn(){
       			event.preventDefault();
@@ -519,7 +543,7 @@
 			        if ($("#idMsg").css('color') !== "rgb(139, 195, 74)") {
 			            $("#userId").focus();
 			            alert("아이디 중복검사를 완료해주세요.");
-			            showIdMsg("* 아이디 중복검사를 진행해주세요.", "#f7396e");
+			            showIdMsg("* 아이디 중복검사를 진행해주세요.", "red");
 			            return;
 			        } else if ($("#pwMsg").css('color') !== "rgb(139, 195, 74)") {
 			            alert("비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.");
@@ -539,10 +563,16 @@
 			            return;
 			        } else if ($("#mailMsg").css('color') !== "rgb(139, 195, 74)" || $("#mailCheckMsg").css('color') !== "rgb(139, 195, 74)") {
 			            alert("이메일 인증을 완료해주세요.");
-			            $("#mailMsg").focus();
+			            $("#userEmail").focus();
+			            return;
+			        } else if ($("#birthError").text() !== "") {
+			            alert("유효하지 않은 날짜입니다.");
+			            $("#userBirth").focus();
 			            return;
 			        } else {
-					    $("#regiForm").submit();
+			        	if(confirm("회원가입을 하시겠습니까?")) {
+						    $("#regiForm").submit();
+			        	}
 			        }
 			    }
 			}

@@ -15,12 +15,28 @@ public interface UserStore {
 	int insertUser(SqlSession sqlSession, User user);
 
 	/**
-	 * 임시비밀번호로 변경 service
+	 * 회원 정보 수정 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int updateUser(SqlSession sqlSession, User user);
+
+	/**
+	 * 임시비밀번호로 변경 Store
 	 * @param sqlSession
 	 * @param user
 	 * @return
 	 */
 	int updateUserPw(SqlSession sqlSession, User user);
+
+	/**
+	 * 회원탈퇴 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int deleteUser(SqlSession sqlSession, String userId);
 
 	/**
 	 * 로그인  Store

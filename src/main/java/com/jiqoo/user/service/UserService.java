@@ -12,11 +12,25 @@ public interface UserService {
 	int insertUser(User user);
 
 	/**
+	 * 회원 정보 수정 service
+	 * @param user
+	 * @return
+	 */
+	int updateUser(User user);
+
+	/**
 	 * 임시비밀번호로 변경 service
 	 * @param user
 	 * @return 
 	 */
 	int updateUserPw(User user);
+
+	/**
+	 * 회원탈퇴 service
+	 * @param userId
+	 * @return
+	 */
+	int deleteUser(String userId);
 
 	/**
 	 * 로그인 service

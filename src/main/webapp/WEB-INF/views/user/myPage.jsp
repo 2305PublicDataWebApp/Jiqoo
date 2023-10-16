@@ -67,10 +67,15 @@
                 <div class="profile-header bg"></div>
                 <div class="profile-body text-center">
                 	<c:if test="${user.userPhotoRename eq null}">
-	                    <img alt="프로필사진" class="no-profile-img" src="../resources/assets/img/no-profile.png">
+	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png">
                 	</c:if>
                 	<c:if test="${user.userPhotoRename ne null}">
-	                    <img alt="프로필사진" class="profile-img img-border-light" src="../resources/puploadFiles/${user.userPhotoRename }">
+	                	<img alt="프로필사진" class="profile-img img-border-light" src="${user.userPhotoPath }">
+                	</c:if>
+                	<c:if test="${user.userId eq sessionScope.userId}">
+                	<div class="icon-relative">
+	                	<img alt="프로필사진변경" id="openChangePhotoModal" class="change-profile-icon" src="../resources/assets/img/user/pencil.png">
+                	</div>
                 	</c:if>
                     <h2 class="zero-margin">${user.userNickname }</h2>
                     <p class="zero-margin fontGray">${user.userId }</p><br>
@@ -90,12 +95,17 @@
                         </div>
                     </div>
                     <div class="profile-button">
-                    <button class="btn btn-sm profile-btn">Follow</button>
+                    <c:if test="${user.userId ne sessionScope.userId}">
+                    	<button class="btn btn-sm profile-btn">Follow</button>
+                    </c:if>
+                    <c:if test="${user.userId eq sessionScope.userId}">
+                    	<a href="/user/modify" class="btn btn-sm profile-btn" >Edit</a>
+                    </c:if>
                     <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="dateInput" placeholder="hidden변경예정">
+            <input type="hidden" id="dateInput">
             <div class="container">
                 <div class="row justify-content-center">
                     <!-- 캘린더 -->
@@ -111,9 +121,6 @@
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#moqoo" class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="#chat" class="nav-link" data-toggle="pill" role="tab" aria-controls="chat" aria-selected="false">채팅</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#reply" class="nav-link" data-toggle="pill" role="tab" aria-controls="reply" aria-selected="false">댓글</a>
@@ -138,10 +145,6 @@
                             <div class="tab-pane fade" id="moqoo" role="tabpanel" aria-labelledby="moqoo">
                                 <span>총 </span><span class="greenColor">5</span>개의 <span class="greenColor">모꾸</span>를 등록하셨습니다.
                                 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-                            </div>
-                            <!-- 채팅리스트 -->
-                            <div class="tab-pane fade" id="chat" role="tabpanel" aria-labelledby="chat">
-                                채팅 리스트
                             </div>
                             <!-- 댓글리스트 -->
                             <div class="tab-pane fade" id="reply" role="tabpanel" aria-labelledby="reply">
@@ -359,7 +362,7 @@
                 <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">바소잔님의 팔로잉</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">${user.userNickname}님의 팔로잉</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -448,6 +451,25 @@
                     </div>
                 </div>
             </div>
+            <!-- 사진변경 Modal -->
+            <div class="modal fade" id="changePhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                	<div class="modal-header">
+				    	<h5 class="modal-title">프로필 사진 변경</h5>
+				    	<button type="button" class="btn-close photo-reset" data-bs-dismiss="modal" aria-label="Close"></button>
+				    </div>
+                    <div class="modal-body" style="margin-top: 20px;">
+                    	<%-- <img src="${pageContext.request.contextPath}/user/photoView" class="profilePhoto"> --%>
+			            <input type="file" class="form-control form-control-sm" id="modalUploadFile" name="uploadFile" accept="image/gif, image/png, image/jpeg" style="float:left;">
+                    </div>
+                    <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
+                        <button type="button" class="btn btn-sm follow-btn" id="photoChange" >변경</button>
+                        <button type="button" class="btn btn-sm follow-btn" data-bs-dismiss="modal">닫기</button>
+                    </div>
+                </div>
+                </div>
+            </div>            
         </main>
         
         <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
@@ -468,47 +490,86 @@
 
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script>
-
-        // $.datepicker.setDefaults({
-        //     prevText: "이전달",
-        //     nextText: "다음달",
-        //     currentText: "오늘",
-        //     monthNames: ["1월", "2월", "3월", "4월", "5월", "6월",
-        //     "7월", "8월", "9월", "10월", "11월", "12월"
-        //     ],
-        //     monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월",
-        //     "7월", "8월", "9월", "10월", "11월", "12월"
-        //     ],
-        //     dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
-        //     dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
-        //     dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
-        //     weekHeader: "주",
-        //     dateFormat: "yy.m.d", // 날짜형태 예)yy년 m월 d일
-        //     firstDay: 0,
-        //     isRTL: false,
-        //     showMonthAfterYear: true,
-        //     yearSuffix: "년"
-        // })
-
-        $("#calendar").datepicker({
-            dateFormat: "yy-mm-dd", // 날짜 형식을 설정
-            onSelect: function(dateText) {
-                // 선택한 날짜를 #dateInput의 값으로 설정
-                $('#dateInput').val(dateText);
-            }
-        })
-
-        // 탭을 클릭했을 때 발생하는 이벤트 처리
-        $(document).ready(function () {
-            $('.nav-link').on('click', function () {
-                $('.nav-link').removeClass('active'); // 현재 활성화된 탭의 active 클래스 제거
-                $(this).addClass('active'); //클릭한 탭에 active클래스 추가 후 활성화
-
-                var target = $(this).attr('href'); // show active 클래스 제거 전에 현재 클릭한 탭의 href 속성값 저장
-                $('.tab-pane').removeClass('show active'); // tab내용(.tab-pane)에 적용되어있는 show active클래스를 모두 제거
-                $(target).addClass('show active'); // target에 저장된 탭내용에 addClass로 show active 추가->활성화
-            });
-        });
+			$("#openChangePhotoModal").on("click", function(){
+				$("#changePhotoModal").modal("show");
+			})
+        
+        	// 사진변경
+			$("#photoChange").on("click", function(){
+			    let uploadFile = $("#modalUploadFile")[0].files[0];
+			
+			    if (uploadFile) {
+			        let formData = new FormData();
+			        formData.append("uploadFile", uploadFile);
+			
+			        $.ajax({
+			            url: "/user/updatePhoto",
+			            type: "POST",
+			            data: formData,
+			            processData: false,
+			            contentType: false,
+			            success: function(response) {
+			                if (response.success === "success") {
+			                    alert("프로필 사진 변경 성공");
+			                    $(".modal").modal("hide");
+			                    location.reload();
+			                } else if (response.checkLogin === "checkLogin") {
+			                    alert("로그인 후 이용바랍니다.");
+			                    window.location.href = "/user/login";   
+			                } else {
+			                    alert("프로필 사진이 변경되지 않았습니다. 다시 시도해주세요.");
+			                }
+			            },
+			            error: function(error) {
+			                alert("[서버오류] 관리자에게 문의바랍니다.");
+			            }
+			        });
+			    } else {
+			        alert("프로필 사진을 선택해주세요.");
+			        return;
+			    }
+			});
+			
+	        // $.datepicker.setDefaults({
+	        //     prevText: "이전달",
+	        //     nextText: "다음달",
+	        //     currentText: "오늘",
+	        //     monthNames: ["1월", "2월", "3월", "4월", "5월", "6월",
+	        //     "7월", "8월", "9월", "10월", "11월", "12월"
+	        //     ],
+	        //     monthNamesShort: ["1월", "2월", "3월", "4월", "5월", "6월",
+	        //     "7월", "8월", "9월", "10월", "11월", "12월"
+	        //     ],
+	        //     dayNames: ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"],
+	        //     dayNamesShort: ["일", "월", "화", "수", "목", "금", "토"],
+	        //     dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"],
+	        //     weekHeader: "주",
+	        //     dateFormat: "yy.m.d", // 날짜형태 예)yy년 m월 d일
+	        //     firstDay: 0,
+	        //     isRTL: false,
+	        //     showMonthAfterYear: true,
+	        //     yearSuffix: "년"
+	        // })
+	
+	        $("#calendar").datepicker({
+	            dateFormat: "yy-mm-dd", // 날짜 형식을 설정
+	            onSelect: function(dateText) {
+	                // 선택한 날짜를 #dateInput의 값으로 설정
+	                $('#dateInput').val(dateText);
+	            }
+	        })
+	
+	        // 탭을 클릭했을 때 발생하는 이벤트 처리
+	        $(document).ready(function () {
+	            $('.nav-link').on('click', function () {
+	                $('.nav-link').removeClass('active'); // 현재 활성화된 탭의 active 클래스 제거
+	                $(this).addClass('active'); //클릭한 탭에 active클래스 추가 후 활성화
+	
+	                var target = $(this).attr('href'); // show active 클래스 제거 전에 현재 클릭한 탭의 href 속성값 저장
+	                $('.tab-pane').removeClass('show active'); // tab내용(.tab-pane)에 적용되어있는 show active클래스를 모두 제거
+	                $(target).addClass('show active'); // target에 저장된 탭내용에 addClass로 show active 추가->활성화
+	            });
+	        });
         </script>
     </body>
 </html>

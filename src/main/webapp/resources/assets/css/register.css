@@ -38,6 +38,11 @@ main {
   background-color: #8BC34A;
 }
 
+.regBtn:hover, .subBtn:hover {
+	background-color: #388E3C;
+	color: white;
+}
+
 #userPhoto, #userInfo{
   
   resize: none; /* 크기 조절 비활성화 */
@@ -60,7 +65,7 @@ form h4{
 .checkMessage {
 	margin : 7px 0 0 0;
 	float: left;
-	color: #f7396e;
+	color: red;
 }
 
 .viewPhoto {

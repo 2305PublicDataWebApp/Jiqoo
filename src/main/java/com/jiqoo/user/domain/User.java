@@ -10,7 +10,7 @@ public class User {
 	private String userNickname;
 	private String userEmail;
 	private String platformType;
-	private char userGender;
+	private String userGender;
 	private String userBirth;
 	private String userTel;
 	private String userInfo;
@@ -70,10 +70,10 @@ public class User {
 	public void setPlatformType(String platformType) {
 		this.platformType = platformType;
 	}
-	public char getUserGender() {
+	public String getUserGender() {
 		return userGender;
 	}
-	public void setUserGender(char userGender) {
+	public void setUserGender(String userGender) {
 		this.userGender = userGender;
 	}
 	public String getUserBirth() {

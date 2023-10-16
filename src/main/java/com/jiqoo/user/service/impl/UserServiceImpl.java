@@ -23,9 +23,21 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	public int updateUser(User user) {
+		int result = userStore.updateUser(sqlSession, user);
+		return result;
+	}
+
+	@Override
 	public int updateUserPw(User user) {
 		int tempPwResult = userStore.updateUserPw(sqlSession, user);
 		return tempPwResult;
+	}
+
+	@Override
+	public int deleteUser(String userId) {
+		int result = userStore.deleteUser(sqlSession, userId);
+		return result;
 	}
 
 	@Override
@@ -69,5 +81,7 @@ public class UserServiceImpl implements UserService{
 		User user = userStore.selectUserOneById(sqlSession, userId);
 		return user;
 	}
+
+
 
 }
