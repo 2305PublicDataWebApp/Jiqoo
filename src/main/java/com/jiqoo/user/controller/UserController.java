@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.service.FollowService;
 import com.jiqoo.user.service.UserService;
 
 @RequestMapping("/user")
@@ -37,6 +38,8 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private FollowService followService;
 	@Autowired
 	private JavaMailSenderImpl mailSender;
 
@@ -80,6 +83,35 @@ public class UserController {
 			return mv;
 		}
 	}
+	
+	// 팔로우
+	@ResponseBody
+	@PostMapping("/follow")
+	public String insertFollow(
+			@RequestParam(value="userId") String toUserId
+			, HttpSession session) {
+		try {
+			String fromUserId = (String) session.getAttribute("userId");
+			if (fromUserId != "" && fromUserId != null) {
+				Follow follow = new Follow(fromUserId, toUserId);
+				int result = followService.insertFollow(follow);
+				if(result > 0) {
+					System.out.println("팔로우성공");
+					return "success";
+				} else {
+					System.out.println("팔로우실패");
+					return "fail";
+				}
+			} else {
+				System.out.println("로그인정보없음");
+				return "checkLogin";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+	
 	// 프로필사진 변경
 	@ResponseBody
 	@PostMapping("/updatePhoto")
@@ -198,7 +230,36 @@ public class UserController {
 			return "common/message";
 		}
 	}
-
+	
+	// 언팔로우
+	@ResponseBody
+	@PostMapping("/unfollow")
+	public String deleteFollow(
+			@RequestParam(value="userId") String toUserId
+			, HttpSession session) {
+		try {
+			String fromUserId = (String) session.getAttribute("userId");
+			if (fromUserId != "" && fromUserId != null) {
+				Follow follow = new Follow(fromUserId, toUserId);
+				int result = followService.deleteFollow(follow);
+				if(result > 0) {
+					System.out.println("언팔성공");
+					return "success";
+				} else {
+					System.out.println("언팔실패");
+					return "fail";
+				}
+			} else {
+				System.out.println("로그인정보없음");
+				return "checkLogin";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+	
+	
 	// 회원탈퇴 실행
 	@ResponseBody
 	@GetMapping("/delete")
@@ -355,16 +416,24 @@ public class UserController {
 					//팔로워, 팔로잉 수 & 리스트
 					int followersCount = userService.selectFollowersCount(userId);
 	                int followingsCount = userService.selectFollowingCount(userId);
-	                List<Follow> followersList = userService.selectFollowersListById(userId);
-	                List<Follow> followingsList = userService.selectFollowingsListById(userId);
-
-	                // 팔로우 상태를 판단하여 "following" 속성 설정
 					/*
-					 * for (Follow follower : followersList) { boolean isFollowing = false; for
-					 * (Follow following : followingsList) { if
-					 * (follower.getFromUserId().equals(following.getToUserId())) { isFollowing =
-					 * true; break; } } follower.setFollowing(isFollowing); }
+					 * List<Follow> followersList = userService.selectFollowersListById(userId);
+					 * List<Follow> followingsList = userService.selectFollowingsListById(userId);
 					 */
+	                List<User> followersList = userService.selectFollowersListById(userId);
+	                List<User> followingsList = userService.selectFollowingsListById(userId);
+
+	                for (User follower : followersList) {
+	                	boolean checkFollow = false;
+	                    for (User following : followingsList) { // followersList에 있는 사람이 내가 팔로우한 목록(followingsList)에 있는지 확인
+	                        if (follower.getUserId().equals(following.getUserId())) {
+	                        	checkFollow = true;
+	                            break;
+	                        }
+	                    }
+	                    follower.setCheckFollow(checkFollow);
+	                }
+
 	                user.setFollowers(followersCount);
 	                user.setFollowings(followingsCount);
 					model.addAttribute("user", user);

@@ -99,14 +99,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<Follow> selectFollowersListById(String userId) {
-		List<Follow> followersList = userStore.selectFollowersListById(sqlSession, userId);
+	public List<User> selectFollowersListById(String userId) {
+		List<User> followersList = userStore.selectFollowersListById(sqlSession, userId);
 		return followersList;
 	}
 
 	@Override
-	public List<Follow> selectFollowingsListById(String userId) {
-		List<Follow> followingsList = userStore.selectFollowingsListById(sqlSession, userId);
+	public List<User> selectFollowingsListById(String userId) {
+		List<User> followingsList = userStore.selectFollowingsListById(sqlSession, userId);
 		return followingsList;
 	}
 

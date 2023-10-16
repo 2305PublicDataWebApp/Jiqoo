@@ -104,14 +104,14 @@ public interface UserService {
 	 * @param userId
 	 * @return
 	 */
-	List<Follow> selectFollowersListById(String userId);
+	List<User> selectFollowersListById(String userId);
 
 	/**
 	 * 팔로잉 리스트 조회 service
 	 * @param userId
 	 * @return
 	 */
-	List<Follow> selectFollowingsListById(String userId);
+	List<User> selectFollowingsListById(String userId);
 
 	/**
 	 * 팔로잉 여부 판단 service

@@ -120,7 +120,7 @@ public interface UserStore {
 	 * @param userId
 	 * @return
 	 */
-	List<Follow> selectFollowersListById(SqlSession sqlSession, String userId);
+	List<User> selectFollowersListById(SqlSession sqlSession, String userId);
 
 	/**
 	 * 팔로잉 리스트 조회 Store
@@ -128,7 +128,7 @@ public interface UserStore {
 	 * @param userId
 	 * @return
 	 */
-	List<Follow> selectFollowingsListById(SqlSession sqlSession, String userId);
+	List<User> selectFollowingsListById(SqlSession sqlSession, String userId);
 
 	/**
 	 * 팔로잉 여부 판단 Store

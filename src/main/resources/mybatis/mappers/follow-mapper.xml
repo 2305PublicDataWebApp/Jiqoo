@@ -3,6 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="FollowMapper">
+
+	<insert id="insertFollow">
+		INSERT INTO FOLLOW_TBL
+		VALUES(#{fromUserId}, #{toUserId}, DEFAULT)
+	</insert>
+	
+	<delete id="deleteFollow">
+		DELETE FROM FOLLOW_TBL
+		WHERE FROM_USER_ID = #{fromUserId} AND TO_USER_ID = #{toUserId}
+	</delete>
+	
 	<select id="selectFollowersCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM FOLLOW_TBL

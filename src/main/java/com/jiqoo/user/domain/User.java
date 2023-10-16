@@ -24,6 +24,9 @@ public class User {
 	
 	private int followers; //나를 팔로우한 사람들
 	private int followings; //내가 팔로우한 사람들
+	private boolean checkFollow;
+	
+
 
 	public User() {
 		super();
@@ -35,7 +38,7 @@ public class User {
 		this.userPw = userPw;
 	}
 
-
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -150,9 +153,17 @@ public class User {
 	public int getFollowings() {
 		return followings;
 	}
-
+	
 	public void setFollowings(int followings) {
 		this.followings = followings;
+	}
+	
+	public boolean getCheckFollow() {
+		return checkFollow;
+	}
+
+	public void setCheckFollow(boolean checkFollow) {
+		this.checkFollow = checkFollow;
 	}
 
 
@@ -165,6 +176,7 @@ public class User {
 				+ userPhotoPath + ", 가입일=" + uCreateDate + ", 탈퇴일=" + uDeleteDate + ", 회원여부="
 				+ userStatus + ", 관리자여부=" + adminYn + "]";
 	}
+
 	
 	
 }

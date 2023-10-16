@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
-import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.store.UserStore;
 
@@ -92,14 +91,14 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public List<Follow> selectFollowersListById(SqlSession sqlSession, String userId) {
-		List<Follow> followersList = sqlSession.selectList("UserMapper.selectFollowersListById", userId);
+	public List<User> selectFollowersListById(SqlSession sqlSession, String userId) {
+		List<User> followersList = sqlSession.selectList("UserMapper.selectFollowersListById", userId);
 		return followersList;
 	}
 
 	@Override
-	public List<Follow> selectFollowingsListById(SqlSession sqlSession, String userId) {
-		List<Follow> followingsList = sqlSession.selectList("UserMapper.selectFollowingsListById", userId);
+	public List<User> selectFollowingsListById(SqlSession sqlSession, String userId) {
+		List<User> followingsList = sqlSession.selectList("UserMapper.selectFollowingsListById", userId);
 		return followingsList;
 	}
 

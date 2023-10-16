@@ -7,8 +7,6 @@ public class Follow {
 	private String toUserId;
 	private Timestamp followDate;
 	
-	private boolean isFollowing;
-	
 	public Follow() {
 		super();
 	}
@@ -37,15 +35,7 @@ public class Follow {
 	public void setFollowDate(Timestamp followDate) {
 		this.followDate = followDate;
 	}
-	
-	
-	public boolean isFollowing() {
-		return isFollowing;
-	}
 
-	public void setFollowing(boolean isFollowing) {
-		this.isFollowing = isFollowing;
-	}
 
 	@Override
 	public String toString() {
