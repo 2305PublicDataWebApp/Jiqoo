@@ -1440,29 +1440,6 @@ main {
 }
 
 
-/**/
-/* #moqoo-table{ */
-/*   width : 1000px; */
-/*   height : 300px; */
-/*   border : 1px solid #ccc; */
-/*   border-radius: 20px; */
-/*   margin: 0 auto; */
-/* } */
-
-/* #cmt-table { */
-/*   width : 1000px; */
-/*   height : 300px; */
-/*   border : 1px solid red; */
-/*   border-radius: 20px; */
-/*   margin: 0 auto; */
-/* } */
-/**/
-
-
-#cmt-table {
-	 border : 1px solid red;
-}
-
 /*--------------------------------------------------------------
 # 버튼
 --------------------------------------------------------------*/

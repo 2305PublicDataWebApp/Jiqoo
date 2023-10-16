@@ -271,24 +271,26 @@
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">${jiqooList.jiqooNo} 번째 지꾸</h1>
+													<div class="modal-title fs-5" id="exampleModalLabel" >
+														<h3><i class="bi bi-bookmark-heart"></i> ${jiqooList.jiqooNo} 번째 지꾸</h3>
+														<h5 style="display:inline"><i class="bi bi-pencil"></i> ${jiqooList.jiqooWriter} </span> <!-- 작성자 -->
+														<span><i class="bi bi-envelope-open"></i> ${jiqooList.jOpenStatus}</span>&nbsp; <!-- 공개여부 -->
+														<span><i class="bi bi-file-earmark-x"></i> ${jiqooList.jiqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+													</div>
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
-														aria-label="Close"></button>
+															aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
-													<h5>${user.userId}</h5>
-													<span><i class="bi bi-envelope-open"></i> ${jiqooList.jOpenStatus}</span>&nbsp;
-													<span><i class="bi bi-file-earmark-x"></i> ${jiqooList.jiqooStatus}</span>
-													<div id="map">
-														지도 들어갈 자리
-														${jiqooList.jiqooContent}
-													</div>
-													<div id="report-reason">
-														<div id="r-title">신고사유()</div>
-														<div></div>
-													</div>
+													<h3 ><i class="bi bi-sticky"></i> ${jiqooList.jiqooTitle}</h3> <!-- 타이틀 -->
+													<span ><i class="bi bi-tag"></i> ${jiqooList.jiqooCtgr}</span>&nbsp; <!-- 카테고리 -->
+													<span><i class="bi bi-globe"></i> ${jiqooList.jiqooW3W}</span>&nbsp; <!-- W3W -->
+<%-- 													<fmt:formatDate pattern="yyyy-MM-dd hh:mm:ss" value=" ${jiqooList.jCreateDate}"/> --%>
+													<span><i class="bi bi-file-earmark-x"></i></span>&nbsp;
+													<div>${jiqooContent }</div>
+													
+													
 													<div id="report-btn">
-														<button type="button" class="button delete-btn">삭제</button>
+														<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${jiqooList.jiqooNo}');">삭제</button>
 													</div>
 												</div>
 											</div>
@@ -300,6 +302,7 @@
 						</table>
 						
 						<!-- 지꾸 페이지네비 -->
+						<c:if test="${pInfoJiqoo.totalCount > 0}">
 						<div id="pageNavi">
 							<c:if test="${pInfoJiqoo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userdetail">
@@ -337,6 +340,7 @@
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
 						</div>
+						</c:if>
 						<!-- End 지꾸페이지네비 -->
 					</div>
 
@@ -422,6 +426,7 @@
 						</table>
 						
 						<!-- 모꾸 페이지네비 -->
+						<c:if test="${pInfoMoqoo.totalCount > 0}">
 						<div id="pageNavi">
 							<c:if test="${pInfoMoqoo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userdetail">
@@ -459,6 +464,7 @@
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
 						</div>
+						</c:if>
 						<!-- End 모꾸페이지네비 -->
 					</div>
 					
@@ -477,38 +483,47 @@
 								<tr>
 									<th scope="col" class="col1">No.</th>
 									<th scope="col">내용</th>
-									<th scope="col" class="col2">공개</th>
-									<th scope="col" class="col2">삭제</th>
+									<th scope="col" class="col2">보드</th>
+									<th scope="col" class="col2">상태</th>
 									<th scope="col" class="col2">신고</th>
 									<th scope="col" class="col1">상세</th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="jiqooList" items="${uJiqooList}" varStatus="i">
+								<c:if test="${uComtList eq null}">
 									<tr>
-										<td class="list-no" scope="row">${jiqooList.jiqooNo}</td>
-										<td>${jiqooList.jiqooContent}</td>
-										<td>${jiqooList.jOpenStatus}</td>
-										<td>${jiqooList.jiqooStatus}</td>
+										<td colspan="7">${noComtMsg}</td>
+									</tr>
+								</c:if>
+								
+								<c:forEach var="comtList" items="${uComtList}" varStatus="i">
+									<tr>
+										<td class="list-no" scope="row">${(pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 ) }</td>
+										<td>${comtList.comtContent}</td>
+										<td>${comtList.cBoardType}</td>
+										<td>${comtList.comtStatus}</td>
 										<td>0</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
-												data-bs-toggle="modal" data-bs-target="#jiqooModal">
+												data-bs-toggle="modal" data-bs-target="#cmtModal${i.count }">
 												조회</button>
 										</td>
 									</tr>
 									
 									<!-- 댓글 Modal -->
-									<div class="modal fade" id="cmtModal" tabindex="-1"
+									<div class="modal fade" id="cmtModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">댓글내용</h1>
+													<h1 class="modal-title fs-5" id="exampleModalLabel">${comtList.comtNo}번째 댓글 </h1>
+													
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
 														aria-label="Close"></button>
 												</div>
-												<div class="modal-body">...</div>
+												<div class="modal-body">
+													${comtList.comtContent}
+												</div>
 												<div class="modal-footer">
 													<button type="button" class="btn btn-secondary"
 														data-bs-dismiss="modal">Close</button>
@@ -523,7 +538,47 @@
 							</tbody>
 						</table>
 						
-						<!-- 페이지네비 -->
+						<!-- 댓글 페이지네비 -->
+						<c:if test="${pInfoComt.totalCount > 0}">
+							<div id="pageNavi">
+								<c:if test="${pInfoComt.startNavi != 1}">
+									<c:url var="prevUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.startNavi -1 }"></c:param>
+									</c:url>
+									<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
+								</c:if>
+								
+								<c:forEach begin="${pInfoComt.startNavi}" end="${pInfoComt.endNavi}"
+									var="p">
+									<c:url var="pageUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${p}"></c:param>
+									</c:url>
+									<c:choose>
+										<c:when test="${p == pInfoComt.currentPage}">
+											<p>
+												<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
+											</p>
+										</c:when>
+										<c:otherwise>
+											<p>
+												<a href="${pageUrl}"> ${p}</a>
+											</p>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+								
+								<c:if test="${pInfoComt.endNavi != pInfoComt.naviTotalCount}">
+									<c:url var="nextUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.endNavi + 1}"></c:param>
+									</c:url>
+									<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
+								</c:if>
+							</div>
+						</c:if>
+						<!-- End 모꾸페이지네비 -->
 					</div>
 					<!--  -->
 
@@ -596,7 +651,7 @@
 							<span><i
 								class="bi bi-file-earmark-x"></i> ${usersTotalMoqooCount }</span> 
 								<span><i
-								class="bi bi-file-earmark-x"></i> (작성한 댓글 수)</span>
+								class="bi bi-file-earmark-x"></i> ${usersTotalComtCount }</span>
 							<div id="report-reason">
 								<div id="r-title">신고사유()</div>
 								<div></div>

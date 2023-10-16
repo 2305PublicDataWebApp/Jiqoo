@@ -5,6 +5,8 @@
 	
 <mapper namespace="AdminMapper">
 
+	
+
 	<!-- 회원관리페이지 총회원수 (= 총게시물수) -->
 	<select id="getUserListCount" resultType="_int">
 		SELECT COUNT (*) FROM USER_TBL WHERE ADMIN_YN = 'N'
@@ -94,6 +96,18 @@
 	<select id="showUserMoqooList" resultType="Moqoo">
 		SELECT * FROM MOQOO_TBL WHERE MOQOO_WRITER = #{moqooWriter} ORDER BY MOQOO_NO DESC
 	</select>
+	
+	<!-- 회원별 댓글 수  -->
+	<select id="getusersTotalComtCount" resultType="_int">
+		SELECT COUNT (*) FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter}
+	</select>
+	
+	<!-- 회원별 댓글 리스트  -->
+	<select id="showUserComtList" resultType="Comment">
+		SELECT * FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter} ORDER BY COMT_NO DESC
+	</select>
+	
+	
 	
 	<!-- 지꾸관리페이지 총 지꾸수 (= 총게시물수) -->
 	<select id="getJiqooListCount" resultType="_int">
@@ -317,11 +331,11 @@
 	</select>
 	
 	<!-- 채팅방관리_ 총 채팅방 리스트 -->
-<!-- 	<select id="selectAllChatRoom" resultType="ChatRoom"> -->
-<!-- 		SELECT * FROM CHAT_ROOM_TBL  -->
+	<select id="selectAllChatRoom" resultType="ChatRoom">
+		SELECT * FROM CHAT_ROOM_TBL 
 <!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
-<!-- 		ORDER BY C_CREATE_DATE DESC -->
-<!-- 	</select> -->
+		ORDER BY C_CREATE_DATE DESC
+	</select>
 
 	<!-- 당일 가입한 회원 리스트  -->
 	<select id="todayUserList" resultType="User">

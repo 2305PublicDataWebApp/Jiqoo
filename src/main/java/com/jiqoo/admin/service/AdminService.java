@@ -3,7 +3,9 @@ package com.jiqoo.admin.service;
 import java.util.List;
 import java.util.Map;
 
+
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -70,7 +72,7 @@ public interface AdminService {
 	 * @param pInfo
 	 * @return
 	 */
-	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String userId);
+	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String jiqooWriter);
 
 	/**
 	 * 회원별 모꾸수
@@ -86,6 +88,21 @@ public interface AdminService {
 	 * @return
 	 */
 	public List<Moqoo> showUserMoqooList(PageInfo pInfoMoqoo, String userId);
+
+	/**
+	 * 회원별 총 댓글 수
+	 * @param userId
+	 * @return
+	 */
+	public Integer getusersTotalComtCount(String comtWriter);
+
+	/**
+	 * 회원별 총 댓글 리스트
+	 * @param pInfoComt
+	 * @param comtWriter
+	 * @return
+	 */
+	public List<Comment> showUserComtList(PageInfo pInfoComt, String comtWriter);
 
 	/**
 	 * 총 지꾸 수 
@@ -247,7 +264,7 @@ public interface AdminService {
 	public List<Jiqoo> todayJiqooList(PageInfo pInfoJiqoo);
 
 	/**
-	 * 당일 등록된 모꾸 리스
+	 * 당일 등록된 모꾸 리스트
 	 * @param pInfoJiqoo
 	 * @return
 	 */
@@ -258,6 +275,13 @@ public interface AdminService {
 	 * @return
 	 */
 	public List<User> userAgeList();
+	
+
+	
+	
+
+
+
 
 
 	

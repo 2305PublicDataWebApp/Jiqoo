@@ -1,13 +1,11 @@
 package com.jiqoo.admin.controller;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
+import com.jiqoo.chat.service.ChatService;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -179,7 +177,8 @@ public class AdminController {
 										  , @ModelAttribute Jiqoo jiqoo
 										  , @ModelAttribute Moqoo moqoo
 										  , @RequestParam(value = "jiqooPage", required = false, defaultValue = "1") Integer currentJiqooPage
-										  , @RequestParam(value = "moqooPage", required = false, defaultValue = "1") Integer currentMoqooPage) {
+										  , @RequestParam(value = "moqooPage", required = false, defaultValue = "1") Integer currentMoqooPage
+										  , @RequestParam(value = "comtPage", required = false, defaultValue = "1") Integer currentComtPage) {
 		// SELECT * FROM USER_TBL WHERE USER_ID = ?
 		// SELECT * FROM JIQOO_TBL JOIN USER_TBL ON JIQOO_TBL.JIQOO_WRITER = USER_TBL.USER_ID WHERE USER_ID = #{userId}
 		try {
@@ -187,7 +186,7 @@ public class AdminController {
 			User user = adminService.selectUserByUserId(userId);
 			
 			if (user != null) {
-				//지꾸 정보 가져오기 
+				//회원별 지꾸 정보 가져오기 
 				Integer usersTotalJiqooCount = adminService.getUserJiqooListCount(userId); // 회원별 총 지꾸 수 카운트
 				PageInfo pInfoJiqoo = this.getPageInfo(5, currentJiqooPage, usersTotalJiqooCount); // 지꾸 리스트 페이징 
 				List<Jiqoo> uJiqooList = adminService.showUserJiqooList(pInfoJiqoo, userId); // 회원별 지꾸 리스트
@@ -198,7 +197,7 @@ public class AdminController {
 					mv.addObject("noJiqooMsg", "작성한 지꾸가 없습니다.");
 				}
 				
-				//모꾸 정보 가져오기 
+				//회원별 모꾸 정보 가져오기 
 				Integer usersTotalMoqooCount = adminService.getUserMoqooListCount(userId); // 회원별 총 모꾸 수 카운트
 				PageInfo pInfoMoqoo = this.getPageInfo(5, currentMoqooPage, usersTotalMoqooCount); // 모꾸 리스트 페이징 
 				List<Moqoo> uMoqooList = adminService.showUserMoqooList(pInfoMoqoo, userId); // 회원별 모꾸 리스트
@@ -208,10 +207,22 @@ public class AdminController {
 				}else {
 					mv.addObject("noMoqooMsg", "작성한 모꾸가 없습니다.");
 				}
+				
+				//회원별 댓글 정보 가져오기 
+				Integer usersTotalComtCount = adminService.getusersTotalComtCount(userId); // 회원별 총 댓글 수 카운트
+				PageInfo pInfoComt = this.getPageInfo(5, currentComtPage, usersTotalComtCount); // 지꾸 댓글 페이징 
+				List<Comment> uComtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
+				
+				if(uComtList.size() > 0) {
+					mv.addObject("pInfoComt",  pInfoComt).addObject("uComtList", uComtList);	
+				}else {
+					mv.addObject("noComtMsg", "작성한 댓글이 없습니다.");
+				}
 						
 				mv.addObject("user", user);
 				mv.addObject("usersTotalJiqooCount", usersTotalJiqooCount);
 				mv.addObject("usersTotalMoqooCount", usersTotalMoqooCount);
+				mv.addObject("usersTotalComtCount", usersTotalComtCount);
 
 				mv.setViewName("admin/admin_user_detail");
 				
@@ -501,11 +512,13 @@ public class AdminController {
 									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
 		// SELECT COUNT (*) FROM CHAT_ROOM_TBL;
 		// SELECT * FROM CHAT_ROOM_TBL ORDER BY C_CREATE_DATE DESC
-		
 		Integer totalChatRoomCount = adminService.getChatRoomListCount(); // 총 채팅방 수
 		PageInfo pInfo = this.getPageInfo(10, currentPage, totalChatRoomCount);
-		List<ChatRoom> chatRoomList = adminService.selectAllChatRoom(pInfo); // 전체 채팅방리스트
+		List<ChatRoom>chatRoomList = adminService.selectAllChatRoom(pInfo); // 전체 채팅방 리스트
 		
+		
+
+	
 		
 		try {
 			if (chatRoomList.size() > 0) {
@@ -519,7 +532,7 @@ public class AdminController {
 			}
 
 		} catch (Exception e) {
-			mv.addObject("msg", "전체 채팅방 릿스트 조회 실패");
+			mv.addObject("msg", "전체 채팅방 스트 조회 실패");
 			mv.addObject("url", "/admin/main");
 			mv.setViewName("common/message");
 		}

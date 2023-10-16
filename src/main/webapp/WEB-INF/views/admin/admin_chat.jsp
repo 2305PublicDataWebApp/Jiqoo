@@ -76,9 +76,9 @@
 
       <section class="section">
         <div class="row">
-          <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 380px;  margin: 15px auto;">
-            <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">단체채팅방</button>
-            <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">개인채팅방</button>
+          <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 400px;  margin: 15px auto;">
+            <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">유지중인 채팅방</button>
+            <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">삭제된 채팅방</button>
           </div>
 
           <!--=====단체채팅방=====-->
@@ -107,45 +107,87 @@
               <!-- 테이블 -->
               <table id="group-chat">
                 <colgroup>
-                  <col scope="col" width ="10%" > <!--No.-->
+                  <col scope="col" width ="10%" > <!--#-->
+                  <col scope="col" width ="10%" > <!--채팅방이름-->
                   <col scope="col" width ="10%" > <!--프로필-->
-                  <col scope="col" width ="15%" > <!--회원아이디-->
                   <col scope="col" width ="30%" > <!--참여자목록-->
-                  <col scope="col" width ="10%" > <!--총인원-->
+                  <col scope="col" width ="5%" > <!--총인원-->
+                  <col scope="col" width ="10%" > <!--마지막채팅전송일자-->
                   <col scope="col" width ="10%" > <!--신고수-->
                   <col scope="col" width ="15%" > <!--삭제버튼-->
                   
                 </colgroup>
                 <thead>
                   <tr>
-                    <th scope="col" onclick="sortTable(0,'group-')">No.</th>
-                    <th scope="col" class="hover">프로필</th>
-                    <th scope="col" onclick="sortTable(1)" class="hover">방장아이디</th>
+                    <th scope="col" onclick="sortTable(0,'group-')">#</th>
+                    <th scope="col" class="hover">채팅방이름</th>
+                    <th scope="col" onclick="sortTable(1)" class="hover">프로필</th>
                     <th scope="col" onclick="sortTable(2)" class="hover">참여자목록</th>
                     <th scope="col" class="hover">총인원</th>
+                    <th scope="col" class="hover">마지막채팅</th>
                     <th scope="col" onclick="sortTable(3)">신고</th>
                     <th scope="col" >상세</th>
                   </tr>
                 </thead>
                 
                 <tbody>
-                  <tr>
-                    <td class="list-no" scope="row" >99</td>
-                    <td>
-                      <img src="../assets/img/no-profile.png" style="width:50px">
-                    </td>
-                    <td>khuser01</td>
-                    <td title="khuser00, khuser02, khuser03, khuser04, khuser04">khuser00, khuser02, khuser03, khuser04, khuser04</td>
-                    <td>6</td>
-                    <td>10</td>
-                    <td>
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
-
+	                <c:forEach var="chatList" items="${chatRoomList}" varStatus="i">
+	                  <tr>
+	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td> <!-- # -->
+	                    <td>${chatList.chatName }</td>  <!-- 채팅방이름 -->
+	                    <td>
+	                      <img src="../assets/img/no-profile.png" style="width:50px"> <!-- 프로필 -->
+	                    </td>
+	                    <td title="">참여자목록</td> <!-- 참여자목록 -->
+	                    <td>총인원</td>
+	                    <td>마지막채팅전송일자</td>
+	                    <td>신고수</td>
+	                    <td>
+	                      <button type="button" class="button show-detail-btn" >조회</button>
+	                    </td>
+	                  </tr>
+					</c:forEach>
                 </tbody>
               </table>
-              <div id="pageNavi"> 1 2 3 4 5</div>
+              
+              <!--  페이지네비 -->
+			  <c:if test="${pInfo.totalCount > 0}">
+				<div id="pageNavi">
+					<c:if test="${pInfo.startNavi != 1}">
+						<c:url var="prevUrl" value="/admin/chat">
+							<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
+						</c:url>
+						<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
+					</c:if>
+					
+					<c:forEach begin="${pInfo.startNavi}" end="${pInfo.endNavi}"
+						var="p">
+						<c:url var="pageUrl" value="/admin/chat">
+							<c:param name="page" value="${p}"></c:param>
+						</c:url>
+						<c:choose>
+							<c:when test="${p == pInfo.currentPage}">
+								<p>
+									<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
+								</p>
+							</c:when>
+							<c:otherwise>
+								<p>
+									<a href="${pageUrl}"> ${p}</a>
+								</p>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+					
+					<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
+						<c:url var="nextUrl" value="/admin/chat">
+							<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
+						</c:url>
+						<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
+					</c:if>
+				</div>
+			  </c:if>
+			  <!-- End 페이지네비 -->
             </div>
           <!-- </div> -->
               <script>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.jiqoo.admin.store.AdminStore;
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -98,12 +99,12 @@ public class AdminStoreLogic implements AdminStore {
 	 * 회원별 지꾸 리스트 
 	 */
 	@Override
-	public List<Jiqoo> showUserJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo, String userId) {
+	public List<Jiqoo> showUserJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo, String jiqooWriter) {
 		int limit = pInfoJiqoo.getRecordCountPerPage();
 		int offset = (pInfoJiqoo.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		List<Jiqoo> uJiqooList = sqlSession.selectList("AdminMapper.showUserJiqooList", userId, rowBounds);
+		List<Jiqoo> uJiqooList = sqlSession.selectList("AdminMapper.showUserJiqooList", jiqooWriter, rowBounds);
 		return uJiqooList;
 	}
 
@@ -129,6 +130,29 @@ public class AdminStoreLogic implements AdminStore {
 		return uMoqooList;
 	}
 
+	/**
+	 * 회원별 총 댓글 수
+	 */
+	@Override
+	public Integer getusersTotalComtCount(SqlSession sqlSession, String comtWriter) {
+		Integer result = sqlSession.selectOne("AdminMapper.getusersTotalComtCount", comtWriter);
+		return result;
+	}
+
+	/**
+	 * 회원별 총 댓글 리스트
+	 */
+	@Override
+	public List<Comment> showUserComtList(SqlSession sqlSession, PageInfo pInfoComt, String comtWriter) {
+		int limit = pInfoComt.getRecordCountPerPage();
+		int offset = (pInfoComt.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<Comment> uComtList = sqlSession.selectList("AdminMapper.showUserComtList", comtWriter, rowBounds);
+		return uComtList;
+	}
+
+	
 	/**
 	 * 총 지꾸 수 
 	 */
@@ -318,6 +342,9 @@ public class AdminStoreLogic implements AdminStore {
 		return result;
 	}
 
+	/**
+	 * 총 채팅방 수
+	 */
 	@Override
 	public Integer getChatRoomListCount(SqlSession sqlSession) {
 		Integer result = sqlSession.selectOne("AdminMapper.getChatRoomListCount");
@@ -375,6 +402,10 @@ public class AdminStoreLogic implements AdminStore {
 		List<User> userAgeList = sqlSession.selectList("AdminMapper.userAgeList");
 		return userAgeList;
 	}
+
+
+
+	
 
 
 
