@@ -23,8 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.JsonObject;
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.jiqoo.service.JiqooComtService;
 import com.jiqoo.jiqoo.service.JiqooService;
 import com.jiqoo.user.domain.User;
 
@@ -33,6 +35,9 @@ public class JiqooController {
 
 	@Autowired
 	private JiqooService jiqooService;
+	
+	@Autowired
+	private JiqooComtService jiqooComtService;
 
 	@GetMapping("/jiqoo/list")
 	public String showJiqooList(Model model, HttpSession session) {
@@ -92,6 +97,7 @@ public class JiqooController {
 	@GetMapping("/jiqoo/detail")
 	public String showJiqooDetail(@RequestParam("jiqooNo") int jiqooNo, Model model) {
 		try {
+			jiqooService.updateJiqooCount(jiqooNo);
 			Jiqoo jiqoo = jiqooService.selectOneByNo(jiqooNo);
 			String jiqooCName = jiqoo.getJiqooCtgr();
 			Category category = jiqooService.selectCategoryByNo(jiqooCName);
@@ -197,6 +203,47 @@ public class JiqooController {
 //	    return jsonObject; 
 		return src;
 	}
+
+	
+//	// 좋아요
+//	   @PostMapping("/jiqoo/like")
+//	   @ResponseBody
+//	   public String addLike(int memberNo, int reviewNo) {
+//	      try {
+//	         Like like = new Like();
+//	         like.setMemberNo(memberNo);
+//	         like.setReviewNo(reviewNo);
+//	         int result = rService.addLike(like);
+//	         if(result > 0) {
+//	            return "success";  // 좋아요 성공
+//	         } else {
+//	            return "fail";    //좋아요 실패
+//	         }
+//	      } catch (Exception e) {
+//	         e.printStackTrace();
+//	         return "error";
+//	      }
+//	   }
+//	   
+//	   @PostMapping("/jiqoo/remove")
+//	   @ResponseBody
+//	   public String removeLike(int reviewNo, int memberNo) {
+//	      try {
+//	         Like like = new Like();
+//	         like.setMemberNo(memberNo);
+//	         like.setReviewNo(reviewNo);
+//	         int result = rService.removeLike(like);
+//	         if(result > 0) {
+//	            return "success";  // 좋아요 삭제 성공
+//	         } else {
+//	            return "fail";  // 좋아요 삭제 실패 
+//	         }
+//	      } catch (Exception e) {
+//	         e.printStackTrace();
+//	         return "error";
+//	      }
+//	   }
+	
 
 //	public PageInfo getPageInfo(int currentPage, int totalCount) {
 //		PageInfo pi = null;

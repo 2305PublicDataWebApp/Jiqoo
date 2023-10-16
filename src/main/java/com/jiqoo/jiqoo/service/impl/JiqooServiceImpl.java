@@ -75,4 +75,10 @@ public class JiqooServiceImpl implements JiqooService{
 		return result;
 	}
 
+	@Override
+	public int updateJiqooCount(int jiqooNo) {
+		return jiqooStore.updateJiqooCount(sqlSession, jiqooNo);
+		
+	}
+
 }

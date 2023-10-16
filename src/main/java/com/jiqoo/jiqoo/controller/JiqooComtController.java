@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.jiqoo.service.JiqooComtService;
@@ -14,8 +15,8 @@ import com.jiqoo.jiqoo.service.JiqooComtService;
 @Controller
 public class JiqooComtController {
 
-//	@Autowired
-//	private JiqooComtService jiqooComtService;
+	@Autowired
+	private JiqooComtService jiqooComtService;
 
 //	@PostMapping("/comt/add")
 //	public String insertComt(Model model, @ModelAttribute Comment comment, HttpSession session) {
@@ -37,4 +38,18 @@ public class JiqooComtController {
 //			return "common/message";
 //		}
 //	}
+	
+	   //댓글 작성
+	   @PostMapping("/jiqoo/insertComt")
+	   @ResponseBody
+	   public String insertComment(int jiqooNo, int userNo, String comtContent) {
+	      Comment comment = new Comment();
+	      comment.setRefPostNo(jiqooNo);
+	      comment.setComtWriter(userNo);
+	      comment.setComtContent(comtContent);
+	      int result = jiqooComtService.insertComment(comment);
+	      return "success";
+	   }
+	
+	   
 }

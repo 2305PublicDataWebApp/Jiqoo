@@ -271,12 +271,13 @@
       <div class="comment-page-container">
         <span class="comment-page">< 1 2 3 4 5 ></span>
       </div>
-            <form action="" method="" class="comment-form col-md-12 col-xxl-10 mx-auto">
-              <textarea placeholder="댓글을 입력하세요"></textarea>
-              <button class="btn postbtn" id="submit-btn">등록</button>
-            </form>
+            <div class="comment-form col-md-12 col-xxl-10 mx-auto">
+			  <textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
+			  <button class="btn postbtn" id="c-submit" onclick="insertComment()">등록</button>
+			</div>
           </div>
-        </div>->
+        </div>
+<!--               <button class="btn postbtn" id="submit-btn">등록</button> -->
   </main><!-- End #main -->
   <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
 
@@ -370,6 +371,50 @@
     const categoryContainer = document.querySelector(".category-container");
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
   }
+  
+  // 댓글 등록
+  $("#cSubmit").on("click", function() {
+		const comtContent = $("#comtContent").val();
+		const refPostNo = ${jiqoo.jiqoono};
+// 		const tableBody = $("#replyTable tbody");
+		$.ajax({
+			url : "/jiqoo/insertComt",
+			data : {comtContent : comtContent, refPostNo : refPostNo}, // modelattribute 썼으므로 키값을 vo랑 맞춰줘야함
+			type : "POST",
+			success : function(result) {
+				if(result == "success") {
+					alert("댓글 등록 성공!!");
+					getReplyList(); // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
+					$("#comtContent").val(""); // 댓글창 초기화
+				}else {
+					alert("댓글 등록 실패!!");
+				}
+			},
+			error : function() {}
+		});
+	});
+  
+  // 댓글 삭제
+  const removeReply = (comtNo) => {
+		$.ajax({
+			url : "/jiqoo/delComt",
+			data : {comtNo : comtNo},
+			type : "GET",
+			success : function(result) {
+				if(result == "success") {
+					alert("댓글 삭제 성공");
+					getReplyList();
+				}else {
+					alert("댓글 삭제 실패");
+				}
+			},
+			error : function() {
+				alert("Ajax 오류~ 관리자에게 문의하삼");
+			}
+		})
+	}
+  </script>
+
 </script>
 </body>
 

@@ -79,4 +79,12 @@ public interface JiqooStore {
 	 */
 	int updateJiqoo(SqlSession sqlSession, Jiqoo jiqoo);
 
+	/**
+	 * 지꾸 조회수 증가 Store
+	 * @param sqlSession
+	 * @param jiqooNo
+	 * @return
+	 */
+	int updateJiqooCount(SqlSession sqlSession, int jiqooNo);
+
 }

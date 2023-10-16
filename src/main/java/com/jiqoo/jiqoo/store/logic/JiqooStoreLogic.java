@@ -67,4 +67,9 @@ public class JiqooStoreLogic implements JiqooStore {
 		return result;
 	}
 
+	@Override
+	public int updateJiqooCount(SqlSession sqlSession, int jiqooNo) {
+		return sqlSession.update("JiqooMapper.updateJiqooCount", jiqooNo);
+	}
+
 }

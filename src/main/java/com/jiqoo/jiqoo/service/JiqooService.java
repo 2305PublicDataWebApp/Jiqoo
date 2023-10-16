@@ -69,4 +69,11 @@ public interface JiqooService {
 	 */
 	int updateJiqoo(Jiqoo jiqoo);
 
+	/**
+	 * 조회수 증가 Service
+	 * @param jiqooNo
+	 * @return
+	 */
+	int updateJiqooCount(int jiqooNo);
+
 }
