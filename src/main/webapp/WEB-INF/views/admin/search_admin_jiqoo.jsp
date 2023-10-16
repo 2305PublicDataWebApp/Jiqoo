@@ -55,15 +55,7 @@
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
-		<!-- JQuery CDN -->
-<!-- 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
-		<!-- 부트스트랩 JavaScript 및 jQuery -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-		
-		<!-- 카카오맵api -->
-		<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee6032b0d73ff0af6bdd2b029c9dd88d"></script>
-			
+
 
 
 <!-- =======================================================
@@ -105,84 +97,25 @@
 
 	<main id="main">
 
-		<!--차트 섹션-->
-		<section>
-			<div class="row">
-
-				<div class="col-lg-10" style="margin: 0 auto">
-					<h5 class="card-title" style="color: #222;">지꾸 목록</h5>
-					<div class="card">
-						<div class="card-body">
-
-							<!-- Line Chart chart.js -->
-							<canvas id="lineChart" style="max-height: 400px;"></canvas>
-							<script>
-				                document.addEventListener("DOMContentLoaded", () => {
-				                  new Chart(document.querySelector('#lineChart'), {
-				                    type: 'line',
-				                    data: {
-				                      labels: ['07', '08', '09', '10', '11', '12', '13', '14', '15','16','17', '18','19', '20', '21', '22', '23','24','25', '26'],
-				                      datasets: [{
-				                        label: '지꾸 등록 현황',
-				                        data: [65, 59, 80, 81, 56, 55, 40, 45,67,78,45,34],
-				                        fill: false,
-				                        borderColor: '#19A7CE',
-				                        tension: 0.1 //곡률넣어줌
-				                      },
-				                      {
-				                        label: '여성',
-				                        type : 'bar',
-				                        data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
-				                        fill: false,
-				                        backgroundColor: '#FF9B9B',
-				
-				                      },
-				                      {
-				                        label: '남성',
-				                        type : 'bar',
-				                        data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
-				                        fill: false,
-				                        backgroundColor: '#82A0D8',
-				
-				                      }]
-				                    },
-				                    options: {
-				                      scales: {
-				                        y: {
-				                          beginAtZero: true //y축시작점이 0에서 시작
-				                        }
-				                      }
-				                    }
-				                  });
-				                });
-			              </script>
-							<!-- End Line CHart -->
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
 		<!--게시글 섹션-->
 		<section>
 			<div class="row">
 				<div class="col-lg-12">
 					<div id="user-main">
 
-						<!--===== 서치바 =====-->
+						<!--서치바-->
 						<div id="search-bar">
 							<form action="/admin/jiqoosearch" method="get">
 								<div id="search-wrap"
 									class="d-flex justify-content-center align-items-center">
 									<select name="searchCondition">
-										<option value="jiqooWriter">아이디</option>
-										<option value="jiqooTitle">제목</option>
-										<option value="jiqooContent">내용</option>
-										<option value="jiqooCtgr">카테고리</option>
-										<option value="jiqooW3W">W3W</option>
-										<option value="jiqooNo">번호</option>
-									</select> <input type="search" name="searchKeyword" id="search-content">
+										<option value="jiqooWriter" <c:if test="${searchCondition eq 'jiqooWriter'}">selected</c:if>>아이디</option>
+										<option value="jiqooTitle" <c:if test="${searchCondition eq 'jiqooTitle'}">selected</c:if>>제목</option>
+										<option value="jiqooContent" <c:if test="${searchCondition eq 'jiqooContent'}">selected</c:if>>내용</option>
+										<option value="jiqooCtgr" <c:if test="${searchCondition eq 'jiqooCtgr'}">selected</c:if>>카테고리</option>
+										<option value="jiqooW3W" <c:if test="${searchCondition eq 'jiqooW3W'}">selected</c:if>>W3W</option>
+										<option value="jiqooNo" <c:if test="${searchCondition eq 'jiqooNo'}">selected</c:if>>번호</option>
+									</select> <input type="search" name="searchKeyword" id="search-content" value=""${searchKeyword }>
 									<button type="submit" id="search-button">
 										<i class="bi bi-search"></i>
 									</button>
@@ -226,22 +159,22 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="jiqooList" items="${jiqooList}" varStatus="i">
+								<c:forEach var="search" items="${searchJiqooList}" varStatus="i">
 									<tr>
-										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
-										<td>${jiqooList.jiqooWriter}</td>
+										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td>
+										<td>${search.jiqooWriter}</td>
 										<td class="col4">
-											<c:set var="jiqooContent" value="${jiqooList.jiqooContent}"></c:set>
+											<c:set var="jiqooContent" value="${search.jiqooContent}"></c:set>
 											<c:if test="${fn:contains(jiqooContent, '<img')}"> 
 												<i class="bi bi-check"></i> 
 											</c:if>
 										</td>
 										<td>
-											<c:out value='${jiqooList.jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+											<c:out value='${search.jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
 										</td>
-<%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${jiqooList.jCreateDate}"/></td> 작성일--%>
-										<td>${jiqooList.jOpenStatus}</td>
-										<td>${jiqooList.jiqooStatus}</td>
+<%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${search.jCreateDate}"/></td> 작성일--%>
+										<td>${search.jOpenStatus}</td>
+										<td>${search.jiqooStatus}</td>
 										<td>10</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
@@ -249,99 +182,46 @@
 										</td>
 									</tr>
 									
-									<!--===== 지꾸 상세보기 Modal =====-->
+									<!-- 지꾸 상세보기 Modal -->
 									<div class="modal fade" id="detailJiqooModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<div class="modal-title fs-5" id="exampleModalLabel" >
-														<h3><i class="bi bi-bookmark-heart"></i> ${jiqooList.jiqooNo} 번째 지꾸</h3>
-													</div>
+													<h1 class="modal-title fs-5" id="exampleModalLabel">${search.jiqooNo} 번째 지꾸</h1>
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
-															aria-label="Close"></button>
+														aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
-													<h3 ><i class="bi bi-sticky"></i> ${jiqooList.jiqooTitle}</h3> <!-- 타이틀 -->
-													<span><i class="bi bi-pencil"></i> ${jiqooList.jiqooWriter} </span> <!-- 작성자 -->
-													<span><i class="bi bi-envelope-open"></i> ${jiqooList.jOpenStatus}</span>&nbsp; <!-- 공개여부 -->
-													<span><i class="bi bi-file-earmark-x"></i> ${jiqooList.jiqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
-													<span ><i class="bi bi-tag"></i> ${jiqooList.jiqooCtgr}</span>&nbsp; <!-- 카테고리 -->
-													<span><i class="bi bi-globe"></i> ${jiqooList.jiqooW3W}</span>&nbsp; <!-- W3W -->
+													<span><h3><i class="bi bi-sticky"></i> ${search.jiqooTitle}</h3></span> <!-- 타이틀 -->
+													<h5><i class="bi bi-pencil"></i> ${search.jiqooWriter} </h5> <!-- 작성자 -->
+													<span><i class="bi bi-envelope-open"></i> ${search.jOpenStatus}</span>&nbsp; <!-- 공개여부 -->
+													<span><i class="bi bi-file-earmark-x"></i> ${search.jiqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+													<span><i class="bi bi-tag"></i> ${search.jiqooCtgr}</span>&nbsp; <!-- 카테고리 -->
+													<span><i class="bi bi-globe"></i> ${search.jiqooW3W}</span>&nbsp; <!-- W3W -->
 <!-- 													<span><i class="bi bi-file-earmark-x"></i> -->
 <%-- 														<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${jiqooList.jCreateDate}"/> --%>
 <!-- 													</span>&nbsp; -->
-													<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
 													
+													<div id="map">지도 들어갈 자리
+														${search.jiqooContent} 
+													</div>
 													<div id="report-reason">
 														<div id="r-title">신고사유()</div>
 														<div></div>
 													</div>
 													<div id="report-btn">
-														<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${jiqooList.jiqooNo}');">삭제</button>
+														<button type="button" class="button delete-btn">삭제</button>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 									<!-- End Modal -->
-									
-									<!-- 카카오맵api -->
-									<script>
-									
-// 										$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){	 
-										//https://espania.tistory.com/155
-										//https://apis.map.kakao.com/web/documentation/#load_load
-										//https://devtalk.kakao.com/t/topic/75555/5
-										//https://developers.naver.com/forum/posts/22823
-										//https://hong-chii.tistory.com/36
-										//https://devtalk.kakao.com/t/topic/81315/2
-									
-										var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
-									    mapOption = { 
-									        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-									        level: 3 // 지도의 확대 레벨
-									    };
-	
-										var map = new kakao.maps.Map(mapContainer, mapOption);
-		
-										// 마커가 표시될 위치입니다 
-										var markerPosition  = new kakao.maps.LatLng(33.450701, 126.570667); 
-		
-										// 마커를 생성합니다
-										var marker = new kakao.maps.Marker({
-										    position: markerPosition
-										});
-		
-										// 마커가 지도 위에 표시되도록 설정합니다
-										marker.setMap(map);
-		
-										var iwContent = '<div style="padding:5px;">Hello World! <br><a href="https://map.kakao.com/link/map/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">큰지도보기</a> <a href="https://map.kakao.com/link/to/Hello World!,33.450701,126.570667" style="color:blue" target="_blank">길찾기</a></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-										    iwPosition = new kakao.maps.LatLng(33.450701, 126.570667); //인포윈도우 표시 위치입니다
-		
-										// 인포윈도우를 생성합니다
-										var infowindow = new kakao.maps.InfoWindow({
-										    position : iwPosition, 
-										    content : iwContent 
-										});
-										  
-										// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-										infowindow.open(map, marker); 
-							
-// 											setTimeout(function(){
-// 												map.relayout(); 
-// 												}, 0);
-									
-// 										}
-																				
-										</script>
-									
-	
 								</c:forEach>
 								
 							</tbody>
 						</table>
-						
 
 						<script>
               function sortTable(n) {
@@ -412,16 +292,20 @@
 						<!-- 지꾸 페이지네비 -->
 						<div id="pageNavi">
 							<c:if test="${pInfo.startNavi != 1}">
-								<c:url var="prevUrl" value="/admin/jiqoo">
+								<c:url var="prevUrl" value="/admin/jiqoosearch">
 									<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
 							</c:if>
 							
 							<c:forEach begin="${pInfo.startNavi}" end="${pInfo.endNavi}"
 								var="p">
-								<c:url var="pageUrl" value="/admin/jiqoo">
+								<c:url var="pageUrl" value="/admin/jiqoosearch">
 									<c:param name="page" value="${p}"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<c:choose>
 									<c:when test="${p == pInfo.currentPage}">
@@ -438,8 +322,10 @@
 							</c:forEach>
 							
 							<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
-								<c:url var="nextUrl" value="/admin/jiqoo">
+								<c:url var="nextUrl" value="/admin/jiqoosearch">
 									<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
+									<c:param name="searchCondition" value="${searchCondition}"></c:param>
+									<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 								</c:url>
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
@@ -488,40 +374,7 @@
 	<!-- Template Main JS File -->
 	<script src="../resources/assets/js/chart.js"></script>
 	<script src="../resources/assets/js/main.js"></script>
-	
-	
 
-	<script>
-		<!-- 지꾸삭제 ajax -->
-// 		function deleteJiqooByA(jiqooNo) {
-// 			console.log(jiqooNo);
-// 			$.ajax({
-// 				url : '/admin/deletejiqoo',
-// 				type : 'get',
-// 				data : { "jiqooNo" : jiqooNo },
-// 				success : function (response) {
-// 					/admin/jiqoo
-// 				}
-					
-// 				}
-// 				error : function (e){
-// 					alert('오류 발생: ' + e);
-// 				}
-// 			})
-// 		} 
-	
-		//지꾸 강제삭제
-		function deleteJiqooByA(jiqooNo){
-			if(confirm ("정말 삭제하시겠습니까?")){
-				location.href = "/admin/deletejiqoo?jiqooNo=" + jiqooNo;
-			}
-		}
-
-	</script>
-	
-
-	
-	
 
 
 </body>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -44,6 +45,10 @@
     <!--구글차트api-->
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.36.0/apexcharts.min.js"></script>
+    
+	<!-- JQuery CDN -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     
 
@@ -108,8 +113,30 @@
                         <i class="bi bi-journal-bookmark-fill"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>145</h6>
-                        <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                        <h6>${ todayInsertJiqooCount } 개</h6>
+                        <span class="text-success small pt-1 fw-bold">
+                        	<c:set var="todayInsertJiqooCount" value="${ todayInsertJiqooCount }" />
+							<c:set var="yesterdayInsertJiqooCount" value="${yesterdayInsertJiqooCount}" />
+<%-- 							<c:set var="percent" value="" /> --%>
+							<c:choose>
+							    <c:when test="${yesterdayInsertJiqooCount ne 0}">
+							        <fmt:formatNumber value="${((todayInsertJiqooCount - yesterdayInsertJiqooCount) / yesterdayInsertJiqooCount) * 100}" maxFractionDigits="0" />
+							    </c:when>
+							    <c:otherwise>
+							        <c:out value="0" />
+							    </c:otherwise>
+							</c:choose>
+<%-- 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" /> --%>
+							%
+						</span> 
+                        <span class="text-muted small pt-2 ps-1">
+							<span class="text-muted small pt-2 ps-1">
+							<c:if test="${todayInsertJiqooCount gt yesterdayInsertJiqooCount }">increase</c:if>
+                        	<c:if test="${todayInsertJiqooCount lt yesterdayInsertJiqooCount}">decrease</c:if>
+                        	<c:if test="${todayInsertJiqooCount eq yesterdayInsertJiqooCount}">same</c:if>
+						</span>
+						</span>
+                        	
                       </div>
                     </div>
                   </div>
@@ -139,8 +166,27 @@
                         <i class="bi bi-journal-richtext"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>$3,264</h6>
-                        <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+                        <h6>${todayInsertMoqooCount } 개</h6>
+                        <span class="text-success small pt-1 fw-bold">
+							<c:set var="todayInsertMoqooCount" value="${ todayInsertMoqooCount }" />
+							<c:set var="yesterdayInsertMoqooCount" value="${yesterdayInsertMoqooCount}" />
+<%-- 							<c:set var="percent" value="" /> --%>
+							<c:choose>
+							    <c:when test="${yesterdayInsertMoqooCount ne 0}">
+							        <fmt:formatNumber value="${((todayInsertMoqooCount - yesterdayInsertMoqooCount) / yesterdayInsertMoqooCount) * 100}" maxFractionDigits="0" />
+							    </c:when>
+							    <c:otherwise>
+							        <c:out value="0" />
+							    </c:otherwise>
+							</c:choose>
+<%-- 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" /> --%>
+							%
+						</span> 
+						<span class="text-muted small pt-2 ps-1">
+							<c:if test="${todayInsertMoqooCount gt yesterdayInsertMoqooCount }">increase</c:if>
+                        	<c:if test="${todayInsertMoqooCount lt yesterdayInsertMoqooCount}">decrease</c:if>
+                        	<c:if test="${todayInsertMoqooCount eq yesterdayInsertMoqooCount}">same</c:if>
+						</span>
                       </div>
                     </div>
                   </div>
@@ -159,7 +205,6 @@
                       </li>
                       <li><a class="dropdown-item" href="#">Today</a></li>
                       <li><a class="dropdown-item" href="#">This Week</a></li>
-                      <!-- <li><a class="dropdown-item" href="#">This Year</a></li> -->
                     </ul>
                   </div>
   
@@ -170,8 +215,27 @@
                         <i class="bi bi-people"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>1244</h6>
-                        <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
+                        <h6>${ todayJoinUserCount } 명</h6>
+                        <span class="text-danger small pt-1 fw-bold">
+							<c:set var="todayJoinUserCount" value="${ todayJoinUserCount }" />
+							<c:set var="yesterdayJoinUserCount" value="${yesterdayJoinUserCount}" />
+<%-- 							<c:set var="percent" value="" /> --%>
+							<c:choose>
+							    <c:when test="${yesterdayJoinUserCount ne 0}">
+							        <fmt:formatNumber value="${((todayJoinUserCount - yesterdayJoinUserCount) / yesterdayJoinUserCount) * 100}" maxFractionDigits="0" />
+							    </c:when>
+							    <c:otherwise>
+							        <c:out value="0" />
+							    </c:otherwise>
+							</c:choose>
+							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" />
+							%
+						</span> 
+						<span class="text-muted small pt-2 ps-1">
+							<c:if test="${todayJoinUserCount gt yesterdayJoinUserCount }">increase</c:if>
+                        	<c:if test="${todayJoinUserCount lt yesterdayJoinUserCount}">decrease</c:if>
+                        	<c:if test="${todayJoinUserCount eq yesterdayJoinUserCount}">same</c:if>
+						</span>
                       </div>
                     </div>
                   </div>
@@ -189,22 +253,38 @@
                     <script type="text/javascript">
                       google.charts.load('current', {'packages':['bar']});
                       google.charts.setOnLoadCallback(drawChart);
-                
+                      
+                      
+                  
+                      
+                      //그래프 그리기
                       function drawChart() {
-                        var data = google.visualization.arrayToDataTable([
-                          ['', '지꾸', '모꾸', '회원'],
-                          ['January', 10, 4, 2],
-                          ['February', 17, 4, 2],
-                          ['March', 6, 11, 3],
-                          ['April', 10, 5, 3],
-                          ['May', 18, 34, 3],
-                          ['July', 10, 24, 3],
-                          ['August', 17, 7, 30],
-                          ['September', 10, 24, 3],
-                          ['October', 15, 4, 30],
-                          ['November', 13, 17, 25],
-                          ['December', 18, 15, 35]
-                        ]);
+                        var data = google.visualization.DataTable();
+//                           ['', '지꾸', '모꾸', '회원'],
+//                           ['07', 10, 4, 2],
+//                           ['08', 17, 4, 2],
+//                           ['09', 6, 11, 3],
+//                           ['10', 10, 5, 3],
+//                           ['11', 18, 34, 3],
+//                           ['12', 10, 24, 3],
+//                           ['13', 17, 7, 30],
+//                           ['14', 10, 24, 3],
+//                           ['15', 15, 4, 30],
+//                           ['16', 13, 17, 25],
+//                           ['17', 18, 15, 35]
+							data.addColumn('datetime', '날짜'); //x축 
+							data.addColumn('number', '수');	// y축
+							
+						for (var i = 0; i < days.length; i++) {
+					        arr = [new Date(days[i]), jiqoo[i]];
+					        // years, months, days, weights에 나열한 데이터를 가지고 arr를 생성한다.
+					        // arr = [new Date(연, 월, 일), 체중기록]
+					        
+					    	data.addRow(arr);
+					        // arr에 담긴 데이터가 그래프에 반영되도록 한다.
+					    }
+
+                        
                 
                         var options = {
                           chart: {
@@ -250,48 +330,72 @@
           <div class="col-lg-4">
             <!-- 지꾸모꾸 Donut Chart -->
             <div class="card">
-              <div class="card-body">
+              <div class="card-body donut">
                 <h5 class="card-title">지꾸/모꾸</h5>
                 <div id="donutChart1"></div>
-                <script>
-                  document.addEventListener("DOMContentLoaded", () => {
-                    new ApexCharts(document.querySelector("#donutChart1"), {
-                      series: [44, 55],
-                      chart: {
-                        height: 200,
-                        type: 'donut',
-                    
-                        toolbar: {
-                          show: true
-                        }
-                      },
-                      labels: ['지꾸', '모꾸'],
-                      colors: ['#19A7CE', '#8BC34A'],
-                      
-                    }).render();
-                  });
-                </script>
+	                <script>
+	                  document.addEventListener("DOMContentLoaded", () => {
+	                    new ApexCharts(document.querySelector("#donutChart1"), {
+	                      series: [${usingJiqooCount}, ${usingMoqooCount}],
+	                      chart: {
+	                        height: 200,
+	                        type: 'donut',
+	                    
+	                        toolbar: {
+	                          show: false
+	                        }
+	                      },
+	                      labels: ['지꾸', '모꾸'],
+	                      colors: ['#19A7CE', '#8BC34A'],
+	                      
+	                    }).render();
+	                  });
+	                </script>
               </div>
             </div>
 
             <!-- 성비 Donut Chart -->
             <div class="card">
-              <div class="card-body">
+              <div class="card-body donut">
                 <h5 class="card-title">성비</h5>
                 <div id="donutChart2"></div>
                 <script>
-                  document.addEventListener("DOMContentLoaded", () => {
+                
+	                var GenderData = ${userGendergroup}
+	                var genderObject = JSON.stringify(GenderData);
+	                var gData = JSON.parse(genderObject);
+	                
+	                var genderLabelList = new Array();  //userGender
+	                var genderValueList = new Array();  //count
+
+	                for(var i = 0; i < gData.length; i++) {
+	                	var GenderData = gData[i];
+	                    // data.userGender가 null이거나 빈 문자열("")인 경우 "불명"으로 대체
+	                     if (GenderData.userGender === 'M') {
+	                    	 genderLabelList.push("남자");
+					    } else if(GenderData.userGender === 'F') {
+					    	genderLabelList.push("여자");
+					    } else {
+					    	genderLabelList.push("불명");
+					    }
+					    console.log(GenderData.userGender); // data.userGender 값 확인
+	                	
+					    genderValueList.push(GenderData.count);
+	                }
+	                
+					//차트 그리기 
+	                document.addEventListener("DOMContentLoaded", () => {
                     new ApexCharts(document.querySelector("#donutChart2"), {
-                      series: [48, 55],
+                      series: genderValueList,
                       chart: {
                         height: 200,
                         type: 'donut',
                         toolbar: {
-                          show: true
+                          show: false
                         }
                       },
-                      labels: ['여성', '남성'],
-                      colors: ['#FF9B9B', '#82A0D8']
+                      labels: genderLabelList,
+                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B', '#A8DF8E']
                       
                     }).render();
                   });
@@ -299,24 +403,46 @@
               </div>
             </div>
 
-            <!-- 나이 Donut Chart -->
+            <!--===== 나이 Donut Chart =====-->
             <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">나이</h5>
+              <div class="card-body donut1">
+                <h5 class="card-title ">나이</h5>
                 <div id="donutChart3"></div>
                 <script>
+	                
+	                var ageData = ${userBirthGroup}
+	                var ageObject = JSON.stringify(ageData);
+	                var aData = JSON.parse(ageObject);
+	                
+	                var ageLabelList = new Array(); //ageGroup
+	                var ageValueList = new Array();  //count
+	
+	                for(var i = 0; i < aData.length; i++) {
+	                	var ageData = aData[i];
+	                     if (ageData.ageGroup === '20-29') {
+	                    	 ageLabelList.push("20대");
+					    } else {
+					    	ageLabelList.push("불명");
+					    }
+						console.log(ageData.ageGroup);
+						
+                	
+						ageValueList.push(ageData.count);
+// 	                	ageLabelList.push(ageData.ageGroup);
+	                	
+	                }
                   document.addEventListener("DOMContentLoaded", () => {
                     new ApexCharts(document.querySelector("#donutChart3"), {
-                      series: [12,14,33,17,5,9],
+                      series: ageValueList,
                       chart: {
                         height: 200,
                         type: 'donut',
                         toolbar: {
-                          show: true
+                          show: false
                         }
                       },
-                      labels: ['10대', '20대','30대', '40대', '50대', '60대이상'],
-                      colors: ['#A8DF8E', '#F3FDE8', '#FFE5E5', '#FFBFBF', '#FFFEC4', '#FFD6A5']
+                      labels: ageLabelList,
+                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B', '#A8DF8E']
                       
                     }).render();
                   });
@@ -402,7 +528,7 @@
               <div class="col-lg-6 ">
                 <h3 style="margin:15px 0 0 15px; color:#19A7CE">오늘의 지꾸</h3>
                 <div class="today-jiqoo" >
-                  <table class="table">
+                  <table class="table today-list">
                     <colgroup>
                       <col scope="col"  width ="15%" >
                       <col scope="col"  width ="30%" >
@@ -420,58 +546,35 @@
                       </tr>
                     </thead>
                     <tbody>
+                    <c:if test="${todayJiqooList.size() eq 0 }">
+						<tr>
+							<td colspan="5">오늘 등록된 지꾸가 없습니다.</td>
+						</tr>
+					</c:if>
+                    <c:forEach var="todayJiqoo" items="${todayJiqooList}" varStatus="i">
                       <tr>
-                        <td>khuserkhuser01</td>
-                        <td>머리, 어깨, 무릎</td>
+                        <td>${todayJiqoo.userId}</td>
+                        <td>${todayJiqoo.jiqooW3W}</td>
                         <td>
                           <a class="modal-link modal-link-jq" data-bs-toggle="modal" href="#jiqooModal" >
-                          Look at you (yeah) 넌 못 감당해 날 (uh)
-                          You took (umm) off hook (yah)
-                          기분은 coke like, brr (brr)
-                          Look at my toe 나의 ex 이름 tattoo
-                          I got to drink up now 니가 싫다 해도 좋아 (ah)
-                          Why are you cranky, boy?
-                          뭘 그리 찡그려, 너?
-                          Do you want a blond Barbie doll?
-                          It's not here, I'm not a doll (like this if you can)
+                          	<c:out value='${todayJiqoo.jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
                           </a>
                         </td>
                         <td>0</td>
                         <td>0</td>
                       </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-
-                    </tbody>
-                  </table>
-                </div>
+                    </c:forEach>
+                  </tbody>
+                </table>
               </div>
+            </div>
               
               <!--모꾸 카드-->
               <div class="col-lg-6 ">
                 <h3 style="margin:15px 0 0 15px; color:#8BC34A">오늘의 모꾸</h3>
                 <div class="today-moqoo">
                   
-                  <table class="table">
+                  <table class="table today-list" >
                     <colgroup>
                       <col scope="col"  width ="15%" >
                       <col scope="col"  width ="30%" >
@@ -489,45 +592,24 @@
                       </tr>
                     </thead>
                     <tbody>
+	                    <c:if test="${todayMoqooList.size() eq 0 }">
+							<tr>
+								<td colspan="5">오늘 등록된 모꾸가 없습니다.</td>
+							</tr>
+						</c:if>
+	                    <c:forEach var="todayMoqoo" items="${todayMoqooList}" varStatus="i">
                       <tr>
-                        <td>khuser01</td>
-                        <td>핳핳핳핳, 핳핳핳핳, 핳핳핳핳핳핳핳핳핳핳핳핳</td>
+                        <td>${todayMoqoo.moqooWriter}</td>
+                        <td>${todayMoqoo.moqooW3W}</td>
                         <td>
-                          <a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal" >
-                          잔소리는 stop it, 알아서 할 게
-                          내가 뭐가 되든 내가 알아서 할 테니까 좀
-                          I do what I wanna, 평범하게 살든 말든 내버려 둘래?
-                          어차피 내가 살아 내 인생 내 거니까
-                          I'm so bad, bad, 차라리 이기적일래
-                          눈치 보느라 착한 척 상처받는 것보다 백번 나아
-                          I'm just on my way, 간섭은, no, no 해
-                          말해버릴지도 몰라 너나 잘하라고
-                          Open Modal</a>
+                          	<a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal" >
+                          		<c:out value='${todayMoqoo.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+							</a>
                         </td>
                         <td>0</td>
                         <td>0</td>
                       </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
-                      <tr>
-                        <td>khuser01</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
+                      </c:forEach>
 
                     </tbody>
                   </table>
@@ -540,7 +622,7 @@
             <div class="col-lg-6 ">
               <h3 style="margin:15px 0 0 15px; color:#FCD8D4">오늘달린 댓글</h3>
               <div class="today-comment">
-                <table class="table">
+                <table class="table today-list">
                   <colgroup>
                     <col scope="col"  width ="15%" >
                     <col scope="col"  width ="15%" >
@@ -564,14 +646,6 @@
                       <td>
                         <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal" >
                         이러지도 못하는데
-                        저러지도 못하네
-                        그저 바라보며 ba-ba-ba-baby
-                        매일 상상만 해
-                        이름과 함께 쓱 말을 놨네 baby
-                        아직 우린 모르는 사인데
-                        아무거나 걸쳐도 아름다워
-                        거울 속 단 둘이서 하는
-                        Fashion show, show
                       </a>
                     </td>
                       <td>0</td>
@@ -618,36 +692,35 @@
                   </colgroup>
                   
                   <tbody>
-                    <tr>
-                      <td>
-                        <img src="../resources/assets/img/no-profile.png" style="width:50px;">
-                      </td>
-                      <td>khuser01</td>
-                      <td>서태웅</td>
-                      <td>M</td>
-                      <td>홈페이지</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img src="../resources/assets/img/no-profile.png" style="width:50px;">
-                      </td>
-                      <td>khuser02</td>
-                      <td>
-                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#" >
-                          강백호
-                        </a></td>
-                      <td>F</td>
-                      <td>카카오</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <img src="../resources/assets/img/no-profile.png" style="width:50px;">
-                      </td>
-                      <td>khuser03</td>
-                      <td>윤대협</td>
-                      <td>F</td>
-                      <td>네이버</td>
-                    </tr>
+	                  <c:if test="${todayUserList.size() eq 0 }">
+							<tr>
+								<td colspan="5">오늘 가입한 회원이 없습니다.</td>
+							</tr>
+						</c:if>
+	                  <c:forEach var="todayUser" items="${todayUserList}" varStatus="i">
+	                    <tr>
+	                      <td>
+	                      	<c:if test="${!empty todayUser.userPhotoRename }">
+								<img src="../resources/puploadFiles/${todayUser.userPhotoRename }"
+									style="width:50px;">
+							</c:if>
+							<c:if test="${empty todayUser.userPhotoRename }">
+								<img src="../resources/assets/img/no-profile.png" style="width:50px;">
+							</c:if>
+	                      
+	                      
+	                     
+	                      </td>
+	                      <td>${todayUser.userId }</td>
+	                      <td>${todayUser.userName }</td>
+	                      <td>
+	                      	<c:if test="${todayUser.userGender  eq ''}"> 불명 </c:if>
+	                      </td>
+	                      <td>
+							<c:if test="${todayUser.platformType eq 'normal'}"> 홈페이지 </c:if>
+						  </td>
+	                    </tr>
+                   	</c:forEach>
                   </tbody>
                 </table>
               </div>

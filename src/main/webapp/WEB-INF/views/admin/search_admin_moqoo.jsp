@@ -79,61 +79,6 @@
 
   <main id="main">
 
-    <!--차트 섹션-->
-    <section >
-      <div class="row">
-
-        <div class="col-lg-10" style="margin:0 auto">
-          <h5 class="card-title" style="color:#222;">모꾸 목록</h5>
-          <div class="card">
-            <div class="card-body">
-              
-                <!-- Line Chart -->
-              <canvas id="lineChart" style="max-height: 400px;"></canvas>
-              <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new Chart(document.querySelector('#lineChart'), {
-                    data: {
-                      labels: ['07', '08', '09', '10', '11', '12', '13', '14', '15','16','17', '18','19', '20', '21', '22', '23','24','25', '26'],
-                      datasets: [{
-                        label: '모꾸 등록 현황',
-                        type: 'line',
-                        data: [65, 59, 80, 81, 56, 55, 40, 45,67,78,45,34],
-                        fill: false,
-                        borderColor: '#19A7CE',
-                        tension: 0.1
-                      },{
-                        label: '여성',
-                        type : 'bar',
-                        data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
-                        fill: false,
-                        backgroundColor: '#FF9B9B',
-                      },{
-                        label: '남성',
-                        type : 'bar',
-                        data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
-                        fill: false,
-                        backgroundColor: '#82A0D8',
-                      }]
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true
-                        }
-                      }
-                    }
-                  });
-                });
-              </script>
-              <!-- End Line CHart -->
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!--게시글 섹션-->
     <section>
       <div class="row">
@@ -146,13 +91,13 @@
 					<div id="search-wrap"
 						class="d-flex justify-content-center align-items-center">
 						<select name="searchCondition">
-							<option value="moqooWriter">아이디</option>
-							<option value="moqooTitle">제목</option>
-							<option value="moqooContent">내용</option>
-							<option value="category">카테고리</option>
-							<option value="moqooW3W">W3W</option>
-							<option value="moqooNo">번호</option>
-						</select> <input type="search" name="searchKeyword" id="search-content">
+							<option value="moqooWriter" <c:if test="${searchCondition eq 'moqooWriter'}">selected</c:if>>아이디</option>
+							<option value="moqooTitle" <c:if test="${searchCondition eq 'moqooTitle'}">selected</c:if>>제목</option>
+							<option value="moqooContent" <c:if test="${searchCondition eq 'moqooContent'}">selected</c:if>>내용</option>
+							<option value="category" <c:if test="${searchCondition eq 'category'}">selected</c:if>>카테고리</option>
+							<option value="moqooW3W" <c:if test="${searchCondition eq 'moqooW3W'}">selected</c:if>>W3W</option>
+							<option value="moqooNo" <c:if test="${searchCondition eq 'moqooNo'}">selected</c:if>>번호</option>
+						</select> <input type="search" name="searchKeyword" id="search-content" value="${ searchKeyword}">
 						<button type="submit" id="search-button">
 							<i class="bi bi-search"></i>
 						</button>
@@ -196,61 +141,61 @@
 					</tr>
 				</thead>
               <tbody>
-	              <c:forEach var="moqooList" items="${moqooList}" varStatus="i">
+	              <c:forEach var="search" items="${searchMoqooList}" varStatus="i">
 	                <tr>
-	                  <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
-	                  <td >${moqooList.moqooWriter}</td>
+	                  <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td>
+	                  <td >${search.moqooWriter}</td>
 	                  <td >
-						<c:set var="moqooContent" value="${moqooList.moqooContent}"></c:set>
+						<c:set var="moqooContent" value="${search.moqooContent}"></c:set>
 						<c:if test="${fn:contains(moqooContent, '<img')}"> 
 							<i class="bi bi-check"></i> 
 						</c:if>
 					  </td>
 	                  <td > 
-	                  	<c:out value='${moqooList.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 --> 
+	                  	<c:out value='${search.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 --> 
 	                  </td>
 <%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${moqooList.moqooDate}"/></td> 작성일--%>
-	                  <td >${moqooList.moqooJoin}</td>
-	                  <td >${moqooList.moqooStatus}</td>
+	                  <td >${search.moqooJoin}</td>
+	                  <td >${search.moqooStatus}</td>
 	                  <td >10</td>
 	                  <td >
 	                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailMoqooModal${i.count }">조회</button>
 	                  </td>
 	                </tr>
 	                
-	                <!--===== 모꾸 상세보기 Modal =====-->
+	                <!-- 모꾸 상세보기 Modal -->
 			        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			          <div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
 								<div class="modal-title fs-5" id="exampleModalLabel" >
-									<h3><i class="bi bi-bookmark-heart"></i> ${moqooList.moqooNo} 번째 모꾸</h3>
+									<h3><i class="bi bi-bookmark-heart"></i> ${search.moqooNo} 번째 모꾸</h3>
 								</div>
 								<button type="button" class="btn-close" data-bs-dismiss="modal"
 									aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<h3><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
-								<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span> <!-- 작성자 -->
-								<span><i class="bi bi-envelope-open"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
-								<span><i class="bi bi-envelope-open"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
-								<span><i class="bi bi-tag"></i> ${moqooList.category}</span>&nbsp; <!-- 카테고리 -->
-								<span><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</span>&nbsp; <!-- W3W -->
-								<span><i class="bi bi-file-earmark-x"></i> ${moqooList.moqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+								<h3><i class="bi bi-sticky"></i> ${search.moqooTitle}</h3><!-- 타이틀 -->
+								<span><i class="bi bi-pencil"></i> ${search.moqooWriter} </span> <!-- 작성자 -->
+								<span><i class="bi bi-envelope-open"></i> ${search.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+								<span><i class="bi bi-envelope-open"></i> ${search.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
+								<span><i class="bi bi-tag"></i> ${search.category}</span>&nbsp; <!-- 카테고리 -->
+								<span><i class="bi bi-globe"></i> ${search.moqooW3W}</span>&nbsp; <!-- W3W -->
+								<span><i class="bi bi-file-earmark-x"></i> ${search.moqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
 								
 <!-- 													<span><i class="bi bi-file-earmark-x"></i> -->
 <%-- 														<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${moqooList.moqooDate}"/> --%>
 <!-- 													</span>&nbsp; -->
 								
 								<div id="map">지도 들어갈 자리
-									${moqooList.moqooContent} 
+									${search.moqooContent} 
 								</div>
 								<div id="report-reason">
 									<div id="r-title">신고사유()</div>
 									<div></div>
 								</div>
 								<div id="report-btn">
-									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${MoqooList.moqooNo}');">삭제</button>
+									<button type="button" class="button delete-btn">삭제</button>
 								</div>
 							</div>
 						</div>
@@ -331,16 +276,20 @@
             <!-- 모꾸 페이지네비 -->
 			<div id="pageNavi">
 				<c:if test="${pInfo.startNavi != 1}">
-					<c:url var="prevUrl" value="/admin/moqoo">
+					<c:url var="prevUrl" value="/admin/moqoosearch">
 						<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
+						<c:param name="searchCondition" value="${searchCondition}"></c:param>
+						<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 					</c:url>
 					<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
 				</c:if>
 				
 				<c:forEach begin="${pInfo.startNavi}" end="${pInfo.endNavi}"
 					var="p">
-					<c:url var="pageUrl" value="/admin/moqoo">
+					<c:url var="pageUrl" value="/admin/moqoosearch">
 						<c:param name="page" value="${p}"></c:param>
+						<c:param name="searchCondition" value="${searchCondition}"></c:param>
+						<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 					</c:url>
 					<c:choose>
 						<c:when test="${p == pInfo.currentPage}">
@@ -357,8 +306,10 @@
 				</c:forEach>
 				
 				<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
-					<c:url var="nextUrl" value="/admin/moqoo">
+					<c:url var="nextUrl" value="/admin/moqoosearch">
 						<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
+						<c:param name="searchCondition" value="${searchCondition}"></c:param>
+						<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 					</c:url>
 					<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 				</c:if>
@@ -403,14 +354,7 @@
   <script src="../resources/assets/js/chart.js"></script>
   <script src="../resources/assets/js/main.js"></script>
   
-	<script>
-		function deleteMoqooByA(moqooNo){
-			if(confirm ("정말 삭제하시겠습니까?")){
-				location.href = "/admin/deletemoqoo?moqooNo=" + moqooNo;
-			}
-		}
-		//Required request parameter 'moqooNo' for method parameter type Integer is present but converted to null
-	</script>
+
 
 </body>
 

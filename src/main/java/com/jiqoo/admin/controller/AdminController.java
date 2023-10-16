@@ -1,17 +1,27 @@
 package com.jiqoo.admin.controller;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.jiqoo.admin.service.AdminService;
+import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -22,14 +32,11 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	// 관리자페이지 메인 접속
-	@GetMapping("/admin/main")
-	public ModelAndView showAdminMain(ModelAndView mv) {
-		mv.setViewName("admin/admin_main");
-		return mv;
-	}
+	//User 도메인에 count, ageGroup 추가하기
+	// 관리자페이지 메인 접속+차트
+	
 
-	// 총 회원리스트
+	// 회원관리 리스트-총 회원리스트 (+페이징)
 	@GetMapping("/admin/userlist")
 	public ModelAndView showAdminUser(ModelAndView mv
 									, @ModelAttribute User user
@@ -40,11 +47,15 @@ public class AdminController {
 		Integer totalUserCount = adminService.getUserListCount(); // 총 회원 수
 		PageInfo pInfo = this.getPageInfo(10, currentPage, totalUserCount);
 		List<User> userList = adminService.selectAllUser(pInfo); // 전체회원리스트
+//		User userOne = adminService.selectOneUser(user); //왜 널이지? 
+//		System.out.println(userOne);
+		
 
 		try {
 			if (userList.size() > 0) {
 				mv.addObject("userList", userList);
 				mv.addObject("pInfo", pInfo);
+//				mv.addObject("userOne", userOne);
 				mv.setViewName("admin/admin_user");
 			} else {
 				mv.addObject("msg", "가입한 회원이 없습니다.");
@@ -54,28 +65,29 @@ public class AdminController {
 
 		} catch (Exception e) {
 			mv.addObject("msg", "전체 회원 조회 실패");
-			mv.addObject("url", "/index.jsp");
+			mv.addObject("url", "/admin/main");
 			mv.setViewName("common/message");
 		}
 		return mv;
 	}
 
-	// 회원관리_서치페이지
+	// 회원관리_서치페이지 (+페이징)
 	@GetMapping("/admin/usersearch")
 	public ModelAndView SearchAdminUserList(ModelAndView mv
 										, @RequestParam("searchCondition") String searchCondition
 										, @RequestParam("searchKeyword") String searchKeyword
 										, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
 
-		Map<String, String> paramMap = new HashMap<String, String>();
-		paramMap.put("searchCondition", searchCondition);
-		paramMap.put("searchKeyword", searchKeyword);
+		Map<String, String> searchUserMap = new HashMap<String, String>();
+		searchUserMap.put("searchCondition", searchCondition);
+		searchUserMap.put("searchKeyword", searchKeyword);
 
 		// 서치.jsp 페이징처리
-		Integer totalSearchUserCount = adminService.getUserSearchListCount(paramMap); // 총 회원 수
-		PageInfo pInfo = this.getPageInfo(10, currentPage, totalSearchUserCount);
-
-		List<User> searchUserList = adminService.searchUserByKeyword(pInfo, paramMap);
+		Integer totalSearchUserCount = adminService.getUserSearchListCount(searchUserMap); // 검색한 총 회원 수
+		PageInfo pInfo = this.getPageInfo(15, currentPage, totalSearchUserCount);
+		
+		//검색한 회원 리스트  
+		List<User> searchUserList = adminService.searchUserByKeyword(pInfo, searchUserMap);
 
 		try {
 			if (searchUserList.size() > 0) {
@@ -100,37 +112,14 @@ public class AdminController {
 			mv.setViewName("common/message");
 		}
 		return mv;
-
 	}
 
-	// 회원관리_디테일 접속
-//	@GetMapping("/admin/userdetail")
-//	public ModelAndView showAdminUserDetail(ModelAndView mv
-//										  , @RequestParam("userId") String userId) {
-//		// SELECT * FROM USER_TBL WHERE USER_ID = ?
-//		try {
-//			User user = adminService.selectUserByUserId(userId);
-//			if (user != null) {
-//				mv.addObject("user", user);
-//				mv.setViewName("admin/admin_user_detail");
-//			} else {
-//				mv.addObject("msg", "회원조회를 실패했습니다.");
-//				mv.addObject("url", "/admin/userlist"); // 그냥 뒤로가기는 어떻게 하지?
-//				mv.setViewName("common/message");
-//			}
-//		} catch (Exception e) {
-//			mv.addObject("msg", "회원 상세조회 실패");
-//			mv.addObject("url", "/admin/userlist");
-//			mv.setViewName("common/message");
-//		}
-//		return mv;
-//	}
 	
 	//회원강제탈퇴
 	@GetMapping("/admin/userdelete")
 	public ModelAndView deleteUserByAdmin (ModelAndView mv
 										, @RequestParam("userId") String userId) {
-		//UPDATE USER_TBL SET USER_STATUS = 'N' WHERE USER_ID = ?
+		//UPDATE USER_TBL SET USER_STATUS = 'A' WHERE USER_ID = ?
 		try {
 			Integer result = adminService.deleteUserByAdmin(userId);
 			if(result>0) {
@@ -154,7 +143,7 @@ public class AdminController {
 		return mv;
 	}
 	
-	//회원복원
+	//강제탈퇴 회원복원
 	@GetMapping("/admin/userrevival")
 	public ModelAndView reviveUserByAdmin (ModelAndView mv
 								  		, @RequestParam("userId") String userId) {
@@ -182,41 +171,8 @@ public class AdminController {
 		return mv;
 	}
 	
-	
-	//회원상세-지꾸목록
-//	@GetMapping("/admin/usersjiqoolist")
-//	public ModelAndView showUserJiqooList(ModelAndView mv
-//										, @ModelAttribute Jiqoo jiqoo
-//										, @ModelAttribute User user
-//										, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
-//		// SELECT COUNT (*) FROM JIQOO_TBL WHERE JIQOO_WRITER = ?  //회원별 총 지꾸수
-//		// SELECT * FROM JIQOO_TBL WHERE JIQOO_WRITER = ? ORDER BY JIQOO_NO DESC  // 회원별 지꾸 리스트
-//
-//		Integer totalUsersJiqooCount = adminService.getUserJiqooListCount(jiqoo); // 회원별 총 지꾸 수
-//		PageInfo pInfo = this.getPageInfo(10, currentPage, totalUsersJiqooCount);
-//		List<Jiqoo> uJiqooList = adminService.showUserJiqooList(pInfo); // 회원별 지꾸 리스트
-//
-//		try {
-//			if (uJiqooList.size() > 0) {
-//				mv.addObject("totalUsersJiqooCount", totalUsersJiqooCount);
-//				mv.addObject("uJiqooList", uJiqooList);
-//				mv.addObject("pInfo", pInfo);
-//				mv.setViewName("admin/admin_user_detail");
-//			} else {
-//				mv.addObject("msg", "등록한 지꾸가 없습니다.");
-//				mv.addObject("url", "/admin/main");
-//				mv.setViewName("common/message");
-//			}
-//
-//		} catch (Exception e) {
-//			mv.addObject("msg", "지꾸 조회 실패");
-//			mv.addObject("url", "/index.jsp");
-//			mv.setViewName("common/message");
-//		}
-//		return mv;
-//	}
-	
-	//회원 상세(+지꾸목록, 모꾸목록, 댓글목록)
+
+	//회원 상세(+지꾸목록, 모꾸목록)
 	@GetMapping("/admin/userdetail")
 	public ModelAndView showAdminUserDetail(ModelAndView mv
 										  , @RequestParam("userId") String userId
@@ -239,7 +195,7 @@ public class AdminController {
 				if(uJiqooList.size() > 0) {
 					mv.addObject("pInfoJiqoo",  pInfoJiqoo).addObject("uJiqooList", uJiqooList);	
 				}else {
-					mv.addObject("noJiqooMsg", "등록한 지꾸가 없습니다.");
+					mv.addObject("noJiqooMsg", "작성한 지꾸가 없습니다.");
 				}
 				
 				//모꾸 정보 가져오기 
@@ -250,11 +206,12 @@ public class AdminController {
 				if(uMoqooList.size() > 0) {
 					mv.addObject("pInfoMoqoo",  pInfoMoqoo).addObject("uMoqooList", uMoqooList);	
 				}else {
-					mv.addObject("noMoqooMsg", "등록한 모꾸가 없습니다.");
+					mv.addObject("noMoqooMsg", "작성한 모꾸가 없습니다.");
 				}
 						
 				mv.addObject("user", user);
 				mv.addObject("usersTotalJiqooCount", usersTotalJiqooCount);
+				mv.addObject("usersTotalMoqooCount", usersTotalMoqooCount);
 
 				mv.setViewName("admin/admin_user_detail");
 				
@@ -271,34 +228,327 @@ public class AdminController {
 		return mv;
 	}
 	
+//**지꾸****지꾸*****지꾸************************************************************************************************************************//
 	
-	
-	
-	
-	
-	
-	
-
-	// 지꾸관리 접속
+	// 지꾸관리 리스트 (+페이징)
 	@GetMapping("/admin/jiqoo")
-	public ModelAndView showAdminJiqoo(ModelAndView mv) {
-		mv.setViewName("admin/admin_jiqoo");
+	public ModelAndView showAdminJiqoo(ModelAndView mv
+									, @ModelAttribute Jiqoo jiqoo
+									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+		// SELECT COUNT (*) FROM JIQOO_TBL   // 총 지꾸 수 
+		// SELECT * FROM JIQOO_TBL ORDER BY JIQOO_NO DESC  // 총 지꾸 리스트 
+		
+		
+		Integer totalJiqooCount = adminService.getJiqooListCount(); // 총 지꾸 수 
+		PageInfo pInfo = this.getPageInfo(10, currentPage, totalJiqooCount);
+		List<Jiqoo> jiqooList = adminService.selectAllJiqoo(pInfo); // 전체 지꾸 리스트
+//		Jiqoo jiqooOne = adminService.selectOneJiqoo(jiqoo); 
+		
+		try {
+			if (jiqooList.size() > 0) {
+				mv.addObject("jiqooList", jiqooList);
+//				mv.addObject("jiqooOne", jiqooOne);
+				mv.addObject("pInfo", pInfo);
+				mv.addObject("totalJiqooCount", totalJiqooCount);
+				mv.setViewName("admin/admin_jiqoo");
+			} else {
+				mv.addObject("msg", "등록된 지꾸가 없습니다.");
+				mv.addObject("url", "/admin/main");
+				mv.setViewName("common/message");
+			}
+		} catch (Exception e) {
+			mv.addObject("msg", "전체 회원 조회 실패");
+			mv.addObject("url", "/admin/main");
+			mv.setViewName("common/message");
+		}
 		return mv;
 	}
+	
+	
+	// 지꾸관리_서치페이지 (+페이징)
+	@GetMapping("/admin/jiqoosearch")
+	public ModelAndView SearchAdminJiqooList(ModelAndView mv
+											, @RequestParam("searchCondition") String searchCondition
+											, @RequestParam("searchKeyword") String searchKeyword
+											, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+		
+		Map<String, String> searchJiqooMap = new HashMap<String, String>();
+		searchJiqooMap.put("searchCondition", searchCondition);
+		searchJiqooMap.put("searchKeyword", searchKeyword);
+		
+		// 지꾸서치.jsp 페이징처리
+		Integer totalSearchJiqooCount = adminService.getJiqooSearchListCount(searchJiqooMap); // 검색된 총 지꾸 수
+		PageInfo pInfo = this.getPageInfo(15, currentPage, totalSearchJiqooCount);
 
-	// 모꾸관리 접속
-	@GetMapping("/admin/moqoo")
-	public ModelAndView showAdminMoqoo(ModelAndView mv) {
-		mv.setViewName("admin/admin_moqoo");
+		List<Jiqoo> searchJiqooList = adminService.searchJiqooByKeyword(pInfo, searchJiqooMap);
+		
+		try {
+			if (searchJiqooList.size() > 0) {
+				mv.addObject("searchCondition", searchCondition);
+				mv.addObject("searchKeyword", searchKeyword);
+
+				// 검색결과 페이징
+				mv.addObject("pInfo", pInfo);
+				mv.addObject("searchJiqooList", searchJiqooList);
+
+				mv.setViewName("admin/search_admin_jiqoo");
+
+			} else {
+				mv.addObject("msg", "검색된 지꾸가 없습니다.");
+				mv.addObject("url", "/admin/jiqoo");
+				mv.setViewName("common/message");
+			}
+
+		} catch (Exception e) {
+			mv.addObject("msg", "검색 실패");
+			mv.addObject("url", "/admin/jiqoo");
+			mv.setViewName("common/message");
+		}
 		return mv;
 	}
+	
+	
+	// 지꾸관리_강제삭제
+	@ResponseBody
+	@GetMapping("/admin/deletejiqoo")
+	public ModelAndView deleteJiqooByAdmin (ModelAndView mv
+											, @RequestParam(value="jiqooNo") Integer jiqooNo
+											, HttpSession session) {
+		//UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = ?
+	
+//			Integer result = adminService.deleteJiqooByAdmin(jiqoo);
+//			if(result>0) {
+//				return "success";
+//			
+//			}else {
+//				return "fail";
+//			}
+			
+			try {
+				String adminYn = (String)session.getAttribute("adminYn"); 
+				
+//				Jiqoo jiqoo = new Jiqoo();
+//				jiqoo.setJiqooNo(jiqooNo);  //없어도 되긴 함 
+				
+				if(adminYn != null && adminYn.equals("Y")) {  //어드민일때 삭제할수 있도록
+					Integer result = adminService.deleteJiqooByAdmin(jiqooNo);
+					if(result>0) {
+						mv.addObject("msg", "지꾸 삭제 완료");
+						mv.addObject("url", "/admin/jiqoo");
+						mv.setViewName("common/message");
+						
+					}else {
+						
+						mv.addObject("msg", "지꾸 삭제가 완료되지 않았습니다");
+						mv.addObject("url", "/admin/jiqoo");
+						mv.setViewName("common/message");
+					}
+				}else {
+					mv.addObject("msg", "관리자만 삭제할 수 있습니다");
+					mv.addObject("url", "/");  //메인화면으로 돌아감
+					mv.setViewName("common/message");
+				}
+			} catch (Exception e) {
+				mv.addObject("msg", "지꾸 삭제 실패");
+				mv.addObject("url", "/admin/jiqoo");
+				mv.setViewName("common/message");
+			}
+			return mv;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//**모꾸***모꾸***모꾸****************************************************************************************************************//	
 
-	// 채팅방관리 접속
+	// 모꾸관리 리스트 (+페이징)
+		@GetMapping("/admin/moqoo")
+		public ModelAndView showAdminMoqoo(ModelAndView mv
+										, @ModelAttribute Moqoo moqoo
+										, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+			// SELECT COUNT (*) FROM MOQOO_TBL   // 총 모꾸 수 
+			// SELECT * FROM MOQOO_TBL ORDER BY MOQOO_NO DESC  // 총 모꾸 리스트 
+			
+			
+			Integer totalMoqooCount = adminService.getMoqooListCount(); // 총 모꾸 수 
+			PageInfo pInfo = this.getPageInfo(10, currentPage, totalMoqooCount);
+			List<Moqoo> moqooList = adminService.selectAllMoqoo(pInfo); // 전체 모꾸 리스트
+			
+			try {
+				if (moqooList.size() > 0) {
+					mv.addObject("moqooList", moqooList);
+					mv.addObject("pInfo", pInfo);
+					mv.addObject("totalMoqooCount", totalMoqooCount);
+					mv.setViewName("admin/admin_moqoo");
+				} else {
+					mv.addObject("msg", "등록된 모꾸가 없습니다.");
+					mv.addObject("url", "/admin/main");
+					mv.setViewName("common/message");
+				}
+			} catch (Exception e) {
+				mv.addObject("msg", "전체 모꾸 조회 실패");
+				mv.addObject("url", "/admin/main");
+				mv.setViewName("common/message");
+			}
+			return mv;
+		}
+
+		
+		
+		
+		// 모꾸관리_서치페이지 (+페이징)
+		@GetMapping("/admin/moqoosearch")
+		public ModelAndView SearchAdminMoqooList(ModelAndView mv
+												, @RequestParam("searchCondition") String searchCondition
+												, @RequestParam("searchKeyword") String searchKeyword
+												, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+			
+			Map<String, String> searchMoqooMap = new HashMap<String, String>();
+			searchMoqooMap.put("searchCondition", searchCondition);
+			searchMoqooMap.put("searchKeyword", searchKeyword);
+			
+			// 모꾸서치.jsp 페이징처리
+			Integer totalSearchMoqooCount = adminService.getMoqooSearchListCount(searchMoqooMap); // 검색된 총 모꾸 수
+			PageInfo pInfo = this.getPageInfo(15, currentPage, totalSearchMoqooCount);
+
+			List<Moqoo> searchMoqooList = adminService.searchMoqooByKeyword(pInfo, searchMoqooMap); //검색된 모꾸 리스트 
+			
+			try {
+				if (searchMoqooList.size() > 0) {
+					mv.addObject("searchCondition", searchCondition);
+					mv.addObject("searchKeyword", searchKeyword);
+
+					// 검색결과 페이징
+					mv.addObject("pInfo", pInfo);
+					mv.addObject("searchMoqooList", searchMoqooList);
+
+					mv.setViewName("admin/search_admin_moqoo");
+
+				} else {
+					mv.addObject("msg", "검색된 모꾸가 없습니다.");
+					mv.addObject("url", "/admin/moqoo");
+					mv.setViewName("common/message");
+				}
+
+			} catch (Exception e) {
+				mv.addObject("msg", "검색 실패");
+				mv.addObject("url", "/admin/jiqoo");
+				mv.setViewName("common/message");
+			}
+			return mv;
+		}
+		
+		
+		// 모꾸관리_강제삭제 //안됨
+		@GetMapping("/admin/deletemoqoo")
+		public ModelAndView deleteMoqooByAdmin (ModelAndView mv
+												, @RequestParam(value="moqooNo") Integer moqooNo
+												, HttpSession session) {
+			//UPDATE MOQOO_TBL SET MOQOO_STATUS ='A'  WHERE MOQOO_NO = ?
+						
+				try {
+					String adminYn = (String)session.getAttribute("adminYn"); 
+					
+//					Moqoo moqoo = new Moqoo();
+//					moqoo.setMoqooNo(moqooNo);  //이거 왜 쓰는거지?;
+					
+					if(adminYn != null && adminYn.equals("Y")) {  //어드민일때 삭제할수 있도록
+						Integer result = adminService.deleteMoqooByAdmin(moqooNo);
+						if(result>0) {
+							mv.addObject("msg", "모꾸 삭제 완료");
+							mv.addObject("url", "/admin/moqoo");
+							mv.setViewName("common/message");
+							
+						}else {
+							
+							mv.addObject("msg", "모꾸 삭제가 완료되지 않았습니다");
+							mv.addObject("url", "/admin/moqoo");
+							mv.setViewName("common/message");
+						}
+					}else {
+						mv.addObject("msg", "관리자만 삭제할 수 있습니다");
+						mv.addObject("url", "/");  //메인화면으로 돌아감
+						mv.setViewName("common/message");
+					}
+				} catch (Exception e) {
+					mv.addObject("msg", "모꾸 삭제 실패");
+					mv.addObject("url", "/admin/moqoo");
+					mv.setViewName("common/message");
+				}
+				return mv;
+		}
+		
+		
+//**채팅***채팅***채팅****************************************************************************************************************//	
+		
+	// 채팅방관리_ 리스트 접속(+페이징)  //안됨
 	@GetMapping("/admin/chat")
-	public ModelAndView showAdminChat(ModelAndView mv) {
-		mv.setViewName("admin/admin_chat");
+	public ModelAndView showAdminChat(ModelAndView mv
+									, HttpSession session
+									, @ModelAttribute ChatRoom chatRoom
+									, @ModelAttribute ChatUser chatUser
+									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+		// SELECT COUNT (*) FROM CHAT_ROOM_TBL;
+		// SELECT * FROM CHAT_ROOM_TBL ORDER BY C_CREATE_DATE DESC
+		
+		Integer totalChatRoomCount = adminService.getChatRoomListCount(); // 총 채팅방 수
+		PageInfo pInfo = this.getPageInfo(10, currentPage, totalChatRoomCount);
+		List<ChatRoom> chatRoomList = adminService.selectAllChatRoom(pInfo); // 전체 채팅방리스트
+		
+		
+		try {
+			if (chatRoomList.size() > 0) {
+				mv.addObject("chatRoomList", chatRoomList);
+				mv.addObject("pInfo", pInfo);
+				mv.setViewName("admin/admin_chat");
+			} else {
+				mv.addObject("msg", "아직 만들어진 채팅방이 없습니다.");
+				mv.addObject("url", "/admin/main");
+				mv.setViewName("common/message");
+			}
+
+		} catch (Exception e) {
+			mv.addObject("msg", "전체 채팅방 릿스트 조회 실패");
+			mv.addObject("url", "/admin/main");
+			mv.setViewName("common/message");
+		}
 		return mv;
 	}
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 //**공통메소드********************************************************************************************	
 

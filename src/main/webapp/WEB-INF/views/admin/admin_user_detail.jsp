@@ -106,7 +106,7 @@
 						<c:if test="${fn:contains(userStatus, 'Y')}">
 							<button type="button" class="button resign-btn" onclick="deleteUser('${user.userId }');">탈퇴처리</button>
 						</c:if>
-						<c:if test="${fn:contains(userStatus, 'N')}">
+						<c:if test="${fn:contains(userStatus, 'A')}"> <!-- 강퇴 시킨 회원일때 -->
 <%-- 						<c:if test="${fn:indexOf(userStatus, 'N') eq 0 }"> --%>
 							<button type="button" class="button revival-btn" onclick="reviveUser('${user.userId }');">복원</button>
 						</c:if>
@@ -116,15 +116,26 @@
 				</div>
 
 				<div class="row">
-					<div
-						class="picture d-flex justify-content-center col-xs-12 col-sm-12 col-md-6">
-						<c:if test="${!empty user.userPhotoRename }">
-							<img src="../resources/uuploadFiles/${user.userPhotoRename}"
-								alt="프로필사진">
-						</c:if>
-						<c:if test="${empty user.userPhotoRename }">
-							<img src="../resources/assets/img/no-profile.png" alt="프로필사진">
-						</c:if>
+					<div class="user-info col-xs-12 col-sm-12 col-md-6">
+					
+						<div class="picture">
+							<c:if test="${!empty user.userPhotoRename }">
+								<img src="../resources/puploadFiles/${user.userPhotoRename }"
+									alt="프로필사진" style="border : 1px double #DCE775;">
+							</c:if>
+							<c:if test="${empty user.userPhotoRename }">
+								<img src="../resources/assets/img/no-profile.png" alt="프로필사진" style="width : 400px; height : 400px;">
+							</c:if>
+						</div>
+						
+						<div class="introduce">
+							<div class="title">자기소개</div>
+							<div class="text">
+								<c:if test="${user.userInfo eq null}"> - </c:if>
+								<c:if test="${user.userInfo ne null}"> ${user.userInfo} </c:if>
+							</div>
+						</div>
+						
 					</div>
 
 					<div class="content col-xs-12 col-sm-12 col-md-6">
@@ -162,13 +173,6 @@
 							</div>
 						</div>
 						<div class="d-flex">
-							<div class="title">자기소개</div>
-							<div class="text">
-								<c:if test="${user.userInfo eq null}"> - </c:if>
-								<c:if test="${user.userInfo ne null}"> ${user.userInfo} </c:if>
-							</div>
-						</div>
-						<div class="d-flex">
 							<div class="title">회원여부</div>
 							<div class="text">${user.userStatus }</div>
 						</div>
@@ -183,7 +187,10 @@
 							<div>
 								<small>가입일 : ${user.uCreateDate } </small><br> 
 								<small>탈퇴일 : <c:if test="${user.uDeleteDate eq null}"> - </c:if> 
-												<c:if test="${user.uDeleteDate ne null}"> ${user.uDeleteDate } </c:if></small>
+												<c:if test="${user.uDeleteDate ne null}"> ${user.uDeleteDate } </c:if></small><br> 
+								<small>복원일 : 
+<%-- 								<c:if test="${user.uDeleteDate eq null}"> - </c:if>  --%>
+<%-- 												<c:if test="${user.uDeleteDate ne null}"> 복원됨 </c:if></small> --%>
 							</div>
 							<!-- <button type="button" id="resign-btn" class="button">탈퇴처리</button> -->
 						</div>
@@ -246,7 +253,7 @@
 											</c:if>
 										</td>
 										<td>
-											<c:out value='${jiqooList.jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+											<c:out value='${jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
 										</td>
 										<td>${jiqooList.jOpenStatus}</td>
 										<td>${jiqooList.jiqooStatus}</td>
@@ -257,13 +264,14 @@
 												조회</button>
 										</td>
 									</tr>
-									<!-- 지꾸Modal -->
+									
+									<!--=====***** 지꾸Modal *****=====-->
 									<div class="modal fade" id="jiqooModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">No.${jiqooList.jiqooNo}</h1>
+													<h1 class="modal-title fs-5" id="exampleModalLabel">${jiqooList.jiqooNo} 번째 지꾸</h1>
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
 														aria-label="Close"></button>
 												</div>
@@ -271,7 +279,10 @@
 													<h5>${user.userId}</h5>
 													<span><i class="bi bi-envelope-open"></i> ${jiqooList.jOpenStatus}</span>&nbsp;
 													<span><i class="bi bi-file-earmark-x"></i> ${jiqooList.jiqooStatus}</span>
-													<div id="map">지도 들어갈 자리</div>
+													<div id="map">
+														지도 들어갈 자리
+														${jiqooList.jiqooContent}
+													</div>
 													<div id="report-reason">
 														<div id="r-title">신고사유()</div>
 														<div></div>
@@ -292,6 +303,7 @@
 						<div id="pageNavi">
 							<c:if test="${pInfoJiqoo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userdetail">
+									<c:param name="userId" value="${user.userId}"></c:param>
 									<c:param name="jiqooPage" value="${pInfoJiqoo.startNavi -1 }"></c:param>
 								</c:url>
 								<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
@@ -319,6 +331,7 @@
 							
 							<c:if test="${pInfoJiqoo.endNavi != pInfoJiqoo.naviTotalCount}">
 								<c:url var="nextUrl" value="/admin/userdetail">
+									<c:param name="userId" value="${user.userId}"></c:param>
 									<c:param name="jiqooPage" value="${pInfoJiqoo.endNavi + 1}"></c:param>
 								</c:url>
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
@@ -403,7 +416,7 @@
 											</div>
 										</div>
 									</div>
-									<!-- End Modal -->
+									<!-- End 모꾸Modal -->
 								</c:forEach>
 							</tbody>
 						</table>
@@ -412,6 +425,7 @@
 						<div id="pageNavi">
 							<c:if test="${pInfoMoqoo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userdetail">
+									<c:param name="userId" value="${user.userId}"></c:param>
 									<c:param name="moqooPage" value="${pInfoMoqoo.startNavi -1 }"></c:param>
 								</c:url>
 								<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
@@ -439,6 +453,7 @@
 							
 							<c:if test="${pInfoMoqoo.endNavi != pInfoMoqoo.naviTotalCount}">
 								<c:url var="nextUrl" value="/admin/userdetail">
+									<c:param name="userId" value="${user.userId}"></c:param>
 									<c:param name="moqooPage" value="${pInfoMoqoo.endNavi + 1}"></c:param>
 								</c:url>
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
@@ -482,6 +497,28 @@
 												조회</button>
 										</td>
 									</tr>
+									
+									<!-- 댓글 Modal -->
+									<div class="modal fade" id="cmtModal" tabindex="-1"
+										aria-labelledby="exampleModalLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="exampleModalLabel">댓글내용</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal"
+														aria-label="Close"></button>
+												</div>
+												<div class="modal-body">...</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary"
+														data-bs-dismiss="modal">Close</button>
+													<button type="button" class="btn btn-primary">Save
+														changes</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- End 댓글 Modal -->
 								</c:forEach>
 							</tbody>
 						</table>
@@ -555,8 +592,10 @@
 						</div>
 						<div class="modal-body">
 							<h5></h5>
-							<span><i class="bi bi-journal-richtext"></i></i> ${usersTotalJiqooCount }</span> <span><i
-								class="bi bi-file-earmark-x"></i> (작성한 모꾸 수)</span> <span><i
+							<span><i class="bi bi-journal-richtext"></i></i> ${usersTotalJiqooCount }</span> 
+							<span><i
+								class="bi bi-file-earmark-x"></i> ${usersTotalMoqooCount }</span> 
+								<span><i
 								class="bi bi-file-earmark-x"></i> (작성한 댓글 수)</span>
 							<div id="report-reason">
 								<div id="r-title">신고사유()</div>
@@ -570,53 +609,13 @@
 					</div>
 				</div>
 			</div>
-
+			<!-- End 회원신고 Modal -->
 			
 
 
-			<!-- 모꾸Modal -->
-			<div class="modal fade" id="moqooModal" tabindex="-1"
-				aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h1 class="modal-title fs-5" id="exampleModalLabel">Modal
-								title</h1>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
-						</div>
-						<div class="modal-body">...</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary">Save
-								changes</button>
-						</div>
-					</div>
-				</div>
-			</div>
+			
 
-			<!-- 댓글 Modal -->
-			<div class="modal fade" id="cmtModal" tabindex="-1"
-				aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h1 class="modal-title fs-5" id="exampleModalLabel">댓글내용</h1>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
-						</div>
-						<div class="modal-body">...</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary">Save
-								changes</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- ======= End Modal =======  -->
+			
 
 		</section>
 	</main>

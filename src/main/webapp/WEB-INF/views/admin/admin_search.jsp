@@ -161,7 +161,7 @@
 							<tbody>
 								<c:forEach var="search" items="${searchUserList }" varStatus="i">
 									<tr>
-										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
+										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td>
 										<!-- 순수넘버링 -->
 										<td>${search.userId }</td>
 										<td class="col1">${search.userName }</td>
