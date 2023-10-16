@@ -140,19 +140,19 @@ public class MoqooController {
 		}
 	}
 	
-	@ResponseBody
-	@PostMapping("/moqoo/post")
-	public String insertMoqooPost(@RequestParam("refMoqooNo") int refMoqooNo, @RequestParam("userId") String refUserId) {
-		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId);
-		int result = moqooService.insertMoqooPost(moqooUser);
-		if(result > 0) {
-			return "true";
-		}
-		else {
-			return "false";
-		}
-	}
-	
+//	@ResponseBody
+//	@PostMapping("/moqoo/post")
+//	public String insertMoqooPost(@RequestParam("refMoqooNo") int refMoqooNo, @RequestParam("userId") String refUserId) {
+//		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
+//		int result = moqooService.insertMoqooPost(moqooUser);
+//		if(result > 0) {
+//			return "true";
+//		}
+//		else {
+//			return "false";
+//		}
+//	}
+//	
 	@PostMapping("moqoo/update")
 	public String updateMoqoo(@ModelAttribute Moqoo moqoo,@RequestParam(value = "uploadFile", required=false) MultipartFile uploadFile, Model model, HttpServletRequest request) {
 		try {
@@ -223,7 +223,7 @@ public class MoqooController {
 
 	// 섬머노트 사진 저장하기
 	@ResponseBody
-	@PostMapping("/uploadSummernoteImageFile")
+	@PostMapping("/muploadSummernoteImageFile")
 	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
 			HttpServletRequest request) {
 //	    JsonObject jsonObject = new JsonObject();
