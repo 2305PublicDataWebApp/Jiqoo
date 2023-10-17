@@ -39,6 +39,18 @@ public class User {
 	}
 
 	
+	public User(String userId, String userPw, String userName, String userNickname, String userEmail, String userGender,
+			String userBirth) {
+		super();
+		this.userId = userId;
+		this.userPw = userPw;
+		this.userName = userName;
+		this.userNickname = userNickname;
+		this.userEmail = userEmail;
+		this.userGender = userGender;
+		this.userBirth = userBirth;
+	}
+
 	public String getUserId() {
 		return userId;
 	}

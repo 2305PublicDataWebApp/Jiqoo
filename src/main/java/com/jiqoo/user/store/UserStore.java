@@ -138,4 +138,20 @@ public interface UserStore {
 	 */
 	int selectFollowStatus(SqlSession sqlSession, Map<String, Object> followMap);
 
+	/**
+	 * 카카오 회원 조회 Store
+	 * @param sqlSession 
+	 * @param userEmail
+	 * @return
+	 */
+	User selectKakaoUser(SqlSession sqlSession, String userEmail);
+
+	/**
+	 * 카카오 회원 가입 Store
+	 * @param sqlSession 
+	 * @param kakaoUser
+	 * @return
+	 */
+	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser);
+
 }

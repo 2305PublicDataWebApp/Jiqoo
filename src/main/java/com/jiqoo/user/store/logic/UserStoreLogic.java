@@ -110,4 +110,17 @@ public class UserStoreLogic implements UserStore{
 	}
 
 
+	@Override
+	public User selectKakaoUser(SqlSession sqlSession, String userEmail) {
+		User kakaoUser = sqlSession.selectOne("UserMapper.selectKakaoUser", userEmail);
+		return kakaoUser;
+	}
+
+	@Override
+	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser) {
+		int result = sqlSession.insert("UserMapper.kakaoUserInsert", kakaoUser);
+		return result;
+	}
+
+
 }

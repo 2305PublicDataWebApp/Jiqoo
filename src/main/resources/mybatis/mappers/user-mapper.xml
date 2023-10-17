@@ -9,6 +9,11 @@
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
 	</insert>
 	
+	<insert id="kakaoUserInsert">
+		INSERT INTO USER_TBL
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'kakao', #{userGender}, #{userBirth}, NULL, NULL, NULL, NULL, NULL, DEFAULT, NULL, DEFAULT, DEFAULT) 
+	</insert>
+	
 	<update id="updateUser">
 		UPDATE USER_TBL
 		SET USER_NICKNAME = #{userNickname}, USER_EMAIL = #{userEmail}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}
@@ -32,7 +37,13 @@
 		FROM USER_TBL 
 		WHERE USER_ID = #{userId} AND USER_PW = #{userPw} AND USER_STATUS='Y'
 	</select>
-
+	
+	<select id="selectKakaoUser" resultType="User">
+		SELECT *
+		FROM USER_TBL
+		WHERE USER_ID = #{userId}
+	</select>
+	
 	<select id="selectCheckId" resultType="_int">
 		SELECT COUNT(*) 
 		FROM USER_TBL

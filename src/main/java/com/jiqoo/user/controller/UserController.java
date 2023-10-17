@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.FollowService;
+import com.jiqoo.user.service.SnsService;
 import com.jiqoo.user.service.UserService;
 
 @RequestMapping("/user")
@@ -41,8 +42,12 @@ public class UserController {
 	@Autowired
 	private FollowService followService;
 	@Autowired
+	private SnsService snsService;
+	@Autowired
 	private JavaMailSenderImpl mailSender;
 
+
+	
 	
 	// 회원가입
 	@PostMapping("/register")
@@ -397,6 +402,35 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	// 카카오로그인
+	@GetMapping("/kakao") 
+	public String snsKakaologin(String code, Model model, HttpServletRequest request, HttpSession session) throws Exception {
+		  // 전달 받은 code를 사용해서 access_token 받기
+		  String accessToken = snsService.getKakaoAccessToken(code);
+		  //return받은 access_token으로 사용자 정보 가져오기
+		  Map<String, Object> userInfo = snsService.getKakaoInfo(accessToken);
+		  
+		  String userId = (String)userInfo.get("account_email"); 
+		  String userEmail = (String)userInfo.get("account_email"); 
+		  String userNickname = (String)userInfo.get("profile_nickname"); 
+		  String userGender = (String)userInfo.get("gender"); 
+		  String userBirth = (String)userInfo.get("birthday"); 
+		  
+		  User kakaoUser = userService.selectUserOneById(userId);
+		  
+		  if(kakaoUser != null) {
+			  session.setAttribute("userId", kakaoUser.getUserId());
+			  session.setAttribute("userNickname", kakaoUser.getUserNickname());
+			  session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
+		  } else {
+			  model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
+			  model.addAttribute("url", "/");
+			  return "common/message";
+		  }
+		  return "redirec:/";
+		}
+	 
+	
 	// 로그인페이지 접속
 	@GetMapping("/login")
 	public ModelAndView showUserLoginForm(ModelAndView mv) {
@@ -527,7 +561,7 @@ public class UserController {
 		return randomCode;
 	}
 
-	private String generateRandomCode() {
+	public String generateRandomCode() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		StringBuilder code = new StringBuilder();
 		Random random = new Random();
