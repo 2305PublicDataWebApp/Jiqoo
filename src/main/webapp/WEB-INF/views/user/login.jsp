@@ -282,21 +282,20 @@
         		})
         	})
         	
-        	 //초기화
         	
         	//kakao로그인
 			function loginWithKakao() {
 			  Kakao.Auth.authorize({
 			    redirectUri: 'http://localhost:9999/user/kakao',
-			    scope: 'account_email, profile_nickname, gender, birthday',
-	/* 		    success: function(authObj) {
+			    scope: 'account_email, profile_nickname, gender',
+	 		    success: function(success) {
 			        console.log("카카오 인증 성공", authObj);
 			        // 로그인 또는 인증 성공 시 처리
 			    },
 			    fail: function(err) {
 			        console.log("카카오 인증 실패", err);
 			        // 로그인 또는 인증 실패 시 처리
-			    }, */
+			    },
 			  });
 			}
         	

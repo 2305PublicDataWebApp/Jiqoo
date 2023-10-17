@@ -345,6 +345,35 @@ public class UserController {
 		}
 	}
 
+	// 카카오로그인
+	@GetMapping("/kakao") 
+	public String selectKakaologin(String code, Model model, HttpServletRequest request, HttpSession session) throws Exception {
+		  // 전달 받은 code를 사용해서 access_token 받기
+		  String accessToken = snsService.getKakaoAccessToken(code);
+		  //return받은 access_token으로 사용자 정보 가져오기
+		  Map<String, Object> userInfo = snsService.getKakaoInfo(accessToken);
+		  System.out.println("카카오유저인포 : " + userInfo);
+		  String userId = (String)userInfo.get("userId"); 
+		  System.out.println("카카오 userId : " + userId);
+		  User kakaoUser = userService.selectUserOneById(userId);
+		  
+		  if(kakaoUser != null) {
+			  System.out.println("세션저장 id : " + kakaoUser.getUserId());
+			  session.setAttribute("accessToken", accessToken); // accessToken 세션저장
+			  session.setAttribute("userId", kakaoUser.getUserId());
+			  session.setAttribute("userNickname", kakaoUser.getUserNickname());
+			  session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
+			  session.setAttribute("adminYn", kakaoUser.getAdminYn());
+			  System.out.println("카카오 로그인 성공");
+			  return "redirect:/";
+		  } else {
+			  System.out.println("카카오 로그인 실패");
+			  model.addAttribute("msg", "카카오 로그인 실패");
+			  model.addAttribute("url", "/");
+			  return "common/message";
+		  }
+		}
+
 	// 로그인
 	@ResponseBody
 	@PostMapping("/login")
@@ -402,35 +431,6 @@ public class UserController {
 		return "redirect:/";
 	}
 
-	// 카카오로그인
-	@GetMapping("/kakao") 
-	public String snsKakaologin(String code, Model model, HttpServletRequest request, HttpSession session) throws Exception {
-		  // 전달 받은 code를 사용해서 access_token 받기
-		  String accessToken = snsService.getKakaoAccessToken(code);
-		  //return받은 access_token으로 사용자 정보 가져오기
-		  Map<String, Object> userInfo = snsService.getKakaoInfo(accessToken);
-		  
-		  String userId = (String)userInfo.get("account_email"); 
-		  String userEmail = (String)userInfo.get("account_email"); 
-		  String userNickname = (String)userInfo.get("profile_nickname"); 
-		  String userGender = (String)userInfo.get("gender"); 
-		  String userBirth = (String)userInfo.get("birthday"); 
-		  
-		  User kakaoUser = userService.selectUserOneById(userId);
-		  
-		  if(kakaoUser != null) {
-			  session.setAttribute("userId", kakaoUser.getUserId());
-			  session.setAttribute("userNickname", kakaoUser.getUserNickname());
-			  session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
-		  } else {
-			  model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
-			  model.addAttribute("url", "/");
-			  return "common/message";
-		  }
-		  return "redirec:/";
-		}
-	 
-	
 	// 로그인페이지 접속
 	@GetMapping("/login")
 	public ModelAndView showUserLoginForm(ModelAndView mv) {
@@ -561,7 +561,7 @@ public class UserController {
 		return randomCode;
 	}
 
-	public String generateRandomCode() {
+	private String generateRandomCode() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		StringBuilder code = new StringBuilder();
 		Random random = new Random();

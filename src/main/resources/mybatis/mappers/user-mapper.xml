@@ -11,7 +11,7 @@
 	
 	<insert id="kakaoUserInsert">
 		INSERT INTO USER_TBL
-		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'kakao', #{userGender}, #{userBirth}, NULL, NULL, NULL, NULL, NULL, DEFAULT, NULL, DEFAULT, DEFAULT) 
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'kakao', #{userGender}, NULL, NULL, NULL, NULL, NULL, NULL, DEFAULT, NULL, DEFAULT, DEFAULT) 
 	</insert>
 	
 	<update id="updateUser">

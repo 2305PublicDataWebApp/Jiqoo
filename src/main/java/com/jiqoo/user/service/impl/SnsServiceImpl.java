@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,6 @@ public class SnsServiceImpl implements SnsService {
 
 	@Autowired
 	private SqlSession sqlSession;
-	@Autowired
-	private UserController userController;
 	@Autowired
 	private UserStore userStore;
 
@@ -112,6 +111,7 @@ public class SnsServiceImpl implements SnsService {
 
 			String line = "";
 			String result = "";
+			
 
 			while ((line = br.readLine()) != null) {
 				result += line;
@@ -133,27 +133,27 @@ public class SnsServiceImpl implements SnsService {
 			String userEmail = kakao_account.getAsJsonObject().get("email").getAsString();
 			String userNickname = properties.getAsJsonObject().get("nickname").getAsString();
 			String userGender = "";
-			String userBirth = "";
-			String userPw = userController.generateRandomCode();
-			
+
 	        if (kakao_account != null && kakao_account.getAsJsonObject().has("gender")) {
-	            userGender = kakao_account.getAsJsonObject().get("gender").getAsString();
+	            String kakaoUserGender = kakao_account.getAsJsonObject().get("gender").getAsString();
+	            if(kakaoUserGender == "female") {
+	            	userGender = "F";
+	            } else {
+	            	userGender = "M";	            	
+	            }
 	        }
-	        
-	        if (kakao_account != null && kakao_account.getAsJsonObject().has("birthday")) {
-	        	userBirth = kakao_account.getAsJsonObject().get("birthday").getAsString();
-	        }
+
 	        
 			userInfo.put("userId", userId);
-			userInfo.put("userPw", userId);
 			userInfo.put("userNickname", userNickname);
 	        userInfo.put("userEmail", userEmail);
 	        userInfo.put("userGender", userGender);
-	        userInfo.put("userBirth", userBirth);
 	        
 	        User kakaoUserOne = userStore.selectKakaoUser(sqlSession, userEmail);
 	        if(kakaoUserOne == null) {
-	        	User kakaoUser = new User(userId, userPw, userNickname, userNickname, userEmail, userGender, userBirth);
+	        	String userPw = this.generateRandomCode();
+	        	userInfo.put("userPw", userPw);
+	        	User kakaoUser = new User(userId, userPw, userNickname, userNickname, userEmail, userGender);
 	        	int insertResult = userStore.kakaoUserInsert(sqlSession, kakaoUser);
 	        	if(insertResult > 0) {
 	        		System.out.println("카카오 회원가입 성공");
@@ -170,6 +170,20 @@ public class SnsServiceImpl implements SnsService {
 		}
 
 		return userInfo;
+	}
+
+	private String generateRandomCode() {
+		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		StringBuilder code = new StringBuilder();
+		Random random = new Random();
+
+		for (int i = 0; i < 10; i++) {
+			int index = random.nextInt(characters.length());
+			char randomChar = characters.charAt(index);
+			code.append(randomChar);
+		}
+
+		return code.toString();
 	}
 
 }
