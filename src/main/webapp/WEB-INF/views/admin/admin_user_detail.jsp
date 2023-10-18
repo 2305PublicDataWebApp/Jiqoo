@@ -50,6 +50,11 @@
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
+<!-- jQuery cdn -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+<!-- 카카오맵api -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee6032b0d73ff0af6bdd2b029c9dd88d"></script>
+
 <!-- =======================================================
     * Template Name: Bootslander
     * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -104,11 +109,11 @@
 						<c:set var="userStatus" value="${user.userStatus}"></c:set>
 <%-- 						<c:if test="${fn:indexOf(userStatus, 'Y') eq 0 }"> --%>
 						<c:if test="${fn:contains(userStatus, 'Y')}">
-							<button type="button" class="button resign-btn" onclick="deleteUser('${user.userId }');">탈퇴처리</button>
+							<button type="button" class="button resign-btn" onclick="deleteUserByA('${user.userId }');">탈퇴처리</button>
 						</c:if>
 						<c:if test="${fn:contains(userStatus, 'A')}"> <!-- 강퇴 시킨 회원일때 -->
 <%-- 						<c:if test="${fn:indexOf(userStatus, 'N') eq 0 }"> --%>
-							<button type="button" class="button revival-btn" onclick="reviveUser('${user.userId }');">복원</button>
+							<button type="button" class="button revival-btn" onclick="reviveUserByA('${user.userId }');">복원</button>
 						</c:if>
 				
 
@@ -154,7 +159,8 @@
 						<div class="d-flex">
 							<div class="title">성별</div>
 							<div class="text">
-								<c:if test="${user.userGender eq ''}"> - </c:if>
+								<c:if test="${user.userGender eq null}"> - </c:if>
+<%-- 								<c:if test="${user.userGender eq ''}"> - </c:if> --%>
 								<c:if test="${user.userGender ne null}"> ${user.userGender} </c:if>
 							</div>
 						</div>
@@ -188,9 +194,12 @@
 								<small>가입일 : ${user.uCreateDate } </small><br> 
 								<small>탈퇴일 : <c:if test="${user.uDeleteDate eq null}"> - </c:if> 
 												<c:if test="${user.uDeleteDate ne null}"> ${user.uDeleteDate } </c:if></small><br> 
-								<small>복원일 : 
-<%-- 								<c:if test="${user.uDeleteDate eq null}"> - </c:if>  --%>
-<%-- 												<c:if test="${user.uDeleteDate ne null}"> 복원됨 </c:if></small> --%>
+								<small>복원여부 : 
+<%-- 									<c:set var="userStatus" value="${userList.userStatus}"></c:set> --%>
+<%-- 									<c:if test="${fn:contains(userStatus, 'A')}"> - </c:if> --%>
+<%-- 									<c:if test="${!fn:contains(userStatus, 'A') && user.uDeleteDate ne null}"> - </c:if> --%>
+<%-- 									<c:if test="${fn:contains(userStatus, 'Y')&& user.uDeleteDate ne null}">복원됨</c:if> --%>
+								</small>
 							</div>
 							<!-- <button type="button" id="resign-btn" class="button">탈퇴처리</button> -->
 						</div>
@@ -254,52 +263,105 @@
 										</td>
 										<td>
 											<c:out value='${jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+											
 										</td>
 										<td>${jiqooList.jOpenStatus}</td>
 										<td>${jiqooList.jiqooStatus}</td>
 										<td>0</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
-												data-bs-toggle="modal" data-bs-target="#jiqooModal${i.count }">
+												data-bs-toggle="modal" data-bs-target="#detailJiqooModal${i.count }">
 												조회</button>
 										</td>
 									</tr>
 									
 									<!--=====***** 지꾸Modal *****=====-->
-									<div class="modal fade" id="jiqooModal${i.count }" tabindex="-1"
+									<div class="modal fade" id="detailJiqooModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">${jiqooList.jiqooNo} 번째 지꾸</h1>
+													<div class="modal-title fs-5" id="exampleModalLabel" >
+														<h3><i class="bi bi-bookmark-heart"></i> ${jiqooList.jiqooNo} 번째 지꾸</h3>
+														<span><i class="bi bi-envelope-open" style="margin-left:5px"></i> 
+															<c:if test="${jiqooList.jOpenStatus eq 'Y'}">공개중</c:if>
+															<c:if test="${jiqooList.jOpenStatus eq 'N'}">비공개</c:if>
+														</span> <!-- 공개여부 -->
+														<span><i class="bi bi-file-earmark-x"></i> 
+															<c:if test="${jiqooList.jiqooStatus eq 'Y'}">삭제전</c:if>
+															<c:if test="${jiqooList.jiqooStatus eq 'N'}">삭제됨</c:if>
+															<c:if test="${jiqooList.jiqooStatus eq 'A'}">관리자에 의해 삭제</c:if>
+														</span> <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+													</div>
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
-														aria-label="Close"></button>
+															aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
-													<h5>${user.userId}</h5>
-													<span><i class="bi bi-envelope-open"></i> ${jiqooList.jOpenStatus}</span>&nbsp;
-													<span><i class="bi bi-file-earmark-x"></i> ${jiqooList.jiqooStatus}</span>
-													<div id="map">
-														지도 들어갈 자리
-														${jiqooList.jiqooContent}
-													</div>
+													<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${jiqooList.jiqooTitle}</h3>&nbsp; <!-- 타이틀 -->
+													<span><i class="bi bi-pencil"></i> ${jiqooList.jiqooWriter} </span>&nbsp; <!-- 작성자 -->
+													<span><i class="bi bi-calendar-week"></i> 
+														<fmt:parseDate value='${jiqooList.jCreateDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='jCreateDate'/>
+														<fmt:formatDate value="${jCreateDate}" pattern="yy/MM/dd hh:mm"/>
+													</span>
+													<br>
+													<h5 style="display:inline"><i class="bi bi-tag"></i>${jiqooList.jiqooCtgr}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+													<h5 style="display:inline"><i class="bi bi-globe"></i> ${jiqooList.jiqooW3W}</h5>&nbsp; <!-- W3W -->
+													
+													<div id="jiqooMap${i.count }" class="map" style="width:100%; height:350px;">${jiqooContent }</div>
+													
 													<div id="report-reason">
 														<div id="r-title">신고사유()</div>
 														<div></div>
 													</div>
 													<div id="report-btn">
-														<button type="button" class="button delete-btn">삭제</button>
+														<button type="button" class="button delete-btn" onclick="deleteJiqooByA(${jiqooList.jiqooNo}, '${jiqooList.jiqooWriter}');">삭제</button> <!-- 숫자에는 '' 붙이지 않음  -->
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 									<!-- End Modal -->
+									<!-- 지꾸 카카오맵api -->
+									<script>
+										$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
+											var jiqooMapContainer = document.getElementById('jiqooMap${i.count }'), // 지도를 표시할 div 
+											jiqooMapOption = { 
+										        center: new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}), // 지도의 중심좌표
+										        level: 3 // 지도의 확대 레벨
+										    };
+		
+											var jiqooMap = new kakao.maps.Map(jiqooMapContainer, jiqooMapOption);
+											// 마커가 표시될 위치입니다 
+											var jiqooMarkerPosition  = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); 
+			
+											// 마커를 생성합니다
+											var jiqooMarker = new kakao.maps.Marker({
+											    position: jiqooMarkerPosition
+											});
+			
+											// 마커가 지도 위에 표시되도록 설정합니다
+											jiqooMarker.setMap(jiqooMap);
+			
+											var jiqooIwPosition = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); //인포윈도우 표시 위치입니다
+			
+											// 인포윈도우를 생성합니다
+											var jiqooInfowindow = new kakao.maps.InfoWindow({
+											    position : jiqooIwPosition,
+											    content : '<div class="info-window" >${jiqooList.jiqooContent}</div>'
+											    
+											});
+											  
+											// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+											jiqooInfowindow.open(jiqooMap, jiqooMarker); 
+											
+										});
+										</script>
 								</c:forEach>
 							</tbody>
 						</table>
 						
 						<!-- 지꾸 페이지네비 -->
+						<c:if test="${pInfoJiqoo.totalCount > 0}"> <!-- 게시물이없으면 페이지네비 표시 안함 -->
 						<div id="pageNavi">
 							<c:if test="${pInfoJiqoo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/userdetail">
@@ -337,6 +399,7 @@
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
 						</div>
+						</c:if>
 						<!-- End 지꾸페이지네비 -->
 					</div>
 
@@ -387,79 +450,94 @@
 										<td>0</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
-												data-bs-toggle="modal" data-bs-target="#moqooModal${i.count }">
+												data-bs-toggle="modal" data-bs-target="#detailMoqooModal${i.count }">
 												조회</button>
 										</td>
 									</tr>
-									<!-- 모꾸Modal -->
-									<div class="modal fade" id="moqooModal${i.count }" tabindex="-1"
-										aria-labelledby="exampleModalLabel" aria-hidden="true">
-										<div class="modal-dialog">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">No. ${moqooList.moqooNo}</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal"
-														aria-label="Close"></button>
+									<!--===== 모꾸 상세보기 Modal =====-->
+							        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							          <div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<div class="modal-title fs-5" id="exampleModalLabel" >
+													<h3><i class="bi bi-bookmark-heart"></i> ${moqooList.moqooNo} 번째 모꾸</h3>
+													<span><i class="bi bi-file-earmark-x" style="margin-left:5px"></i> 
+				<%-- 										<c:if test="${moqooList.moqooStatus eq 'Y'}">삭제전</c:if> --%>
+				<%-- 										<c:if test="${moqooList.moqooStatus eq 'N'}">삭제됨</c:if> --%>
+				<%-- 										<c:if test="${moqooList.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if> --%>
+													</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
 												</div>
-												<div class="modal-body">
-													<h5>${user.userId}</h5>
-													<span><i class="bi bi-file-earmark-x"></i> ${moqooList.moqooStatus}</span>
-													<div id="map">지도 들어갈 자리</div>
-													<div id="report-reason">
-														<div id="r-title">신고사유()</div>
-														<div></div>
-													</div>
-													<div id="report-btn">
-														<button type="button" class="button delete-btn">삭제</button>
-													</div>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
+												<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span>&nbsp; <!-- 작성자 -->
+												<span><i class="bi bi-calendar-week"></i> 
+													<fmt:parseDate value='${moqooList.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate'/>
+													<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+												</span>
+												<br>
+												<h5 style="display:inline"><i class="bi bi-tag"></i> ${moqooList.category}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+												<h5 style="display:inline"><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</h5>&nbsp; <!-- W3W -->
+												
+												<span><i class="bi bi-clock"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+												<span><i class="bi bi-people"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
+												
+												<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
+												<div id="report-reason">
+													<div id="r-title">신고사유()</div>
+													<div></div>
+												</div>
+												<div id="report-btn">
+													<button type="button" class="button delete-btn" onclick="deleteMoqooByA(${moqooList.moqooNo}, '${moqooList.moqooWriter}');">삭제</button>
 												</div>
 											</div>
 										</div>
 									</div>
-									<!-- End 모꾸Modal -->
+						        </div>
+						        <!-- End 모꾸 상세보기 Modal -->
+						        <!-- 모꾸 카카오맵api -->
+								<script>
+									$("#detailMoqooModal${i.count}").on('shown.bs.modal', function(){
+										var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
+									    mapOption = { 
+									        center: new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}), // 지도의 중심좌표
+									        level: 3 // 지도의 확대 레벨
+									    };
+						
+										var map = new kakao.maps.Map(mapContainer, mapOption);
+										// 마커가 표시될 위치입니다 
+										var markerPosition  = new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}); 
+						
+										// 마커를 생성합니다
+										var marker = new kakao.maps.Marker({
+										    position: markerPosition
+										});
+						
+										// 마커가 지도 위에 표시되도록 설정합니다
+										marker.setMap(map);
+						
+										var iwPosition = new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}); //인포윈도우 표시 위치입니다
+						
+										// 인포윈도우를 생성합니다
+										var infowindow = new kakao.maps.InfoWindow({
+										    position : iwPosition,
+										    content : '<div class="info-window">${moqooList.moqooContent}</div>'
+										    
+										});
+										  
+										// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+										infowindow.open(map, marker); 
+										
+									});
+								</script>
 								</c:forEach>
 							</tbody>
 						</table>
 						
-						<!-- 모꾸 페이지네비 -->
-						<div id="pageNavi">
-							<c:if test="${pInfoMoqoo.startNavi != 1}">
-								<c:url var="prevUrl" value="/admin/userdetail">
-									<c:param name="userId" value="${user.userId}"></c:param>
-									<c:param name="moqooPage" value="${pInfoMoqoo.startNavi -1 }"></c:param>
-								</c:url>
-								<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
-							</c:if>
-							
-							<c:forEach begin="${pInfoMoqoo.startNavi}" end="${pInfoMoqoo.endNavi}"
-								var="p">
-								<c:url var="pageUrl" value="/admin/userdetail">
-									<c:param name="userId" value="${user.userId}"></c:param>
-									<c:param name="moqooPage" value="${p}"></c:param>
-								</c:url>
-								<c:choose>
-									<c:when test="${p == pInfoMoqoo.currentPage}">
-										<p>
-											<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
-										</p>
-									</c:when>
-									<c:otherwise>
-										<p>
-											<a href="${pageUrl}"> ${p}</a>
-										</p>
-									</c:otherwise>
-								</c:choose>
-							</c:forEach>
-							
-							<c:if test="${pInfoMoqoo.endNavi != pInfoMoqoo.naviTotalCount}">
-								<c:url var="nextUrl" value="/admin/userdetail">
-									<c:param name="userId" value="${user.userId}"></c:param>
-									<c:param name="moqooPage" value="${pInfoMoqoo.endNavi + 1}"></c:param>
-								</c:url>
-								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
-							</c:if>
-						</div>
-						<!-- End 모꾸페이지네비 -->
+						<!-- 모꾸 페이지 네비 -->
+						
+						
 					</div>
 					
 					<!--=====***** 댓글테이블 *****=====-->
@@ -477,43 +555,73 @@
 								<tr>
 									<th scope="col" class="col1">No.</th>
 									<th scope="col">내용</th>
-									<th scope="col" class="col2">공개</th>
-									<th scope="col" class="col2">삭제</th>
+									<th scope="col" class="col2">보드</th>
+									<th scope="col" class="col2">상태</th>
 									<th scope="col" class="col2">신고</th>
 									<th scope="col" class="col1">상세</th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="jiqooList" items="${uJiqooList}" varStatus="i">
+								<c:if test="${uComtList eq null}">
 									<tr>
-										<td class="list-no" scope="row">${jiqooList.jiqooNo}</td>
-										<td>${jiqooList.jiqooContent}</td>
-										<td>${jiqooList.jOpenStatus}</td>
-										<td>${jiqooList.jiqooStatus}</td>
+										<td colspan="7">${noComtMsg}</td>
+									</tr>
+								</c:if>
+								
+								<c:forEach var="comtList" items="${uComtList}" varStatus="i">
+									<tr>
+										<td class="list-no" scope="row">${(pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 ) }</td>
+										<td>${comtList.comtContent}</td>
+										<td>${comtList.cBoardType}</td>
+										<td>${comtList.comtStatus}</td>
 										<td>0</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
-												data-bs-toggle="modal" data-bs-target="#jiqooModal">
+												data-bs-toggle="modal" data-bs-target="#cmtModal${i.count }">
 												조회</button>
 										</td>
 									</tr>
 									
 									<!-- 댓글 Modal -->
-									<div class="modal fade" id="cmtModal" tabindex="-1"
+									<div class="modal fade" id="cmtModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
 										<div class="modal-dialog">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">댓글내용</h1>
-													<button type="button" class="btn-close" data-bs-dismiss="modal"
-														aria-label="Close"></button>
+													<div class="modal-title fs-5" id="exampleModalLabel" >
+														<h3><i class="bi bi-bookmark-heart"></i> ${comtList.comtNo} 번째 댓글</h3>
+														<span><i class="bi bi-file-earmark-x" style="margin-left:5px"></i> 
+															<c:set var="comtStatus" value="${comtList.comtStatus}"></c:set>
+															<c:if test="${fn:contains(comtStatus, 'Y')}">삭제전</c:if>
+															<c:if test="${fn:contains(comtStatus, 'N')}">삭제됨</c:if>
+															<c:if test="${fn:contains(comtStatus, 'A')}">관리자에 의해 삭제</c:if>
+														</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
+													</div>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 												</div>
-												<div class="modal-body">...</div>
-												<div class="modal-footer">
-													<button type="button" class="btn btn-secondary"
-														data-bs-dismiss="modal">Close</button>
-													<button type="button" class="btn btn-primary">Save
-														changes</button>
+												<div class="modal-body">
+													<div>
+														<h5 style="display:inline"><i class="bi bi-pencil" style="margin-left:5px"></i> ${comtList.comtWriter} </h5>&nbsp; <!-- 작성자 -->
+														<h5 style="display:inline"><i class="bi bi-calendar-week"></i> 
+															<fmt:parseDate value='${comtList.comtDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='comtDate'/>
+															<fmt:formatDate value="${comtDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+														</h5>
+														<br>
+														<span><i class="bi bi-clipboard-check" style="margin-left:5px"></i> ${comtList.cBoardType}</span>&nbsp; <!-- 보드타입 -->
+														<span><i class="bi bi-clipboard-plus"></i> ${comtList.refPostNo}</span>&nbsp; <!-- 댓달린 게시글 번호 -->
+														<span><i class="bi bi-reply-all-fill"></i> ${comtList.pComtNO}</span>&nbsp; <!-- 대댓일경우 부모댓글번호 -->
+																										
+													</div>
+													<div class="contents" style="width:100%; height:auto;">
+														 <i class="bi bi-arrow-return-right"></i> ${comtList.comtContent}
+													</div>
+													<div id="report-reason">
+														<div id="r-title">신고사유()</div>
+														<div></div>
+													</div>
+													<div id="report-btn">
+														<button type="button" class="button delete-btn" onclick="deleteComtByA(${comtList.comtNo}, '${comtList.comtWriter}');">삭제</button>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -523,7 +631,47 @@
 							</tbody>
 						</table>
 						
-						<!-- 페이지네비 -->
+						<!-- 댓글 페이지네비 -->
+						<c:if test="${pInfoComt.totalCount > 0}"> 
+							<div id="pageNavi">
+								<c:if test="${pInfoComt.startNavi != 1}">
+									<c:url var="prevUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.startNavi -1 }"></c:param>
+									</c:url>
+									<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
+								</c:if>
+								
+								<c:forEach begin="${pInfoComt.startNavi}" end="${pInfoComt.endNavi}"
+									var="p">
+									<c:url var="pageUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${p}"></c:param>
+									</c:url>
+									<c:choose>
+										<c:when test="${p == pInfoComt.currentPage}">
+											<p>
+												<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
+											</p>
+										</c:when>
+										<c:otherwise>
+											<p>
+												<a href="${pageUrl}"> ${p}</a>
+											</p>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+								
+								<c:if test="${pInfoComt.endNavi != pInfoComt.naviTotalCount}">
+									<c:url var="nextUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.endNavi + 1}"></c:param>
+									</c:url>
+									<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
+								</c:if>
+							</div>
+						</c:if>
+						<!-- End 댓글페이지네비 -->
 					</div>
 					<!--  -->
 
@@ -596,7 +744,7 @@
 							<span><i
 								class="bi bi-file-earmark-x"></i> ${usersTotalMoqooCount }</span> 
 								<span><i
-								class="bi bi-file-earmark-x"></i> (작성한 댓글 수)</span>
+								class="bi bi-file-earmark-x"></i> ${usersTotalComtCount }</span>
 							<div id="report-reason">
 								<div id="r-title">신고사유()</div>
 								<div></div>
@@ -642,17 +790,39 @@
 	<script src="../resources/assets/js/main.js"></script>
 	
 	<script>
-		function deleteUser(userId){
+		//회원 강제탈퇴
+		function deleteUserByA(userId){
 			if(confirm ("정말 탈퇴시키겠습니까?")){
 				location.href = "/admin/userdelete?userId=" + userId;
 			}
 		}
 		
-		function reviveUser(userId){
+		//강제탈퇴회원 복원 
+		function reviveUserByA(userId){
 			if(confirm ("정말 복원시키겠습니까?")){
 				location.href = "/admin/userrevival?userId=" + userId;
 			}
 		}
+		
+		//회원별 지꾸 강제삭제
+		function deleteJiqooByA(jiqooNo, userId){
+			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deletejiqoo?jiqooNo=" + jiqooNo +"&userId=" + userId;
+			}
+		}
+		//회원별 모꾸 강제삭제
+		function deleteMoqooByA(moqooNo,userId){
+			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deletemoqoo?moqooNo=" + moqooNo +"&userId=" + userId;
+			}
+		}
+		//회원별 댓글 강제삭제
+		function deleteComtByA(comtNo, userId){
+			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deleteComt?comtNo=" + comtNo +"&userId=" + userId;
+			}
+		}
+
 		
 	</script>
 </body>

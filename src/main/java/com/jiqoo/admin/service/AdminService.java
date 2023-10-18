@@ -3,7 +3,9 @@ package com.jiqoo.admin.service;
 import java.util.List;
 import java.util.Map;
 
+
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -70,7 +72,7 @@ public interface AdminService {
 	 * @param pInfo
 	 * @return
 	 */
-	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String userId);
+	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String jiqooWriter);
 
 	/**
 	 * 회원별 모꾸수
@@ -86,6 +88,21 @@ public interface AdminService {
 	 * @return
 	 */
 	public List<Moqoo> showUserMoqooList(PageInfo pInfoMoqoo, String userId);
+
+	/**
+	 * 회원별 총 댓글 수
+	 * @param userId
+	 * @return
+	 */
+	public Integer getusersTotalComtCount(String comtWriter);
+
+	/**
+	 * 회원별 총 댓글 리스트
+	 * @param pInfoComt
+	 * @param comtWriter
+	 * @return
+	 */
+	public List<Comment> showUserComtList(PageInfo pInfoComt, String comtWriter);
 
 	/**
 	 * 총 지꾸 수 
@@ -121,9 +138,12 @@ public interface AdminService {
 	 */
 	public Integer getMoqooListCount();
 
+	/**
+	 * 
+	 * @param pInfo
+	 * @return
+	 */
 	public List<Moqoo> selectAllMoqoo(PageInfo pInfo);
-
-
 
 	/**
 	 * 지꾸관리_강제삭제
@@ -131,6 +151,20 @@ public interface AdminService {
 	 * @return
 	 */
 	public Integer deleteJiqooByAdmin(Integer jiqooNo);
+	
+	/**
+	 * 모꾸 강제삭제
+	 * @param moqooNo
+	 * @return
+	 */
+	public Integer deleteMoqooByAdmin(Integer moqooNo);
+	
+	/**
+	 * 회원상세_댓글 강제삭제 
+	 * @param comtNo
+	 * @return
+	 */
+	public Integer deleteComtByAdmin(Integer comtNo);
 
 	public Jiqoo selectOneJiqoo(Jiqoo jiqoo);
 
@@ -212,12 +246,7 @@ public interface AdminService {
 	 */
 	public Integer yesterdayInsertMoqooCount();
 
-	/**
-	 * 모꾸 강제삭제
-	 * @param moqooNo
-	 * @return
-	 */
-	public Integer deleteMoqooByAdmin(Integer moqooNo);
+
 
 	/**
 	 * 총 채팅방 수
@@ -247,17 +276,39 @@ public interface AdminService {
 	public List<Jiqoo> todayJiqooList(PageInfo pInfoJiqoo);
 
 	/**
-	 * 당일 등록된 모꾸 리스
+	 * 당일 등록된 모꾸 리스트
 	 * @param pInfoJiqoo
 	 * @return
 	 */
 	public List<Moqoo> todayMoqooList(PageInfo pInfoJiqoo);
 
 	/**
+	 * 당일 등록된 댓글 리스트
+	 * @param pInfoJiqoo
+	 * @return
+	 */
+	public List<Comment> todayComtList(PageInfo pInfoJiqoo);
+	
+	
+	/**
 	 * 현재 가입중인 회원 나이대 비율
 	 * @return
 	 */
 	public List<User> userAgeList();
+
+	public List<Map<String, Object>> userCountList(User user);
+
+	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap);
+
+
+
+
+
+	
+	
+
+
+
 
 
 	

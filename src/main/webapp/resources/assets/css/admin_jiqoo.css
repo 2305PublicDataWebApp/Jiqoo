@@ -1515,6 +1515,16 @@ td {
   margin : 10px auto;
 }
 
+.info-window {
+	--width:auto; 
+	--height:auto; 
+	width:300px; 
+	height:200px; 
+	padding:5px; 
+	overflow:auto; 
+	word-break:break-all; 
+	border:hidden;
+}
 
 #report-reason {
   margin : 10px auto;

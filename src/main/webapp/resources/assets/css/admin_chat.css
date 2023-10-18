@@ -1890,12 +1890,18 @@ td {
 }   */
 
 
-#pageNavi {
+#pageNavi  {
+  display: flex;
+  justify-content: center;
+}
+#pageNavi a {
   font-family: var(--font-primary);
   margin:15px;
   text-align: center;
   font-size: 1.5em;
   color : #ccc;
+  display: flex;
+  justify-content: center;
 }
 
 
@@ -1926,14 +1932,14 @@ td {
 
 /*메뉴버튼*/
 .btn-get-started {
-  width: 170px;
+  width: 180px;
   font-family: var(--font-primary);
   text-transform: uppercase;
   font-weight: 400;
   font-size: 1.4em;
   letter-spacing: 1px;
   display: inline-block;
-  padding: 20px;
+  padding: 20px 10px;
   border-radius: 10px;
   transition: 0.5s;
   margin: 10px 0;
@@ -1952,6 +1958,9 @@ td {
   background: #8BC34A;
   color: #fff;
 }
+ td {
+  --border : 1px solid #ccc;
+} 
 
 /*--------------------------------------------------------------
 # 반응형
@@ -1982,8 +1991,8 @@ td {
   #pageNavi {
     font-size: 1.2em;
   }
-  /* td {
-  border : 1px solid #ccc;
-} */
+ td {
+  --border : 1px solid #ccc;
+} 
 
 }

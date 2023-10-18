@@ -42,7 +42,11 @@
     <link href="../resources/assets/css/header.css" rel="stylesheet">
     <link href="../resources/assets/css/footer.css" rel="stylesheet">
     
+	<!-- jQuery cdn -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
     
+    <!-- 카카오맵api -->
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee6032b0d73ff0af6bdd2b029c9dd88d"></script>
 
     <!-- =======================================================
     * Template Name: Bootslander
@@ -133,7 +137,6 @@
 						<th scope="col" onclick="sortTable(1)" class="col1 hover">작성자</th>
 						<th scope="col" class="col4"><i class="bi bi-paperclip"></i></th> <!-- 첨부파일 -->
 						<th scope="col" onclick="sortTable(2)" class="col2 hover">내용</th>
-	<!-- 									<th scope="col" onclick="sortTable(2)" class="hover">작성일</th> -->
 						<th scope="col" onclick="sortTable(3)" class="hover">인원</th>
 						<th scope="col" onclick="sortTable(4)" class="hover">유지</th>
 						<th scope="col" onclick="sortTable(5)" class="hover">신고</th>
@@ -154,7 +157,6 @@
 	                  <td > 
 	                  	<c:out value='${search.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 --> 
 	                  </td>
-<%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${moqooList.moqooDate}"/></td> 작성일--%>
 	                  <td >${search.moqooJoin}</td>
 	                  <td >${search.moqooStatus}</td>
 	                  <td >10</td>
@@ -163,45 +165,86 @@
 	                  </td>
 	                </tr>
 	                
-	                <!-- 모꾸 상세보기 Modal -->
+	                <!--===== 모꾸 상세보기 Modal =====-->
 			        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			          <div class="modal-dialog">
+			          <div class="modal-dialog modal-lg">
 						<div class="modal-content">
 							<div class="modal-header">
 								<div class="modal-title fs-5" id="exampleModalLabel" >
 									<h3><i class="bi bi-bookmark-heart"></i> ${search.moqooNo} 번째 모꾸</h3>
+									<span><i class="bi bi-file-earmark-x"></i> 
+<%-- 										<c:if test="${search.moqooStatus eq 'Y'}">삭제전</c:if> --%>
+<%-- 										<c:if test="${search.moqooStatus eq 'N'}">삭제됨</c:if> --%>
+<%-- 										<c:if test="${search.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if> --%>
+									</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
 								</div>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<h3><i class="bi bi-sticky"></i> ${search.moqooTitle}</h3><!-- 타이틀 -->
-								<span><i class="bi bi-pencil"></i> ${search.moqooWriter} </span> <!-- 작성자 -->
-								<span><i class="bi bi-envelope-open"></i> ${search.moqooDay}</span>&nbsp; <!-- 모임일자 -->
-								<span><i class="bi bi-envelope-open"></i> ${search.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
-								<span><i class="bi bi-tag"></i> ${search.category}</span>&nbsp; <!-- 카테고리 -->
-								<span><i class="bi bi-globe"></i> ${search.moqooW3W}</span>&nbsp; <!-- W3W -->
-								<span><i class="bi bi-file-earmark-x"></i> ${search.moqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+								<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${search.moqooTitle}</h3><!-- 타이틀 -->
+								<span><i class="bi bi-pencil"></i> ${search.moqooWriter} </span>&nbsp; <!-- 작성자 -->
+								<span><i class="bi bi-calendar-week"></i> 
+									<fmt:parseDate value='${search.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate'/>
+									<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+								</span>
+								<br>
+								<h5 style="display:inline"><i class="bi bi-tag"></i> ${search.category}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+								<h5 style="display:inline"><i class="bi bi-globe"></i> ${search.moqooW3W}</h5>&nbsp; <!-- W3W -->
 								
-<!-- 													<span><i class="bi bi-file-earmark-x"></i> -->
-<%-- 														<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${moqooList.moqooDate}"/> --%>
-<!-- 													</span>&nbsp; -->
+								<span><i class="bi bi-clock"></i> ${search.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+								<span><i class="bi bi-people"></i> ${search.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
 								
-								<div id="map">지도 들어갈 자리
-									${search.moqooContent} 
+								<div id="map${i.count }" class="map" style="width:100%; height:350px;">
+									 
 								</div>
 								<div id="report-reason">
 									<div id="r-title">신고사유()</div>
 									<div></div>
 								</div>
 								<div id="report-btn">
-									<button type="button" class="button delete-btn">삭제</button>
+									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${search.moqooNo}');">삭제</button>
 								</div>
 							</div>
 						</div>
 					</div>
-			        </div>
-			        <!-- End 모꾸 상세보기 Modal -->
+		        </div>
+		        <!-- End 모꾸 상세보기 Modal -->
+			        
+			        <!-- 카카오맵api -->
+					<script>
+						$("#detailMoqooModal${i.count}").on('shown.bs.modal', function(){
+							var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
+						    mapOption = { 
+						        center: new kakao.maps.LatLng(${search.moqooLat}, ${search.moqooLng}), // 지도의 중심좌표
+						        level: 3 // 지도의 확대 레벨
+						    };
+			
+							var map = new kakao.maps.Map(mapContainer, mapOption);
+							// 마커가 표시될 위치입니다 
+							var markerPosition  = new kakao.maps.LatLng(${search.moqooLat}, ${search.moqooLng}); 
+			
+							// 마커를 생성합니다
+							var marker = new kakao.maps.Marker({
+							    position: markerPosition
+							});
+			
+							// 마커가 지도 위에 표시되도록 설정합니다
+							marker.setMap(map);
+			
+							var iwPosition = new kakao.maps.LatLng(${search.moqooLat}, ${search.moqooLng}); //인포윈도우 표시 위치입니다
+			
+							// 인포윈도우를 생성합니다
+							var infowindow = new kakao.maps.InfoWindow({
+							    position : iwPosition,
+							    content : '<div class="info-window" >${search.moqooContent}${search.moqooThumRename}</div>'
+							    
+							});
+							  
+							// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+							infowindow.open(map, marker); 
+							
+						});
+					</script>
 				</c:forEach>
                 	
               </tbody>
@@ -354,6 +397,23 @@
   <script src="../resources/assets/js/chart.js"></script>
   <script src="../resources/assets/js/main.js"></script>
   
+	<script>
+		//moqooStatus가 A(강제삭제)일 때 열 색을 빨간색으로 변경 
+		document.addEventListener("DOMContentLoaded", function() {
+		  var table = document.getElementById("moqoo-table");
+		  var rows = table.getElementsByTagName("tr");
+		  
+		  for (var i = 0; i < rows.length; i++) {
+		    var moqooStatusCell = rows[i].getElementsByTagName("td")[5]; // 5th column (0-based index)
+		    if (moqooStatusCell) {
+		      var moqooStatus = moqooStatusCell.textContent;
+		      if (moqooStatus.includes('A')) {
+		        rows[i].style.color = 'red';
+		      }
+		    }
+		  }
+		});
+	</script>
 
 
 </body>

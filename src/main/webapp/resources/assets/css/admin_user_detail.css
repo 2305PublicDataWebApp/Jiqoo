@@ -1440,29 +1440,6 @@ main {
 }
 
 
-/**/
-/* #moqoo-table{ */
-/*   width : 1000px; */
-/*   height : 300px; */
-/*   border : 1px solid #ccc; */
-/*   border-radius: 20px; */
-/*   margin: 0 auto; */
-/* } */
-
-/* #cmt-table { */
-/*   width : 1000px; */
-/*   height : 300px; */
-/*   border : 1px solid red; */
-/*   border-radius: 20px; */
-/*   margin: 0 auto; */
-/* } */
-/**/
-
-
-#cmt-table {
-	 border : 1px solid red;
-}
-
 /*--------------------------------------------------------------
 # 버튼
 --------------------------------------------------------------*/
@@ -1604,7 +1581,35 @@ main {
 .modal-body span {
   font-family: var(--font-primary);
 }
-#map {
+
+.modal-body>div:first-child {
+	--padding : 10px; 
+	--background-color : var(--color-primary);
+	--opacity: .5;
+	--border-radius : 10px;
+	--color: #ccc;
+}
+.map {
+ --width : 100%;
+  --height : 300px;
+  --max-height : 500px;
+  border-radius: 10px;
+  border : 1px solid #ccc;
+  margin : 10px auto;
+}
+
+.info-window {
+	--width:auto; 
+	--height:auto; 
+	width:300px; 
+	height:200px; 
+	padding:5px; 
+	overflow:auto; 
+	word-break:break-all; 
+	border:hidden;
+}
+
+.contents {
   margin : 10px auto;
   padding: 10px;
   width : 100%;

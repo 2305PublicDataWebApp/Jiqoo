@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -82,7 +83,7 @@ public interface AdminStore {
 	 * @param pInfo
 	 * @return
 	 */
-	public List<Jiqoo> showUserJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo, String userId);
+	public List<Jiqoo> showUserJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo, String jiqooWriter);
 
 	/**
 	 * 회원별 모꾸수
@@ -101,6 +102,25 @@ public interface AdminStore {
 	 */
 	public List<Moqoo> showUserMoqooList(SqlSession sqlSession, PageInfo pInfoMoqoo, String userId);
 
+	/**
+	 * 회원별 총 댓글 수
+	 * @param sqlSession
+	 * @param comtWriter
+	 * @return
+	 */
+	public Integer getusersTotalComtCount(SqlSession sqlSession, String comtWriter);
+
+	/**
+	 * 회원별 총 댓글 리스트
+	 * @param sqlSession
+	 * @param pInfoComt
+	 * @param comtWriter
+	 * @return
+	 */
+	public List<Comment> showUserComtList(SqlSession sqlSession, PageInfo pInfoComt, String comtWriter);
+
+
+	
 	/**
 	 * 총 지꾸 수 
 	 * @param sqlSession
@@ -223,6 +243,11 @@ public interface AdminStore {
 	 */
 	public Integer deleteMoqooByAdmin(SqlSession sqlSession, Integer moqooNo);
 
+	/**
+	 * 총 채팅방 수
+	 * @param sqlSession
+	 * @return
+	 */
 	public Integer getChatRoomListCount(SqlSession sqlSession);
 
 	public List<ChatRoom> selectAllChatRoom(SqlSession sqlSession, PageInfo pInfo);
@@ -239,6 +264,17 @@ public interface AdminStore {
 	 * @return
 	 */
 	public List<User> userAgeList (SqlSession sqlSession);
+
+	public Integer deleteComtByAdmin(SqlSession sqlSession, Integer comtNo);
+
+	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo);
+
+	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
+
+
+	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap);
+
+
 
 
 

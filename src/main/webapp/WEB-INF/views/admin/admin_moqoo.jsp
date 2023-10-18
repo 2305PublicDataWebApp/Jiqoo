@@ -42,7 +42,14 @@
     <link href="../resources/assets/css/header.css" rel="stylesheet">
     <link href="../resources/assets/css/footer.css" rel="stylesheet">
     
-    
+	<!-- JQuery CDN -->
+<!-- 		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
+	<!-- 부트스트랩 JavaScript 및 jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		
+	<!-- 카카오맵api -->
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee6032b0d73ff0af6bdd2b029c9dd88d"></script>
 
     <!-- =======================================================
     * Template Name: Bootslander
@@ -220,43 +227,84 @@
 	                
 	                <!--===== 모꾸 상세보기 Modal =====-->
 			        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			          <div class="modal-dialog">
+			          <div class="modal-dialog modal-lg">
 						<div class="modal-content">
 							<div class="modal-header">
 								<div class="modal-title fs-5" id="exampleModalLabel" >
 									<h3><i class="bi bi-bookmark-heart"></i> ${moqooList.moqooNo} 번째 모꾸</h3>
+									<span><i class="bi bi-file-earmark-x"></i> 
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'Y'}">삭제전</c:if> --%>
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'N'}">삭제됨</c:if> --%>
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if> --%>
+									</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
 								</div>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<h3><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
-								<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span> <!-- 작성자 -->
-								<span><i class="bi bi-envelope-open"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
-								<span><i class="bi bi-envelope-open"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
-								<span><i class="bi bi-tag"></i> ${moqooList.category}</span>&nbsp; <!-- 카테고리 -->
-								<span><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</span>&nbsp; <!-- W3W -->
-								<span><i class="bi bi-file-earmark-x"></i> ${moqooList.moqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+								<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
+								<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span>&nbsp; <!-- 작성자 -->
+								<span><i class="bi bi-calendar-week"></i> 
+									<fmt:parseDate value='${moqooList.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate'/>
+									<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+								</span>
+								<br>
+								<h5 style="display:inline"><i class="bi bi-tag"></i> ${moqooList.category}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+								<h5 style="display:inline"><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</h5>&nbsp; <!-- W3W -->
 								
-<!-- 													<span><i class="bi bi-file-earmark-x"></i> -->
-<%-- 														<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${moqooList.moqooDate}"/> --%>
-<!-- 													</span>&nbsp; -->
+								<span><i class="bi bi-clock"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+								<span><i class="bi bi-people"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
 								
-								<div id="map">지도 들어갈 자리
-									${moqooList.moqooContent} 
+								<div id="map${i.count }" class="map" style="width:100%; height:350px;">
+									 
 								</div>
 								<div id="report-reason">
 									<div id="r-title">신고사유()</div>
 									<div></div>
 								</div>
 								<div id="report-btn">
-									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${MoqooList.moqooNo}');">삭제</button>
+									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${moqooList.moqooNo}');">삭제</button>
 								</div>
 							</div>
 						</div>
 					</div>
-			        </div>
-			        <!-- End 모꾸 상세보기 Modal -->
+		        </div>
+		        <!-- End 모꾸 상세보기 Modal -->
+			        
+			        <!-- 카카오맵api -->
+					<script>
+						$("#detailMoqooModal${i.count}").on('shown.bs.modal', function(){
+							var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
+						    mapOption = { 
+						        center: new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}), // 지도의 중심좌표
+						        level: 3 // 지도의 확대 레벨
+						    };
+			
+							var map = new kakao.maps.Map(mapContainer, mapOption);
+							// 마커가 표시될 위치입니다 
+							var markerPosition  = new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}); 
+			
+							// 마커를 생성합니다
+							var marker = new kakao.maps.Marker({
+							    position: markerPosition
+							});
+			
+							// 마커가 지도 위에 표시되도록 설정합니다
+							marker.setMap(map);
+			
+							var iwPosition = new kakao.maps.LatLng(${moqooList.moqooLat}, ${moqooList.moqooLng}); //인포윈도우 표시 위치입니다
+			
+							// 인포윈도우를 생성합니다
+							var infowindow = new kakao.maps.InfoWindow({
+							    position : iwPosition,
+							    content : '<div class="info-window" >${moqooList.moqooContent}${moqooList.moqooThumRename}</div>'
+							    
+							});
+							  
+							// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+							infowindow.open(map, marker); 
+							
+						});
+					</script>
 				</c:forEach>
                 	
               </tbody>
@@ -404,12 +452,28 @@
   <script src="../resources/assets/js/main.js"></script>
   
 	<script>
+		//모꾸 강제삭제 
 		function deleteMoqooByA(moqooNo){
 			if(confirm ("정말 삭제하시겠습니까?")){
 				location.href = "/admin/deletemoqoo?moqooNo=" + moqooNo;
 			}
 		}
-		//Required request parameter 'moqooNo' for method parameter type Integer is present but converted to null
+		
+		//moqooStatus가 A(강제삭제)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("moqoo-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var moqooStatusCell = rows[i].getElementsByTagName("td")[5]; // 5th column (0-based index)
+		      if (moqooStatusCell) {
+		        var moqooStatus = moqooStatusCell.textContent;
+		        if (moqooStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
 	</script>
 
 </body>

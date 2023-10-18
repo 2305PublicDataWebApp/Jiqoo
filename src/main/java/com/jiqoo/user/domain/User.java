@@ -22,10 +22,15 @@ public class User {
 	private char userStatus;
 	private String adminYn;
 	
+	private int count;
+	private String ageGroup;
+	
+
 	private int followers; //나를 팔로우한 사람들
 	private int followings; //내가 팔로우한 사람들
 	private boolean checkFollow;
 	
+
 
 
 	public User() {
@@ -164,6 +169,7 @@ public class User {
 		return followings;
 	}
 	
+
 	public void setFollowings(int followings) {
 		this.followings = followings;
 	}
@@ -176,6 +182,25 @@ public class User {
 		this.checkFollow = checkFollow;
 	}
 
+
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public String getAgeGroup() {
+		return ageGroup;
+	}
+
+	public void setAgeGroup(String ageGroup) {
+		this.ageGroup = ageGroup;
+	}
+
+	
 
 	@Override
 	public String toString() {

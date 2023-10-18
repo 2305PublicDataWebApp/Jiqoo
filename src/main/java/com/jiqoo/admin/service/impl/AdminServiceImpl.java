@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.admin.store.AdminStore;
 import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
@@ -98,8 +101,8 @@ public class AdminServiceImpl implements AdminService {
 	 * 회원별 지꾸 리스트 
 	 */
 	@Override
-	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String userId) {
-		List<Jiqoo> uJiqooList = adminStore.showUserJiqooList(sqlSession, pInfoJiqoo, userId);
+	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String jiqooWriter) {
+		List<Jiqoo> uJiqooList = adminStore.showUserJiqooList(sqlSession, pInfoJiqoo, jiqooWriter);
 		return uJiqooList;
 	}
 
@@ -121,6 +124,25 @@ public class AdminServiceImpl implements AdminService {
 		return uMoqooList;
 	}
 
+	/**
+	 * 회원별 총 댓글 수
+	 */
+	@Override
+	public Integer getusersTotalComtCount(String comtWriter) {
+		Integer result = adminStore.getusersTotalComtCount(sqlSession, comtWriter);
+		return result;
+	}
+
+	/**
+	 * 회원별 총 댓글 리스트
+	 */
+	@Override
+	public List<Comment> showUserComtList(PageInfo pInfoComt, String comtWriter) {
+		List<Comment> uComtList = adminStore.showUserComtList(sqlSession, pInfoComt, comtWriter);
+		return uComtList;
+	}
+	
+	
 	/**
 	 * 총 지꾸 수 
 	 */
@@ -302,14 +324,7 @@ public class AdminServiceImpl implements AdminService {
 		return result;
 	}
 
-	/**
-	 * 총 채팅방 리스트
-	 */
-	@Override
-	public List<ChatRoom> selectAllChatRoom(PageInfo pInfo) {
-		List<ChatRoom> chatRoomList = adminStore.selectAllChatRoom(sqlSession, pInfo);
-		return chatRoomList;
-	}
+
 
 		
 	/**
@@ -347,6 +362,48 @@ public class AdminServiceImpl implements AdminService {
 		List<User> userAgeList = adminStore.userAgeList(sqlSession);
 		return userAgeList;
 	}
+
+
+
+	@Override
+	public List<ChatRoom> selectAllChatRoom(PageInfo pInfo) {
+		List<ChatRoom> chatRoomList = adminStore.selectAllChatRoom(sqlSession, pInfo);
+		return chatRoomList;
+	}
+
+	@Override
+	public Integer deleteComtByAdmin(Integer comtNo) {
+		Integer result = adminStore.deleteComtByAdmin(sqlSession, comtNo);
+		return result;
+	}
+
+
+	@Override
+	public List<Comment> todayComtList(PageInfo pInfoJiqoo) {
+		List<Comment> todayComtList = adminStore.todayComtList(sqlSession, pInfoJiqoo);
+		return todayComtList;
+	}
+
+	@Override
+	public List<Map<String, Object>> userCountList(User user) {
+		List<Map<String, Object>> userCountList = adminStore.userCountList(sqlSession, user);
+		return userCountList;
+	}
+
+	@Override
+	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap) {
+		List<Map<String, Object>> dayCountList = adminStore.dayCountList(sqlSession, statsMap);
+		return dayCountList;
+	}
+
+	
+
+
+
+
+
+
+	
 
 
 
