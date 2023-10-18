@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -368,6 +370,34 @@ public class AdminServiceImpl implements AdminService {
 		List<ChatRoom> chatRoomList = adminStore.selectAllChatRoom(sqlSession, pInfo);
 		return chatRoomList;
 	}
+
+	@Override
+	public Integer deleteComtByAdmin(Integer comtNo) {
+		Integer result = adminStore.deleteComtByAdmin(sqlSession, comtNo);
+		return result;
+	}
+
+
+	@Override
+	public List<Comment> todayComtList(PageInfo pInfoJiqoo) {
+		List<Comment> todayComtList = adminStore.todayComtList(sqlSession, pInfoJiqoo);
+		return todayComtList;
+	}
+
+	@Override
+	public List<Map<String, Object>> userCountList(User user) {
+		List<Map<String, Object>> userCountList = adminStore.userCountList(sqlSession, user);
+		return userCountList;
+	}
+
+	@Override
+	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap) {
+		List<Map<String, Object>> dayCountList = adminStore.dayCountList(sqlSession, statsMap);
+		return dayCountList;
+	}
+
+	
+
 
 
 

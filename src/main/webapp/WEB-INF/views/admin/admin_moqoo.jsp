@@ -227,27 +227,32 @@
 	                
 	                <!--===== 모꾸 상세보기 Modal =====-->
 			        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			          <div class="modal-dialog">
+			          <div class="modal-dialog modal-lg">
 						<div class="modal-content">
 							<div class="modal-header">
 								<div class="modal-title fs-5" id="exampleModalLabel" >
 									<h3><i class="bi bi-bookmark-heart"></i> ${moqooList.moqooNo} 번째 모꾸</h3>
-									<h5 style="display:inline"><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </hr> <!-- 작성자 -->
-									<span><i class="bi bi-file-earmark-x"></i> ${moqooList.moqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
+									<span><i class="bi bi-file-earmark-x"></i> 
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'Y'}">삭제전</c:if> --%>
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'N'}">삭제됨</c:if> --%>
+<%-- 										<c:if test="${moqooList.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if> --%>
+									</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
 								</div>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<h3><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
-								<span><i class="bi bi-tag"></i> ${moqooList.category}</span>&nbsp; <!-- 카테고리 -->
-								<span><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</span>&nbsp; <!-- W3W -->
-								<span><i class="bi bi-calendar-week"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+								<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${moqooList.moqooTitle}</h3><!-- 타이틀 -->
+								<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span>&nbsp; <!-- 작성자 -->
+								<span><i class="bi bi-calendar-week"></i> 
+									<fmt:parseDate value='${moqooList.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate'/>
+									<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+								</span>
+								<br>
+								<h5 style="display:inline"><i class="bi bi-tag"></i> ${moqooList.category}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+								<h5 style="display:inline"><i class="bi bi-globe"></i> ${moqooList.moqooW3W}</h5>&nbsp; <!-- W3W -->
+								
+								<span><i class="bi bi-clock"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
 								<span><i class="bi bi-people"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
-<%-- 								<fmt:parseDate value="${moqooList.moqooDate}" pattern="yy/MM/dd hh:mm:ss" var='moqooDate'/> --%>
-<!-- 								<span><i class="bi bi-file-earmark-x"></i> -->
-<%-- 									<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${moqooDate}"/> --%>
-<!-- 								</span>&nbsp; -->
 								
 								<div id="map${i.count }" class="map" style="width:100%; height:350px;">
 									 
@@ -262,8 +267,8 @@
 							</div>
 						</div>
 					</div>
-			        </div>
-			        <!-- End 모꾸 상세보기 Modal -->
+		        </div>
+		        <!-- End 모꾸 상세보기 Modal -->
 			        
 			        <!-- 카카오맵api -->
 					<script>
@@ -447,12 +452,28 @@
   <script src="../resources/assets/js/main.js"></script>
   
 	<script>
+		//모꾸 강제삭제 
 		function deleteMoqooByA(moqooNo){
 			if(confirm ("정말 삭제하시겠습니까?")){
 				location.href = "/admin/deletemoqoo?moqooNo=" + moqooNo;
 			}
 		}
-		//Required request parameter 'moqooNo' for method parameter type Integer is present but converted to null
+		
+		//moqooStatus가 A(강제삭제)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("moqoo-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var moqooStatusCell = rows[i].getElementsByTagName("td")[5]; // 5th column (0-based index)
+		      if (moqooStatusCell) {
+		        var moqooStatus = moqooStatusCell.textContent;
+		        if (moqooStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
 	</script>
 
 </body>

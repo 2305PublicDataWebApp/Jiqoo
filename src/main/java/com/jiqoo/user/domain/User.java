@@ -21,8 +21,10 @@ public class User {
 	private Timestamp uDeleteDate;
 	private char userStatus;
 	private String adminYn;
+	private int count;
+	private String ageGroup;
 	
-	
+
 	public User() {
 		super();
 	}
@@ -137,6 +139,23 @@ public class User {
 		this.adminYn = adminYn;
 	}
 	
+	
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public String getAgeGroup() {
+		return ageGroup;
+	}
+
+	public void setAgeGroup(String ageGroup) {
+		this.ageGroup = ageGroup;
+	}
+
 	
 	@Override
 	public String toString() {

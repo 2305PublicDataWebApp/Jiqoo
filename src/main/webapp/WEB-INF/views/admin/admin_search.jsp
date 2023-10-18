@@ -170,7 +170,7 @@
 											<c:if test="${search.userGender ne null}"> ${search.userGender} </c:if>
 										</td>
 										<td class="col1"><c:if
-												test="${search.platformType eq 'normarl'}"> 홈페이지 </c:if></td>
+												test="${search.platformType eq 'normal'}"> 홈페이지 </c:if></td>
 										<td>${search.userStatus }</td>
 										<td>10</td>
 										<td>
@@ -252,7 +252,7 @@
 							}
 						</script>
 						<!-- End Table with stripped rows -->
-
+						<c:if test="${pInfo.totalCount > 0}"> 
 						<div id="pageNavi">
 							<c:if test="${pInfo.startNavi != 1}">
 								<c:url var="prevUrl" value="/admin/usersearch">
@@ -291,6 +291,8 @@
 								<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 							</c:if>
 						</div>
+						</c:if>
+						<c:if test="${pInfo.totalCount < 0}">1</c:if>
 
 					</div>
 				</div>
@@ -330,6 +332,22 @@
 		function showUserDetail(userId) {
 			location.href = "/admin/userdetail?userId=" + userId;
 		}
+		
+		//userStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("user-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var userStatusCell = rows[i].getElementsByTagName("td")[6]; // 6th column (0-based index)
+		      if (userStatusCell) {
+		        var userStatus = userStatusCell.textContent;
+		        if (userStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
 	</script>
 
 </body>

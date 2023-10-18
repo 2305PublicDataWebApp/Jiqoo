@@ -47,6 +47,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.36.0/apexcharts.min.js"></script>
     
+    
 	<!-- JQuery CDN -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
@@ -117,17 +118,14 @@
                         <span class="text-success small pt-1 fw-bold">
                         	<c:set var="todayInsertJiqooCount" value="${ todayInsertJiqooCount }" />
 							<c:set var="yesterdayInsertJiqooCount" value="${yesterdayInsertJiqooCount}" />
-<%-- 							<c:set var="percent" value="" /> --%>
 							<c:choose>
 							    <c:when test="${yesterdayInsertJiqooCount ne 0}">
-							        <fmt:formatNumber value="${((todayInsertJiqooCount - yesterdayInsertJiqooCount) / yesterdayInsertJiqooCount) * 100}" maxFractionDigits="0" />
+							   		<fmt:formatNumber value="${Math.abs(((todayInsertJiqooCount - yesterdayInsertJiqooCount) / yesterdayInsertJiqooCount) * 100)}" maxFractionDigits="0" />%
 							    </c:when>
 							    <c:otherwise>
-							        <c:out value="0" />
+							        <c:out value="어제 등록된 지꾸는 0개입니다" />
 							    </c:otherwise>
 							</c:choose>
-<%-- 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" /> --%>
-							%
 						</span> 
                         <span class="text-muted small pt-2 ps-1">
 							<span class="text-muted small pt-2 ps-1">
@@ -170,17 +168,17 @@
                         <span class="text-success small pt-1 fw-bold">
 							<c:set var="todayInsertMoqooCount" value="${ todayInsertMoqooCount }" />
 							<c:set var="yesterdayInsertMoqooCount" value="${yesterdayInsertMoqooCount}" />
-<%-- 							<c:set var="percent" value="" /> --%>
 							<c:choose>
 							    <c:when test="${yesterdayInsertMoqooCount ne 0}">
-							        <fmt:formatNumber value="${((todayInsertMoqooCount - yesterdayInsertMoqooCount) / yesterdayInsertMoqooCount) * 100}" maxFractionDigits="0" />
+<%-- 							        <fmt:formatNumber value="${((todayInsertMoqooCount - yesterdayInsertMoqooCount) / yesterdayInsertMoqooCount) * 100}" maxFractionDigits="0" />% --%>
+							   		<fmt:formatNumber value="${Math.abs(((todayInsertMoqooCount - yesterdayInsertMoqooCount) / yesterdayInsertMoqooCount) * 100)}" maxFractionDigits="0" />%
+							   
 							    </c:when>
 							    <c:otherwise>
-							        <c:out value="0" />
+							        <c:out value="어제 등록된 모꾸는 0개입니다" />
 							    </c:otherwise>
 							</c:choose>
-<%-- 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" /> --%>
-							%
+							
 						</span> 
 						<span class="text-muted small pt-2 ps-1">
 							<c:if test="${todayInsertMoqooCount gt yesterdayInsertMoqooCount }">increase</c:if>
@@ -222,14 +220,14 @@
 <%-- 							<c:set var="percent" value="" /> --%>
 							<c:choose>
 							    <c:when test="${yesterdayJoinUserCount ne 0}">
-							        <fmt:formatNumber value="${((todayJoinUserCount - yesterdayJoinUserCount) / yesterdayJoinUserCount) * 100}" maxFractionDigits="0" />
+							    	<fmt:formatNumber value="${Math.abs(((todayJoinUserCount - yesterdayJoinUserCount) / yesterdayJoinUserCount) * 100)}" maxFractionDigits="0" />%
 							    </c:when>
 							    <c:otherwise>
-							        <c:out value="0" />
+							        <c:out value="어제 가입자수는 0명입니다" />
 							    </c:otherwise>
 							</c:choose>
 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" />
-							%
+							
 						</span> 
 						<span class="text-muted small pt-2 ps-1">
 							<c:if test="${todayJoinUserCount gt yesterdayJoinUserCount }">increase</c:if>
@@ -247,79 +245,82 @@
                 <!-- 컬럼챠트 -->
                 <div class="card" >
                   <div class="card-body">
-                    <h5 class="card-title">이름뭐라고할까</h5>
+                    <h5 class="card-title">지꾸/모꾸/회원 날짜별뭐시기</h5>
+					<!-- 차트 들어가는 곳 -->
                     <div id="columnchart_material" style="width : 100%; height: 640px; padding: 10px;"></div>
 
-                    <script type="text/javascript">
-                      google.charts.load('current', {'packages':['bar']});
-                      google.charts.setOnLoadCallback(drawChart);
-                      
-                      
-                  
-                      
-                      //그래프 그리기
-                      function drawChart() {
-                        var data = google.visualization.DataTable();
-//                           ['', '지꾸', '모꾸', '회원'],
-//                           ['07', 10, 4, 2],
-//                           ['08', 17, 4, 2],
-//                           ['09', 6, 11, 3],
-//                           ['10', 10, 5, 3],
-//                           ['11', 18, 34, 3],
-//                           ['12', 10, 24, 3],
-//                           ['13', 17, 7, 30],
-//                           ['14', 10, 24, 3],
-//                           ['15', 15, 4, 30],
-//                           ['16', 13, 17, 25],
-//                           ['17', 18, 15, 35]
-							data.addColumn('datetime', '날짜'); //x축 
-							data.addColumn('number', '수');	// y축
-							
-						for (var i = 0; i < days.length; i++) {
-					        arr = [new Date(days[i]), jiqoo[i]];
-					        // years, months, days, weights에 나열한 데이터를 가지고 arr를 생성한다.
-					        // arr = [new Date(연, 월, 일), 체중기록]
-					        
-					    	data.addRow(arr);
-					        // arr에 담긴 데이터가 그래프에 반영되도록 한다.
-					    }
+                       	<script type="text/javascript">
+                       		google.charts.load('current', {'packages':['bar']});
+	             			google.charts.setOnLoadCallback(drawChart);
+	             			function drawChart() {
+	             				$.ajax({
+	             					url : "/admin/statschart",
+	           						type : "GET",
+	           						dataType: "json",
+	           						success : function(result){
+	           							var data = new google.visualization.DataTable();
+	           							data.addColumn('datetime', '날짜');	
+	           							data.addColumn('number', '수량1');	
+	           							data.addColumn('number', '수량2');	
+	           							data.addColumn('number', '수량3');	
+	           			
+	           	                        
+	           	                        //console.log(result);
+	           	               			var arr = new Array();
+		           	                    for (var i = 0; i < result.length; i++) {
+		           	                    	
+// 		                                    arr = [result[i].THEDATE, result[i].JIQOOCOUNT, result[i].MOQOOCOUNT, result[i].USERCOUNT];
+		                                    // years, months, days, weights에 나열한 데이터를 가지고 arr를 생성한다.
+		                                     
+		                                 	arr[0] = new Date(2023, 10, result[i].THEDATE);
+		                                    arr[1] = result[i].JIQOOCOUNT;
+		                                    arr[2] = result[i].MOQOOCOUNT;
+		                                    arr[3] = result[i].USERCOUNT;
 
-                        
-                
-                        var options = {
-                          chart: {
-                            width: '100%' // 반응형을 위한 width 값 추가
-                          },
-                          colors: ['#19A7CE', '#8BC34A', '#ff771d'],
-                          // vAxis: {
-                          //   viewWindowMode:'explicit',
-                          //   viewWindow: {
-                          //     max: 100  //세로축 최대값 100으로 설정
-                          //   }
-                          // }
-                        };
+		                                    data.addRow(arr);  
+		                                }
 
-                        //화면 줄였을때 라벨 없애기 
-                        var mq = window.matchMedia( "(max-width: 575px)" );
-                        if (mq.matches) {
-                            var options = {
-                              legend: {
-                                position: 'none'
-                              },
-                              hAxis: {textPosition : 'none'}, // 가로축 제거
-                              colors: ['#19A7CE', '#8BC34A', '#ff771d'],
-                              
-                            }   
-                        }
-                        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-                
-                        chart.draw(data, google.charts.Bar.convertOptions(options));
-                        window.addEventListener('resize',drawChart, false) //반응형으로 줄였을때 그래프 사이즈도 줄이기
-                      }
-                    </script>
-                  </div>
-                </div>
-              </div>
+
+		           	                 	var options = {
+		           	                 		chart: {
+		           	                            width: '100%' // 반응형을 위한 width 값 추가
+		           	                          },
+		           	                       	colors: ['#19A7CE', '#8BC34A', '#ff771d']
+		           	                 	};
+		           	                 	
+		           	                 	var mq = window.matchMedia( "(max-width: 575px)" );
+		           	                 	if (mq.matches) {
+		           	                 		var options = {
+		           	                 			legend: {
+		           	                                position: 'none'
+		           	                              },
+		           	                              hAxis: {textPosition : 'none'}, // 가로축 제거
+		           	                              colors: ['#19A7CE', '#8BC34A', '#ff771d']
+		           	                 		}
+		           	                	 
+		           	                 	};
+			           	                var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+			                            chart.draw(data, google.charts.Bar.convertOptions(options));
+			                            
+			                          //반응형으로 줄였을때 그래프 사이즈도 줄이기
+			                            window.addEventListener('resize',drawChart, false) 
+	           							
+	           						}, error : function(){ 
+	           							alert("ajax 오류")
+	           						}
+	             				})
+   							}
+	             				
+	             				
+	             				
+             			
+                       
+                       
+                      
+                    	</script>
+                  	</div>
+               	</div>
+           	</div>
 
             </div>
           </div><!-- End Left side columns -->
@@ -419,9 +420,13 @@
 	
 	                for(var i = 0; i < aData.length; i++) {
 	                	var ageData = aData[i];
-	                     if (ageData.ageGroup === '20-29') {
+	                	if(ageData.ageGroup === '0-9') {
+							ageLabelList.push("10대미만");
+						}else if(ageData.ageGroup === '10-19') {
+	                		ageLabelList.push("10대");
+	                	}else if(ageData.ageGroup === '20-29') {
 	                    	 ageLabelList.push("20대");
-					    } else {
+					    }else {
 					    	ageLabelList.push("불명");
 					    }
 						console.log(ageData.ageGroup);
@@ -527,8 +532,9 @@
               <!--지꾸 카드-->
               <div class="col-lg-6 ">
                 <h3 style="margin:15px 0 0 15px; color:#19A7CE">오늘의 지꾸</h3>
-                <div class="today-jiqoo" >
-                  <table class="table today-list">
+                <div class="today-jiqoo " >
+            
+                  <table class="table today-list ">
                     <colgroup>
                       <col scope="col"  width ="15%" >
                       <col scope="col"  width ="30%" >
@@ -553,7 +559,7 @@
 					</c:if>
                     <c:forEach var="todayJiqoo" items="${todayJiqooList}" varStatus="i">
                       <tr>
-                        <td>${todayJiqoo.userId}</td>
+                        <td>${todayJiqoo.jiqooWriter}</td> <!-- todayJiqoo.user.userId -->
                         <td>${todayJiqoo.jiqooW3W}</td>
                         <td>
                           <a class="modal-link modal-link-jq" data-bs-toggle="modal" href="#jiqooModal" >
@@ -566,6 +572,8 @@
                     </c:forEach>
                   </tbody>
                 </table>
+                
+           
               </div>
             </div>
               
@@ -598,25 +606,29 @@
 							</tr>
 						</c:if>
 	                    <c:forEach var="todayMoqoo" items="${todayMoqooList}" varStatus="i">
-                      <tr>
-                        <td>${todayMoqoo.moqooWriter}</td>
-                        <td>${todayMoqoo.moqooW3W}</td>
-                        <td>
-                          	<a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal" >
-                          		<c:out value='${todayMoqoo.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
-							</a>
-                        </td>
-                        <td>0</td>
-                        <td>0</td>
-                      </tr>
+	                      <tr>
+	                        <td>${todayMoqoo.moqooWriter}</td>
+	                        <td>${todayMoqoo.moqooW3W}</td>
+	                        <td>
+	                          	<a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal" >
+	                          		<c:out value='${todayMoqoo.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+								</a>
+	                        </td>
+	                        <td>0</td>
+	                        <td>0</td>
+	                      </tr>
                       </c:forEach>
 
                     </tbody>
                   </table>
+                  
                 </div>
+                
               </div>
           </div>
 
+
+      
         <div class="row box-margin ">
             <!--댓글 카드-->
             <div class="col-lg-6 ">
@@ -640,38 +652,27 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>지꾸</td>
-                      <td>khuser01</td>
-                      <td>
-                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal" >
-                        이러지도 못하는데
-                      </a>
-                    </td>
-                      <td>0</td>
-                      <td>0</td>
-                    </tr>
-                    <tr>
-                      <td>모꾸</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                    </tr>
-                    <tr>
-                      <td>지꾸</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                    </tr>
-                    <tr>
-                      <td>지꾸</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                      <td>0</td>
-                    </tr>
+                  	<c:if test="${todayComtList.size() eq 0 }">
+						<tr>
+							<td colspan="5">오늘 등록된 댓글이 없습니다.</td>
+						</tr>
+					</c:if>
+					<c:forEach var="todayComment" items="${todayComtList}" varStatus="i">
+	                    <tr>
+	                      <td>
+							<c:if test="${todayComment.cBoardType eq 'J' }">지꾸</c:if>
+							<c:if test="${todayComment.cBoardType eq 'M' }">모꾸</c:if>
+						  </td>
+	                      <td>${todayComment.comtWriter }</td>
+	                      <td>
+	                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal" >
+	                        ${todayComment.comtContent }
+	                      </a>
+	                    </td>
+	                      <td>0</td>
+	                      <td>0</td>
+	                    </tr>
+                    </c:forEach>
                     
                   </tbody>
                 </table>
@@ -707,17 +708,15 @@
 							<c:if test="${empty todayUser.userPhotoRename }">
 								<img src="../resources/assets/img/no-profile.png" style="width:50px;">
 							</c:if>
-	                      
-	                      
-	                     
 	                      </td>
 	                      <td>${todayUser.userId }</td>
 	                      <td>${todayUser.userName }</td>
 	                      <td>
-	                      	<c:if test="${todayUser.userGender  eq ''}"> 불명 </c:if>
+	                      	<c:if test="${todayUser.userGender eq null}"> 불명 </c:if>
 	                      </td>
 	                      <td>
 							<c:if test="${todayUser.platformType eq 'normal'}"> 홈페이지 </c:if>
+							<c:if test="${todayUser.platformType eq 'kakao'}"> 카카오 </c:if>
 						  </td>
 	                    </tr>
                    	</c:forEach>

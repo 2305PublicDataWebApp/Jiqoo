@@ -138,9 +138,12 @@ public interface AdminService {
 	 */
 	public Integer getMoqooListCount();
 
+	/**
+	 * 
+	 * @param pInfo
+	 * @return
+	 */
 	public List<Moqoo> selectAllMoqoo(PageInfo pInfo);
-
-
 
 	/**
 	 * 지꾸관리_강제삭제
@@ -148,6 +151,20 @@ public interface AdminService {
 	 * @return
 	 */
 	public Integer deleteJiqooByAdmin(Integer jiqooNo);
+	
+	/**
+	 * 모꾸 강제삭제
+	 * @param moqooNo
+	 * @return
+	 */
+	public Integer deleteMoqooByAdmin(Integer moqooNo);
+	
+	/**
+	 * 회원상세_댓글 강제삭제 
+	 * @param comtNo
+	 * @return
+	 */
+	public Integer deleteComtByAdmin(Integer comtNo);
 
 	public Jiqoo selectOneJiqoo(Jiqoo jiqoo);
 
@@ -229,12 +246,7 @@ public interface AdminService {
 	 */
 	public Integer yesterdayInsertMoqooCount();
 
-	/**
-	 * 모꾸 강제삭제
-	 * @param moqooNo
-	 * @return
-	 */
-	public Integer deleteMoqooByAdmin(Integer moqooNo);
+
 
 	/**
 	 * 총 채팅방 수
@@ -271,11 +283,26 @@ public interface AdminService {
 	public List<Moqoo> todayMoqooList(PageInfo pInfoJiqoo);
 
 	/**
+	 * 당일 등록된 댓글 리스트
+	 * @param pInfoJiqoo
+	 * @return
+	 */
+	public List<Comment> todayComtList(PageInfo pInfoJiqoo);
+	
+	
+	/**
 	 * 현재 가입중인 회원 나이대 비율
 	 * @return
 	 */
 	public List<User> userAgeList();
-	
+
+	public List<Map<String, Object>> userCountList(User user);
+
+	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap);
+
+
+
+
 
 	
 	

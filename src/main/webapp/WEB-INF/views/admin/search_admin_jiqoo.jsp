@@ -55,8 +55,11 @@
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
+<!-- jQuery cdn -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
 
-
+<!-- 카카오맵api -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee6032b0d73ff0af6bdd2b029c9dd88d"></script>
 
 <!-- =======================================================
     * Template Name: Bootslander
@@ -182,42 +185,89 @@
 										</td>
 									</tr>
 									
-									<!-- 지꾸 상세보기 Modal -->
+									<!--===== 지꾸 상세보기 Modal =====-->
 									<div class="modal fade" id="detailJiqooModal${i.count }" tabindex="-1"
-										aria-labelledby="exampleModalLabel" aria-hidden="true">
-										<div class="modal-dialog">
+										aria-labelledby="exampleModalLabel modal-lg" aria-hidden="true">
+										<div class="modal-dialog modal-lg">
 											<div class="modal-content">
 												<div class="modal-header">
-													<h1 class="modal-title fs-5" id="exampleModalLabel">${search.jiqooNo} 번째 지꾸</h1>
+													<div class="modal-title fs-5" id="exampleModalLabel" >
+														<h3><i class="bi bi-bookmark-heart"></i> ${search.jiqooNo} 번째 지꾸</h3>
+														<span><i class="bi bi-envelope-open" style="margin-left:5px"></i> 
+															<c:if test="${search.jOpenStatus eq 'Y'}">공개중</c:if>
+															<c:if test="${search.jOpenStatus eq 'N'}">비공개</c:if>
+														</span> <!-- 공개여부 -->
+														<span><i class="bi bi-file-earmark-x"></i> 
+															<c:if test="${search.jiqooStatus eq 'Y'}">삭제전</c:if>
+															<c:if test="${search.jiqooStatus eq 'N'}">삭제됨</c:if>
+															<c:if test="${search.jiqooStatus eq 'A'}">관리자에 의해 삭제</c:if>
+														</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
+													</div>
 													<button type="button" class="btn-close" data-bs-dismiss="modal"
-														aria-label="Close"></button>
+															aria-label="Close"></button>
 												</div>
 												<div class="modal-body">
-													<span><h3><i class="bi bi-sticky"></i> ${search.jiqooTitle}</h3></span> <!-- 타이틀 -->
-													<h5><i class="bi bi-pencil"></i> ${search.jiqooWriter} </h5> <!-- 작성자 -->
-													<span><i class="bi bi-envelope-open"></i> ${search.jOpenStatus}</span>&nbsp; <!-- 공개여부 -->
-													<span><i class="bi bi-file-earmark-x"></i> ${search.jiqooStatus}</span>&nbsp; <!-- 삭제여부 (Y:삭제안됨 / N:삭제됨) -->
-													<span><i class="bi bi-tag"></i> ${search.jiqooCtgr}</span>&nbsp; <!-- 카테고리 -->
-													<span><i class="bi bi-globe"></i> ${search.jiqooW3W}</span>&nbsp; <!-- W3W -->
-<!-- 													<span><i class="bi bi-file-earmark-x"></i> -->
-<%-- 														<fmt:formatDate pattern="yy/MM/dd hh:mm:ss" value=" ${jiqooList.jCreateDate}"/> --%>
-<!-- 													</span>&nbsp; -->
+													<h3 style="display:inline" ><i class="bi bi-sticky"></i> ${search.jiqooTitle}</h3>&nbsp; <!-- 타이틀 -->
+													<span><i class="bi bi-pencil"></i> ${search.jiqooWriter} </span>&nbsp; <!-- 작성자 -->
+													<span><i class="bi bi-calendar-week"></i> 
+														<fmt:parseDate value='${search.jCreateDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='jCreateDate'/>
+														<fmt:formatDate value="${jCreateDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+													</span>
+													<br>
+													<h5 style="display:inline"><i class="bi bi-tag"></i>${search.jiqooCtgr}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+													<h5 style="display:inline"><i class="bi bi-globe"></i> ${search.jiqooW3W}</h5>&nbsp; <!-- W3W -->
+													<span><i class="bi bi-clock"></i> ${search.jiqooDate}</span>&nbsp; <!-- 모임일자 -->
 													
-													<div id="map">지도 들어갈 자리
-														${search.jiqooContent} 
-													</div>
+													<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
+													
 													<div id="report-reason">
 														<div id="r-title">신고사유()</div>
 														<div></div>
 													</div>
 													<div id="report-btn">
-														<button type="button" class="button delete-btn">삭제</button>
+														<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${search.jiqooNo}');">삭제</button>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 									<!-- End Modal -->
+									
+									<!-- 카카오맵api -->
+									<script>
+										$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
+											var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
+										    mapOption = { 
+										        center: new kakao.maps.LatLng(${search.jiqooLat}, ${search.jiqooLng}), // 지도의 중심좌표
+										        level: 3 // 지도의 확대 레벨
+										    };
+		
+											var map = new kakao.maps.Map(mapContainer, mapOption);
+											// 마커가 표시될 위치입니다 
+											var markerPosition  = new kakao.maps.LatLng(${search.jiqooLat}, ${search.jiqooLng}); 
+			
+											// 마커를 생성합니다
+											var marker = new kakao.maps.Marker({
+											    position: markerPosition
+											});
+			
+											// 마커가 지도 위에 표시되도록 설정합니다
+											marker.setMap(map);
+			
+											var iwPosition = new kakao.maps.LatLng(${search.jiqooLat}, ${search.jiqooLng}); //인포윈도우 표시 위치입니다
+			
+											// 인포윈도우를 생성합니다
+											var infowindow = new kakao.maps.InfoWindow({
+											    position : iwPosition,
+											    content : '<div class="info-window" >${search.jiqooContent}</div>'
+											    
+											});
+											  
+											// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+											infowindow.open(map, marker); 
+											
+										});
+									</script>
 								</c:forEach>
 								
 							</tbody>
@@ -375,7 +425,23 @@
 	<script src="../resources/assets/js/chart.js"></script>
 	<script src="../resources/assets/js/main.js"></script>
 
-
+	<script>
+	//jiqooStatus가 A(강제삭제)일 때 열 색을 빨간색으로 변경 
+		document.addEventListener("DOMContentLoaded", function() {
+		  var table = document.getElementById("jiqoo-table");
+		  var rows = table.getElementsByTagName("tr");
+		  
+		  for (var i = 0; i < rows.length; i++) {
+		    var jiqooStatusCell = rows[i].getElementsByTagName("td")[5]; // 5th column (0-based index)
+		    if (jiqooStatusCell) {
+		      var jiqooStatus = jiqooStatusCell.textContent;
+		      if (jiqooStatus.includes('A')) {
+		        rows[i].style.color = 'red';
+		      }
+		    }
+		  }
+		});
+	</script>
 
 </body>
 

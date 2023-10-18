@@ -265,6 +265,15 @@ public interface AdminStore {
 	 */
 	public List<User> userAgeList (SqlSession sqlSession);
 
+	public Integer deleteComtByAdmin(SqlSession sqlSession, Integer comtNo);
+
+	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo);
+
+	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
+
+
+	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap);
+
 
 
 

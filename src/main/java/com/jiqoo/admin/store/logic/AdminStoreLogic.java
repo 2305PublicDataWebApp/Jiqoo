@@ -151,6 +151,15 @@ public class AdminStoreLogic implements AdminStore {
 		List<Comment> uComtList = sqlSession.selectList("AdminMapper.showUserComtList", comtWriter, rowBounds);
 		return uComtList;
 	}
+	
+	/**
+	 * 회원별_댓글강제삭제
+	 */
+	@Override
+	public Integer deleteComtByAdmin(SqlSession sqlSession, Integer comtNo) {
+		Integer result = sqlSession.update("AdminMapper.deleteComtByAdmin", comtNo);
+		return result;
+	}
 
 	
 	/**
@@ -402,6 +411,35 @@ public class AdminStoreLogic implements AdminStore {
 		List<User> userAgeList = sqlSession.selectList("AdminMapper.userAgeList");
 		return userAgeList;
 	}
+
+	@Override
+	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo) {
+		int limit = pInfoJiqoo.getRecordCountPerPage();
+		int offset = (pInfoJiqoo.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<Comment> todayComtList = sqlSession.selectList("AdminMapper.todayComtList", null, rowBounds);
+		return todayComtList;
+	}
+
+	@Override
+	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user) {
+		List<Map<String, Object>> userCountList = sqlSession.selectList("AdminMapper.userCountList", user);
+		return userCountList;
+	}
+
+	@Override
+	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap) {
+		List<Map<String, Object>> dayCountList = sqlSession.selectList("AdminMapper.dayCountList", statsMap);
+		return dayCountList;
+	}
+
+
+
+
+
+	
+	
 
 
 

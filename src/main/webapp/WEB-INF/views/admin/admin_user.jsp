@@ -154,26 +154,26 @@
 
 							<tbody>
 								<c:forEach var="userList" items="${userList}" varStatus="i">
-									<tr>
-										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
-										<!-- 순수넘버링 -->
-										<td>${userList.userId }</td>
-										<td class="col1">${userList.userName }</td>
-										<td class="col1">${userList.userEmail }</td>
-										<td class="col1"><c:if
-												test="${userList.userGender eq ''}"> - </c:if> <c:if
-												test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
-										</td>
-										<td class="col1"><c:if
-												test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
-										</td>
-										<td>${userList.userStatus }</td>
-										<td>10</td>
-										<td>
-											<button type="button" class="button show-detail-btn"
-												onclick="showUserDetail('${userList.userId}');">조회</button>
-										</td>
-									</tr>
+										<tr>
+											<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td>
+											<!-- 순수넘버링 -->
+											<td>${userList.userId }</td>
+											<td class="col1">${userList.userName }</td>
+											<td class="col1">${userList.userEmail }</td>
+											<td class="col1"><c:if
+													test="${userList.userGender eq ''}"> - </c:if> <c:if
+													test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
+											</td>
+											<td class="col1"><c:if
+													test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
+											</td>
+											<td>${userList.userStatus }</td>
+											<td>10</td>
+											<td>
+												<button type="button" class="button show-detail-btn"
+													onclick="showUserDetail('${userList.userId}');">조회</button>
+											</td>
+										</tr>
 								</c:forEach>
 							</tbody>
 						</table>
@@ -323,15 +323,33 @@
 			location.href = "/admin/userdetail?userId=" + userId;
 		}
 		
-		//userStatus가 'A'일때 (=강제탈퇴당했을 때) 빨갛게 표기
-// 		var userStatus = ${userOne.userStatus}
-// 		var trList = table.getElementsByTagName("TR");
-// 		if (userStatus.includes('A')) {
-// 		    for (var i = 0; i < trList.length; i++) {
-// 		        trList[i].style.color = 'red';
-// 		    }
-// 		}
-		
+	</script>
+	<script type="text/javascript">
+// 	    document.addEventListener("DOMContentLoaded", function() {
+// 	        var rows = document.querySelectorAll("tr");
+// 	        for (var i = 0; i < rows.length; i++) {
+// 	            var userStatus = rows[i].querySelector("td:nth-child(6)").textContent; // 6th column (0-based index)
+// 	            if (userStatus.includes("A")) {
+// 	                rows[i].style.color = "red";
+// 	            }
+// 	        }
+// 	    });
+
+		//userStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
+	  document.addEventListener("DOMContentLoaded", function() {
+	    var table = document.getElementById("user-table");
+	    var rows = table.getElementsByTagName("tr");
+	    
+	    for (var i = 0; i < rows.length; i++) {
+	      var userStatusCell = rows[i].getElementsByTagName("td")[6]; // 6th column (0-based index)
+	      if (userStatusCell) {
+	        var userStatus = userStatusCell.textContent;
+	        if (userStatus.includes('A')) {
+	          rows[i].style.color = 'red';
+	        }
+	      }
+	    }
+	  });
 	</script>
 
 </body>
