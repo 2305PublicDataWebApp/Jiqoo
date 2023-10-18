@@ -931,9 +931,9 @@
 // 	}
 	
 	
-	const modReply = (this) => {
+// 	const modReply = (this) => {
 		
-	}
+// 	}
 	
 // 	const modifyComment = (comtNo, obj) => {
 // 		const inputTag = $(obj).parent().prev(), children();
@@ -982,7 +982,6 @@
 // 	$("#re-comt-submit-btn").on("click", function() {
 // 		const reContent = $("#reComtContent").val();
 // 		const moqooNo = ${moqoo.moqooNo };
-// 		const pComtNo = ${};
 // 		$.ajax({
 // 			url : "/comt/insert",
 // 			data : {refMoqooNo : moqooNo, comtContent : cContent},
