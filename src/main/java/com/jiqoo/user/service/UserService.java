@@ -120,4 +120,11 @@ public interface UserService {
 	 */
 	int selectFollowStatus(Map<String, Object> followMap);
 
+	/**
+	 * 카카오회원 탈퇴 service
+	 * @param userId
+	 * @return
+	 */
+	int deleteKakaoUser(String userId);
+
 }

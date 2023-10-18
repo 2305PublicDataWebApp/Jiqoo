@@ -34,7 +34,7 @@ public class SnsServiceImpl implements SnsService {
 	@Override
 	public String getKakaoAccessToken(String code) throws Exception {
 		String access_Token = "";
-		String refresh_Token = "";
+		/* String refresh_Token = ""; */
 		String requestUrl = "https://kauth.kakao.com/oauth/token";
 
 		try {
@@ -75,10 +75,10 @@ public class SnsServiceImpl implements SnsService {
 			JsonElement element = gson.fromJson(result, JsonElement.class);
 
 			access_Token = element.getAsJsonObject().get("access_token").getAsString();
-			refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
+			// refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
 
 			System.out.println("access_token : " + access_Token);
-			System.out.println("refresh_token : " + refresh_Token);
+			// System.out.println("refresh_token : " + refresh_Token);
 
 			br.close();
 			bw.close();
@@ -95,11 +95,12 @@ public class SnsServiceImpl implements SnsService {
 	public Map<String, Object> getKakaoInfo(String accessToken) throws Exception {
 		// 요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
 		Map<String, Object> userInfo = new HashMap<>();
+		//HashMap<String, Object> userInfo = new HashMap<>(); ** 추후 Map과 HashMap 사용의 차이 확인하기 **
 		String requestUrl = "https://kapi.kakao.com/v2/user/me";
 		try {
 			URL url = new URL(requestUrl);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
+			conn.setRequestMethod("POST");
 
 			// 요청에 필요한 Header에 포함될 내용
 			conn.setRequestProperty("Authorization", "Bearer " + accessToken);
@@ -159,11 +160,6 @@ public class SnsServiceImpl implements SnsService {
 	        		System.out.println("카카오 회원가입 성공");
 	        	}
 	        }
-			/*
-			 * String userGender =
-			 * kakao_account.getAsJsonObject().get("email").getAsString(); String userBirth
-			 * = (String) userInfo.get("birthday");
-			 */
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,7 +167,8 @@ public class SnsServiceImpl implements SnsService {
 
 		return userInfo;
 	}
-
+	
+	// 랜덤문자열로 비밀번호부여->사용자는 모름
 	private String generateRandomCode() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		StringBuilder code = new StringBuilder();
@@ -184,6 +181,107 @@ public class SnsServiceImpl implements SnsService {
 		}
 
 		return code.toString();
+	}
+
+	// 카카오 로그아웃
+	@Override
+	public int kakaoLogout(String accessToken) {
+		int response = 200;
+		try {
+			if(!accessToken.contains("/")) {
+				accessToken += "?client_id=18a1ca5fc86fe7e244209cf690a986e4";
+				accessToken += "&logout_redirect_uri=http://localhost:9999/index.jsp";
+			}
+			URL url = new URL(accessToken);
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+			conn.setRequestMethod("GET");
+			response = conn.getResponseCode();
+			System.out.println(conn.getResponseCode());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+//	@Override
+//	public int kakaoLogout(String accessToken) {
+//	    String reqURL = "https://kapi.kakao.com/v1/user/logout";
+//	    int responseCode = 0;
+//	    try {
+//	        URL url = new URL(reqURL);
+//	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//	        conn.setRequestMethod("POST");
+//	        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+//	        
+//	        responseCode = conn.getResponseCode();
+//	        System.out.println("responseCode : " + responseCode);
+//	        
+//	        if (responseCode == 200) { // 로그아웃 요청 성공
+//	            System.out.println("카카오 로그아웃 성공");
+//	        } else {
+//	            BufferedReader errorReader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+//	            String errorLine;
+//	            StringBuilder errorResponse = new StringBuilder();
+//	            
+//	            while ((errorLine = errorReader.readLine()) != null) {
+//	                errorResponse.append(errorLine);
+//	            }
+//	            System.out.println("카카오 로그아웃 성공");
+//	        }
+//	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//	        
+//	        String result = "";
+//	        String line = "";
+//	        
+//	        while ((line = br.readLine()) != null) {
+//	            result += line;
+//	        }
+//	        System.out.println("카카오 유저 고유ID " + result);
+//	    } catch (IOException e) {
+//	        e.printStackTrace();
+//	    }
+//	    return responseCode;
+//	}
+
+	// 카카오 회원탈퇴
+	public int deleteKakaoUser(String accessToken) {
+	    String reqURL = "https://kapi.kakao.com/v1/user/unlink";
+	    int responseCode = 0;
+	    try {
+	        URL url = new URL(reqURL);
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("POST");
+	        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+	        
+	        responseCode = conn.getResponseCode();
+	        System.out.println("responseCode : " + responseCode); //200이면 성공
+	        
+	        if (responseCode == 200) { // 탈퇴 요청 성공
+	        	System.out.println("카카오 회원 탈퇴 성공->DB삭제 진행ㄱㄱ");
+	        } else { //탈퇴요청실패
+	            BufferedReader errorReader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+	            String errorLine;
+	            StringBuilder errorResponse = new StringBuilder();
+	            
+	            while ((errorLine = errorReader.readLine()) != null) {
+	                errorResponse.append(errorLine);
+	            }
+	            
+	            System.out.println("카카오 회원 탈퇴 실패");
+	            System.out.println("에러 응답 본문: " + errorResponse.toString());
+	        }
+	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        
+	        String result = "";
+	        String line = "";
+	        
+	        while ((line = br.readLine()) != null) {
+	            result += line;
+	        }
+	        System.out.println("카카오 유저 고유ID : " +result);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return responseCode;
 	}
 
 }

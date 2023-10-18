@@ -87,9 +87,13 @@
                     <img src="../resources/assets/img/user/kakao_login.png" alt="카카오 로그인 버튼"/>
                 </button> -->
                 <a id="kakao-login-btn" href="javascript:loginWithKakao()">
-					<img src="../resources/assets/img/user/kakao_login.png" alt="카카오 로그인 버튼" />
+					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem" alt="카카오 로그인 버튼" />
 				</a>
-				<p id="token-result"></p>
+            </div>
+            <div style="margin-top:10px;">
+                <a id="naver-login-btn" href="javascript:loginWithNaver()">
+					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem" alt="네이버 로그인 버튼" />
+				</a>
             </div>
             <div id="findInfo" style="margin-top: 20px;">
                 <ul>
@@ -298,91 +302,7 @@
 			    },
 			  });
 			}
-        	
-        	// 사용자 정보 받아옴
- /*            function requestUserInfo() {
-                Kakao.API.request({
-                  url: "/v2/user/me",
-                  success: function (res) {
-                    console.log(res);
-                    var id = res.id;
-                    var profile_nickname = res.kakao_account.profile.nickname;
-                    localStorage.setItem("nickname", profile_nickname);
-                    localStorage.setItem("id", id);
-                    console.log(profile_nickname);
-                    console.log(id);
-                  },
-                  fail: function (error) {
-                    alert("카카오 로그인 실패" + JSON.stringify(error));
-                  },
-                });
-              } */
-/*         	$("#kakaoLoginBtn").on("click", function(){
-        	    Kakao.Auth.login({
-        	        success: function (auth) {
-        	          Kakao.API.request({
-        	            url: '/v2/user/me',
-        	            success: function (response) {
-        	          	  console.log(response)
-        	            },
-        	            fail: function (error) {
-        	              console.log(error)
-        	            },
-        	          })
-        	        },
-        	        fail: function (error) {
-        	          console.log(error)
-        	        },
-        	      })
-        	}) */
-	       	 /*  function loginWithKakao() {
-	       	    Kakao.Auth.authorize({
-	       	      redirectUri: 'https://developers.kakao.com/tool/demo/oauth',
-	       	    });
-	       	  } */
-	       	  
-	       	/* Kakao.Auth.login({
-	            success: function(authObj) {
-	              //alert(JSON.stringify(authObj))
-	              Kakao.API.request({
-	                  url: '/v2/user/me',
-	                  success: function(response) {
-	                      let id = "kakao_" + response.id;
-	                      let email = (response.kakao_account.email != undefined ? response.kakao_account.email : '');
-	                      
-	                      let properties = response.properties;
-	                      let name = properties.nickname;
-	                      let profile_image = properties.profile_image;
-	                      
-	                      let member = {
-	                          id : id,
-	                          password : id,
-	                          email : email,
-	                          name : name,
-	                          profile : profile_image,
-	                          snsyn : 'Y'
-	                      }
-	                      kakaoLogin(member).then(res => {
-	                          if(res.status == 200){
-	                              getLoginInfo().then(result => {
-	                                  if(result.status == 200){
-	                                      setLoginInfo(result.data);
-	                                      closeLoginPop();
-	                                  }
-	                              })
-	                          }
-	                      })
 
-	                  },
-	                  fail: function(error) {
-	                      console.log(error);
-	                  }
-	              });
-	            },
-	            fail: function(err) {
-	              alert(JSON.stringify(err))
-	            },
-	          }) */
         </script>
     </body>
 </html>

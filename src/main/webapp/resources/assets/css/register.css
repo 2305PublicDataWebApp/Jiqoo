@@ -48,7 +48,7 @@ main {
   resize: none; /* 크기 조절 비활성화 */
 }
 
-#delUserBtn {
+#delUserBtn, #delSnsUserBtn {
   background-color: gray;
   color: white;
 }

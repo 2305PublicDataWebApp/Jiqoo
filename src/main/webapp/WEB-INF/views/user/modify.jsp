@@ -212,9 +212,16 @@
                        </div>
                        <button class="btn btn-block subBtn" id="submitBtn">수정완료</button>
                        <button class="btn btn-block subBtn" onclick="history.back();" type="button">뒤로가기</button>
-                       <button type="button" id="delUserBtn" class="btn btn-block" data-bs-toggle="modal" data-bs-target="#delUserModal">
-                           회원탈퇴
-                       </button>
+                       <c:if test="${user.platformType eq 'normal'}">
+	                       <button type="button" id="delUserBtn" class="btn btn-block" data-bs-toggle="modal" data-bs-target="#delUserModal">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
+                       <c:if test="${user.platformType ne 'normal'}">
+	                       <button type="button" id="delSnsUserBtn" class="btn btn-block">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
 	                </form>
                     </div>
                 </div>
@@ -632,6 +639,33 @@
         		
         	})
 	        
+        	//  sns 회원탈퇴
+        	$('#delSnsUserBtn').on("click", function(){
+        		if(confirm("정말 탈퇴하시겠습니까?")) {
+        			
+			    	$.ajax({
+			    		url: "/user/kakaoUnlink",
+			    		type: "GET",
+			    		success: function(response){
+			                if (response === "success") {
+			                    alert("SNS 회원탈퇴가 완료되었습니다.");
+			                    window.location.href="/";  
+			                } else if (response === "checkLogin") {
+			                	alert("로그인 후 이용해주세요");
+			                    window.location.href="/";  
+			                } else {
+			                	alert("SNS 회원탈퇴가 완료되지 않았습니다. 다시 시도해주세요.");
+			                    window.location.href="/user/modify";  
+			                }
+			    		},
+			    		error : function(){
+				            alert("[서버오류] 관리자에게 문의바랍니다.");
+			    		}
+			    	})
+        		}
+        	});
+        	
+        	
             // textarea 체크
 			$('#userInfo').on('input', function() {
    			    let content = $(this).val();

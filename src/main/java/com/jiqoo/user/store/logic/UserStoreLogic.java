@@ -122,5 +122,11 @@ public class UserStoreLogic implements UserStore{
 		return result;
 	}
 
+	@Override
+	public int deleteKakaoUser(SqlSession sqlSession, String userId) {
+		int result = sqlSession.delete("UserMapper.deleteKakaoUser", userId);
+		return result;
+	}
+
 
 }

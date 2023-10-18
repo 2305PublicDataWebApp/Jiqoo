@@ -154,4 +154,12 @@ public interface UserStore {
 	 */
 	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser);
 
+	/**
+	 * 카카오 회원 탈퇴 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int deleteKakaoUser(SqlSession sqlSession, String userId);
+
 }

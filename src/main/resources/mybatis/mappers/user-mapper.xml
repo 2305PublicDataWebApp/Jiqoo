@@ -32,6 +32,11 @@
 		WHERE USER_ID = #{userId}
 	</update>
 	
+	<delete id="deleteKakaoUser">
+		DELETE USER_TBL
+		WHERE USER_ID = #{userId}	
+	</delete>
+	
 	<select id="selectCheckLogin" resultType="User" >
 		SELECT * 
 		FROM USER_TBL 

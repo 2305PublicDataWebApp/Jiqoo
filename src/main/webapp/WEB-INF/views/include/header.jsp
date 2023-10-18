@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+        <!-- 제이쿼리 -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        
+        <!-- 카카오 로그인 -->
+        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+        <!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js" ></script> -->
+        <script>
+	        Kakao.init('4cf9db2344d009b1a0f20e2bb100602a'); // 발급키
+	    	console.log(Kakao.isInitialized());
+        </script>  
  <!-- ======= Header ======= -->
   <header id="header" class="fixed-top d-flex align-items-center header-transparent">
     <div class="container d-flex align-items-center justify-content-between">
@@ -25,7 +35,12 @@
 	            <ul>
 	              <li><a href="/user/myPage" style="font-size:1.3em;">마이페이지</a></li>
 	              <li><a href="/user/modify" style="font-size:1.3em;">회원정보수정</a></li>
-	              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+	              <c:if test="${sessionScope.accessToken eq null }">
+		              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+	              </c:if>
+	              <c:if test="${sessionScope.accessToken ne null }">
+ 		              <li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/kakaoLogout" style="font-size:1.3em;">로그아웃</a></li> 
+	              </c:if>
 	            </ul>
 	          </li>
           </c:if>
@@ -33,10 +48,10 @@
 	          <li class="dropdown"><a class="nav-link" href="/admin/main"><i style="font-size:26px;" class="bi bi-person-badge"></i></a>
 	            <ul>
 	              <li><a href="/admin/userlist" style="font-size:1.3em;">회원 관리</a></li>
-	              <li><a href="/admin/jiqoo" style="font-size:1.3em;">지꾸 관리</a></li>
-	              <li><a href="/admin/moqoo" style="font-size:1.3em;">모꾸 관리</a></li>
-	              <li><a href="/admin/chat" style="font-size:1.3em;">채팅방 관리</a></li>
-	              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+	              <li><a href="/admin/jiqoolist" style="font-size:1.3em;">지꾸 관리</a></li>
+	              <li><a href="/admin/moqoolist" style="font-size:1.3em;">모꾸 관리</a></li>
+	              <li><a href="/admin/chatlist" style="font-size:1.3em;">채팅방 관리</a></li>
+	              <li><a href="/user/logoutlist" style="font-size:1.3em;">로그아웃</a></li>
 	            </ul>
 	          </li>
           </c:if>

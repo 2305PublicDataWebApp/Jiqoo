@@ -116,6 +116,12 @@ public class UserServiceImpl implements UserService{
 		return isFollowing;
 	}
 
+	@Override
+	public int deleteKakaoUser(String userId) {
+		int result = userStore.deleteKakaoUser(sqlSession, userId);
+		return result;
+	}
+
 
 
 }
