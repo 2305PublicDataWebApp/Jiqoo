@@ -51,14 +51,16 @@
 
 
 
-    <!-- 서머노트를 위해 추가해야할 부분 -->
-    <!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
-    <script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<!-- 서머노트를 위해 추가해야할 부분 -->
+<!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
+<script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
+<!-- 카카오맵 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=86452fa459f600c914e3aa3a57039abd"></script>
 
 <!-- =======================================================
   * Template Name: Bootslander
@@ -103,7 +105,7 @@
 				<input type="text" placeholder="search" />
 				<button type="submit" id="search-btn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-						fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
               <path
 							d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
             </svg>
@@ -112,16 +114,15 @@
 		</div>
 
 		<!-- ======= Tab Section ======= -->
-		<section id="tab" class="d-flex flex-column flex-sm-row">
-			<div id="my-tab" class="col-6" style="max-width: 400px;">내꾸만 보기</div>
-			<div id="other-tab" class="col-6" style="max-width: 400px;">남꾸도보기</div>
-		</section>
+		<div id="tab">
+			<button id="btn-myMap" class="btn-get-started scrollto">내꾸만 보기</button>
+			<button id="btn-allMap" class="btn-get-started scrollto">남꾸도 보기</button>
+		</div>
 		<!-- ======= Modal ======= -->
 		<div class="modal-body"></div>
 		<!-- ======= Map Section ======= -->
 		<!-- 지도를 표시할 div 입니다 -->
-		<div id="map" style="width: 100%; height: 650px;"></div>
-
+		<div id="map"></div>
 
 		<button type="button" class="btn insert-jiqoo-btn"
 			data-bs-toggle="modal" data-bs-target=".modal">지꾸 +</button>
@@ -268,7 +269,7 @@
         processData:false
         
     }).done(function(data) {
-    	console.log(data)
+    	console.log(data);
     	var imgNode = $("<img>");
     	imgNode.attr("src", data);
     	$(".note-editable").append(imgNode);
@@ -278,10 +279,10 @@
     	console.log(c);
     });
         }
+		showAllMap();
     });
-</script>
+    
 
-	<script>
   // JavaScript 코드를 추가합니다.
   const radioButtons = document.querySelectorAll('.form-check-input');
   const imageLabels = document.querySelectorAll('.form-check-label');
@@ -291,56 +292,115 @@
           radioButtons[index].checked = true;
       });
   });
-</script>
 
-
-	<!-- 카카오맵 -->
-	<script type="text/javascript"
-		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=86452fa459f600c914e3aa3a57039abd"></script>
-
-
-<script>
 // 버튼 클릭 시 팝업 창 열기
 document.getElementById("open-map-btn").onclick = function() {
   // 팝업 창을 열기 위한 윈도우.open 함수 사용
   window.open("popupW3WMap", "Popup", "width=1200,height=800,resizable=no");
 };
 
-</script>
+//지도
 
-	<script>
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapOption = { 
+        center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
+        level: 4 // 지도의 확대 레벨
+    };
+
+var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+function showMyMap(){
+	 $.ajax({
+	        url: "/jiqoo/showMyMap",
+	        type: "GET",
+	        success: function (result) {
+	            if (result === "success") {
+	                alert("지꾸 리스트");
+	            } else {
+	                alert("실패");
+	            }
+	        },
+	        error: function () {
+	            alert("Ajax 오류~ 관리자에게 문의하삼");
+	        }
+	    });
+	}
+	
+function showAllMap() {
+	  // 커스텀 오버레이 배열을 선언합니다
+	  var customOverlays = [];
+
+	  $.ajax({
+	    url: "/jiqoo/showAllMap",
+	    type: "GET",
+	    dataType: 'json',
+	    success: function (data) {
+	      for (var i = 0; i < data.length; i++) {
+	        // 마커 이미지의 이미지 크기 입니다
+	        var imageSize = new kakao.maps.Size(70, 70);
+
+	        // 마커 이미지를 생성합니다    
+	        var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize);
+
+	        // 마커를 생성합니다
+	        var marker = new kakao.maps.Marker({
+	          map: map, // 마커를 표시할 지도
+	          position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng),
+	          image: markerImage,
+	          clickable: true
+	        });
+
+	        // 커스텀 오버레이에 표시될 내용을 생성합니다
+	        var overlayContent = '<div class="infoWindow">' +
+	          '<div class="info-header">' + data[i].jiqooW3W + '</div>' +
+	          '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
+	          '</div>';
+
+	        // 커스텀 오버레이를 생성합니다
+	        var customOverlay = new kakao.maps.CustomOverlay({
+	          content: overlayContent,
+	          position: marker.getPosition(),
+	          clickable: true
+	        });
+
+	        // 커스텀 오버레이를 배열에 추가합니다
+	        customOverlays.push(customOverlay);
+
+	        // 마커에 클릭 이벤트를 등록합니다
+	        (function (customOverlay) {
+	          kakao.maps.event.addListener(marker, 'click', function () {
+	            // 모든 커스텀 오버레이를 닫습니다
+	            for (var j = 0; j < customOverlays.length; j++) {
+	              customOverlays[j].setMap(null);
+	            }
+
+	            // 클릭된 마커의 커스텀 오버레이만 엽니다
+	            customOverlay.setMap(map);
+	          });
+	        })(customOverlay);
+	      }
+	    }
+	  });
+	}
+
+	
+//btn-allMap 버튼 클릭 이벤트 처리
+$("#btn-allMap").click(function() {
+    showAllMap(); // showAllMap 함수 호출
+});
+
+// btn-myMap 버튼 클릭 이벤트 처리
+$("#btn-myMap").click(function() {
+    showMyMap(); // showMyMap 함수 호출
+});
+
   function toggleCC() {
     const categoryContainer = document.querySelector(".category-container");
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
   }
-</script>
 
-<script>
-  // 초기에는 my-tab이 선택되고 my-map이 보이도록 설정합니다.
-  $("#my-tab").addClass("active-tab");
-  $("#my-map").show();
-  
-  // my-tab을 클릭할 때의 동작을 정의합니다.
-  $("#my-tab").click(function () {
-      // my-tab에 백그라운드 색을 적용하고 other-tab의 백그라운드 색을 제거합니다.
-      $("#my-tab").addClass("active-tab");
-      $("#other-tab").removeClass("active-tab");
-      
-      // my-map을 보이게 하고 other-map을 숨깁니다.
-      $("#my-map").show();
-      $("#other-map").hide();
-  });
-  
-  // other-tab을 클릭할 때의 동작을 정의합니다.
-  $("#other-tab").click(function () {
-      // other-tab에 백그라운드 색을 적용하고 my-tab의 백그라운드 색을 제거합니다.
-      $("#other-tab").addClass("active-tab");
-      $("#my-tab").removeClass("active-tab");
-      
-      // other-map을 보이게 하고 my-map을 숨깁니다.
-      $("#other-map").show();
-      $("#my-map").hide();
-  });
+
+    
 </script>
 
 

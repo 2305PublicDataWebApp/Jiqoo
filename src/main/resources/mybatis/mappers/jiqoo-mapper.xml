@@ -18,6 +18,7 @@
 		<result property="jiqooLng" column="JIQOO_LNG" />
 		<result property="jiqooStatus" column="JIQOO_STATUS" />
 		<collection property="user" resultMap="UserResultMap"/>
+		<collection property="category" resultMap="CategoryResultMap"/>
 	</resultMap>
 	
 	<resultMap type="User" id="UserResultMap">
@@ -39,6 +40,11 @@
 		<result property="userStatus" column="USER_STATUS"/>
 		<result property="adminYn" column="ADMIN_YN"/>
 	</resultMap>
+	
+	<resultMap type="Category" id="CategoryResultMap">
+		<result property="cName" column="C_NAME"/>
+		<result property="cImgPath" column="C_IMG_PATH"/>
+	</resultMap>
 	<insert id="insertJiqoo">
 		INSERT INTO JIQOO_TBL VALUES(SEQ_JIQOO_NO.NEXTVAL,
 		#{jiqooW3W }, #{jiqooDate }, #{jiqooCtgr }, #{jiqooTitle },
@@ -54,7 +60,7 @@
 		UPDATE JIQOO_TBL SET JIQOO_NO = #{jiqooNo }, JIQOO_W3W = #{jiqooW3W }, JIQOO_DATE = #{jiqooDate }, JIQOO_CTGR = #{jiqooCtgr }, JIQOO_TITLE = #{jiqooTitle }, JIQOO_CONTENT = #{jiqooContent }, J_OPEN_STATUS = #{jOpenStatus }, J_ALLOW_COMT = #{jAllowComt }, J_UPDATE_DATE = DEFAULT, JIQOO_LAT = #{jiqooLat }, JIQOO_LNG = #{jiqooLng } 
 	</update>
 	
-	<update id="updateReviewCount" parameterType="int">
+	<update id="updateJiqooCount" parameterType="int">
 		UPDATE JIQOO_TBL SET J_VIEW_COUNT = J_VIEW_COUNT+1 WHERE JIQOO_NO = #{jiqooNo}
 	</update>
 
@@ -79,7 +85,7 @@
 		CATEGORY_TBL WHERE C_NAME = #{jiqooCName }
 	</select>
 
-	<select id="selectJiqooAllList" resultType="Jiqoo">
+	<select id="selectJiqooAllList" resultMap="JiqooResultMap">
 		SELECT * FROM JIQOO_TBL J
 		JOIN USER_TBL U ON
 		J.JIQOO_WRITER = U.USER_ID
@@ -88,7 +94,7 @@
 		ORDER BY J.JIQOO_DATE DESC
 	</select>
 
-	<select id="selectJiqooMyList" resultType="Jiqoo">
+	<select id="selectJiqooMyList" resultMap="JiqooResultMap">
 		SELECT * FROM JIQOO_TBL J
 		JOIN USER_TBL U ON
 		J.JIQOO_WRITER = U.USER_ID

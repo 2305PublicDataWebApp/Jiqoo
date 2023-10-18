@@ -3,6 +3,7 @@ package com.jiqoo.jiqoo.domain;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import com.jiqoo.common.domain.Category;
 import com.jiqoo.user.domain.User;
 
 public class Jiqoo {
@@ -22,7 +23,14 @@ public class Jiqoo {
 	private double jiqooLng;
 	private String jiqooStatus;
 	private User user;
+	private Category category;
 
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	public User getUser() {
 		return user;
 	}

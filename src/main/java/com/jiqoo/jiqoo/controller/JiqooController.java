@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Comment;
@@ -35,7 +36,7 @@ public class JiqooController {
 
 	@Autowired
 	private JiqooService jiqooService;
-	
+
 	@Autowired
 	private JiqooComtService jiqooComtService;
 
@@ -49,6 +50,8 @@ public class JiqooController {
 			if (categoryList != null) {
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("jiqooAllList", jiqooAllList);
+				Gson gson = new Gson();
+				model.addAttribute("jiqooJsonList", gson.toJson(jiqooAllList));
 				model.addAttribute("jiqooMyList", jiqooMyList);
 				return "jiqoo/jiqoo";
 			} else {
@@ -95,19 +98,21 @@ public class JiqooController {
 	}
 
 	@GetMapping("/jiqoo/detail")
-	public String showJiqooDetail(@RequestParam("jiqooNo") int jiqooNo, Model model) {
+	public String showJiqooDetail(@RequestParam int jiqooNo, Model model) {
 		try {
 			jiqooService.updateJiqooCount(jiqooNo);
 			Jiqoo jiqoo = jiqooService.selectOneByNo(jiqooNo);
 			String jiqooCName = jiqoo.getJiqooCtgr();
 			Category category = jiqooService.selectCategoryByNo(jiqooCName);
 			int likeCount = jiqooService.selectLikeCountByNo(jiqooNo);
+			List<Comment> commentList = jiqooComtService.selectCommentList(jiqooNo);
 			List<Category> categoryList = jiqooService.selectCategoryList();
 			if (jiqoo != null) {
 				model.addAttribute("jiqoo", jiqoo);
 				model.addAttribute("likeCount", likeCount);
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("category", category);
+				model.addAttribute("commentList", commentList);
 				return "jiqoo/post_jiqoo";
 			} else {
 				model.addAttribute("msg", "게시물 조회에 실패하였습니다.");
@@ -120,6 +125,26 @@ public class JiqooController {
 			model.addAttribute("url", "/jiqoo/list");
 			return "common/message";
 		}
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/showMyMap", produces = "application/json;charset=UTF-8;")
+	public String showMyMap(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
+		if (jiqooMyList != null) {
+			return "success";
+		} else {
+			return "fail";
+		}
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/showAllMap", produces = "application/json;charset=UTF-8;")
+	public String showAllMap() {
+		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+		Gson gson = new Gson();
+		return gson.toJson(jiqooAllList);
 	}
 
 	@GetMapping("/jiqoo/delete")
@@ -149,17 +174,17 @@ public class JiqooController {
 			int result = jiqooService.updateJiqoo(jiqoo);
 			if (result > 0) {
 				model.addAttribute("msg", "게시물이 수정되었습니다.");
-				model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+				model.addAttribute("url", "/jiqoo/detail?jiqooNo=" + jiqoo.getJiqooNo());
 				return "common/message";
-			}else {
+			} else {
 				model.addAttribute("msg", "게시물 수정에 실패하였습니다.");
-				model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+				model.addAttribute("url", "/jiqoo/detail?jiqooNo=" + jiqoo.getJiqooNo());
 				return "common/message";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "/jiqoo/detail?jiqooNo="+ jiqoo.getJiqooNo());
+			model.addAttribute("url", "/jiqoo/detail?jiqooNo=" + jiqoo.getJiqooNo());
 			return "common/message";
 		}
 	}
@@ -204,7 +229,6 @@ public class JiqooController {
 		return src;
 	}
 
-	
 //	// 좋아요
 //	   @PostMapping("/jiqoo/like")
 //	   @ResponseBody
@@ -243,7 +267,6 @@ public class JiqooController {
 //	         return "error";
 //	      }
 //	   }
-	
 
 //	public PageInfo getPageInfo(int currentPage, int totalCount) {
 //		PageInfo pi = null;

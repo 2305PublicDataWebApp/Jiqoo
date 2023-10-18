@@ -1,5 +1,7 @@
 package com.jiqoo.jiqoo.service.impl;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,24 @@ public class JiqooComtServiceImpl implements JiqooComtService{
 	public int insertComment(Comment comment) {
 		int result = jiqooComtStore.insertComment(sqlSession, comment);
 		return result;
+	}
+
+	@Override
+	public int delComment(Comment comment) {
+		int result = jiqooComtStore.delComment(sqlSession, comment);
+		return result;
+	}
+
+	@Override
+	public int updateComment(Comment comment) {
+		int result = jiqooComtStore.updateComment(sqlSession, comment);
+		return result;
+	}
+
+	@Override
+	public List<Comment> selectCommentList(int jiqooNo) {
+		List<Comment> commentList = jiqooComtStore.selectCommentList(sqlSession, jiqooNo);
+		return commentList;
 	}
 
 }

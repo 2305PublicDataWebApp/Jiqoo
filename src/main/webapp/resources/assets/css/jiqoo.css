@@ -46,40 +46,31 @@ p {
 # tab
 --------------------------------------------------------------*/
 #tab {
-  width: 400px; /* 원하는 가로 너비로 설정 */
-  border: 2px solid lightgray;
-  border-radius: 10px;
-  margin: 0 auto;
-  padding: 2px;
-  display: flex;
-  justify-content: center;
-  font-size: 15px;
-  text-align: center;
+	border-radius: 10px; 
+	border: 1px solid #C2D1D9; 
+	display: flex; 
+	justify-content: space-evenly; 
+	width: 345px;
+	margin: 0 auto;
+}
+#main .btn-get-started {
+	text-transform: uppercase;
+	font-weight: 400;
+	font-size: 13px;
+	letter-spacing: 1px;
+	display: inline-block;
+	padding: 11px 36px;
+	border-radius: 8px;
+	transition: 0.5s;
+	margin: 10px 0;
+	border: 2px solid #71c55d;
+	width: 155px;
+	background: #fff;
+	color: #71c55d;
 }
 
-@media (max-width: 576px) {
-  #tab {
-    width: 200px; /* xs 화면 크기일 때 가로 너비 */
-  }
-}
-
-#tab > div {
-  width: 180px;
-  margin: 7px;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease; 
-}
-
-#tab > div.active {
-  background-color: #fff; /* 활성 탭 배경색 설정 */
-  color: rgb(45, 55, 71); /* 활성 탭 텍스트 색상 설정 */
-}
-
-#my-tab{
-  background-color: #388e3c;
+#main .btn-get-started:hover {
+  background: #71c55d;
   color: #fff;
 }
 
@@ -87,20 +78,20 @@ p {
 # map
 --------------------------------------------------------------*/
 #map {
-  margin-top: 30px;
-  height: 600px;
-  background-color: black;
-  margin-bottom: 80px;
+  margin: 30px auto 80px;
+  border-radius: 10px;
+  width:80%;
+  height:700px;
 }
 
 html, body {
   margin: 0px;
   height: 100%;
 }
-#map-container {
-  width: 100vw;
-  height: 100vh;
-}
+/* #map-container { */
+/*   width: 100vw; */
+/*   height: 100vh; */
+/* } */
 #search-container {
   margin: 10px 0 0 10px;
 }
@@ -109,6 +100,34 @@ html, body {
 }
 #current-location-container {
   margin: 0 10px 10px 0;
+}
+
+/* 인포윈도우 스타일 */
+.infoWindow {
+    width: 250px;
+    height: 150px;
+    background-color: #ffffffd4;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    left: -113px;
+    bottom: 73px;
+}
+
+.info-header {
+   	font-size: 18px; /* 제목 폰트 크기 */
+   	font-weight: bold; /* 제목 굵게 */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.info-footer {
+   font-size: 14px; /* 내용 폰트 크기 */
+   color: #555; /* 내용 텍스트 색상 변경 */
+   margin-top: 10px;
+   text-align: center;
 }
 
 /*--------------------------------------------------------------

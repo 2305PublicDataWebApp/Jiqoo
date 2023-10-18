@@ -2,7 +2,10 @@ package com.jiqoo.common.domain;
 
 import java.sql.Timestamp;
 
+import com.jiqoo.user.domain.User;
+
 public class Comment {
+
 	private int comtNo;
 	private String comtContent;
 	private String comtWriter;
@@ -13,7 +16,14 @@ public class Comment {
 	private char comtStatus;
 	private String cBoardType;  // 지꾸 모꾸 중 어디 댓글인지 식별용
 	
+	private User user;
 	
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
 	public int getComtNo() {
 		return comtNo;
 	}

@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="JiqooComtMapper">
+	<resultMap type="Comment" id="CommentResultMap">
+		<id property="comtNo" column="COMT_NO"/>
+		<result property="comtContent" column="COMT_CONTENT"/>
+		<result property="comtWriter" column="COMT_WRITER"/>
+		<result property="comtDate" column="COMT_DATE"/>
+		<result property="cUpdateDate" column="C_UPDATE_DATE"/>
+		<result property="refPostNo" column="REF_POST_NO"/>
+		<result property="pComtNo" column="P_COMT_NO"/>
+		<result property="comtStatus" column="COMT_STATUS"/>
+		<result property="cBoardType" column="C_BOARD_TYPE"/>
+		<collection property="user" resultMap="UserResultMap"/>
+	</resultMap>
 
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userNickname" column="USER_NICKNAME"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+		<result property="userGender" column="USER_GENDER"/>
+		<result property="userBirth" column="USER_BIRTH"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userInfo" column="USER_INFO"/>
+		<result property="userPhotoName" column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" column="U_DELETE_DATE"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="adminYn" column="ADMIN_YN"/>
+	</resultMap>
+	
 	<insert id="insertComment">
 		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, null, DEFAULT, 'J')
 	</insert>
 	
+	<update id="delComment">
+		UPDATE COMT_TBL SET COMT_STATUS = 'N' WHERE COMT_NO = #{comtNo }
+	</update>
+	
+	<update id="updateComment">
+		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
+	</update>
+	
+	<select id="selectCommentList" resultMap="CommentResultMap">
+		SELECT * FROM COMT_TBL C
+		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' ORDER BY COMT_DATE ASC
+	</select>
 </mapper>
