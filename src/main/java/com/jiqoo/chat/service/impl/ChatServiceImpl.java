@@ -89,4 +89,35 @@ public class ChatServiceImpl implements ChatService{
 		return result;
 	}
 
+	@Override
+	public List<User> selectJoinUserByKeyword(String userId, String keyword) {
+		List<User> userList = chatStore.selectJoinUserByKeyword(sqlSession, userId, keyword);
+		return userList;
+	}
+
+	@Override
+	public String getUserNickname(String userId) {
+		String result = chatStore.getUserNickname(sqlSession, userId);
+		return result;
+	}
+
+	@Override
+	public int insertNewChatRoom(ChatRoom chatRoom) {
+		int chatNo = chatStore.insertNewChatRoom(sqlSession, chatRoom);
+		return chatNo;
+	}
+
+	@Override
+	public int insertChatUserById(int chatRoomNo, String userId) {
+		int result = chatStore.insertChatUserById(sqlSession, chatRoomNo, userId);
+		return result;
+	}
+
+	@Override
+	public String getUserPhotoPath(String userId) {
+		String result = chatStore.getUserPhotoPath(sqlSession, userId);
+		return result;
+	}
+
+
 }

@@ -110,11 +110,13 @@
 							data-aos="fade-right">
 							<div class="card-header">
 								<div class="input-group">
-									<input type="text" placeholder="Search..." name=""
-										class="form-control search">
+									<input type="text" placeholder="채팅방을 추가하려면 클릭하세요." name=""
+										class="form-control search" id="newChat">
 									<div class="input-group-prepend">
+										<a href="javascript:void(0)" data-bs-toggle="modal"
+											data-bs-target="#addUserModal">
 										<span class="input-group-text search_btn"><i
-											class="bi bi-search"></i></span>
+											class="bi bi-plus-circle" id="newChatBtn"></i></span></a>
 									</div>
 								</div>
 							</div>
@@ -126,9 +128,10 @@
 										<input type="hidden" class="chat-room-name" value="${chatRoom.chatRoom.chatName }">
 										<div class="d-flex bd-highlight">
 											<div class="img_cont">
-												<img src="../resources/assets/img/basozan.png"
-													class="rounded-circle user_img"> <span
-													class="online_icon"></span>
+												<img src=<c:if test="${chatRoom.chatRoom.cImagePath eq null}">"../resources/assets/img/earth-globe.png"</c:if>
+														<c:if test="${chatRoom.chatRoom.cImagePath ne null }">"${chatRoom.chatRoom.cImagePath }"</c:if>
+													class="rounded-circle user_img" id="chat-list-img"> 
+<!-- 													<span class="online_icon"></span> -->
 											</div>
 											<div class="user_info">
 												<div class="col d-flex justify-content-between">
@@ -152,7 +155,7 @@
 												</div>
 												<div class="col d-flex justify-content-between">
 													<p>${chatRoom.chatRoom.chatMessage.msgContent }</p>
-													<c:if test="${chatRoom.unreadMsgCount != 0 }">
+													<c:if test="${chatRoom.unreadMsgCount != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId}">
 													<p id="unreadCount-${chatRoom.chatRoom.chatNo }"
 													style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">
 													${chatRoom.unreadMsgCount }</p>
@@ -178,7 +181,7 @@
 							</div>
 							<div class='text-center'>
 								<p>
-									<span style='color: #388E3C'>${userNickName }</span>님 환영합니다!<br>목록을
+									<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>목록을
 									클릭하여 채팅을 시작해보세요.
 								<p>
 							</div>
@@ -187,9 +190,10 @@
 							<div class="card-header msg_head">
 								<div class="d-flex bd-highlight">
 									<div class="img_cont">
-										<img src="../resources/assets/img/basozan.png"
-											class="rounded-circle user_img"> <span
-											class="online_icon"></span>
+										<img src="../resources/assets/img/earth-globe.png"
+											class="rounded-circle user_img" id="info-img"> 
+<!-- 											<span -->
+<!-- 											class="online_icon"></span> -->
 									</div>
 									<div class="user_info">
 										<span id="chatName"></span>
@@ -239,6 +243,34 @@
 				</div>
 			</div>
 		</section>
+		<!-- 채팅방 개설 Modal -->
+		<div class="modal fade" id="addUserModal" tabindex="-1"
+			aria-labelledby="addUserModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="addUserModalLabel">채팅방 개설하기</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body col">
+						<div>
+							<input type="text" class="form-control" name="add-user-input" id="add-user-input" placeholder="아이디나 닉네임을 입력해주세요.">
+						</div>
+						<div id="add-user-result" class="row">
+							<table id="add-user-result-table" style="text-align:center;margin-top:10px;">
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" id="addUsersButton" class="btn send-report">완료</button>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!-- 사용자 추가 Modal -->
 		<div class="modal fade" id="inviteModal" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -254,7 +286,7 @@
 							<input type="text" class="form-control" name="user-input" id="user-input" placeholder="아이디나 닉네임을 입력해주세요.">
 						</div>
 						<div id="result" class="row">
-							<table id="resultTable" align="center">
+							<table id="resultTable" style="text-align:center;margin-top:10px;">
 								<tbody></tbody>
 							</table>
 						</div>
@@ -328,7 +360,7 @@
 		var chatNo;
 		var userId = "${sessionScope.userId}"; // 사용자 ID
 		var userPhotoPath = "${sessionScope.userPhotoPath}";
-		var userNickname = "${sessionScope.userNickName}";
+		var userNickname = "${sessionScope.userNickname}";
 		var stompClient = null;
 		var chatRoomId;
 		// 변수를 사용하여 이전 메시지의 날짜를 추적
@@ -348,7 +380,35 @@
 				disconnectWebSocket();
 				chatRoomId = $(this).find(".chat-room-id").val();
 				chatRoomName = $(this).find(".chat-room-name").val();
+				chatImg = $(this).find("#chat-list-img").attr("src");
+				if($('#hiddenChatNo')) {
+					$('#hiddenChatNo').remove();
+				}
+				var hiddenNo = $('<input>').attr({
+				    type: 'hidden',
+				    name: 'hiddenChatNo',
+				    id : 'hiddenChatNo',
+				    value: chatRoomId
+				});
+				$('.chat-info').append(hiddenNo);
 				$("#chatName").text(chatRoomName);
+				$("#info-img").attr("src", chatImg);
+				$.ajax({
+		        	url : "/chat/disconnect",
+		        	data : {
+		        		refChatNo : chatRoomId,
+		        		userId : userId
+		        	},
+		        	type : "POST",
+		        	success : function(data) {
+		        		if(data == "success") {
+		        			console.log("마지막 접속시간 업데이트 성공");
+		        		}
+		        	}
+		        })
+		        if($('#hiddenChatNo').val() == chatRoomId) {
+	            	$('#unreadCount-' + chatRoomId).hide();
+	            }
 				$.ajax({
 					url : "/chat/users",
 					data : {
@@ -507,6 +567,11 @@
 				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
 				alertDiv.append(messageText);
 				chatBody.append(alertDiv);
+			}else if(message.includes("님이 채팅에 참여합니다.")){
+				messageText = $("<span>").text(message);
+				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+				alertDiv.append(messageText);
+				chatBody.append(alertDiv);
 			}else {
 			    if (isSent) {
 			    	messageDiv.append(messageText);
@@ -545,7 +610,9 @@
 	                    addMessage(isCurrentUser, messageSenderNickname, messageSenderPhotoPath, messageText, getCurrentTime());
 	                    updateUnreadMessageCount();
 	                }
- 
+	                chatListReload();
+	                $("#unreadCount-" + chatRoomId).text("");
+                    $("#unreadCount-" + chatRoomId).hide();
 	                scrollToBottom();
 	                
 	            });
@@ -615,6 +682,7 @@
             
             var currentTime = getCurrentTime();
             addMessage(true, userNickname, userPhotoPath, message, currentTime);
+            chatListReload();
             scrollToBottom();
             $("#textMessage").val("");
             $("#textMessage").focus();
@@ -630,7 +698,8 @@
 	            sendMessage();
 	        }
 	    });
-
+		
+	    // 신고 모달
 		var selectElement = document.getElementById("reportSelect");
 		var textareaElement = document.getElementById("customReason");
 		selectElement.addEventListener("change", function() {
@@ -673,7 +742,7 @@
 					            </div>
 					        `; */
 					        `<tr>
-					        	<td><img class="img_cont_msg" src=`+userPath+`></td>
+					        	<td><img class="rounded-circle img_cont_msg" src=`+userPath+`></td>
 					        	<td>`+user.userId+`</td>
 					        	<td>`+user.userNickname+`</td>
 					        	<td><input type="checkbox" class="user-checkbox" value=`+user.userId+`></td>
@@ -687,6 +756,113 @@
 				})
 			}
 		})
+		// 채팅방 유저 초대 검색창
+		$("#add-user-input").on('input', function (e) {
+			var inputText = $(this).val();
+			if(inputText != "") {
+				$.ajax({
+					url : "/chat/user-search-join",
+					data : {
+						userId : userId,
+						keyword : inputText 
+					},
+					type : "GET",
+					dataType : 'json',
+					success : function(data) {
+						var resultContainer = $("#add-user-result-table tbody");
+					    console.log(data);
+					    // 검색 결과를 초기화
+					    resultContainer.children().remove();
+					    
+					    // 검색 결과를 반복해서 HTML로 생성 및 추가
+					    for (var i = 0; i < data.length; i++) {
+					        var user = data[i];
+					        console.log(user);
+					        // 사용자 정보를 표시하는 HTML 생성
+					        var userPath = user.userPhotoPath == null ? "../resources/assets/img/no-profile.png" : user.userPhotoPath;
+					        var userHtml = /* `
+					            <div class="col-12 d-flex justify-content-around align-items-center user-search-result">
+					                <img class="img_cont_msg" src=`+userPath+`>
+					                <span>`+user.userId+`</span>
+					                <span>`+user.userNickname+`</span>
+					                <input type="checkbox" class="user-checkbox" value=`+user.userId+`>
+					            </div>
+					        `; */
+					        `<tr>
+					        	<td><img class="rounded-circle img_cont_msg" src=`+userPath+`></td>
+					        	<td>`+user.userId+`</td>
+					        	<td>`+user.userNickname+`</td>
+					        	<td><input type="checkbox" class="add-user-checkbox" value=`+user.userId+`></td>
+					        </tr>`;
+					        
+					        
+					        // HTML을 결과 영역에 추가
+					        resultContainer.append(userHtml);
+					    }
+					}
+				})
+			}
+		})
+		// 채팅방 개설 유저 선택
+		$("#addUsersButton").on('click', function () {
+	    // 선택한 유저들의 아이디 또는 고유한 식별자를 가져옵니다.
+		    var selectedAddUserIds = [];
+		    $(".add-user-checkbox:checked").each(function () {
+		    	selectedAddUserIds.push($(this).val());
+		    });
+		    selectedAddUserIds.push(userId);
+			console.log(selectedAddUserIds);
+		    // 서버로 선택한 유저들을 초대하는 요청을 보냅니다.
+		    if($("#add-user-input").val() == "" || selectedAddUserIds.length == 0) {
+		    	alert("채팅할 회원을 선택해주세요.");
+		    	return;
+		    }else {
+			    $.ajax({
+			        url: "/chat/add-room",
+			        type: "POST",
+			        data: JSON.stringify({
+			        	selectedAddUserIds: selectedAddUserIds
+			        }),
+			        contentType: "application/json",
+			        success: function (data) {
+			        	// 성공 메시지를 alert로 표시
+			            alert("채팅방을 개설하였습니다.");
+			            $("#add-user-input").val("");
+			            $("#add-user-result table tbody").children().remove();
+			            // #addUserModal을 닫기
+			            $('#addUserModal').modal('hide');
+			            /* var newChatNo = parseInt(data);
+			            connect(newChatNo);
+			            console.log(newChatNo);
+			        	for(var i = 0; i < selectedAddUserIds.length; i++) {
+			        		$.ajax({
+			        			url : "/chat/userinfo",
+			        			data : {
+			        				userId : selectedAddUserIds[i]
+			        			},
+			        			type : "GET",
+			        			dataType : 'json',
+			        			success : function(data) {
+			        				location.reload(true);
+			        				/* resultNickname = data.userNickname; */
+			        				
+						            /* stompClient.send('/app/chat/chatRoom-'+newChatNo, {}, JSON.stringify({
+						            	refChatNo : newChatNo,
+						            	msgSenderId: data.userId,
+						            	msgContent: resultNickname + "님이 채팅에 참여합니다.",
+						            	msgSenderNickname : resultNickname,
+						            	msgSenderPhotoPath : ""
+						            })); */
+			        			/* }
+			        		});
+			        	} */
+			        	chatListReload();
+			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
+			            /* scrollToBottom(); */
+			        }
+			    });
+		    }
+		});
 		// 채팅방 유저 초대
 		$("#inviteUsersButton").on('click', function () {
 	    // 선택한 유저들의 아이디 또는 고유한 식별자를 가져옵니다.
@@ -716,19 +892,31 @@
 			            // #inviteModal을 닫기
 			            $('#inviteModal').modal('hide');
 			            var before = $("#chat-users").text();
+			            var resultNickname;
 			        	for(var i = 0; i < selectedUserIds.length; i++) {
-				            stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
-				            	refChatNo : chatRoomId,
-				            	msgSenderId: selectedUserIds[i],
-				            	msgContent: selectedUserIds[i] + "님이 초대되었습니다.",
-				            	msgSenderNickname : selectedUserIds[i],
-				            	msgSenderPhotoPath : ""
-				            }));
-				        	before += selectedUserIds[i] + " ";
+			        		$.ajax({
+			        			url : "/chat/userinfo",
+			        			data : {
+			        				userId : selectedUserIds[i]
+			        			},
+			        			type : "GET",
+			        			dataType : 'json',
+			        			success : function(data) {
+			        				resultNickname = data.userNickname;
+						            stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
+						            	refChatNo : chatRoomId,
+						            	msgSenderId: data.userId,
+						            	msgContent: resultNickname + "님이 초대되었습니다.",
+						            	msgSenderNickname : resultNickname,
+						            	msgSenderPhotoPath : ""
+						            }));
+						        	before += selectedUserIds[i] + " ";
+			        			}
+			        		});
 			        	}
 			        	$("#chat-users").text(before);
 			            // 생성한 메시지를 chat_body에 추가
-						
+						chatListReload();
 			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
 			            scrollToBottom();
 			        }
@@ -751,16 +939,201 @@
 							stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
 				            	refChatNo : chatRoomId,
 				            	msgSenderId: userId,
-				            	msgContent: userId + "님이 채팅방을 나갔습니다.",
+				            	msgContent: userNickname + "님이 채팅방을 나갔습니다.",
 				            	msgSenderNickname : userNickname,
 				            	msgSenderPhotoPath : "out"
 				            }));
-							location.reload(true);
+							chatListReload();
 						}
 					}
 				})
 			}
 		}
+		
+		function chatListReload() {
+			$.ajax({
+				url : "/chat/list-ajax",
+				data : {
+					userId : userId
+				},
+				type : "GET",
+				success : function(data) {
+					console.log(data);
+					updateChatList(data);
+				}
+			})
+		}
+	    // JavaScript 함수 내에서 조건을 검사하고 HTML을 생성
+	    function updateChatList(data) {
+	        var chatList = $(".contacts"); // 채팅 리스트가 있는 DOM 요소를 선택
+	        chatList.children().remove(); // 기존 목록 지우기
+
+	        $.each(data, function (index, chatRoom) {
+	        	var chatName = chatRoom.chatRoom.chatName;
+	        	var maxLength = 12;
+	        	if(chatName.length > maxLength) {
+	        		chatName = chatName.substring(0, maxLength) + "...";
+	        	}
+	        	var photo = chatRoom.chatRoom.cImagePath;
+	        	if(photo == "" || photo == null) {
+	        		photo = "../resources/assets/img/earth-globe.png"
+	        	}
+	            var listItem = '<li class="a_active" id="chat-room-' + chatRoom.chatRoom.chatNo + '">';
+	            listItem += '<input type="hidden" class="chat-room-id" value="' + chatRoom.chatRoom.chatNo + '">';
+	            listItem += '<input type="hidden" class="chat-room-name" value="' + chatName + '">';
+	            listItem += '<div class="d-flex bd-highlight">';
+	            listItem += '<div class="img_cont">';
+	            listItem += '<img src="' + photo + '" class="rounded-circle user_img" id="chat-list-img">';
+// 	            listItem += '<span class="online_icon"></span>';
+	            listItem += '</div>';
+	            listItem += '<div class="user_info">';
+	            listItem += '<div class="col d-flex justify-content-between">';
+	            listItem += '<span>' + chatRoom.chatRoom.chatName + '</span><br>';
+	            
+	            // 날짜와 시간에 대한 조건 검사
+	            var currentDate = new Date(); // 현재 날짜와 시간
+	            var formattedDate = new Date(chatRoom.chatRoom.chatMessage.msgSendDate);
+
+	            if (formattedDate.toDateString() === currentDate.toDateString()) {
+	            	// 오늘인 경우
+	                var hours = formattedDate.getHours();
+	                var minutes = formattedDate.getMinutes();
+
+	                // 분 (minutes)이 10 미만인 경우, 0을 앞에 붙여줍니다.
+	                if (minutes < 10) {
+	                    minutes = "0" + minutes;
+	                }
+
+	                var formattedTime = hours + ":" + minutes;
+	                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedTime + '</p>';
+	            } else {
+	                // 오늘이 아닌 경우
+	                var formattedDateStr = formattedDate.toLocaleDateString();
+	                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedDateStr + '</p>';
+	            }
+
+	            listItem += '</div>';
+	            listItem += '<div class="col d-flex justify-content-between">';
+	            listItem += '<p>' + chatRoom.chatRoom.chatMessage.msgContent + '</p>';
+	            var unread = chatRoom.unreadMsgCount;
+	            if(chatRoom.chatRoom.chatMessage.msgSenderId == userId) {
+	            	unread = 0;
+	            }
+	            if (unread != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId) {
+	                listItem += '<p id="unreadCount-' + chatRoom.chatRoom.chatNo + '" style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">' + unread + '</p>';
+	            }
+	            if($('#hiddenChatNo').val() == chatRoomId) {
+	            	$('#unreadCount-' + chatRoomId).hide();
+	            }
+	            
+	            listItem += '</div>';
+	            listItem += '</div>';
+	            listItem += '</div>';
+	            listItem += '</li>';
+
+	            chatList.append(listItem); // 리스트에 아이템 추가
+	        });
+	        $('.contacts').on('click', '.a_active', function() {
+	            // 클릭 시 실행하고 싶은 코드를 추가하세요.
+	            // 클릭한 채팅방과 관련된 동작을 이곳에 추가
+	            // chatRoomId 및 chatRoomName을 사용하여 작업을 수행
+
+	            disconnectWebSocket();
+	            // 예를 들어, 클릭 시 채팅방을 열고 필요한 정보를 가져오는 코드:
+	            chatRoomId = $(this).find(".chat-room-id").val();
+	            if($('#hiddenChatNo')) {
+					$('#hiddenChatNo').remove();
+				}
+				var hiddenNo = $('<input>').attr({
+				    type: 'hidden',
+				    name: 'hiddenChatNo',
+				    id : 'hiddenChatNo',
+				    value: chatRoomId
+				});
+				$('.chat-info').append(hiddenNo);
+	            chatRoomName = $(this).find(".chat-room-name").val();
+	            $.ajax({
+		        	url : "/chat/disconnect",
+		        	data : {
+		        		refChatNo : chatRoomId,
+		        		userId : userId
+		        	},
+		        	type : "POST",
+		        	success : function(data) {
+		        		if(data == "success") {
+		        			console.log("마지막 접속시간 업데이트 성공");
+		        		}
+		        	}
+		        })
+	            // 아래에 채팅방 열기 및 관련 작업을 수행하는 코드를 추가
+	            // 이 예제는 클릭 시 아래의 예제 코드를 실행합니다.
+	            $('.chat_none').remove();
+	            $('.chat-info').show();
+	            chatRoomId = chatRoomId;
+	            chatRoomName = chatRoomName;
+	            if($('#hiddenChatNo')) {
+					$('#hiddenChatNo').remove();
+				}
+				var hiddenNo = $('<input>').attr({
+				    type: 'hidden',
+				    name: 'hiddenChatNo',
+				    id : 'hiddenChatNo',
+				    value: chatRoomId
+				});
+				$('.chat-info').append(hiddenNo);
+	            $("#chatName").text(chatRoomName);
+	            chatImg = $(this).find("#chat-list-img").attr("src");
+				$("#info-img").attr("src", chatImg);
+	            $.ajax({
+	                url : "/chat/users",
+	                data : {
+	                    chatNo : chatRoomId
+	                },
+	                type : "GET",
+	                dataType: 'json',
+	                success : function(data) {
+	                    var users = "참여자 : "; //사용자 목록을 저장할 변수 초기화
+	                    for (var i = 0; i < data.length; i++) {
+	                        users += data[i].userNickname + " ";
+	                    }
+	                    $("#chat-users").text(users);
+	                    $.ajax({
+	                        url : "/chat/room",
+	                        data : {
+	                            chatNo : chatRoomId
+	                        },
+	                        type : "GET",
+	                        success : function(data) {
+	                            var chatBody = $("#chat_body");
+	                            chatBody.children().remove();
+	                            data.forEach(function(message) {
+	                                var isSent = message.msgSenderId == userId;
+	                                var messageText = message.msgContent;
+	                                var messageTime = message.msgSendDate;
+	                                var messageDate = new Date(messageTime);
+	                                if (previousDate === null || !areDatesEqual(previousDate, messageDate)) {
+	                                    chatBody.append(createDateDisplay(messageDate));
+	                                    previousDate = messageDate;
+	                                }
+	                                var senderNickname = message.user.userNickname;
+	                                var senderPhotoPath = message.user.userPhotoPath;
+	                                addMessage(isSent, senderNickname, senderPhotoPath, messageText, formatTimestamp(messageTime));
+	                                $("#unreadCount-" + chatRoomId).text("");
+	                                $("#unreadCount-" + chatRoomId).hide();
+	                            })
+	                            //웹소켓 연결 초기화
+	                            connect(chatRoomId);
+	                            scrollToBottom();
+	                        }
+	                    })
+	                }
+	            });
+	            // 아래에 채팅방 열기 등 원하는 동작 코드 추가
+	        });
+
+	    }
+	    // 이 함수를 호출하여 채팅 리스트를 업데이트할 수 있습니다.
+	    // updateChatList(data); // data는 서버에서 받아온 채팅 데이터 배열입니다.
 	</script>
 </body>
 

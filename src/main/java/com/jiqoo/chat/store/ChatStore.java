@@ -113,4 +113,52 @@ public interface ChatStore {
 	 */
 	List<User> selectUsersByKeyword(SqlSession sqlSession, int chatNo, String user);
 
+	/**
+	 * 채팅방 개설시 유저 검색 Store
+	 * 
+	 * @param sqlSession
+	 * @param userId
+	 * @param keyword 
+	 * @return List<User>
+	 */
+	List<User> selectJoinUserByKeyword(SqlSession sqlSession, String userId, String keyword);
+
+	/**
+	 * 채팅 개설시 유저 닉네임 조회 Store
+	 * 
+	 * @param sqlSession
+	 * @param userId
+	 * @return String
+	 */
+	String getUserNickname(SqlSession sqlSession, String userId);
+
+	/**
+	 * 채팅방 개설 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatRoom
+	 * @return int
+	 */
+	int insertNewChatRoom(SqlSession sqlSession, ChatRoom chatRoom);
+
+	/**
+	 * 채팅방 개설시 유저 추가 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatRoomNo 
+	 * @param userId
+	 * @return int
+	 */
+	int insertChatUserById(SqlSession sqlSession, int chatRoomNo, String userId);
+
+	/**
+	 * 채팅방 개설시 이미지 추가 Store
+	 * 
+	 * @param sqlSession
+	 * @param userId
+	 * @return String
+	 */
+	String getUserPhotoPath(SqlSession sqlSession, String userId);
+
+
 }
