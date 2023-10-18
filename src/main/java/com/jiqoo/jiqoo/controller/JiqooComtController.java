@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.jiqoo.service.JiqooComtService;
 
-@Controller
+@RestController
 public class JiqooComtController {
 
 	@Autowired
@@ -50,16 +51,16 @@ public class JiqooComtController {
 	//댓글 작성
 	@ResponseBody
 	@GetMapping("/jiqoo/insertComt")
-		public String insertComment(@ModelAttribute Comment comment, HttpSession session) {
-	  String comtWriter = (String)session.getAttribute("userId");
-	  comment.setComtWriter(comtWriter);
-	  int result = jiqooComtService.insertComment(comment);
-	  if(result > 0) {
+	public String insertComment(@ModelAttribute Comment comment, HttpSession session) {
+	String comtWriter = (String)session.getAttribute("userId");
+	comment.setComtWriter(comtWriter);
+	int result = jiqooComtService.insertComment(comment);
+	if(result > 0) {
 			return "success";
 	}else {
 		return "fail";
 			}
-	   }
+	}
 	
 	   
 	// 댓글 삭제
@@ -110,5 +111,20 @@ public class JiqooComtController {
 		return gson.toJson(commentList);
 	}
 	
+	@ResponseBody
+	@GetMapping("/jiqoo/insertReply")
+	public String insertReply(@RequestParam("pComtNo") int pComtNo, @RequestParam("comtContent") String comtContent , HttpSession session) {
+		String comtWriter = (String)session.getAttribute("userId");
+		Comment comment = new Comment();
+		comment.setComtWriter(comtWriter);
+		comment.setpComtNo(pComtNo);
+		comment.setComtContent(comtContent);
+		int result = jiqooComtService.insertReply(comment);
+		if(result > 0) {
+			return "success";
+		}else {
+			return "fail";
+		}
+	}
 	   
 }

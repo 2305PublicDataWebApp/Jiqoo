@@ -105,23 +105,23 @@
 	
 	<select id="selectJiqooSearchList" resultMap="JiqooResultMap">
 		<choose>
-			<when test="searchOption == '내꾸'">
-				SELECT *
-			    FROM JIQOO_TBL J
-			    JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
-			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			    WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR J.JIQOO_CONTENT LIKE '%' || #{searchValue} || '%')
-			    AND U.USER_ID = #{userId}
-			    ORDER BY J.J_CREATE_DATE DESC
-			</when>
-			<when test="searchOption == '남꾸'">
-				SELECT * FROM JIQOO_TBL J
-				JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
-				JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-				WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR J.JIQOO_CONTENT LIKE '%' || #{searchValue} || '%'
-				ORDER BY J.J_CREATE_DATE DESC
-			</when>
-		</choose>
+		    <when test="searchOption == '내꾸'">
+		        SELECT *
+		        FROM JIQOO_TBL J
+		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+		        WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%')
+		        AND U.USER_ID = #{userId}
+		        ORDER BY J.J_CREATE_DATE DESC
+		    </when>
+		    <when test="searchOption == '남꾸'">
+		        SELECT * FROM JIQOO_TBL J
+		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+		        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
+		        ORDER BY J.J_CREATE_DATE DESC
+		    </when>
+	</choose>
 	</select>
 	
 	

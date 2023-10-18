@@ -68,17 +68,18 @@
   <main id="main">
      <!-- ======= Search Section ======= -->
      <div class="search-container">
-     	 <select id="search-option">
-     	 	<c:if test="${sessionScope.userId ne null}">
-		    <option value="내꾸">내꾸</option>
-		    </c:if>
-		    <option value="남꾸">남꾸</option>
-		    
-		  </select>
-          <input id="search-input" type="text" placeholder="search"/>
-          <button id="search-btn" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-          </svg></button>
+     	<div class="search-form">
+	     	 <select id="search-option">
+	     	 	<c:if test="${sessionScope.userId ne null}">
+			    <option value="내꾸">내꾸</option>
+			    </c:if>
+			    <option value="남꾸">남꾸</option> 
+			  </select>
+	          <input id="search-input" type="text" placeholder="search"/>
+	          <button id="search-btn" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+	            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+	          </svg></button>
+     	</div>
     </div>
 
 	<!-- ======= Tab Section ======= -->
@@ -228,7 +229,7 @@
 	        url: "/jiqoo/AllList",
 	        type: "GET",
 	        success: function (result) {
-	            if (result.length > 0 ) {
+	            if (result.length > 0) {
 	                var listContainer = $("#list-container");
 
 	                // 결과를 표시하기 전에 기존 결과를 지우기
@@ -240,6 +241,7 @@
 
 	                    // 새로운 결과 항목을 생성
 	                    var listItem = $('<div class="row result-item">');
+	                    var postLink = $('<a href="/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo + '">'); // <a> 태그 생성
 	                    var postHeader = $('<div class="post-header">');
 	                    var category = $('<div class="category">');
 	                    var categoryImg = $('<img class="category-img" alt="">').attr('src', jiqooAllList.category.cImgPath);
@@ -262,7 +264,8 @@
 	                    heartContainer.append(heartImage);
 
 	                    // 결과를 결과 리스트 컨테이너에 추가
-	                    listItem.append(postHeader, profileImg, colMd10);
+	                    postLink.append(postHeader, profileImg, colMd10); // <a> 태그에 하위 요소 추가
+	                    listItem.append(postLink); // 결과 항목에 <a> 태그 추가
 	                    listContainer.append(listItem);
 	                }
 	            } else {
@@ -274,6 +277,7 @@
 	            alert("Ajax 오류~ 관리자에게 문의하삼");
 	        }
 	    });
+
 	}
 	
 	function showJiqooMyList() {
@@ -299,6 +303,7 @@
 
 	                    // 새로운 결과 항목을 생성
 	                    var listItem = $('<div class="row result-item">');
+	                    var postLink = $('<a href="/jiqoo/detail?jiqooNo=' + jiqooMyList.jiqooNo + '">'); // <a> 태그 생성
 	                    var postHeader = $('<div class="post-header">');
 	                    var category = $('<div class="category">');
 	                    var categoryImg = $('<img class="category-img" alt="">').attr('src', jiqooMyList.category.cImgPath);
@@ -322,6 +327,7 @@
 
 	                    // 결과를 결과 리스트 컨테이너에 추가
 	                    listItem.append(postHeader, profileImg, colMd10);
+	                    listItem.append(postLink); // 결과 항목에 <a> 태그 추가
 	                    listContainer.append(listItem);
 	                }
 	            } else {
@@ -363,6 +369,7 @@
 
 	                    // 새로운 결과 항목을 생성
 	                    var listItem = $('<div class="row result-item">');
+	                    var postLink = $('<a href="/jiqoo/detail?jiqooNo=' + jiqooSearchList.jiqooNo + '">'); // <a> 태그 생성
 	                    var postHeader = $('<div class="post-header">');
 	                    var category = $('<div class="category">');
 	                    var categoryImg = $('<img class="category-img" alt="">').attr('src', jiqooSearchList.category.cImgPath);
@@ -386,6 +393,7 @@
 
 	                    // 결과를 결과 리스트 컨테이너에 추가
 	                    listItem.append(postHeader, profileImg, colMd10);
+	                    listItem.append(postLink); // 결과 항목에 <a> 태그 추가
 	                    listContainer.append(listItem);
 	                }
 	            } else {

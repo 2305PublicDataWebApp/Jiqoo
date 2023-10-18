@@ -35,4 +35,10 @@ public class JiqooComtStoreLogic implements JiqooComtStore{
 		return commentList;
 	}
 
+	@Override
+	public int insertReply(SqlSession sqlSession, Comment comment) {
+		int result = sqlSession.insert("JiqooComtMapper.insertReply", comment);
+		return result;
+	}
+
 }

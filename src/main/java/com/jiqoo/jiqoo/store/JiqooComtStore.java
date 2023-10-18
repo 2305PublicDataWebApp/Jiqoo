@@ -40,4 +40,12 @@ public interface JiqooComtStore {
 	 */
 	List<Comment> selectCommentList(SqlSession sqlSession, int jiqooNo);
 
+	/**
+	 * 대댓글 등록 Store
+	 * @param sqlSession
+	 * @param comment
+	 * @return
+	 */
+	int insertReply(SqlSession sqlSession, Comment comment);
+
 }

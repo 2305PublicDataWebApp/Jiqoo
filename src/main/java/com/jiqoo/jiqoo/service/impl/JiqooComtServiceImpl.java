@@ -43,4 +43,10 @@ public class JiqooComtServiceImpl implements JiqooComtService{
 		return commentList;
 	}
 
+	@Override
+	public int insertReply(Comment comment) {
+		int result = jiqooComtStore.insertReply(sqlSession, comment);
+		return result;
+	}
+
 }

@@ -35,7 +35,11 @@
 	</resultMap>
 	
 	<insert id="insertComment">
-		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, null, DEFAULT, 'J')
+		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, NULL, DEFAULT, 'J')
+	</insert>
+	
+	<insert id="insertReply">
+		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, #{pComtNo }, DEFAULT, 'J')
 	</insert>
 	
 	<update id="delComment">
@@ -43,11 +47,11 @@
 	</update>
 	
 	<update id="updateComment">
-		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
+		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }, #{refPostNo }, 
 	</update>
 	
 	<select id="selectCommentList" resultMap="CommentResultMap">
 		SELECT * FROM COMT_TBL C
-		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' ORDER BY COMT_DATE ASC
+		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' ORDER BY COMT_DATE ASC
 	</select>
 </mapper>

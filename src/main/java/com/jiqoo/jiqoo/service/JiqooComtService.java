@@ -34,4 +34,11 @@ public interface JiqooComtService {
 	 */
 	List<Comment> selectCommentList(int jiqooNo);
 
+	/**
+	 * 대댓글 등록 Service
+	 * @param comment
+	 * @return
+	 */
+	int insertReply(Comment comment);
+
 }

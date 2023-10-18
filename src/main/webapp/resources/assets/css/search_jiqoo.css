@@ -90,6 +90,10 @@ p {
   margin: 0 auto;
 }
 /* ---- */
+.result-item a {
+	color : #303030;
+}
+
 /* 동그란 프로필 이미지 스타일 */
 .profile-image {
   width: 85px;
@@ -224,7 +228,7 @@ p {
 
 .search-form {
   margin-bottom: 20px;
-  width: 250px;
+  width: 270px;
   height: 50px;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -242,6 +246,14 @@ p {
   border: none;
   outline: none;
   padding-right: 10px;
+}
+
+#search-option {
+	border: none;
+	border-radius: 5px;
+	font-size: 15px;
+	margin-right: 5px;
+	color: #8BC34A;
 }
 
 #search-btn {
