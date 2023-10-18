@@ -22,7 +22,12 @@ public class User {
 	private char userStatus;
 	private String adminYn;
 	
+	private int followers; //나를 팔로우한 사람들
+	private int followings; //내가 팔로우한 사람들
+	private boolean checkFollow;
 	
+
+
 	public User() {
 		super();
 	}
@@ -33,6 +38,16 @@ public class User {
 		this.userPw = userPw;
 	}
 
+	
+	public User(String userId, String userPw, String userName, String userNickname, String userEmail, String userGender) {
+		super();
+		this.userId = userId;
+		this.userPw = userPw;
+		this.userName = userName;
+		this.userNickname = userNickname;
+		this.userEmail = userEmail;
+		this.userGender = userGender;
+	}
 
 	public String getUserId() {
 		return userId;
@@ -137,7 +152,31 @@ public class User {
 		this.adminYn = adminYn;
 	}
 	
+	public int getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(int followers) {
+		this.followers = followers;
+	}
+
+	public int getFollowings() {
+		return followings;
+	}
 	
+	public void setFollowings(int followings) {
+		this.followings = followings;
+	}
+	
+	public boolean getCheckFollow() {
+		return checkFollow;
+	}
+
+	public void setCheckFollow(boolean checkFollow) {
+		this.checkFollow = checkFollow;
+	}
+
+
 	@Override
 	public String toString() {
 		return "회원 [아이디=" + userId + ", 비밀번호=" + userPw + ", 이름=" + userName + ", 닉네임="
@@ -147,6 +186,7 @@ public class User {
 				+ userPhotoPath + ", 가입일=" + uCreateDate + ", 탈퇴일=" + uDeleteDate + ", 회원여부="
 				+ userStatus + ", 관리자여부=" + adminYn + "]";
 	}
+
 	
 	
 }

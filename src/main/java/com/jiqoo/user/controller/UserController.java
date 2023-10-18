@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -26,7 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.service.FollowService;
+import com.jiqoo.user.service.SnsService;
 import com.jiqoo.user.service.UserService;
 
 @RequestMapping("/user")
@@ -35,6 +39,10 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private FollowService followService;
+	@Autowired
+	private SnsService snsService;
 	@Autowired
 	private JavaMailSenderImpl mailSender;
 
@@ -77,12 +85,39 @@ public class UserController {
 			return mv;
 		}
 	}
+
+	// 팔로우
+	@ResponseBody
+	@PostMapping("/follow")
+	public String insertFollow(@RequestParam(value = "userId") String toUserId, HttpSession session) {
+		try {
+			String fromUserId = (String) session.getAttribute("userId");
+			if (fromUserId != "" && fromUserId != null) {
+				Follow follow = new Follow(fromUserId, toUserId);
+				int result = followService.insertFollow(follow);
+				if (result > 0) {
+					System.out.println("팔로우성공");
+					return "success";
+				} else {
+					System.out.println("팔로우실패");
+					return "fail";
+				}
+			} else {
+				System.out.println("로그인정보없음");
+				return "checkLogin";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+
 	// 프로필사진 변경
 	@ResponseBody
 	@PostMapping("/updatePhoto")
 	public Map<String, Object> updatePhoto(
-			@RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile
-			, Model model, HttpServletRequest request, HttpSession session) {
+			@RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile, Model model,
+			HttpServletRequest request, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		Map<String, Object> response = new HashMap<>();
 		try {
@@ -100,7 +135,7 @@ public class UserController {
 					user.setUserPhotoPath((String) userPhotoMap.get("filePath"));
 				}
 				int result = userService.updateUser(user);
-				if(result > 0) {
+				if (result > 0) {
 					System.out.println("프로필 사진 변경 성공");
 					response.put("success", "success");
 				} else {
@@ -116,8 +151,7 @@ public class UserController {
 		}
 		return response;
 	}
-	
-	
+
 	// 비밀번호 변경
 	@ResponseBody
 	@PostMapping("/updatePw")
@@ -196,6 +230,32 @@ public class UserController {
 		}
 	}
 
+	// 언팔로우
+	@ResponseBody
+	@PostMapping("/unfollow")
+	public String deleteFollow(@RequestParam(value = "userId") String toUserId, HttpSession session) {
+		try {
+			String fromUserId = (String) session.getAttribute("userId");
+			if (fromUserId != "" && fromUserId != null) {
+				Follow follow = new Follow(fromUserId, toUserId);
+				int result = followService.deleteFollow(follow);
+				if (result > 0) {
+					System.out.println("언팔성공");
+					return "success";
+				} else {
+					System.out.println("언팔실패");
+					return "fail";
+				}
+			} else {
+				System.out.println("로그인정보없음");
+				return "checkLogin";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+
 	// 회원탈퇴 실행
 	@ResponseBody
 	@GetMapping("/delete")
@@ -222,7 +282,7 @@ public class UserController {
 		User user = userService.selectUserOneById(userId);
 		String userPw = user.getUserPw();
 		Map<String, Object> response = new HashMap<>();
-		if (userId != "" && userId != null) {
+		if (userId != null && userId != "") {
 			if (userId.equals(inputId) && userPw.equals(inputPw)) {
 				response.put("isValidate", true);
 			} else {
@@ -232,6 +292,34 @@ public class UserController {
 			response.put("checkLogin", "checkLogin");
 		}
 		return response;
+	}
+
+	// 카카오탈퇴
+	@ResponseBody
+	@RequestMapping(value = "/kakaoUnlink")
+	public String deleteKakaoUser(HttpSession session) {
+		String accessToken = (String) session.getAttribute("accessToken");
+		String userId = (String) session.getAttribute("userId");
+		int responseCode = snsService.deleteKakaoUser(accessToken);
+		if (responseCode == 200) { // 카카오 탈퇴 성공->DB삭제진행
+			if (userId != null && userId != "") {
+				int result = userService.deleteKakaoUser(userId);
+				if (result > 0) {
+					session.invalidate();
+					System.out.println("카카오 회원 DB삭제 성공");
+					return "success";
+				} else {
+					System.out.println("카카오 회원 DB삭제 실패");
+					return "fail";
+				}
+			} else {
+				System.out.println("로그인 정보 없음");
+				return "checkLogin";
+			}
+		} else {
+			System.out.println("카카오 탈퇴 실패 : 에러확인");
+			return "fail";
+		}
 	}
 
 	// 비밀번호찾기
@@ -273,6 +361,38 @@ public class UserController {
 			return userId;
 		} else {
 			return "fail";
+		}
+	}
+
+	// 카카오로그인
+	@RequestMapping("/kakao")
+	public String selectKakaologin(String code, Model model, HttpServletRequest request, HttpSession session)
+			throws Exception {
+		// 전달 받은 code를 사용해서 access_token 받기
+		String accessToken = snsService.getKakaoAccessToken(code);
+		// return받은 access_token으로 사용자 정보 가져오기
+		Map<String, Object> userInfo = snsService.getKakaoInfo(accessToken);
+		// HashMap<String, Object> userInfo = kakao.getUserInfo(accessToken); **Map <->
+		// HashMap 나중에 확인
+		System.out.println("카카오유저인포 : " + userInfo);
+		String userId = (String) userInfo.get("userId");
+		System.out.println("카카오 userId : " + userId);
+		User kakaoUser = userService.selectUserOneById(userId);
+		// 회원가입한 카카오 유저있으면 로그인성공->세션저장
+		if (kakaoUser != null) {
+			System.out.println("세션저장 accessToken : " + accessToken);
+			session.setAttribute("accessToken", accessToken); // accessToken 세션저장
+			session.setAttribute("userId", kakaoUser.getUserId());
+			session.setAttribute("userNickname", kakaoUser.getUserNickname());
+			session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
+			session.setAttribute("adminYn", kakaoUser.getAdminYn());
+			System.out.println("카카오 로그인 성공");
+			return "redirect:/";
+		} else {
+			System.out.println("카카오 로그인 실패");
+			model.addAttribute("msg", "카카오 로그인 실패");
+			model.addAttribute("url", "/");
+			return "common/message";
 		}
 	}
 
@@ -324,6 +444,20 @@ public class UserController {
 		return response;
 	}
 
+	// 카카오로그아웃
+	@GetMapping("/kakaoLogout")
+	public String kakaoUserLogout(HttpSession session) {
+		String accessToken = ((String) session.getAttribute("accessToken"));
+		int responseCode = snsService.kakaoLogout(accessToken);
+		if (responseCode == 200) { // 카카오로그아웃 성공
+			session.removeAttribute(accessToken);
+			session.invalidate();
+			System.out.println("카카오 로그아웃 성공");
+		}
+		return "redirect:/";
+	} 
+
+	
 	// 로그아웃
 	@GetMapping("/logout")
 	public String userLogout(HttpSession session) {
@@ -349,7 +483,33 @@ public class UserController {
 			if (userId != "" && userId != null) {
 				user = userService.selectUserOneById(userId);
 				if (user != null) {
+					// 팔로워, 팔로잉 수 & 리스트
+					int followersCount = userService.selectFollowersCount(userId);
+					int followingsCount = userService.selectFollowingCount(userId);
+					/*
+					 * List<Follow> followersList = userService.selectFollowersListById(userId);
+					 * List<Follow> followingsList = userService.selectFollowingsListById(userId);
+					 */
+					List<User> followersList = userService.selectFollowersListById(userId);
+					List<User> followingsList = userService.selectFollowingsListById(userId);
+
+					for (User follower : followersList) {
+						boolean checkFollow = false;
+						for (User following : followingsList) { // followersList에 있는 사람이 내가 팔로우한 목록(followingsList)에 있는지
+																// 확인
+							if (follower.getUserId().equals(following.getUserId())) {
+								checkFollow = true;
+								break;
+							}
+						}
+						follower.setCheckFollow(checkFollow);
+					}
+
+					user.setFollowers(followersCount);
+					user.setFollowings(followingsCount);
 					model.addAttribute("user", user);
+					model.addAttribute("followersList", followersList);
+					model.addAttribute("followingsList", followingsList);
 					return "user/myPage";
 				} else {
 					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
@@ -384,8 +544,8 @@ public class UserController {
 			User user = null;
 			if (userId != "" && userId != null) {
 				user = userService.selectUserOneById(userId);
-				if(user != null) {
-					if(user.getUserInfo() != null) {
+				if (user != null) {
+					if (user.getUserInfo() != null) {
 						String info = user.getUserInfo().replace("<br>", "\r\n");
 						user.setUserInfo(info);
 					}
@@ -472,7 +632,7 @@ public class UserController {
 			folder.mkdir();
 		}
 		// 파일저장
-		File file = new File(savePath+"\\"+fileRename); // 파일 생성
+		File file = new File(savePath + "\\" + fileRename); // 파일 생성
 		uploadFile.transferTo(file); // 파일저장
 		System.out.println("파일이름 : " + fileName);
 		System.out.println("파일리네임 : " + fileRename);
@@ -480,7 +640,7 @@ public class UserController {
 		// Map저장
 		userPhotoMap.put("fileName", fileName);
 		userPhotoMap.put("fileRename", fileRename);
-		userPhotoMap.put("filePath", "../resources/puploadFiles/"+fileRename);
+		userPhotoMap.put("filePath", "../resources/puploadFiles/" + fileRename);
 
 		return userPhotoMap;
 	}

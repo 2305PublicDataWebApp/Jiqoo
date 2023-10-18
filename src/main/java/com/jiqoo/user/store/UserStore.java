@@ -1,7 +1,11 @@
 package com.jiqoo.user.store;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 
 public interface UserStore {
@@ -93,5 +97,69 @@ public interface UserStore {
 	 * @return
 	 */
 	User selectUserOneById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로워 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowersCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowingCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로워 리스트 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<User> selectFollowersListById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 리스트 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<User> selectFollowingsListById(SqlSession sqlSession, String userId);
+
+	/**
+	 * 팔로잉 여부 판단 Store
+	 * @param sqlSession
+	 * @param followMap
+	 * @return
+	 */
+	int selectFollowStatus(SqlSession sqlSession, Map<String, Object> followMap);
+
+	/**
+	 * 카카오 회원 조회 Store
+	 * @param sqlSession 
+	 * @param userEmail
+	 * @return
+	 */
+	User selectKakaoUser(SqlSession sqlSession, String userEmail);
+
+	/**
+	 * 카카오 회원 가입 Store
+	 * @param sqlSession 
+	 * @param kakaoUser
+	 * @return
+	 */
+	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser);
+
+	/**
+	 * 카카오 회원 탈퇴 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int deleteKakaoUser(SqlSession sqlSession, String userId);
 
 }

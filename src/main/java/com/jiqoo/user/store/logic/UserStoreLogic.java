@@ -1,5 +1,8 @@
 package com.jiqoo.user.store.logic;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -73,6 +76,56 @@ public class UserStoreLogic implements UserStore{
 	public User selectUserOneById(SqlSession sqlSession, String userId) {
 		User user = sqlSession.selectOne("UserMapper.selectUserOneById", userId);
 		return user;
+	}
+
+	@Override
+	public int selectFollowersCount(SqlSession sqlSession, String userId) {
+		int followersCount = sqlSession.selectOne("FollowMapper.selectFollowersCount", userId);
+		return followersCount;
+	}
+
+	@Override
+	public int selectFollowingCount(SqlSession sqlSession, String userId) {
+		int followingCount = sqlSession.selectOne("FollowMapper.selectFollowingCount", userId);
+		return followingCount;
+	}
+
+	@Override
+	public List<User> selectFollowersListById(SqlSession sqlSession, String userId) {
+		List<User> followersList = sqlSession.selectList("UserMapper.selectFollowersListById", userId);
+		return followersList;
+	}
+
+	@Override
+	public List<User> selectFollowingsListById(SqlSession sqlSession, String userId) {
+		List<User> followingsList = sqlSession.selectList("UserMapper.selectFollowingsListById", userId);
+		return followingsList;
+	}
+
+
+	@Override
+	public int selectFollowStatus(SqlSession sqlSession, Map<String, Object> followMap) {
+		int isFollowing = sqlSession.selectOne("FollowMapper.selectFollowStatus", followMap);
+		return isFollowing;
+	}
+
+
+	@Override
+	public User selectKakaoUser(SqlSession sqlSession, String userEmail) {
+		User kakaoUser = sqlSession.selectOne("UserMapper.selectKakaoUser", userEmail);
+		return kakaoUser;
+	}
+
+	@Override
+	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser) {
+		int result = sqlSession.insert("UserMapper.kakaoUserInsert", kakaoUser);
+		return result;
+	}
+
+	@Override
+	public int deleteKakaoUser(SqlSession sqlSession, String userId) {
+		int result = sqlSession.delete("UserMapper.deleteKakaoUser", userId);
+		return result;
 	}
 
 

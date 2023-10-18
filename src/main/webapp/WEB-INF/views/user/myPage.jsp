@@ -86,11 +86,11 @@
                             <div class="profile-cnt-text">게시글</div>
                         </div>
                         <div class="profile-cnt-item profile-cnt-border">
-                            <div class="profile-cnt-total"><a data-bs-toggle="modal" href="#followerModal">238</a></div>
+                            <div class="profile-cnt-total"><a data-bs-toggle="modal" href="#followerModal">${user.followers }</a></div>
                             <div class="profile-cnt-text">팔로워</div>
                         </div>
                         <div class="profile-cnt-item">
-                            <div class="profile-cnt-total"><a data-bs-toggle="modal" href="#followingModal">101</a></div>
+                            <div class="profile-cnt-total"><a data-bs-toggle="modal" href="#followingModal">${user.followings }</a></div>
                             <div class="profile-cnt-text">팔로잉</div>
                         </div>
                     </div>
@@ -268,91 +268,38 @@
                 <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">바소잔님의 팔로워</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">${user.userNickname}님의 팔로워</h1>
+                        <button type="button" class="btn-close closeModalButton" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                    <c:forEach items="${followersList}" var="follower">
                         <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-3.jpg" class="modal-profile-img">
-                            </div>
+	                        <div class="col-3 modal-padding">
+	                        	<c:if test="${follower.userPhotoRename eq null}">
+		                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
+	                			</c:if>
+	                			<c:if test="${follower.userPhotoRename ne null}">
+	                                <img class="modal-profile-img modal-profile-border" src="${follower.userPhotoPath }" alt="프로필사진" >
+	                            </c:if>
+	                        </div>
                             <div class="col-6 list-sort">
                                 <div class="row">
-                                    <div>khuser01</div>
+                                    <div>${follower.userId }</div>
                                 </div>
                                 <div class="row">
-                                    <div>바소잔</div>
+                                    <div>${follower.userNickname }</div>
                                 </div>
                             </div>
                             <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
+				                <c:if test="${follower.checkFollow}">
+				                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+				                </c:if>
+				                <c:if test="${not follower.checkFollow}">
+				                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+				                </c:if>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-3.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser01</div>
-                                </div>
-                                <div class="row">
-                                    <div>바소잔</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-3.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser01</div>
-                                </div>
-                                <div class="row">
-                                    <div>바소잔</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-3.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser01</div>
-                                </div>
-                                <div class="row">
-                                    <div>바소잔</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-3.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser01</div>
-                                </div>
-                                <div class="row">
-                                    <div>바소잔</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    </c:forEach>
                     </div>
                     </div>
                 </div>
@@ -363,90 +310,32 @@
                     <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">${user.userNickname}님의 팔로잉</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close closeModalButton" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                    <c:forEach items="${followingsList }" var="following">
                         <div class="row">
                             <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-2.jpg" class="modal-profile-img">
+                                <c:if test="${following.userPhotoRename eq null}">
+		                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
+	                			</c:if>
+	                			<c:if test="${following.userPhotoRename ne null}">
+	                                <img class="modal-profile-img modal-profile-border" src="${following.userPhotoPath }" alt="프로필사진" >
+	                            </c:if>
                             </div>
                             <div class="col-6 list-sort">
                                 <div class="row">
-                                    <div>khuser02</div>
+                                    <div>${following.userId }</div>
                                 </div>
                                 <div class="row">
-                                    <div>이용자</div>
+                                    <div>${following.userNickname }</div>
                                 </div>
                             </div>
                             <div class="col-3 list-sort">
-                                <button class="btn btn-sm following-btn">팔로잉</button>
+                                <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-2.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser02</div>
-                                </div>
-                                <div class="row">
-                                    <div>이용자</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm following-btn">팔로잉</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-2.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser02</div>
-                                </div>
-                                <div class="row">
-                                    <div>이용자</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-2.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser02</div>
-                                </div>
-                                <div class="row">
-                                    <div>이용자</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <img src="../resources/assets/img/testimonials/testimonials-2.jpg" class="modal-profile-img">
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>khuser02</div>
-                                </div>
-                                <div class="row">
-                                    <div>이용자</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm follow-btn">팔로우</button>
-                            </div>
-                        </div>
-                        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    </c:forEach>
                     </div>
                     </div>
                 </div>
@@ -490,6 +379,68 @@
 
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script>
+        	// unfollow 버튼
+        	$(".unfollow-btn").on("click", function(){
+        		const userId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
+        		const button = $(this);
+        		$.ajax({
+                    type: 'POST',
+                    url: '/user/unfollow',
+                    data: { userId: userId },
+                    success: function(result) {
+                        if (result === "success") {
+                        	button.removeClass("unfollow-btn").addClass("follow-btn");
+                            button.text("Follow");
+                        } else if (result === "checkLogin") {
+                            alert("로그인 후 이용해주세요.");
+                            window.location.href = "/user/login"; 
+                        } else {
+                            alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+                            location.reload();
+                        }
+                    },
+                    error: function(error) {
+                    	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+                    	location.reload();
+                    }
+        		});
+        	})
+        	
+        	//follow버튼
+        	$(".follow-btn").on("click", function () {
+			    const userId = $(this).data('user-id'); 
+			    const button = $(this);
+			
+			    $.ajax({
+			        type: 'POST',
+			        url: '/user/follow', 
+			        data: { userId: userId },
+			        success: function (result) {
+			            if (result === "success") {
+			                button.removeClass("follow-btn").addClass("unfollow-btn");
+			                button.text("Unfollow");
+			            } else if (result === "checkLogin") {
+			                alert("로그인 후 이용해주세요.");
+			                window.location.href = "/user/login";
+			            } else {
+			                alert("팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+			                location.reload();
+			            }
+			        },
+			        error: function (error) {
+			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+			            location.reload();
+			        }
+			    });
+			});
+        	
+        	//모달 닫기버튼 누르면 리로드
+            $(".closeModalButton").on("click", function() {
+                $("this").modal("hide");
+                location.reload();
+            });
+        	
+        	// 사진변경모달오픈
 			$("#openChangePhotoModal").on("click", function(){
 				$("#changePhotoModal").modal("show");
 			})

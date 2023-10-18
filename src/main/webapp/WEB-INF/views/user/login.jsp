@@ -35,6 +35,14 @@
         
         <!-- 제이쿼리 -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        
+        <!-- 카카오 로그인 -->
+        <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+        <!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js" ></script> -->
+        <script>
+	        Kakao.init('4cf9db2344d009b1a0f20e2bb100602a'); // 발급키
+	    	console.log(Kakao.isInitialized());
+        </script> 
     </head>
 
 
@@ -73,11 +81,19 @@
                 </div>
                 <button class="w-100 btn btn-lg" type="submit" id="loginBtn">로그인</button>
             </form>
-            <div>
+            <div style="margin-top:10px;">
                 <!-- <button class="w-100 btn btn-lg" type="submit" id="kakaoBtn">카카오로그인</button> -->
-                <button class="w-100 btn btn-lg" id="kakaoBtn">
+                <!-- <button class="w-100 btn btn-lg" id="kakaoLoginBtn">
                     <img src="../resources/assets/img/user/kakao_login.png" alt="카카오 로그인 버튼"/>
-                </button>
+                </button> -->
+                <a id="kakao-login-btn" href="javascript:loginWithKakao()">
+					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem" alt="카카오 로그인 버튼" />
+				</a>
+            </div>
+            <div style="margin-top:10px;">
+                <a id="naver-login-btn" href="javascript:loginWithNaver()">
+					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem" alt="네이버 로그인 버튼" />
+				</a>
             </div>
             <div id="findInfo" style="margin-top: 20px;">
                 <ul>
@@ -269,6 +285,24 @@
         			}
         		})
         	})
+        	
+        	
+        	//kakao로그인
+			function loginWithKakao() {
+			  Kakao.Auth.authorize({
+			    redirectUri: 'http://localhost:9999/user/kakao',
+			    scope: 'account_email, profile_nickname, gender',
+	 		    success: function(success) {
+			        console.log("카카오 인증 성공", authObj);
+			        // 로그인 또는 인증 성공 시 처리
+			    },
+			    fail: function(err) {
+			        console.log("카카오 인증 실패", err);
+			        // 로그인 또는 인증 실패 시 처리
+			    },
+			  });
+			}
+
         </script>
     </body>
 </html>

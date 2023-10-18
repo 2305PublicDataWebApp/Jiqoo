@@ -1,5 +1,9 @@
 package com.jiqoo.user.service;
 
+import java.util.List;
+import java.util.Map;
+
+import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 
 public interface UserService {
@@ -80,5 +84,47 @@ public interface UserService {
 	 * @return
 	 */
 	User selectUserOneById(String userId);
+
+	/**
+	 * 팔로워 수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowersCount(String userId);
+
+	/**
+	 * 팔로잉 수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectFollowingCount(String userId);
+
+	/**
+	 * 팔로워 리스트 조회 service
+	 * @param userId
+	 * @return
+	 */
+	List<User> selectFollowersListById(String userId);
+
+	/**
+	 * 팔로잉 리스트 조회 service
+	 * @param userId
+	 * @return
+	 */
+	List<User> selectFollowingsListById(String userId);
+
+	/**
+	 * 팔로잉 여부 판단 service
+	 * @param followMap
+	 * @return
+	 */
+	int selectFollowStatus(Map<String, Object> followMap);
+
+	/**
+	 * 카카오회원 탈퇴 service
+	 * @param userId
+	 * @return
+	 */
+	int deleteKakaoUser(String userId);
 
 }

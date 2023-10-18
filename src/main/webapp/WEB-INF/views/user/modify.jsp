@@ -67,15 +67,17 @@
                    		<input type="hidden" name="userPhotoName" value="${user.userPhotoName }">
 						<input type="hidden" name="userPhotoRename" value="${user.userPhotoRename }">
 						<input type="hidden" name="userPhotoPath" value="${user.userPhotoPath }">
-						<h1 style="margin-bottom: 30px;">회원정보수정</h1>
-						<div class="row">
-                            <div class="col-12 col-sm-3" style="text-align: left;">
-                                <label for="changePwBtn">비밀번호</label>
-                            </div>
-                            <div class="col-4 col-sm-2">
-	                            <button class="btn btn-sm regBtn" type="button" id="changePwBtn" data-bs-toggle="modal" data-bs-target="#changePwModal">변경하기</button>
+						<h1 style="margin-bottom: 60px;">회원정보수정</h1>
+						<c:if test="${user.platformType eq 'normal'}">
+							<div class="row">
+	                            <div class="col-12 col-sm-3" style="text-align: left;">
+	                                <label for="changePwBtn">비밀번호</label>
+	                            </div>
+	                            <div class="col-4 col-sm-2">
+		                            <button class="btn btn-sm regBtn" type="button" id="changePwBtn" data-bs-toggle="modal" data-bs-target="#changePwModal">변경하기</button>
+		                        </div>
 	                        </div>
-                        </div>
+						</c:if>
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
 	                            <label for="userNickname">닉네임</label>
@@ -90,20 +92,31 @@
 	                        	<p class="checkMessage" id="nicknameMsg"></p>
 	                        </div>                               
                         </div>
-                        <div class="row">
-	                        <div class="col-12 col-sm-3" style="text-align: left;">
-	                            <label for="userEmail">메일주소</label>
+                        <c:if test="${user.platformType ne 'normal'}">
+                        	<div class="row">
+		                        <div class="col-12 col-sm-3" style="text-align: left;">
+		                            <label for="userEmail">${user.platformType}계정</label>
+		                        </div>
+		                        <div class="col-8 col-sm-7 text-start">
+			                        <p id="userEmail" name="userEmail">${user.userEmail }</p>
+		                        </div>                           
 	                        </div>
-	                        <div class="col-8 col-sm-7">
-		                        <input type="email" class="form-control" id="userEmail" name="userEmail" oninput="emailCheck()" value="${user.userEmail }">
+                        </c:if>
+                        <c:if test="${user.platformType eq 'normal'}">
+	                        <div class="row">
+		                        <div class="col-12 col-sm-3" style="text-align: left;">
+		                            <label for="userEmail">메일주소</label>
+		                        </div>
+		                        <div class="col-8 col-sm-7">
+			                        <input type="email" class="form-control" id="userEmail" name="userEmail" oninput="emailCheck()" value="${user.userEmail }">
+		                        </div>
+		                        <div class="col-4 col-sm-2">
+		                            <button class="btn btn-sm regBtn" type="button" id="changeMailBtn" onclick="emailDuplicate()" disabled>메일인증</button>
+		                        </div>
+		                        <div>
+		                        	<p class="checkMessage" id="mailMsg"></p>
+		                        </div>                            
 	                        </div>
-	                        <div class="col-4 col-sm-2">
-	                            <button class="btn btn-sm regBtn" type="button" id="changeMailBtn" onclick="emailDuplicate()" disabled>메일인증</button>
-	                        </div>
-	                        <div>
-	                        	<p class="checkMessage" id="mailMsg"></p>
-	                        </div>                            
-                        </div>
                         <div class="row">
 	                        <div class="col-12 col-sm-3">
 	                            <label for="userEmailCheck"></label>
@@ -118,6 +131,7 @@
 	                        	<p class="checkMessage" id="mailCheckMsg"></p>
 	                        </div>                            
                         </div>
+                        </c:if>
 						<c:if test="${user.userGender eq null}">                      
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
@@ -198,9 +212,16 @@
                        </div>
                        <button class="btn btn-block subBtn" id="submitBtn">수정완료</button>
                        <button class="btn btn-block subBtn" onclick="history.back();" type="button">뒤로가기</button>
-                       <button type="button" id="delUserBtn" class="btn btn-block" data-bs-toggle="modal" data-bs-target="#delUserModal">
-                           회원탈퇴
-                       </button>
+                       <c:if test="${user.platformType eq 'normal'}">
+	                       <button type="button" id="delUserBtn" class="btn btn-block" data-bs-toggle="modal" data-bs-target="#delUserModal">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
+                       <c:if test="${user.platformType ne 'normal'}">
+	                       <button type="button" id="delSnsUserBtn" class="btn btn-block">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
 	                </form>
                     </div>
                 </div>
@@ -618,6 +639,33 @@
         		
         	})
 	        
+        	//  sns 회원탈퇴
+        	$('#delSnsUserBtn').on("click", function(){
+        		if(confirm("정말 탈퇴하시겠습니까?")) {
+        			
+			    	$.ajax({
+			    		url: "/user/kakaoUnlink",
+			    		type: "GET",
+			    		success: function(response){
+			                if (response === "success") {
+			                    alert("SNS 회원탈퇴가 완료되었습니다.");
+			                    window.location.href="/";  
+			                } else if (response === "checkLogin") {
+			                	alert("로그인 후 이용해주세요");
+			                    window.location.href="/";  
+			                } else {
+			                	alert("SNS 회원탈퇴가 완료되지 않았습니다. 다시 시도해주세요.");
+			                    window.location.href="/user/modify";  
+			                }
+			    		},
+			    		error : function(){
+				            alert("[서버오류] 관리자에게 문의바랍니다.");
+			    		}
+			    	})
+        		}
+        	});
+        	
+        	
             // textarea 체크
 			$('#userInfo').on('input', function() {
    			    let content = $(this).val();

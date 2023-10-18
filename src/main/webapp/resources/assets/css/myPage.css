@@ -127,9 +127,10 @@ main {
 	width: 70px;
 	height: 70px;
 	border-radius: 50%;
+}
+.modal-profile-border {
 	border: 3px solid #8BC34A;
 }
-
 .list-sort {
 	display: flex;
 	flex-direction: column;
@@ -140,6 +141,7 @@ main {
 .follow-btn {
 	background-color: #8BC34A;
 	color: white;
+	min-width: 85px; 
 }
 
 .follow-btn:hover {
@@ -147,12 +149,13 @@ main {
 	color: white;
 }
 
-.following-btn {
+.unfollow-btn {
 	background-color: gray;
 	color: white;
+	min-width: 85px;
 }
 
-.following-btn:hover {
+.unfollow-btn:hover {
 	background-color: rgb(71, 71, 71);
 	color: white;
 }
