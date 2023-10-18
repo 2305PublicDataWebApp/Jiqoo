@@ -17,4 +17,17 @@ public class MoqooComtStoreLogic implements MoqooComtStore{
 		return comtList;
 	}
 
+	@Override
+	public int insertComt(SqlSession sqlSession, Comment comt) {
+		int result = sqlSession.insert("MoqooComtMapper.insertComt", comt);
+		return result;
+	}
+
+	@Override
+	public int deleteComt(SqlSession sqlSession, Comment comt) {
+		int result = sqlSession.update("MoqooComtMapper.deleteComt", comt);
+		return result;
+	}
+
+
 }

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="MoqooComtMapper">
-	<!-- view count 일단 default로 둠 -->
-<!-- 	<insert id="insertMoqoo"> -->
-<!-- 		INSERT INTO MOQOO_TBL VALUES(SEQ_MOQOO_NO.NEXTVAL, #{category }, #{moqooW3W }, #{moqooTitle }, #{moqooContent }, #{moqooWriter }, #{moqooDay }, #{moqooJoin }, DEFAULT, DEFAULT, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT, #{cName } ) -->
-<!-- 	</insert> -->
+	<insert id="insertComt">
+		INSERT INTO comt_tbl (comt_no, COMT_CONTENT, COMT_WRITER, COMT_DATE, C_UPDATE_DATE, REF_POST_NO, P_COMT_NO, COMT_STATUS, C_BOARD_TYPE) 
+		VALUES (SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, SEQ_COMT_NO.CURRVAL, DEFAULT, 'M');
+	</insert>
 	
-<!-- 	<select id="showSelectMoqooList" resultType="Moqoo"> -->
-<!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = #{moqooWriter } WHERE MOQOO_STATUS = 'Y' -->
-<!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_STATUS = 'Y' -->
-<!-- 	</select> -->
-	
-<!-- 	<select id="selectMoqooByNo" resultType="Moqoo"> -->
-<!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_NO = #{moqooNo} AND MOQOO_STATUS = 'Y' -->
-<!-- 	</select> -->
+	<update id="deleteComt">
+		UPDATE COMT_TBL SET COMT_STATUS = 'N' WHERE COMT_NO = #{comtNo }
+	</update>
 	
 	<select id="selectComtList" resultType="Comment">
 		SELECT * FROM COMT_TBL WHERE REF_POST_NO = #{refPostNo } AND C_BOARD_TYPE = 'M' AND COMT_STATUS = 'Y'

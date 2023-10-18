@@ -25,4 +25,16 @@ public class MoqooComtServiceImpl implements MoqooComtService{
 		return comtList;
 	}
 
+	@Override
+	public int insertComt(Comment comt) {
+		int result = moqooComtStore.insertComt(sqlSession, comt);
+		return result;
+	}
+
+	@Override
+	public int deleteComt(Comment comt) {
+		int result = moqooComtStore.deleteComt(sqlSession, comt);
+		return result;
+	}
+
 }

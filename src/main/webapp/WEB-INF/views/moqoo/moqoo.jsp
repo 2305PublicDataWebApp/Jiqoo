@@ -250,7 +250,7 @@
 
 			<!-- 결과 목록 아이템 -->
 			<c:forEach var="moqooList" items="${moqooList }">
-				<c:url var="post_moqooUrl" value="/moqoo/post_moqoo">
+				<c:url var="post_moqooUrl" value="/moqoo/detail">
 					<c:param name="moqooNo" value="${moqooList.moqooNo }"></c:param>
 				</c:url>
 				<div class="row result-item">
@@ -265,8 +265,12 @@
 						</div>
 					</div>
 					<div id="profile-img" class="col-sm-12">
-						<img src="${moqooList.user.userPhotoPath }" alt="프로필 이미지"
-							class="profile-image">
+					  <c:if test="${moqooList.moqooThumPath eq null }">
+						<img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" class="profile-image">
+					  </c:if>
+					  <c:if test="${moqooList.moqooThumPath ne null }">
+						<img src="${moqooList.moqooThumPath }" alt="프로필 이미지" class="profile-image">
+					  </c:if>
 					</div>
 					<a href="${post_moqooUrl }" class="post-a">
 						<div class="col-md-10">
@@ -274,9 +278,7 @@
 							<div class="content">${moqooList.moqooContent }</div>
 							<div class="row">
 								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickname }</div>
-								
-								<div class="info col-lg-6 col-md-12">
-									<fmt:formatDate pattern="yyyy-MM-dd" value="${moqooList.moqooDate }"/></div>
+								<div class="info col-lg-6 col-md-12"><fmt:formatDate pattern="yyyy-MM-dd" value="${moqooList.moqooDate }"/></div>
 								<div class="heart-container col-lg-3 col-md-12">
 									<img class="heart"
 										src="../resources/assets/img/heart(full).png" alt="">
@@ -290,7 +292,7 @@
 
 
 		<!-- ======= Modal ======= -->
-		<div class="modal" tabindex="-1">
+		<div class="modal" tabindex="-1" id="insert-modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content"
 					style="background-color: #6DBE45; color: #fff;">
@@ -301,17 +303,15 @@
 					</div>
 					<div class="modal-body">
 						<!-- 게시물 입력 폼 -->
-						<form action="moqoo/insert" method="post"
-							enctype="multipart/form-data">
+						<form action="/moqoo/insert" method="post" enctype="multipart/form-data">
 							<div class="mb-3 col-lg-5 mx-auto location-container">
 								<input type="text" class="form-control" id="location"
-									name="moqooW3W" value="할아버지.집.가고싶다" readonly>
+									name="moqooW3W" value="" readonly>
 								<button id="open-map-btn">+</button>
 							</div>
 							<div class="mb-3 row date-tag-container">
 								<div class="date-container col-md-3">
-									<input type="date" class="form-control" id="date"
-										name="moqooDay" required>
+									<input type="date" class="form-control" id="date" name="moqooDay" required>
 								</div>
 								<div class="col-md-2 c-btn">
 									<span>카테고리</span> <i class="bi bi-caret-down-fill"
@@ -322,8 +322,8 @@
 										<c:forEach var="categoryList" items="${categoryList }">
 											<div class="form-check category">
 												<input class="form-check-input" type="radio" name="category"
-													id="${categoryList.cName }" value="${categoryList.cName }"
-													required> <label class="form-check-label"
+													id="${categoryList.cName }" value="${categoryList.cName }" required> 
+													<label class="form-check-label"
 													for="${categoryList.cName }"> <img class="tag-img"
 													src="${categoryList.cImgPath }"
 													alt="${categoryList.cName }">
@@ -332,31 +332,34 @@
 										</c:forEach>
 									</div>
 								</div>
-								<div class="mb-3">
-									<input type="text" class="form-control" id="title"
-										name="moqooTitle" placeholder="제목" required>
+							</div>
+							<input type="hidden" id="lat" name="moqooLat">
+							<input type="hidden" id="lng" name="moqooLng">
+							<input type="hidden" id="moqoo-writer" name="moqooWriter" value="${sessionScope.userId }">
+							<div class="mb-3">
+								<input type="text" class="form-control" id="title" name="moqooTitle" placeholder="제목" required>
+							</div>
+							<div class="mb-3" style="display: flex;">
+								<div>
+									<input type="file" class="custom-file-input" id="thum"
+										name="uploadFile" placeholder="썸네일" required> <label
+										for="thum" class="custom-button">파일 선택</label>
 								</div>
-								<div class="mb-3" style="display: flex;">
-									<div>
-										<input type="file" class="custom-file-input" id="thum"
-											name="uploadFile" placeholder="썸네일" required> <label
-											for="thum" class="custom-button">파일 선택</label>
-									</div>
-									<!-- 파일 정보 표시 영역 -->
-									<div id="fileInfo"></div>
-								</div>
-								<div class="mb-3">
-									<textarea id="summernote" name="moqooContent" required></textarea>
-								</div>
-								<div class="mb-3">
-									<input type="number" min="2" max="8" class="form-control"
-										id="people" name="moqooJoin" placeholder="참여인원" required>
-								</div>
+								<!-- 파일 정보 표시 영역 -->
+								<div id="fileInfo"></div>
+							</div>
+							<div class="mb-3">
+								<textarea id="summernote" name="moqooContent" required></textarea>
+							</div>
+							<div class="mb-3">
+								<input type="number" min="2" max="8" class="form-control"
+									id="people" name="moqooJoin" placeholder="참여인원" required>
+							</div>
+							<div class="modal-footer">
+								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+								<button type="submit" class="btn insert">등록</button>
+							</div>
 						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn reset" data-bs-dismiss="modal">취소</button>
-						<button type="button" class="btn insert">등록</button>
 					</div>
 				</div>
 			</div>
@@ -443,8 +446,37 @@
                     ['view', ['fullscreen', 'help']]
                 ],
                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72']
+                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+		        callbacks:{ 
+		            onImageUpload : function(files){ 
+		               uploadSummernoteImageFile(files[0],this); 
+		           } 
+		        } 
         });
+        function uploadSummernoteImageFile(file,editor){ 
+            data = new FormData(); 
+            data.append("file",file); 
+            $.ajax({ 
+        data:data, 
+        type:"POST", 
+        url:"moqoo/uploadSummernoteImageFile", 
+        /* dataType:"JSON", */ 
+        enctype:'multipart/form-data',
+        contentType:false, 
+        processData:false
+        
+      }).done(function(data) {
+      	console.log(data)
+      	var imgNode = $("<img>");
+      	imgNode.attr("src", data);
+      	$(".note-editable").append(imgNode);
+      }).fail(function(a,b,c){
+      	console.log(a);
+      	console.log(b);
+      	console.log(c);
+      });
+          }
+    
     });
   </script>
 
@@ -525,29 +557,29 @@
     
     
 
-    // 장소 검색 객체를 생성합니다
-    var ps = new kakao.maps.services.Places(); 
+//     // 장소 검색 객체를 생성합니다
+//     var ps = new kakao.maps.services.Places(); 
 
-    // 키워드로 장소를 검색합니다
-    ps.keywordSearch('이태원 맛집', placesSearchCB); 
+//     // 키워드로 장소를 검색합니다
+//     ps.keywordSearch('이태원 맛집', placesSearchCB); 
 
-    // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-    function placesSearchCB (data, status, pagination) {
-        if (status === kakao.maps.services.Status.OK) {
+//     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+//     function placesSearchCB (data, status, pagination) {
+//         if (status === kakao.maps.services.Status.OK) {
 
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-            // LatLngBounds 객체에 좌표를 추가합니다
-            var bounds = new kakao.maps.LatLngBounds();
+//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+//             // LatLngBounds 객체에 좌표를 추가합니다
+//             var bounds = new kakao.maps.LatLngBounds();
 
-            for (var i=0; i<data.length; i++) {
-                displayMarker(data[i]);    
-                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-            }       
+//             for (var i=0; i<data.length; i++) {
+//                 displayMarker(data[i]);    
+//                 bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+//             }       
 
-            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-            map.setBounds(bounds);
-        } 
-    }
+//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+//             map.setBounds(bounds);
+//         } 
+//     }
     
  	
   </script>
@@ -620,18 +652,18 @@
   });
  
 	    
-	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
-	  // 현재 날짜를 가져오는 함수
-	  function getTodayDate() {
-	      const today = new Date();
-	      const year = today.getFullYear();
-	      const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
-	      const day = today.getDate().toString().padStart(2, '0');
-	      return `${year}-${month}-${day}`;
-	  }
+// 	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
+// 	  // 현재 날짜를 가져오는 함수
+// 	  function getTodayDate() {
+// 	      const today = new Date();
+// 	      const year = today.getFullYear();
+// 	      const month = (today.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1 필요
+// 	      const day = today.getDate().toString().padStart(2, '0');
+// 	      return `${year}-${month}-${day}`;
+// 	  }
 	
-	  // 오늘 날짜를 가져와서 dateInput 요소의 min 속성에 할당
-	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
+// 	  // 오늘 날짜를 가져와서 dateInput 요소의 min 속성에 할당
+// 	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
 	
 	
 	  // ■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
@@ -651,11 +683,24 @@
   
 </script>
 
-	<script>
+
+
+<script>
   function toggleReportDiv() {
     const reportDiv = document.getElementById("report-div");
     reportDiv.style.display = reportDiv.style.display === "none" ? "block" : "none";
   }
+  
+//신고 모달
+  var selectElement = document.getElementById("reportSelect");
+  var textareaElement = document.getElementById("customReason");
+  selectElement.addEventListener("change", function() {
+    if (selectElement.value === "etc") {
+      textareaElement.style.display = "block";
+    } else {
+      textareaElement.style.display = "none";
+    }
+  });
 </script>
 
 </body>

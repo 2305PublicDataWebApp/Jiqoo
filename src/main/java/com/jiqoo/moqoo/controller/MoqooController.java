@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Comment;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooComtService;
@@ -79,6 +80,7 @@ public class MoqooController {
 	public String insertMoqoo(@ModelAttribute Moqoo moqoo
 			, @RequestParam(value="uploadFile", required=false) MultipartFile uploadFile
 			, HttpServletRequest request
+			, HttpSession session
 			, Model model) {
 		
 		try {
@@ -89,7 +91,12 @@ public class MoqooController {
 				moqoo.setMoqooThumPath((String)moqooMap.get("filePath"));
 			}
 			int result = moqooService.insertMoqoo(moqoo);
+			MoqooUser moqooUser = new MoqooUser();
 			if(result > 0) {
+				moqooUser.setRefMoqooNo(moqoo.getMoqooNo()); // 모임 번호 설정
+	            moqooUser.setRefUserId((String)session.getAttribute("userId")); // 사용자 ID 설정
+	            moqooUser.setAttendStatus("Y"); // 참석 상태 설정
+	            moqooService.insertMoqooUser(moqooUser);
 				return "redirect:/moqoo/moqoo";
 			}
 			else {
@@ -115,16 +122,22 @@ public class MoqooController {
 			Category category = moqooService.selectCategoryByNo(moqooCName);
 			List<Category> categoryList = moqooService.selectCategoryList();
 			int likeCount = moqooService.selectLikeCountByNo(moqooNo);
+			int moqooJoinCount = moqooService.selectJoinCount(moqooNo);
 			if(moqoo != null) {
 				// 게시글 번호에 맞는 댓글들 가져오기
 				List<Comment> comtList = moqooComtService.selectComtList(moqooNo);
+				List<MoqooUser> moqooUserList  = moqooService.selectMoqooUserList(moqooNo);
 				if(comtList.size() > 0) {
 					model.addAttribute("comtList", comtList);
+				}
+				if(moqooUserList.size() > 0) {
+					model.addAttribute("moqooList", moqooUserList);
 				}
 				model.addAttribute("moqoo", moqoo);
 				model.addAttribute("category", category);
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("likeCount", likeCount);
+				model.addAttribute("joinCount", moqooJoinCount);
 				return "moqoo/post_moqoo";
 			}
 			else {
@@ -140,19 +153,27 @@ public class MoqooController {
 		}
 	}
 	
-//	@ResponseBody
-//	@PostMapping("/moqoo/post")
-//	public String insertMoqooPost(@RequestParam("refMoqooNo") int refMoqooNo, @RequestParam("userId") String refUserId) {
-//		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
-//		int result = moqooService.insertMoqooPost(moqooUser);
-//		if(result > 0) {
-//			return "true";
-//		}
-//		else {
-//			return "false";
-//		}
-//	}
-//	
+	@ResponseBody
+	@PostMapping("/moqoo/post")
+	public String insertMoqooPost(
+			 @RequestParam("refMoqooNo") int refMoqooNo
+			, @RequestParam("userId") String refUserId
+			, @RequestParam("attendStatus") String attendStatus) {
+		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
+		int moqooJoinCount = moqooService.selectJoinCount(refMoqooNo);
+		int moqooJoinFull = moqooService.selectOneByMoqooJoin(refMoqooNo);
+		if(moqooJoinFull <= moqooJoinCount) {
+			return "full";
+		}
+		int result = moqooService.insertMoqooPost(moqooUser);
+		if(result > 0) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+	
 	@PostMapping("moqoo/update")
 	public String updateMoqoo(@ModelAttribute Moqoo moqoo,@RequestParam(value = "uploadFile", required=false) MultipartFile uploadFile, Model model, HttpServletRequest request) {
 		try {
@@ -216,9 +237,68 @@ public class MoqooController {
 		}
 	}
 	
+	@PostMapping("/moqoo/attendY")
+    @ResponseBody
+    public String approveUser(
+    		@RequestParam("refMoqooNo") int refMoqooNo
+    		, @RequestParam("refUserId") String refUserId
+    		, @RequestParam("attendStatus") String attendStatus ) {
+        // 승인 로직을 수행합니다.
+		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
+		int result = moqooService.updateYesAttend(moqooUser);
+		if(result > 0) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+        // 승인 처리 후 메시지 반환
+    }
+
+    @PostMapping("/moqoo/sorry")
+    @ResponseBody
+    public String rejectUser() {
+        // 거절 로직을 수행합니다.
+        // 거절 처리 후 메시지 반환
+        return "사용자가 거절되었습니다.";
+    }
 	
 	
-	
+    @PostMapping("/moqoo/heart")
+    @ResponseBody
+    public String clickHeart(@RequestParam("refPostNo") int refPostNo, @RequestParam("userId") String lUserId, @RequestParam("refBoardType") String refBoardType ) {
+    	
+    	Like like = new Like(refPostNo, refBoardType, lUserId);
+    	Like likeOne = moqooService.selectLikeOne(like);
+    	if(likeOne == null) {
+    		int result = moqooService.clickHeart(like);
+    		if(result > 0) {
+            	return "true";
+    		}
+    		else {
+    			return "false";
+            }
+    	}
+    	else {
+    		// 좋아요 테이블에서 삭제 (두번 클릭시 좋아요 취소)
+    		int result = moqooService.deleteHeart(like);
+    		if(result > 0) {
+    			return "true";
+    		}
+    		else {
+    			return "false";
+    		}
+    	}
+       
+        
+    }
+    
+    @PostMapping("/moqoo/likeCount")
+    @ResponseBody
+    public String moqooLikeCount(@RequestParam("refPostNo") int refPostNo ) {
+       int result = moqooService.moqooLikeCount(refPostNo);
+    	return result + "";
+    }
 	
 
 	// 섬머노트 사진 저장하기

@@ -16,4 +16,20 @@ public interface MoqooComtStore {
 	 */
 	List<Comment> selectComtList(SqlSession sqlSession, int refPostNo);
 
+	/**
+	 * 댓글 등록
+	 * @param sqlSession 
+	 * @param comt
+	 * @return
+	 */
+	int insertComt(SqlSession sqlSession, Comment comt);
+
+	/**
+	 * 댓글 삭제
+	 * @param sqlSession
+	 * @param comt
+	 * @return int
+	 */
+	int deleteComt(SqlSession sqlSession, Comment comt);
+
 }

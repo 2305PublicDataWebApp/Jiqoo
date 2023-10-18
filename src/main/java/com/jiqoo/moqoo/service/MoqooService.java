@@ -3,6 +3,7 @@ package com.jiqoo.moqoo.service;
 import java.util.List;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.user.domain.User;
@@ -70,9 +71,67 @@ public interface MoqooService {
 	 */
 	int insertMoqooPost(MoqooUser moqooUser);
 
-	
-	
+	/**
+	 * 게시물 작성시 작성자도 참여자에 포함하기
+	 * @param moqooUser
+	 * @return 
+	 */
+	void insertMoqooUser(MoqooUser moqooUser);
 
+	/**
+	 * 모임참여자 조회
+	 * @param moqooNo 
+	 * @return
+	 */
+	List<MoqooUser> selectMoqooUserList(int refMoqooNo);
 
+	/**
+	 * 참여신청자 승인
+	 * @param moqooUser
+	 * @return
+	 */
+	int updateYesAttend(MoqooUser moqooUser);
+
+	/**
+	 * 현재 참여자 인원
+	 * @param refMoqooNo
+	 * @return
+	 */
+	int selectJoinCount(int refMoqooNo);
+
+	/**
+	 * 총 참여 인원
+	 * @param refMoqooNo
+	 * @return
+	 */
+	int selectOneByMoqooJoin(int moqooNo);
+
+	/**
+	 * 좋아요 클릭했을 때 정보넘기기
+	 * @param like
+	 * @return
+	 */
+	int clickHeart(Like like);
+
+	/**
+	 * 좋아요 카운트
+	 * @param refPostNo
+	 * @return
+	 */
+	int moqooLikeCount(int refPostNo);
+
+	/**
+	 * 좋아요 정보 조회
+	 * @param like
+	 * @return
+	 */
+	Like selectLikeOne(Like like);
+
+	/**
+	 * 좋아요 두번 클릭시 삭제
+	 * @param like
+	 * @return
+	 */
+	int deleteHeart(Like like);
 
 }
