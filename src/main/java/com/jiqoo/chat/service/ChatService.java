@@ -102,4 +102,47 @@ public interface ChatService {
 	 */
 	List<User> selectUsersByKeyword(int chatNo, String user);
 
+	/**
+	 * 채팅방 개설시 유저 검색 Service
+	 * 
+	 * @param userId
+	 * @param keyword 
+	 * @return List<User>
+	 */
+	List<User> selectJoinUserByKeyword(String userId, String keyword);
+
+	/**
+	 * 채팅 개설시 유저 닉네임 조회 Service
+	 * 
+	 * @param userId
+	 * @return String
+	 */
+	String getUserNickname(String userId);
+
+	/**
+	 * 채팅방 개설 Service
+	 * 
+	 * @param chatRoom
+	 * @return int
+	 */
+	int insertNewChatRoom(ChatRoom chatRoom);
+
+	/**
+	 * 개설된 채팅방에 유저 추가 Service
+	 * 
+	 * @param chatRoomNo 
+	 * @param userId
+	 * @return int
+	 */
+	int insertChatUserById(int chatRoomNo, String userId);
+
+	/**
+	 * 개설된 채팅방에 이미지 추가 Service
+	 * 
+	 * @param userId
+	 * @return String
+	 */
+	String getUserPhotoPath(String userId);
+
+
 }

@@ -91,4 +91,42 @@ public class ChatStoreLogic implements ChatStore{
 		return result;
 	}
 
+	@Override
+	public List<User> selectJoinUserByKeyword(SqlSession sqlSession, String userId, String keyword) {
+		Map<String, Object> userMap = new HashMap<>();
+		userMap.put("userId", userId);
+		userMap.put("keyword", keyword);
+		List<User> userList = sqlSession.selectList("ChatMapper.selectJoinUserByKeyword", userMap);
+		return userList;
+	}
+
+	@Override
+	public String getUserNickname(SqlSession sqlSession, String userId) {
+		String result = sqlSession.selectOne("ChatMapper.getUserNickname", userId);
+		return result;
+	}
+
+	@Override
+	public int insertNewChatRoom(SqlSession sqlSession, ChatRoom chatRoom) {
+		sqlSession.insert("ChatMapper.insertNewChatRoom", chatRoom);
+		int chatNo = chatRoom.getChatNo();
+		return chatNo;
+	}
+
+	@Override
+	public int insertChatUserById(SqlSession sqlSession, int chatRoomNo, String userId) {
+		Map<String, Object> chatMap = new HashMap<>();
+		chatMap.put("chatRoomNo", chatRoomNo);
+		chatMap.put("userId", userId);
+		int result = sqlSession.insert("ChatMapper.insertChatUserById", chatMap);
+		return result;
+	}
+
+	@Override
+	public String getUserPhotoPath(SqlSession sqlSession, String userId) {
+		String result = sqlSession.selectOne("ChatMapper.getUserPhotoPath", userId);
+		return result;
+	}
+
+
 }
