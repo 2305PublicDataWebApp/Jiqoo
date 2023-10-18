@@ -22,7 +22,7 @@ public interface SnsService {
 	 * 카카오 로그아웃 service
 	 * @param accessToken
 	 */
-	int kakaoLogout(String accessToken);
+	//int kakaoLogout(String accessToken);
 
 	/**
 	 * 카카오 회원탈퇴 service

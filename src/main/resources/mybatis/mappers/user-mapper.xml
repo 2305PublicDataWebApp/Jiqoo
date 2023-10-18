@@ -43,7 +43,7 @@
 		WHERE USER_ID = #{userId} AND USER_PW = #{userPw} AND USER_STATUS='Y'
 	</select>
 	
-	<select id="selectKakaoUser" resultType="User">
+	<select id="selectSnsUserByEmail" resultType="User">
 		SELECT *
 		FROM USER_TBL
 		WHERE USER_ID = #{userId}

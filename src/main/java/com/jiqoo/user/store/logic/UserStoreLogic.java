@@ -111,8 +111,8 @@ public class UserStoreLogic implements UserStore{
 
 
 	@Override
-	public User selectKakaoUser(SqlSession sqlSession, String userEmail) {
-		User kakaoUser = sqlSession.selectOne("UserMapper.selectKakaoUser", userEmail);
+	public User selectSnsUserByEmail(SqlSession sqlSession, String userEmail) {
+		User kakaoUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", userEmail);
 		return kakaoUser;
 	}
 

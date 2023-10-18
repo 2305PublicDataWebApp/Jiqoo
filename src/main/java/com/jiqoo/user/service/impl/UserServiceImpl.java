@@ -122,6 +122,12 @@ public class UserServiceImpl implements UserService{
 		return result;
 	}
 
+	@Override
+	public User selectNaverUserByEmail(String userEmail) {
+		User naverUser = userStore.selectSnsUserByEmail(sqlSession, userEmail);
+		return naverUser;
+	}
+
 
 
 }
