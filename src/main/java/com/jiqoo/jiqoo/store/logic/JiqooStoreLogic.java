@@ -1,6 +1,7 @@
 package com.jiqoo.jiqoo.store.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -70,6 +71,12 @@ public class JiqooStoreLogic implements JiqooStore {
 	@Override
 	public int updateJiqooCount(SqlSession sqlSession, int jiqooNo) {
 		return sqlSession.update("JiqooMapper.updateJiqooCount", jiqooNo);
+	}
+
+	@Override
+	public List<Jiqoo> selectJiqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Jiqoo> jiqooSearchList = sqlSession.selectList("JiqooMapper.selectJiqooSearchList", params);
+		return jiqooSearchList;
 	}
 
 }

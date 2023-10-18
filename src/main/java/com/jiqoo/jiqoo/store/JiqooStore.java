@@ -1,6 +1,7 @@
 package com.jiqoo.jiqoo.store;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -86,5 +87,13 @@ public interface JiqooStore {
 	 * @return
 	 */
 	int updateJiqooCount(SqlSession sqlSession, int jiqooNo);
+
+	/**
+	 *  지꾸 검색 Store
+	 * @param sqlSession
+	 * @param params 
+	 * @return
+	 */
+	List<Jiqoo> selectJiqooSearchList(SqlSession sqlSession, Map<String, Object> params);
 
 }

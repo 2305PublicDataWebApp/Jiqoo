@@ -10,6 +10,12 @@
 # General
 --------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 :root {
   --font-default : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
@@ -81,7 +87,7 @@ p {
   margin: 30px auto 80px;
   border-radius: 10px;
   width:80%;
-  height:700px;
+  height:800px;
 }
 
 html, body {
@@ -112,15 +118,17 @@ html, body {
     padding: 15px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     position: absolute;
-    left: -113px;
+    left: -125px;
     bottom: 73px;
 }
 
 .info-header {
-   	font-size: 18px; /* 제목 폰트 크기 */
-   	font-weight: bold; /* 제목 굵게 */
+   	font-size: 18px;
+    font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
 }
 
 .info-footer {

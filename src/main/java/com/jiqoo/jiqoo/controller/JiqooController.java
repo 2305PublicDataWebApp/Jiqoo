@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -40,8 +42,8 @@ public class JiqooController {
 	@Autowired
 	private JiqooComtService jiqooComtService;
 
-	@GetMapping("/jiqoo/list")
-	public String showJiqooList(Model model, HttpSession session) {
+	@GetMapping("/jiqoo/mapList")
+	public String showJiqooMapList(Model model, HttpSession session) {
 		try {
 			String userId = (String) session.getAttribute("userId");
 			List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
@@ -50,8 +52,6 @@ public class JiqooController {
 			if (categoryList != null) {
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("jiqooAllList", jiqooAllList);
-				Gson gson = new Gson();
-				model.addAttribute("jiqooJsonList", gson.toJson(jiqooAllList));
 				model.addAttribute("jiqooMyList", jiqooMyList);
 				return "jiqoo/jiqoo";
 			} else {
@@ -62,6 +62,30 @@ public class JiqooController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("url", "/");
+			return "common/message";
+		}
+	}
+
+	@GetMapping("/jiqoo/list")
+	public String showJiqooList(Model model, HttpSession session) {
+		try {
+			String userId = (String) session.getAttribute("userId");
+//			List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+//			List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
+			List<Category> categoryList = jiqooService.selectCategoryList();
+			if (categoryList != null) {
+				model.addAttribute("categoryList", categoryList);
+//				model.addAttribute("jiqooAllList", jiqooAllList);
+//				model.addAttribute("jiqooMyList", jiqooMyList);
+				return "jiqoo/search_jiqoo";
+			} else {
+				model.addAttribute("msg", "게시물 리스트 조회 실패");
+				model.addAttribute("url", "/jiqoo/mapList");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("url", "/jiqoo/mapList");
 			return "common/message";
 		}
 	}
@@ -86,13 +110,13 @@ public class JiqooController {
 				return "redirect:/jiqoo/list";
 			} else {
 				model.addAttribute("msg", "게시물 등록 실패");
-				model.addAttribute("url", "/jiqoo/list");
+				model.addAttribute("url", "/jiqoo/mapList");
 				return "common/message";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "/jiqoo/list");
+			model.addAttribute("url", "/jiqoo/mapList");
 			return "common/message";
 		}
 	}
@@ -116,7 +140,7 @@ public class JiqooController {
 				return "jiqoo/post_jiqoo";
 			} else {
 				model.addAttribute("msg", "게시물 조회에 실패하였습니다.");
-				model.addAttribute("url", "/jiqoo/list");
+				model.addAttribute("url", "/jiqoo/mapList");
 				return "common/message";
 			}
 		} catch (Exception e) {
@@ -125,6 +149,38 @@ public class JiqooController {
 			model.addAttribute("url", "/jiqoo/list");
 			return "common/message";
 		}
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/searchList", produces = "application/json;charset=UTF-8;")
+	public String showSearchList(@RequestParam("searchValue") String searchValue,
+			@RequestParam("searchOption") String searchOption, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		Map<String, Object> params = new HashMap<>();
+		params.put("searchValue", searchValue);
+		params.put("searchOption", searchOption);
+		params.put("userId", userId);
+
+		List<Jiqoo> jiqooSearchList = jiqooService.selectJiqooSearchList(params);
+		Gson gson = new Gson();
+		return gson.toJson(jiqooSearchList);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/AllList", produces = "application/json;charset=UTF-8;")
+	public String showAllList() {
+		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+		Gson gson = new Gson();
+		return gson.toJson(jiqooAllList);
+	}
+
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/MyList", produces = "application/json;charset=UTF-8;")
+	public String showAllList(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
+		Gson gson = new Gson();
+		return gson.toJson(jiqooMyList);
 	}
 
 	@ResponseBody
@@ -153,17 +209,17 @@ public class JiqooController {
 			int result = jiqooService.deleteJiqoo(jiqooNo);
 			if (result > 0) {
 				model.addAttribute("msg", "게시물이 삭제되었습니다.");
-				model.addAttribute("url", "/jiqoo/list");
+				model.addAttribute("url", "/jiqoo/mapList");
 				return "common/message";
 			} else {
 				model.addAttribute("msg", "게시물 삭제에 실패하였습니다.");
-				model.addAttribute("url", "/jiqoo/list");
+				model.addAttribute("url", "/jiqoo/mapList");
 				return "common/message";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "/jiqoo/list");
+			model.addAttribute("url", "/jiqoo/mapList");
 			return "common/message";
 		}
 	}

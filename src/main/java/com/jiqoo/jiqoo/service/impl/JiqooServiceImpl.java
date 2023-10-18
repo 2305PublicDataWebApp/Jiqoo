@@ -1,6 +1,7 @@
 package com.jiqoo.jiqoo.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,13 @@ public class JiqooServiceImpl implements JiqooService{
 		return jiqooStore.updateJiqooCount(sqlSession, jiqooNo);
 		
 	}
+
+	@Override
+	public List<Jiqoo> selectJiqooSearchList(Map<String, Object> params) {
+		List<Jiqoo> jiqooSearchList = jiqooStore.selectJiqooSearchList(sqlSession, params);
+		return jiqooSearchList;
+	}
+
+
 
 }

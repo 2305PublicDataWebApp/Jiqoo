@@ -1,6 +1,7 @@
 package com.jiqoo.jiqoo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.jiqoo.domain.Jiqoo;
@@ -75,5 +76,12 @@ public interface JiqooService {
 	 * @return
 	 */
 	int updateJiqooCount(int jiqooNo);
+
+	/**
+	 * 지꾸 검색 Service
+	 * @param params 
+	 * @return
+	 */
+	List<Jiqoo> selectJiqooSearchList(Map<String, Object> params);
 
 }
