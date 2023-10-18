@@ -99,7 +99,12 @@
       <div id="post-title">${moqoo.moqooTitle }</div>
         <div id="writer-info">
           <div id="post-profile" class="col-lg-2 col-md-3 col-sm-3">
-            <img src="${moqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image">
+          	<c:if test="${moqoo.user.userPhotoPath eq null }">
+   			  <img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" id="moqoo-table-img" class="profile-image">
+            </c:if>
+         	<c:if test="${moqoo.user.userPhotoPath ne null }">
+	          <img src="${moqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image">
+         	</c:if>
           </div>
           <div id="post-nick" class="col-lg-10 col-md-9 col-sm-9">
             <div id="writer-name">${moqoo.user.userNickname }</div>
@@ -119,28 +124,30 @@
 	    </div>
 	    <div>
 	      <p>모일 날짜 : <span>${moqoo.moqooDay }</span></p>
-	      <p>참여인원 : <span>3</span>/${moqoo.moqooJoin }</p>
+	      <p>참여인원 : <span>${joinCount }</span>/${moqoo.moqooJoin }</p>
 	    </div>
 	
 	    <div class="post-footer">
 	      <div class="heart-container">
-	        <img class="heart" src="../resources/assets/img/heart(empty).png" alt="">
-	        <span class="heart-count">14</span>
+	        <img id="heart" class="heart" src="../resources/assets/img/heart(empty).png" alt="빈 하트" onclick="changeImage()">
+	        <span class="heart-count">${likeCount }</span>
 	      </div>
 	      <div class="button-container">
-			<c:if test="${moqoo.moqooWriter eq userId }">
+			<c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
 			    <c:url var="moqooDelUrl" value="/moqoo/delete">
 				  <!-- 내가 쓴 게시글만 지울 수 있게 확인하기 위한 코드 -->
 				  <c:param name="moqooNo" value="${moqoo.moqooNo }"></c:param>
 				  <c:param name="moqooWriter" value="${moqoo.moqooWriter }"></c:param>
 				</c:url>
-		          <button class="btn post-btn open-modal" data-bs-toggle="modal" data-bs-target=".modal"  id="modify-btn">수정</button>
+		          <button class="btn post-btn open-modal" data-bs-toggle="modal" data-bs-target=".mod-modal"  id="modify-btn">수정</button>
 		          <button class="btn post-btn" id="delete-btn" onclick="deleteMoqoo('${moqooDelUrl }');">삭제</button>
 	      	</c:if>
 	      </div>
 	    </div>
 	    <div id="participate">
+	    <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
 	      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
+	    </c:if>  
 	      <button class="btn post-btn" id="participate-btn">참여하기</button>
 	    </div>
 	  
@@ -156,18 +163,32 @@
               </div>
               <div class="modal-body">
                 <table>
-              	  <tr>
-   			        <td><img src="${moqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image"></td>
-   			        <td>아이디 : ${moqooUser.moqooUserId }</td>
-   			        <td>나이 :  ${moqoo.user.userBirth }</td>
-   			        <td>성별 : ${moqoo.user.userGender }</td>
-   			        <td><button onclick="ok();">승인</button><button onclick="sorry();">거절</button></td>
-       		      </tr>
+              	  <c:forEach var="moqooUserList" items="${moqooList }">
+              	  	<tr>
+              	  	<c:if test="${moqooUserList.user.userPhotoPath eq null }">
+   			          <td class="moqoo-table"><img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" id="moqoo-table-img" class="profile-image"></td>
+              	  	</c:if>
+              	  	<c:if test="${moqooUserList.user.userPhotoPath ne null }">
+   			          <td class="moqoo-table"><img src="${moqooUserList.user.userPhotoPath }" alt="프로필 이미지" class="profile-image"></td>
+              	  	</c:if>
+   			    	  <td class="moqoo-table">닉네임 : ${moqooUserList.user.userNickname}</td>
+   				      <td class="moqoo-table">나이 :  ${moqooUserList.user.userBirth }</td>
+   				      <td class="moqoo-table">성별 : ${moqooUserList.user.userGender }</td>
+   				      <td class="moqoo-table">
+   				      	<input type="hidden" value="${moqooUserList.attendStatus }">
+   				      	<input type="hidden" value="${moqooUserList.refUserId }">
+   				      	<input type="hidden" value="${moqooUserList.refMoqooNo }">
+   				      	<c:if test="${moqooUserList.attendStatus eq 'N' }">
+	   				        <button id="ok" class="table-btn">승인</button>
+	   				        <button id="sorry" class="table-btn" onclick="sorry();">거절</button>
+   				        </c:if>
+   				      </td>
+	       		    </tr>
+	              </c:forEach>
                 </table>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn send-report">보내기</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
               </div>
             </div>
           </div>
@@ -175,16 +196,14 @@
       </div>
 
       <!-- ======= Modal ======= -->
-      <div class="modal" tabindex="-1" id="insert-modal">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content"
-					style="background-color: #6DBE45; color: #fff;">
-					<div class="modal-header">
-						<h5 class="modal-title">게시물 입력</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
+      <div class="modal mod-modal" tabindex="-1" id="insert-modal">
+		<div class="modal-dialog modal-lg">
+		  <div class="modal-content" style="background-color: #6DBE45; color: #fff;">
+			<div class="modal-header">
+			  <h5 class="modal-title">게시물 입력</h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
 						<!-- 게시물 수정 폼 -->
 						<form action="/moqoo/update" method="post" id="moqooForm" enctype="multipart/form-data">
 							<input type="hidden" name="moqooNo" value="${moqoo.moqooNo }">
@@ -279,16 +298,22 @@
               </div>
               <p class="comment-text">${comt.comtContent }</p>
               <!-- ■■■■■ 댓글 수정 폼 ■■■■■ -->
-              <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>${comt.comtContent }</textarea>
-                <button class="btn postbtn" id="mod-submit-btn">등록</button>
-              </form>
+              <div class="div-none">
+	              <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
+	                <textarea>${comt.comtContent }</textarea>
+	                <button class="btn postbtn" id="mod-submit-btn">등록</button>
+	              </form>
+              </div>
               <!-- ■■■■■ 대댓글 입력 폼 ■■■■■ -->
-              <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>댓글을 입력하세요</textarea>
-                <button class="btn postbtn" id="re-comt-submit-btn">등록</button>
-              </form>
+              <div class="div-none">
+	              <div class="re-comment-form col-md-12 col-xxl-10 mx-auto">
+	                <textarea id="reComtContent">댓글을 입력하세요</textarea>
+	                <button class="btn postbtn" id="re-comt-submit-btn">등록</button>
+	              </div>
+              </div>
             </li>
+<!--             대댓글 -->
+		  <c:forEach var="comt" items="${comtList }">
             <li class="comment reply-comment">
               <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
               <div id="report-div" style="display: none;">
@@ -303,19 +328,24 @@
                 <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
                 <a href="#" class="comt">삭제</a>
               </div>
-              <p class="comment-text">${comt.comtContent }</p>
+              <p class="comment-text">대댓글</p>
               <!-- 대댓글 입력 폼 -->
-              <form action="" method="" class="re-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea></textarea>
-                <button class="btn postbtn" id="re-submit-btn">등록</button>
-              </form>
+              <div class="div-none">
+	            <form action="" method="" class="re-comment-form col-md-12 col-xxl-10 mx-auto">
+	              <textarea id="re-reComtContent"></textarea>
+	              <button class="btn postbtn" id="re-submit-btn">등록</button>
+	            </form>
+              </div>
               <!-- 대댓글 수정 폼 -->
-              <form action="" method="" class="re-mod-comment-form col-md-12 col-xxl-10 mx-auto">
-                <textarea>${comt.comtContent }</textarea>
-                <button class="btn postbtn" id="re-mod-submit-btn">등록</button>
-              </form>
+              <div class="div-none">
+	            <form action="" method="" class="re-mod-comment-form col-md-12 col-xxl-10 mx-auto">
+	              <textarea>대댓글</textarea>
+	              <button class="btn postbtn" id="re-mod-submit-btn">등록</button>
+	            </form>
+              </div>
             </li>
           </c:forEach>
+        </c:forEach>
 <!--             // 첫번째 댓글의 답글 -->
             <!--  --크게 forEach하고 답글만 따로 또 forEach하면 되나?----여기까지 반복------------------------ -->
           </ul>
@@ -324,10 +354,13 @@
         <div class="comment-page-container">
           <span class="comment-page">< 1 2 3 4 5 ></span>
         </div>
-        <form action="" method="" class="comment-form col-md-12 col-xxl-10 mx-auto">
-          <textarea placeholder="댓글을 입력하세요"></textarea>
-          <button class="btn postbtn" id="submit-btn">등록</button>
-        </form>
+<!--         <form action="" method="" class="comment-form col-md-12 col-xxl-10 mx-auto"> -->
+      <!-- 댓글 등록창 -->
+        <div class="comment-form col-md-12 col-xxl-10 mx-auto">
+         <textarea placeholder="댓글을 입력하세요" id="comtContent"></textarea>
+         <button class="btn postbtn" id="submit-btn">등록</button>
+        </div>
+<!--         </form> -->
           
           
         <!-- 신고 모달 -->
@@ -414,17 +447,17 @@
                 fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
 		        callbacks:{ 
 		            onImageUpload : function(files){ 
-		               uploadSummernoteImageFile(files[0],this); 
+		               muploadSummernoteImageFile(files[0],this); 
 		           } 
 		        } 
         });
-        function uploadSummernoteImageFile(file,editor){ 
+        function muploadSummernoteImageFile(file,editor){ 
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
         data:data, 
         type:"POST", 
-        url:"moqoo/uploadSummernoteImageFile", 
+        url:"moqoo/muploadSummernoteImageFile", 
         /* dataType:"JSON", */ 
         enctype:'multipart/form-data',
         contentType:false, 
@@ -454,7 +487,7 @@
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
         mapOption = { 
-            center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
+            center: new kakao.maps.LatLng(${moqoo.moqooLat}, ${moqoo.moqooLng}), // 지도의 중심좌표
             level: 3 // 지도의 확대 레벨
         };
 
@@ -469,7 +502,7 @@
 
 	// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
 	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-	    markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+	    markerPosition = new kakao.maps.LatLng(${moqoo.moqooLat}, ${moqoo.moqooLng}); // 마커가 표시될 위치입니다
 	
 	// 마커를 생성합니다
 	var marker = new kakao.maps.Marker({
@@ -483,42 +516,42 @@
 	// 커스텀 오버레이에 표시할 컨텐츠 입니다
 	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
 	// 별도의 이벤트 메소드를 제공하지 않습니다 
-	var content = '<div class="wrap">' + 
-	            '    <div class="info">' + 
-	            '        <div class="title">' + 
-	            '            카카오 스페이스닷원' + 
-	            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-	            '        </div>' + 
-	            '        <div class="body">' + 
-	            '            <div class="img">' +
-	            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
-	            '           </div>' + 
-	            '            <div class="desc">' + 
-	            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
-	            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-	            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-	            '            </div>' + 
-	            '        </div>' + 
-	            '    </div>' +    
-	            '</div>';
+// 	var content = '<div class="wrap">' + 
+// 	            '    <div class="info">' + 
+// 	            '        <div class="title">' + 
+// 	            '            카카오 스페이스닷원' + 
+// 	            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+// 	            '        </div>' + 
+// 	            '        <div class="body">' + 
+// 	            '            <div class="img">' +
+// 	            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+// 	            '           </div>' + 
+// 	            '            <div class="desc">' + 
+// 	            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
+// 	            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
+// 	            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+// 	            '            </div>' + 
+// 	            '        </div>' + 
+// 	            '    </div>' +    
+// 	            '</div>';
 	
-    // 마커 위에 커스텀오버레이를 표시합니다
-   	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-   	var overlay = new kakao.maps.CustomOverlay({
-   	    content: content,
-//    	    map: map,  // 커스텀 오버레이 숨김
-   	    position: marker.getPosition()       
-   	});
+//     // 마커 위에 커스텀오버레이를 표시합니다
+//    	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+//    	var overlay = new kakao.maps.CustomOverlay({
+//    	    content: content,
+// //    	    map: map,  // 커스텀 오버레이 숨김
+//    	    position: marker.getPosition()       
+//    	});
 	
-	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-	kakao.maps.event.addListener(marker, 'click', function() {
-	    overlay.setMap(map);
-	});
+// 	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+// 	kakao.maps.event.addListener(marker, 'click', function() {
+// 	    overlay.setMap(map);
+// 	});
 	    
-	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-	function closeOverlay() {
-	    overlay.setMap(null);     
-	}    
+// 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+// 	function closeOverlay() {
+// 	    overlay.setMap(null);     
+// 	}    
     
     
 
@@ -614,14 +647,15 @@
 
 
 
+
   // 댓글 수정 & 답글 버튼 누를 때 동작
   var replyFormVisible = false; // 대댓글 폼 상태 변수
   var modFormVisible = false; // 수정 폼 상태 변수
 
   // 대댓글 폼 화면에 띄우기
   function replyForm(obj){
-    var replyFormElement = obj.parentElement.parentElement.parentElement.nextElementSibling.nextElementSibling;
-    var modFormElement = obj.parentElement.parentElement.parentElement.nextElementSibling;
+    var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
+    var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
       
     if (modFormVisible) {
       modFormElement.style.display = "none";
@@ -639,8 +673,8 @@
 
   // 댓글 수정 폼 띄우기
   function modReply(obj){
-    var modFormElement = obj.parentElement.parentElement.parentElement.nextElementSibling;
-    var replyFormElement = obj.parentElement.parentElement.parentElement.nextElementSibling.nextElementSibling;
+    var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
+    var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
     
     if (replyFormVisible) {
       replyFormElement.style.display = "none";
@@ -702,34 +736,274 @@
 </script>
 
 <script>
+// 좋아요 이미지 변경
+	function changeImage(){
+		var image = document.getElementById('heart');
+		if (image.src.includes("/resources/assets/img/heart(empty).png")) {
+	        // 첫 번째 이미지를 클릭했을 때 두 번째 이미지로 변경
+	        image.src = "../resources/assets/img/heart(full).png";
+	    } else {
+	        // 두 번째 이미지를 클릭했을 때 다시 첫 번째 이미지로 변경
+	        image.src = "../resources/assets/img/heart(empty).png";
+	    }
+	}
+	
+// // 좋아요 클릭 정보 보내기
+// 	$(document).ready(function(){
+		
+// 		$("#heart").on("click",function(){
+// 			var refMoqooNo = "${moqoo.moqooNo }";
+// 			var userId = "${sessionScope.userId }";
+// 			$.ajax({
+// 				url : "/moqoo/heart",
+// 				data : {refPostNo : refMoqooNo, userId : userId, refBoardType : "M" },
+// 				type : "POST",
+// 				success : function(data){
+// 					if(data == "true"){
+// 						likeCount();
+// 					}
+// 					else if(data == "false"){
+// 						alert("좋아요 실패");
+// 					}
+// 					else {
+// 						alert("오류! 관리자에게 문의 바랍니다.");
+// 					}
+// // 					location.reload();  // 새로고침 해주는 애
+					
+// 				},
+// 				error : function(){
+// 					alert("관리자에게 문의 바랍니다.");
+// 				}
+// 			});
+// 		});
+// 	});
+
+	function likeCount(){
+			var refMoqooNo = "${moqoo.moqooNo }";
+			$.ajax({
+				url : "/moqoo/likeCount",
+				data : {refPostNo : refMoqooNo},
+				type : "POST",
+				success : function(data){
+					$(".heart-count").html("<b>"+ data + "</b>");
+				},
+				error : function(){
+					alert("좋아요 카운팅 실패");
+				}
+			})
+		}
+
+// 참여신청자 정보 보내기
 	$(document).ready(function(){
 		var joinBtn = $("#participate-btn");
 		joinBtn.on("click",function(){
 			var refMoqooNo = "${moqoo.moqooNo }";
+			var moqooWriter = "${moqoo.moqooWriter }";
 			var userId = "${sessionScope.userId}";
-			
-			$.ajax({
-				url : "/moqoo/post",
-				data : {refMoqooNo : refMoqooNo, userId : userId},
-				type : "POST",
-				success : function(data){
-					if(data == "true"){
-						alert("참여신청이 완료되었습니다.");
+			var attendStatus = "${moqoo.moqooUser.attendStatus}";
+			if(userId != moqooWriter) {
+				$.ajax({
+					url : "/moqoo/post",
+					data : {refMoqooNo : refMoqooNo, userId : userId, attendStatus : attendStatus },
+					type : "POST",
+					success : function(data){
+						if(data == "true"){
+							alert("참여신청이 완료되었습니다.");
+						}
+						else if(data == "false"){
+							alert("참여신청이 완료되지 않았습니다.");
+						}
+						else if(data == "full") {
+							alert("인원이 마감되었습니다.");	
+						}else {
+							alert("오류! 관리자에게 문의 바랍니다.");
+						}
+						location.reload();  // 새로고침 해주는 애
+						
+					},
+					error : function(){
+						alert("관리자에게 문의 바랍니다.");
 					}
-					else if(data == "false"){
-						alert("참여신청이 완료되지 않았습니다.");
-					}
-					else {
-						alert("오류! 관리자에게 문의 바랍니다.");
-					}
-					
-				},
-				error : function(){
-					alert("관리자에게 문의 바랍니다.");
-				}
-			});
+				});
+			}else{
+				alert("이미 참여신청 되었습니다.");
+			}
 		});
 	});
+
+
+
+	// 승인 버튼 클릭 이벤트 핸들러
+	$('#ok').click(function() {
+		console.log(this);
+		var refMoqooNo = $(this).prev().val();
+		var refUserId = $(this).prev().prev().val();
+		var attendStatus = $(this).prev().prev().prev().val();
+	    $.ajax({
+	        type: 'POST',
+	        url: '/moqoo/attendY', // 백엔드에서 승인 로직이 구현된 엔드포인트
+	        data : {refMoqooNo : refMoqooNo, refUserId : refUserId, attendStatus : attendStatus },
+	        success: function(response) {
+	        	if(response == "true"){
+					alert("승인 되었습니다.");
+				}
+				else if(response == "false"){
+					alert("승인이 완료되지 않았습니다.");
+				}
+				else {
+					alert("오류! 관리자에게 문의 바랍니다.");
+				}
+	        	location.reload();
+// 	            alert(response); // 서버로부터의 응답 메시지를 표시
+	        },
+	        error: function(xhr, status, error) {
+	            alert('에러가 발생했습니다: ' + error);
+	        }
+	    });
+	});
+    
+
+	// 댓글 등록
+	$("#submit-btn").on("click", function() {
+		const cContent = $("#comtContent").val();
+		const moqooNo = ${moqoo.moqooNo };
+		$.ajax({
+			url : "/comt/insert",
+			data : {refMoqooNo : moqooNo, comtContent : cContent},
+			type : "POST",
+			success : function(result){
+				if(result == "success"){
+					alert("댓글 등록 성공!");
+// 					location.reload();
+					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
+					$("#rContent").val("");  // 댓글 창 초기화
+				}
+				else {
+					alert("댓글 등록 실패");
+				}
+				location.reload();  // 새로고침 해주는 애
+			},
+			error : function(){
+				
+			}
+		});
+	});
+	
+	
+// 	// 댓글 리스트를 불러오는 ajax Function
+// 	const getReplyList = () => {
+// 		const moqooNo = ${moqoo.moqooNo};
+// 		$.ajax({
+// 			url : "/comt/list",
+// 			data : { moqooNo : moqooNo },
+// 			type : "GET",
+// 			success : function(data) {
+// 				/* console.log(result); */
+// 				const liComt = $(".comment");
+// 				let tr;
+// 				let replyWriter;
+// 				let replyContent;
+// 				let replyCreateDate;
+// 				let btnArea;
+// 				tableBody.children().remove();
+// 				if(data.length > 0) {
+// 					for(let i in data) {
+// 						tr = $("<tr>"); // <tr></tr>
+// 						replyWriter = $("<td>").text(data[i].replyWriter); // <td></td>
+// 						replyContent = $("<td>").text(data[i].replyContent); // <td></td>
+// 						replyCreateDate = $("<td width='100'>").text(data[i].rCreateDate); // <td></td>
+// 						btnArea = $("<td width='80'>")
+// 									.append("<a href='javascript:void(0)' onclick='modifyView(this, \""+data[i].replyContent+"\", "+data[i].replyNo+");'>수정하기</a> ")
+// 									.append("<a href='javascript:void(0)' onclick='removeReply("+data[i].replyNo+");'>삭제하기</a>");
+// 						// 문자를 매개변수로 넘겨줄 경우에는 역슬래쉬 붙여줘야함
+// 						tr.append(replyWriter);
+// 						tr.append(replyContent);
+// 						tr.append(replyCreateDate);
+// 						tr.append(btnArea);
+// 						tableBody.append(tr);
+// 					}
+// 				}
+// 			},
+// 			error : function() {
+// 				alert("Ajax 오류!! 관리자에게 문의하삼");
+// 			}
+// 		})
+// 	}
+	
+	
+	const modReply = (this) => {
+		
+	}
+	
+// 	const modifyComment = (comtNo, obj) => {
+// 		const inputTag = $(obj).parent().prev(), children();
+// 		const comtCotent = inputTag.val();
+// 		$.ajax({
+// 			url : "/reply/update.kh",
+// 			data : {replyNo : replyNo, replyContent : replyContent},
+// 			type : "POST",
+// 			success : function(data){
+// 				if(data == "success") {
+// 					alert("댓글 수정 성공!");
+// 					getReplyList();
+// 				}
+// 				else{
+// 					alert("댓글 수정 실패!");	
+// 				}
+// 			},
+// 			error : function(){
+// 				alert("오류! 관리자에게 문의바람");
+// 			}
+// 		});
+// 	}
+
+	// 댓글 삭제
+	const removeReply = (comtNo) => {
+		$.ajax({
+			url : "/moqoo/delComt",
+			data : {comtNo : comtNo},
+			type : "GET",
+			success : function(result) {
+				if(result == "success") {
+					alert("댓글 삭제 성공");
+					getReplyList();
+				}else {
+					alert("댓글 삭제 실패");
+				}
+			},
+			error : function() {
+				alert("Ajax 오류~ 관리자에게 문의하세요");
+			}
+		})
+	}
+
+	
+// 	// 답글 등록
+// 	$("#re-comt-submit-btn").on("click", function() {
+// 		const reContent = $("#reComtContent").val();
+// 		const moqooNo = ${moqoo.moqooNo };
+// 		const pComtNo = ${};
+// 		$.ajax({
+// 			url : "/comt/insert",
+// 			data : {refMoqooNo : moqooNo, comtContent : cContent},
+// 			type : "POST",
+// 			success : function(result){
+// 				if(result == "success"){
+// 					alert("댓글 등록 성공!");
+// // 					location.reload();
+// 					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
+// 					$("#rContent").val("");  // 댓글 창 초기화
+// 				}
+// 				else {
+// 					alert("댓글 등록 실패");
+// 				}
+// 				location.reload();  // 새로고침 해주는 애
+// 			},
+// 			error : function(){
+				
+// 			}
+// 		});
+// 	});
 </script>
 </body>
 

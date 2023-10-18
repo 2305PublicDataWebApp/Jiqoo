@@ -13,4 +13,18 @@ public interface MoqooComtService {
 	 */
 	List<Comment> selectComtList(int refPostNo);
 
+	/**
+	 * 댓글 등록
+	 * @param comment
+	 * @return
+	 */
+	int insertComt(Comment comt);
+
+	/**
+	 * 댓글 삭제
+	 * @param comt
+	 * @return int
+	 */
+	int deleteComt(Comment comt);
+
 }

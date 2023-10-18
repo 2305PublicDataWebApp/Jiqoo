@@ -56,6 +56,27 @@ p {
 /* .infoModal { */
 /* 	list-style: none; */
 /* } */
+.moqoo-table {
+	padding-right: 10px;
+}
+#moqoo-table-img {
+	width: 35px;
+    height: 35px;
+}
+.table-btn {
+	margin : 0 5px;
+	border-radius: 10px;
+	background-color: #71c55d;
+    border-color: #71c55d;
+    color : white;
+}
+
+.table-btn:hover {
+  background-color: #5ea34d;
+  border-color: #5ea34d;
+  color: #fff;
+}
+
 
 
 .open-modal {
@@ -857,6 +878,10 @@ p {
 }
 
 
+.div-none{
+	display: none;
+}
+
 /* 댓글 폼 스타일 */
 .comment-form {
   border: 1px solid #C2D1D9;
@@ -896,6 +921,7 @@ p {
 
 /* 댓글 수정 폼 스타일 */
 .mod-comment-form {
+	display : none;
   border: 1px solid #C2D1D9;
   border-radius: 10px;
   padding: 10px;
@@ -932,6 +958,7 @@ p {
 
 /* 대댓글 폼 스타일 */
 .re-comment-form {
+	display : none;
   border: 1px solid #C2D1D9;
   background-color: white;
   border-radius: 10px;
@@ -969,6 +996,7 @@ p {
 
 /* 대댓글 수정 폼 스타일 */
 .re-mod-comment-form {
+	display : none;
   border: 1px solid #C2D1D9;
   background-color: white;
   border-radius: 10px;
@@ -1002,6 +1030,23 @@ p {
 #re-mod-submit-btn:hover {
   background-color: #5A9216;
 }
+
+#re-comt-submit-btn{
+  width: 80px;
+  height: 35px;
+  background-color: #8BC34A;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  right: 5px;
+  bottom: 5px;
+}
+#re-comt-submit-btn:hover {
+  background-color: #5A9216;
+}
+
 
 
 /*--------------------------------------------------------------

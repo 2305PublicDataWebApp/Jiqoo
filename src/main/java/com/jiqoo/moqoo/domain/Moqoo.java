@@ -23,8 +23,9 @@ public class Moqoo {
 	private int mViewCount;
 	private double moqooLat;
 	private double moqooLng;
-	private char moqooStatus;
+	private String moqooStatus;
 	private User user;  // user컬럼 목록
+	private MoqooUser moqooUser;  // 참여자목록 테이블
 	
 	
 	public int getMoqooNo() {
@@ -123,10 +124,10 @@ public class Moqoo {
 	public void setMoqooLng(double moqooLng) {
 		this.moqooLng = moqooLng;
 	}
-	public char getMoqooStatus() {
+	public String getMoqooStatus() {
 		return moqooStatus;
 	}
-	public void setMoqooStatus(char moqooStatus) {
+	public void setMoqooStatus(String moqooStatus) {
 		this.moqooStatus = moqooStatus;
 	}
 //	public String getcName() {
@@ -141,7 +142,15 @@ public class Moqoo {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
+	public MoqooUser getMoqooUser() {
+		return moqooUser;
+	}
+	public void setMoqooUser(MoqooUser moqooUser) {
+		this.moqooUser = moqooUser;
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		return "모꾸 [모임번호=" + moqooNo + ", 모임카테고리=" + category + ", 모임W3W주소=" + moqooW3W + ", 모임제목="
@@ -149,7 +158,7 @@ public class Moqoo {
 				+ moqooDay + ", 참여자=" + moqooJoin + ", 모임작성일=" + moqooDate + ", 모임수정일=" + mUpdateDate
 				+ ", 썸네일=" + moqooThumName + ", 썸네일새이름=" + moqooThumRename + ", 썸네일주소="
 				+ moqooThumPath + ", 조회수=" + mViewCount + ", 위도=" + moqooLat + ", 경도=" + moqooLng
-				+ ", 사용여부=" + moqooStatus + ", 유저컬럼들=" + user + "]";
+				+ ", 사용여부=" + moqooStatus + ", 유저컬럼들=" + user + ", 참여자컬럼들=" + moqooUser + "]";
 	}
 	
 }

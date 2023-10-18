@@ -2,7 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="MoqooUserMapper">
 
+	<resultMap type="MoqooUser" id="MoqooUserResultMap">
+		<id property="refMoqooNo" column="REF_MOQOO_NO"/>
+		<id property="refUserId" column="REF_USER_ID"/>
+		<result property="attendStatus" column="ATTEND_STATUS"/>
+		<collection property="user" resultMap="UserResultMap"></collection>
+	</resultMap>
+	
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userNickname" column="USER_NICKNAME"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+		<result property="userGender" column="USER_GENDER"/>
+		<result property="userBirth" column="USER_BIRTH"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userInfo" column="USER_INFO"/>
+		<result property="userPhotoName" column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" column="U_DELETE_DATE"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="adminYn" column="ADMIN_YN"/>
+	</resultMap>
+
 	<insert id="insertMoqooPost">
-		insert into moqoo_User_tbl values(#{refMoqooNo }, #{refUserId })
+		INSERT INTO MOQOO_USER_TBL VALUES(#{refMoqooNo }, #{refUserId }, DEFAULT)
 	</insert>
+	
+	<insert id="insertMoqooUser">
+		INSERT INTO MOQOO_USER_TBL VALUES(#{refMoqooNo }, #{refUserId }, #{attendStatus })
+	</insert>
+	
+	<update id="updateYesAttend">
+		UPDATE MOQOO_USER_TBL SET ATTEND_STATUS = 'Y' WHERE REF_USER_ID = #{refUserId } AND REF_MOQOO_NO = #{refMoqooNo }
+	</update>
+	
+	<!-- 강사님 help -->
+	<select id="selectMoqooUserList" resultMap="MoqooUserResultMap">
+		SELECT * FROM MOQOO_USER_TBL JOIN USER_TBL ON REF_USER_ID = USER_ID WHERE REF_MOQOO_NO = #{refMoqooNo } AND USER_STATUS = 'Y'
+	</select>
+	
+	<select id="selectJoinCount" resultType="_int">
+		SELECT COUNT(*) FROM MOQOO_USER_TBL WHERE REF_MOQOO_NO = #{refMoqooNo }
+	</select>
 </mapper>

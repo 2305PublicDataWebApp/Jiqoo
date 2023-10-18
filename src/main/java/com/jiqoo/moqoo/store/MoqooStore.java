@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.user.domain.User;
@@ -83,5 +84,75 @@ public interface MoqooStore {
 	 */
 	int insertMoqooPost(SqlSession sqlSession, MoqooUser moqooUser);
 
+	/**
+	 * 게시물 작성시 작성자도 참여자에 포함하기
+	 * @param sqlSession
+	 * @param moqooUser
+	 */
+	void insertMoqooUser(SqlSession sqlSession, MoqooUser moqooUser);
+
+	/**
+	 * 모임참여자 조회
+	 * @param sqlSession
+	 * @param moqooNo 
+	 * @return
+	 */
+	List<MoqooUser> selectMoqooUserList(SqlSession sqlSession, int refMoqooNo);
+
+	/**
+	 * 참여신청자 승인
+	 * @param sqlSession
+	 * @param moqooUser
+	 * @return
+	 */
+	int updateYesAttend(SqlSession sqlSession, MoqooUser moqooUser);
+
+	/**
+	 * 현재 참여자 수
+	 * @param sqlSession
+	 * @param refMoqooNo
+	 * @return
+	 */
+	int selectJoinCount(SqlSession sqlSession, int refMoqooNo);
+
+	/**
+	 * 총 참여 인원
+	 * @param sqlSession
+	 * @param moqooNo
+	 * @return
+	 */
+	int selectOneByMoqooJoin(SqlSession sqlSession, int moqooNo);
+
+	/**
+	 * 좋아요 클릭시 
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int clickHeart(SqlSession sqlSession, Like like);
+
+	/**
+	 * 좋아요 카운트
+	 * @param sqlSession
+	 * @param refPostNo
+	 * @return
+	 */
+	int moqooLikeCount(SqlSession sqlSession, int refPostNo);
+
+	/**
+	 * 좋아요 조회
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	Like selectLikeOne(SqlSession sqlSession, Like like);
+
+	/**
+	 * 좋아요 두번 클릭시 삭제
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int deleteHeart(SqlSession sqlSession, Like like);
 
 }

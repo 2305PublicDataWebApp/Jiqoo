@@ -20,6 +20,7 @@
 		<result property="moqooLng" column="MOQOO_LNG"/>
 		<result property="moqooStatus" column="MOQOO_STATUS"/>
 		<collection property="user" resultMap="UserResultMap"></collection>
+		<collection property="moqooUser" resultMap="MoqooUserResultMap"></collection>
 	</resultMap>
 	
 	<resultMap type="User" id="UserResultMap">
@@ -42,10 +43,19 @@
 		<result property="adminYn" column="ADMIN_YN"/>
 	</resultMap>
 	
+	<resultMap type="MoqooUser" id="MoqooUserResultMap">
+		<id property="refMoqooNo" column="REF_MOQOO_NO"/>
+		<id property="refUserId" column="REF_USER_ID"/>
+		<result property="attendStatus" column="ATTEND_STATUS"/>
+	</resultMap>
+	
 	
 	<!-- view count 일단 default로 둠 -->
 	<insert id="insertMoqoo">
-		INSERT INTO MOQOO_TBL VALUES(SEQ_MOQOO_NO.NEXTVAL, #{moqooW3W }, #{moqooDay }, #{category }, #{moqooTitle }, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, #{moqooContent }, #{moqooJoin }, #{moqooWriter }, DEFAULT, DEFAULT, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT )
+		<selectKey keyProperty="moqooNo" resultType="int" order="BEFORE">
+			SELECT SEQ_MOQOO_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO MOQOO_TBL VALUES(#{moqooNo }, #{moqooW3W }, #{moqooDay }, #{category }, #{moqooTitle }, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, #{moqooContent }, #{moqooJoin }, #{moqooWriter }, DEFAULT, DEFAULT, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT )
 	</insert>
 	
 	<update id="updateMoqoo">
@@ -58,11 +68,11 @@
 
 	<select id="showSelectMoqooList" resultMap="MoqooResultMap">
 <!-- 		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = #{moqooWriter } WHERE MOQOO_STATUS = 'Y' -->
-		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_STATUS = 'Y'
+		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_STATUS = 'Y' ORDER BY MOQOO_NO DESC
 	</select>
 	
 	<select id="selectOneByNo" resultMap="MoqooResultMap">
-		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID WHERE MOQOO_NO = #{moqooNo} AND MOQOO_STATUS = 'Y'
+		SELECT * FROM MOQOO_TBL JOIN USER_TBL ON MOQOO_WRITER = USER_ID LEFT JOIN MOQOO_USER_TBL ON MOQOO_NO = REF_MOQOO_NO WHERE MOQOO_NO = #{moqooNo} AND MOQOO_STATUS = 'Y'
 	</select>
 
 	<select id="selectCategoryList" resultType="Category">
@@ -76,4 +86,24 @@
 	<select id="selectLikeCountByNo" resultType="_int">
 		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{moqooNo } AND REF_BOARD_TYPE = 'M'
 	</select>
+	
+	<select id="selectOneByMoqooJoin" resultType="_int">
+		SELECT MOQOO_JOIN FROM MOQOO_TBL WHERE MOQOO_NO = #{moqooNo }
+	</select>
+	
+	<insert id="clickHeart">
+		INSERT INTO LIKE_TBL VALUES(#{refPostNo },#{refBoardType }, #{lUserId }) 
+	</insert>
+	
+	<select id="moqooLikeCount" resultType="_int">
+		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo }
+	</select>
+	
+	<select id="selectLikeOne" resultType="Like">
+		SELECT * FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND REF_BOARD_TYPE = #{refBoardType } AND L_USER_ID = #{lUserId }
+	</select>
+	
+	<delete id="deleteHeart">
+		DELETE LIKE_TBL WHERE REF_POST_NO = #{refPostNo } and REF_BOARD_TYPE = #{refBoardType } and L_USER_ID = #{lUserId };
+	</delete>
 </mapper>
