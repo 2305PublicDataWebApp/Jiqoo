@@ -101,10 +101,10 @@
 			</div>
 		</section>
 		<section>
+			<c:if test="${!empty chatRoomList }">
 			<div class="container-fluid h-100" data-aos="fade-in"
 				style="background-color: #FFF9C5; padding-top: 100px; padding-bottom: 100px; margin-bottom: 100px; position: relative;">
 				<div class="row justify-content-center h-100">
-					<c:if test="${!empty chatRoomList }">
 					<div class="col-md-4 col-xl-3 chat">
 						<div class="card mb-sm-3 mb-md-0 contacts_card"
 							data-aos="fade-right">
@@ -171,7 +171,6 @@
 							<div class="card-footer"></div>
 						</div>
 					</div>
-					</c:if>
 					<div class="col-md-8 col-xl-6 chat" id="chat_info_div"
 						data-aos="fade-left">
 						<div
@@ -242,6 +241,37 @@
 					</div>
 				</div>
 			</div>
+			</c:if>
+			<c:if test="${empty chatRoomList }">
+			<div class="container-fluid h-100" data-aos="fade-in"
+				style="background-color: white; padding-top: 120px; padding-bottom: 120px; margin-bottom: 100px; position: relative;">
+				<div class="row justify-content-center h-100">
+				<div class="col-md-12 col-xl-12 chat" id="chat_start_div"
+				data-aos="fade-in" >
+					<div
+						class='chat_none row d-flex justify-content-center align-items-center'>
+<!-- 						<div class='text-center'> -->
+<!-- 							<img src='../resources/assets/img/jiqooLogo.png'> -->
+<!-- 						</div> -->
+						<div class="text-center">
+							<button class="btn add-btn" id="none-add-btn" data-bs-toggle="modal"
+											data-bs-target="#addUserModal">
+								<img alt="add-chat" src="../resources/assets/img/chat-add.png" style="width:100px;height:100px;">
+							</button>
+						</div>
+						<div class='text-center' style="margin-top:20px;">
+							<p>
+								<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>
+								아직 개설된 채팅방이 없네요<img alt="없음" src="../resources/assets/img/thingking.png" style="width:18px;height:18px;">
+								<br>
+								버튼을 클릭하여 채팅을 시작해보세요!
+							<p>
+						</div>
+					</div>
+				</div>
+				</div>
+				</div>
+			</c:if>
 		</section>
 		<!-- 채팅방 개설 Modal -->
 		<div class="modal fade" id="addUserModal" tabindex="-1"
@@ -393,6 +423,7 @@
 				$('.chat-info').append(hiddenNo);
 				$("#chatName").text(chatRoomName);
 				$("#info-img").attr("src", chatImg);
+				// 채팅방을 클릭하면 마지막 접속시간 업데이트하기
 				$.ajax({
 		        	url : "/chat/disconnect",
 		        	data : {
@@ -406,7 +437,7 @@
 		        		}
 		        	}
 		        })
-		        if($('#hiddenChatNo').val() == chatRoomId) {
+		        if($('#hiddenChatNo').val() == chatRoomId) {  // 채팅방 클릭하면 안읽은 메시지를 숨김
 	            	$('#unreadCount-' + chatRoomId).hide();
 	            }
 				$.ajax({
@@ -590,7 +621,7 @@
 		}
 		 // 웹소켓 연결 초기화
 	    function connect(chatRoomId) {
-	        var socket = new SockJS('http://127.0.0.1:9999/chat/list');
+	        var socket = new SockJS('http://localhost:9999/chat/list');
 	        stompClient = Stomp.over(socket);
 	        stompClient.connect({}, function(frame) {
 	            console.log('Connected: ' + frame);
@@ -856,6 +887,7 @@
 			        			/* }
 			        		});
 			        	} */
+			        	location.reload(true);
 			        	chatListReload();
 			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
 			            /* scrollToBottom(); */
@@ -944,6 +976,7 @@
 				            	msgSenderPhotoPath : "out"
 				            }));
 							chatListReload();
+							$(".chat-info").hide();
 						}
 					}
 				})
@@ -967,14 +1000,45 @@
 	    function updateChatList(data) {
 	        var chatList = $(".contacts"); // 채팅 리스트가 있는 DOM 요소를 선택
 	        chatList.children().remove(); // 기존 목록 지우기
-
+			var indUserInfo;
+	        var chatName;
+	        var photo;
+	        var isGroup = true;
 	        $.each(data, function (index, chatRoom) {
-	        	var chatName = chatRoom.chatRoom.chatName;
+		    	$.ajax({
+		    		url : "/chat/users",
+		    		data : {
+		    			chatNo : chatRoom.chatRoom.chatNo
+		    		},
+		    		type : "GET",
+		    		dataType : 'json',
+		    		success : function(userData) {
+		    			if(userData.length == 2) {
+	    					isGroup = false;
+		    				for(var i = 0; i < userData.length; i++){
+			    				if(userData[i].userId != userId){
+			    					indUserInfo = userData[i];
+			    				}
+		    				}
+		    				
+		    			}
+		    		}	
+		    	})
+		    	console.log(isGroup);
+// 	        	var chatName = chatRoom.chatRoom.chatName;
+		    	if(!isGroup) {
+		    		chatName = indUserInfo.userId;
+    				photo = indUserInfo.userPhotoPath;
+    			}else {
+    				chatName = chatRoom.chatRoom.chatName;
+    				photo = chatRoom.chatRoom.cImagePath;
+    			}
+		    	console.log(chatName);
 	        	var maxLength = 12;
-	        	if(chatName.length > maxLength) {
+	        	/* if(chatName.length > maxLength) {
 	        		chatName = chatName.substring(0, maxLength) + "...";
-	        	}
-	        	var photo = chatRoom.chatRoom.cImagePath;
+	        	} */
+// 	        	var photo = chatRoom.chatRoom.cImagePath;
 	        	if(photo == "" || photo == null) {
 	        		photo = "../resources/assets/img/earth-globe.png"
 	        	}
@@ -1132,7 +1196,6 @@
 	        });
 
 	    }
-	    // 이 함수를 호출하여 채팅 리스트를 업데이트할 수 있습니다.
 	    // updateChatList(data); // data는 서버에서 받아온 채팅 데이터 배열입니다.
 	</script>
 </body>
