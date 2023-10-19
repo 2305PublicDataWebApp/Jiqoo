@@ -169,8 +169,10 @@
 										<td class="col1"><c:if test="${search.userGender eq ''}"> - </c:if>
 											<c:if test="${search.userGender ne null}"> ${search.userGender} </c:if>
 										</td>
-										<td class="col1"><c:if
-												test="${search.platformType eq 'normal'}"> 홈페이지 </c:if></td>
+										<td class="col1">
+											<c:if test="${search.platformType eq 'normal'}"> 홈페이지 </c:if>
+											<c:if test="${search.platformType eq 'kakao'}"> 카카오 </c:if>
+										</td>
 										<td>${search.userStatus }</td>
 										<td>10</td>
 										<td>

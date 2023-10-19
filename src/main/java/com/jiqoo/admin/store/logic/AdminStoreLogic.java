@@ -434,6 +434,18 @@ public class AdminStoreLogic implements AdminStore {
 		return dayCountList;
 	}
 
+	@Override
+	public List<Map<String, Object>> selectAllChatRoom(SqlSession sqlSession, Map<String, Object> chatMap) {
+		List<Map<String, Object>> chatRoomList = sqlSession.selectList("AdminMapper.selectAllChatRoom", chatMap);
+		return chatRoomList;
+	}
+
+	@Override
+	public List<Map<String, Object>> jiqooChartList(SqlSession sqlSession, Jiqoo jiqoo) {
+		List<Map<String, Object>> jiqooChartList = sqlSession.selectList("AdminMapper.jiqooChartList", jiqoo);
+		return jiqooChartList;
+	}
+
 
 
 

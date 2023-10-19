@@ -396,6 +396,18 @@ public class AdminServiceImpl implements AdminService {
 		return dayCountList;
 	}
 
+	@Override
+	public List<Map<String, Object>> selectAllChatRoom(PageInfo pInfo, Map<String, Object> chatMap) {
+		List<Map<String, Object>> chatRoomList = adminStore.selectAllChatRoom(sqlSession, chatMap);
+		return chatRoomList;
+	}
+
+	@Override
+	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo) {
+		List<Map<String, Object>> jiqooChartList = adminStore.jiqooChartList(sqlSession, jiqoo);
+		return jiqooChartList;
+	}
+
 	
 
 

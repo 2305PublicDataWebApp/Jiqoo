@@ -26,6 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.jiqoo.admin.service.AdminService;
+import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.common.domain.Comment;
@@ -124,7 +125,12 @@ public class AdminController {
 		}
 		String userBirthGroup = ageGson.toJson(ageArray);
 		
-			
+		Map<String,Object>statsMap = new HashMap<>();
+		statsMap.put("user", user);
+		statsMap.put("jiqoo", jiqoo);
+		statsMap.put("moqoo", moqoo);
+		
+//		List<Map<String,Object>> dayCountList = adminService.dayCountList(statsMap);
 			
 		try {
 			mv.addObject("usingJiqooCount", usingJiqooCount); //유지중인 지꾸 수 
@@ -141,6 +147,7 @@ public class AdminController {
 			mv.addObject("todayJiqooList", todayJiqooList); //당일 등록된 지꾸 리스트
 			mv.addObject("todayMoqooList", todayMoqooList); //당일 등록된 모꾸 리스트
 			mv.addObject("todayComtList", todayComtList); //당일 등록된 모꾸 리스트
+//			mv.addObject("dayCountList", dayCountList); //날짜별 지꾸 모꾸 회원 등록수 리스트
 			
 			mv.setViewName("admin/admin_main");
 			
@@ -154,28 +161,46 @@ public class AdminController {
 	
 	
 	
-	//통합 컬럼차트
+		//메인_통합 컬럼차트
 		@ResponseBody
 		@GetMapping("/admin/statschart")
 		public String statschart(User user, Jiqoo jiqoo, Moqoo moqoo) {
+				
+//			List<Map<String,Object>> userCountList = adminService.userCountList(user);
+//			
+//			Gson gson = new Gson();
+//			return gson.toJson(userCountList);
+			
 			Map<String,Object>statsMap = new HashMap<>();
 			statsMap.put("user", user);
 			statsMap.put("jiqoo", jiqoo);
 			statsMap.put("moqoo", moqoo);
 			
-			List<Map<String,Object>> dayCountList = adminService.dayCountList(statsMap); //회원 날짜별 가입수 리스트
-//			List<Map<String,Object>> jiqooCountList = adminService.jiqooCountList(jiqoo);
-			
-//  ['', '지꾸', '모꾸', '회원'],
-//  ['07', 10, 4, 2],
-//  ['08', 17, 4, 2],
-//  ['09', 6, 11, 3],...
+			List<Map<String,Object>> dayCountList = adminService.dayCountList(statsMap); //날짜별 지꾸 모꾸 회원 등록수 리스트
 
-			
 			Gson gson = new Gson();
 			return gson.toJson(dayCountList);
-
+			
+		}
 		
+		//지꾸_차트 
+		@ResponseBody
+		@GetMapping("/admin/jiqoochart")
+		public String jiqoochart(User user, Jiqoo jiqoo) {
+				
+//			List<Map<String,Object>> userCountList = adminService.userCountList(user);
+//			
+//			Gson gson = new Gson();
+//			return gson.toJson(userCountList);
+			
+			Map<String,Object>jiqooChartMap = new HashMap<>();
+			jiqooChartMap.put("user", user);
+			jiqooChartMap.put("jiqoo", jiqoo);
+			
+			List<Map<String,Object>> jiqooChartList = adminService.jiqooChartList(jiqoo);
+
+			Gson gson = new Gson();
+			return gson.toJson(jiqooChartList);
 			
 		}
 	
@@ -546,7 +571,7 @@ public class AdminController {
 //**지꾸****지꾸*****지꾸************************************************************************************************************************//
 	
 	// 지꾸관리 리스트 (+페이징)
-	@GetMapping("/admin/jiqoo")
+	@GetMapping("/admin/jiqoolist")
 	public ModelAndView showAdminJiqoo(ModelAndView mv
 									, @ModelAttribute Jiqoo jiqoo
 									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
@@ -557,12 +582,10 @@ public class AdminController {
 		Integer totalJiqooCount = adminService.getJiqooListCount(); // 총 지꾸 수 
 		PageInfo pInfo = this.getPageInfo(10, currentPage, totalJiqooCount);
 		List<Jiqoo> jiqooList = adminService.selectAllJiqoo(pInfo); // 전체 지꾸 리스트
-//		Jiqoo jiqooOne = adminService.selectOneJiqoo(jiqoo); 
 		
 		try {
 			if (jiqooList.size() > 0) {
 				mv.addObject("jiqooList", jiqooList);
-//				mv.addObject("jiqooOne", jiqooOne);
 				mv.addObject("pInfo", pInfo);
 				mv.addObject("totalJiqooCount", totalJiqooCount);
 				mv.setViewName("admin/admin_jiqoo");
@@ -623,53 +646,7 @@ public class AdminController {
 	}
 	
 	
-//	// 지꾸관리_강제삭제
-//	@ResponseBody
-//	@GetMapping("/admin/deletejiqoo")
-//	public ModelAndView deleteJiqooByAdmin (ModelAndView mv
-//											, @RequestParam(value="jiqooNo") Integer jiqooNo
-//											, HttpSession session) {
-//		//UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = ?
-//	
-////			Integer result = adminService.deleteJiqooByAdmin(jiqoo);
-////			if(result>0) {
-////				return "success";
-////			
-////			}else {
-////				return "fail";
-////			}
-//			
-//			try {
-//				String adminYn = (String)session.getAttribute("adminYn"); 
-//				
-////				Jiqoo jiqoo = new Jiqoo();
-////				jiqoo.setJiqooNo(jiqooNo);  //없어도 되긴 함 
-//				
-//				if(adminYn != null && adminYn.equals("Y")) {  //어드민일때 삭제할수 있도록
-//					Integer result = adminService.deleteJiqooByAdmin(jiqooNo);
-//					if(result>0) {
-//						mv.addObject("msg", "지꾸 삭제 완료");
-//						mv.addObject("url", "/admin/jiqoo");
-//						mv.setViewName("common/message");
-//						
-//					}else {
-//						
-//						mv.addObject("msg", "지꾸 삭제가 완료되지 않았습니다");
-//						mv.addObject("url", "/admin/jiqoo");
-//						mv.setViewName("common/message");
-//					}
-//				}else {
-//					mv.addObject("msg", "관리자만 삭제할 수 있습니다");
-//					mv.addObject("url", "/");  //메인화면으로 돌아감
-//					mv.setViewName("common/message");
-//				}
-//			} catch (Exception e) {
-//				mv.addObject("msg", "지꾸 삭제 실패");
-//				mv.addObject("url", "/admin/jiqoo");
-//				mv.setViewName("common/message");
-//			}
-//			return mv;
-//	}
+
 	
 	
 	
@@ -688,7 +665,7 @@ public class AdminController {
 //**모꾸***모꾸***모꾸****************************************************************************************************************//	
 
 	// 모꾸관리 리스트 (+페이징)
-		@GetMapping("/admin/moqoo")
+		@GetMapping("/admin/moqoolist")
 		public ModelAndView showAdminMoqoo(ModelAndView mv
 										, @ModelAttribute Moqoo moqoo
 										, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
@@ -719,8 +696,6 @@ public class AdminController {
 			return mv;
 		}
 
-		
-		
 		
 		// 모꾸관리_서치페이지 (+페이징)
 		@GetMapping("/admin/moqoosearch")
@@ -779,19 +754,27 @@ public class AdminController {
 //**채팅***채팅***채팅****************************************************************************************************************//	
 		
 	// 채팅방관리_ 리스트 접속(+페이징)  //안됨
-	@GetMapping("/admin/chat")
+	@GetMapping("/admin/chatlist")
 	public ModelAndView showAdminChat(ModelAndView mv
 									, HttpSession session
 									, @ModelAttribute ChatRoom chatRoom
 									, @ModelAttribute ChatUser chatUser
+									, @ModelAttribute ChatMessage chatMessage
 									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
 		// SELECT COUNT (*) FROM CHAT_ROOM_TBL;
 		// SELECT * FROM CHAT_ROOM_TBL ORDER BY C_CREATE_DATE DESC
 		Integer totalChatRoomCount = adminService.getChatRoomListCount(); // 총 채팅방 수
-		PageInfo pInfo = this.getPageInfo(10, currentPage, totalChatRoomCount);
-		List<ChatRoom>chatRoomList = adminService.selectAllChatRoom(pInfo); // 전체 채팅방 리스트
+		PageInfo pInfo = this.getPageInfo(15, currentPage, totalChatRoomCount);
+//		List<ChatRoom>chatRoomList = adminService.selectAllChatRoom(pInfo); // 전체 채팅방 리스트
 		
+		Map<String,Object>chatMap = new HashMap<>();
+		chatMap.put("chatRoom", chatRoom);
+		chatMap.put("chatUser", chatUser);
+		chatMap.put("chatMessage", chatMessage);
 		
+		List<Map<String, Object>>chatRoomList = adminService.selectAllChatRoom(pInfo, chatMap);
+		
+		System.out.println(chatRoomList);
 
 	
 		

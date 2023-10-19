@@ -129,10 +129,10 @@
 						</span> 
                         <span class="text-muted small pt-2 ps-1">
 							<span class="text-muted small pt-2 ps-1">
-							<c:if test="${todayInsertJiqooCount gt yesterdayInsertJiqooCount }">increase</c:if>
-                        	<c:if test="${todayInsertJiqooCount lt yesterdayInsertJiqooCount}">decrease</c:if>
-                        	<c:if test="${todayInsertJiqooCount eq yesterdayInsertJiqooCount}">same</c:if>
-						</span>
+								<c:if test="${todayInsertJiqooCount gt yesterdayInsertJiqooCount }">increase</c:if>
+	                        	<c:if test="${todayInsertJiqooCount lt yesterdayInsertJiqooCount}">decrease</c:if>
+	                        	<c:if test="${todayInsertJiqooCount eq yesterdayInsertJiqooCount}">same</c:if>
+							</span>
 						</span>
                         	
                       </div>
@@ -141,6 +141,10 @@
                 </div>
               </div>
               <!-- End 지꾸 Card -->
+              
+              
+              
+              
   
               <!-- 모꾸 Card -->
               <div class="col-xxl-4 col-md-6">
@@ -158,7 +162,7 @@
                   </div>
   
                   <div class="card-body">
-                    <h5 class="card-title">모꾸 <span>| This Week</span></h5>
+                    <h5 class="card-title">모꾸 <span>| --Today</span></h5>
                     <div class="d-flex align-items-center">
                       <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                         <i class="bi bi-journal-richtext"></i>
@@ -205,7 +209,7 @@
                       <li><a class="dropdown-item" href="#">This Week</a></li>
                     </ul>
                   </div>
-  
+  -
                   <div class="card-body">
                     <h5 class="card-title">회원 <span>| This Week</span></h5>
                     <div class="d-flex align-items-center">
@@ -250,74 +254,76 @@
                     <div id="columnchart_material" style="width : 100%; height: 640px; padding: 10px;"></div>
 
                        	<script type="text/javascript">
-                       		google.charts.load('current', {'packages':['bar']});
-	             			google.charts.setOnLoadCallback(drawChart);
-	             			function drawChart() {
-	             				$.ajax({
-	             					url : "/admin/statschart",
-	           						type : "GET",
-	           						dataType: "json",
-	           						success : function(result){
-	           							var data = new google.visualization.DataTable();
-	           							data.addColumn('datetime', '날짜');	
-	           							data.addColumn('number', '수량1');	
-	           							data.addColumn('number', '수량2');	
-	           							data.addColumn('number', '수량3');	
-	           			
-	           	                        
-	           	                        //console.log(result);
-	           	               			var arr = new Array();
-		           	                    for (var i = 0; i < result.length; i++) {
-		           	                    	
-// 		                                    arr = [result[i].THEDATE, result[i].JIQOOCOUNT, result[i].MOQOOCOUNT, result[i].USERCOUNT];
-		                                    // years, months, days, weights에 나열한 데이터를 가지고 arr를 생성한다.
-		                                     
-		                                 	arr[0] = new Date(2023, 10, result[i].THEDATE);
-		                                    arr[1] = result[i].JIQOOCOUNT;
-		                                    arr[2] = result[i].MOQOOCOUNT;
-		                                    arr[3] = result[i].USERCOUNT;
-
-		                                    data.addRow(arr);  
-		                                }
-
-
-		           	                 	var options = {
-		           	                 		chart: {
-		           	                            width: '100%' // 반응형을 위한 width 값 추가
-		           	                          },
-		           	                       	colors: ['#19A7CE', '#8BC34A', '#ff771d']
-		           	                 	};
-		           	                 	
-		           	                 	var mq = window.matchMedia( "(max-width: 575px)" );
-		           	                 	if (mq.matches) {
-		           	                 		var options = {
-		           	                 			legend: {
-		           	                                position: 'none'
-		           	                              },
-		           	                              hAxis: {textPosition : 'none'}, // 가로축 제거
-		           	                              colors: ['#19A7CE', '#8BC34A', '#ff771d']
-		           	                 		}
-		           	                	 
-		           	                 	};
-			           	                var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-			                            chart.draw(data, google.charts.Bar.convertOptions(options));
-			                            
-			                          //반응형으로 줄였을때 그래프 사이즈도 줄이기
-			                            window.addEventListener('resize',drawChart, false) 
-	           							
-	           						}, error : function(){ 
-	           							alert("ajax 오류")
-	           						}
-	             				})
-   							}
-	             				
-	             				
-	             				
-             			
-                       
-                       
-                      
-                    	</script>
+					 		google.charts.load('current', {'packages':['bar']});
+							google.charts.setOnLoadCallback(drawChart);
+							function drawChart() {
+								$.ajax({
+									url : "/admin/statschart",
+									type : "GET",
+									dataType: "json",
+									success : function(result){
+										var data = new google.visualization.DataTable();
+										data.addColumn('datetime', '');	
+										data.addColumn('number', '지꾸');	
+										data.addColumn('number', '모꾸');	
+										data.addColumn('number', '회원');	
+										//  ['', '지꾸', '모꾸', '회원'],
+										//  ['07', 10, 4, 2],
+										//  ['08', 17, 4, 2],
+										//  ['09', 6, 11, 3],...
+					
+					                  
+					              //console.log(result);
+					         			var arr = new Array();
+					                for (var i = 0; i < result.length; i++) {
+					                   
+					// 		                                 	arr[0] = new Date(2023, 09, result[i].THEDATE);
+					// 		                                    arr[1] = result[i].JIQOOCOUNT;
+					// 		                                    arr[2] = result[i].MOQOOCOUNT;
+					// 		                                    arr[3] = result[i].USERCOUNT;
+									arr = [new Date(result[i].THEDATE), result[i].JIQOOCOUNT, result[i].MOQOOCOUNT, result[i].USERCOUNT];
+					
+					                  data.addRow(arr);  
+					              }
+					
+					
+					             	var options = {
+					             		chart: {
+					                        width: '100%' // 반응형을 위한 width 값 추가
+					                      },
+					                   	colors: ['#19A7CE', '#8BC34A', '#ff771d']
+					             	};
+					             	
+					             	var mq = window.matchMedia( "(max-width: 575px)" );
+					             	if (mq.matches) {
+					             		var options = {
+					             			legend: {
+					                            position: 'none'
+					                          },
+					                          hAxis: {textPosition : 'none'}, // 가로축 제거
+					                          colors: ['#19A7CE', '#8BC34A', '#ff771d']
+					             		}
+					            	 
+					             	};
+					              var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+					            chart.draw(data, google.charts.Bar.convertOptions(options));
+					            
+					          //반응형으로 줄였을때 그래프 사이즈도 줄이기
+					            window.addEventListener('resize',drawChart, false) 
+								
+							}, error : function(){ 
+								alert("ajax 오류")
+							}
+						})
+					}
+						
+						
+						
+					
+					 
+					 
+					
+					</script>
                   	</div>
                	</div>
            	</div>
@@ -426,7 +432,12 @@
 	                		ageLabelList.push("10대");
 	                	}else if(ageData.ageGroup === '20-29') {
 	                    	 ageLabelList.push("20대");
-					    }else {
+					    }else if(ageData.ageGroup === '30-39') {
+	                    	 ageLabelList.push("30대");
+					    }else if(ageData.ageGroup === '40-100') {
+	                    	 ageLabelList.push("40대 이상");
+					    }
+					    else {
 					    	ageLabelList.push("불명");
 					    }
 						console.log(ageData.ageGroup);
@@ -485,42 +496,21 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>2010.10.06</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>2010.10.06</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>2010.10.06</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>2010.10.06</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                  <tr>
-                    <td>2010.10.06</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                    <td>0</td>
-                  </tr>
-                                   
+      <%--                   <c:forEach var="" items="${dayCountList}" varStatus="i"> --%>
+                  	<c:forEach var="dayCountList" items="${dayCountList}" varStatus="i">
+	                  <tr>
+	                    <td>
+							${dayCountList.thedate }
+						</td>
+	                    <td>${dayCountList.jiqoocount }</td>
+	                    <td>${dayCountList.moqoocount }</td>
+	                    <td>${dayCountList.usercount }</td>
+	                    <td>0</td>
+	                  </tr>
+	                  </c:forEach>
+                  
+<%--                   </c:forEach> --%>
+                  
                 </tbody>
               </table>
             </div>
@@ -702,8 +692,8 @@
 	                    <tr>
 	                      <td>
 	                      	<c:if test="${!empty todayUser.userPhotoRename }">
-								<img src="../resources/puploadFiles/${todayUser.userPhotoRename }"
-									style="width:50px;">
+								<img src="${todayUser.userPhotoPath }" style="width:50px;">
+								
 							</c:if>
 							<c:if test="${empty todayUser.userPhotoRename }">
 								<img src="../resources/assets/img/no-profile.png" style="width:50px;">
@@ -712,11 +702,13 @@
 	                      <td>${todayUser.userId }</td>
 	                      <td>${todayUser.userName }</td>
 	                      <td>
+	                      	${todayUser.userGender}
 	                      	<c:if test="${todayUser.userGender eq null}"> 불명 </c:if>
 	                      </td>
 	                      <td>
 							<c:if test="${todayUser.platformType eq 'normal'}"> 홈페이지 </c:if>
 							<c:if test="${todayUser.platformType eq 'kakao'}"> 카카오 </c:if>
+							<c:if test="${todayUser.platformType eq 'naver'}"> 네이버 </c:if>
 						  </td>
 	                    </tr>
                    	</c:forEach>
@@ -832,13 +824,7 @@
           });
           </script>
       </section>
-
-
     </main>
-      
-
-
-
 
 
   <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
