@@ -38,11 +38,14 @@
         
         <!-- 카카오 로그인 -->
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-        <!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js" ></script> -->
         <script>
 	        Kakao.init('4cf9db2344d009b1a0f20e2bb100602a'); // 발급키
 	    	console.log(Kakao.isInitialized());
-        </script> 
+        </script>
+        <!-- 네이버 로그인 -->
+        <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+<!--         <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script> -->
+<!-- 		<script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script> -->
     </head>
 
 
@@ -82,19 +85,18 @@
                 <button class="w-100 btn btn-lg" type="submit" id="loginBtn">로그인</button>
             </form>
             <div style="margin-top:10px;">
-                <!-- <button class="w-100 btn btn-lg" type="submit" id="kakaoBtn">카카오로그인</button> -->
-                <!-- <button class="w-100 btn btn-lg" id="kakaoLoginBtn">
-                    <img src="../resources/assets/img/user/kakao_login.png" alt="카카오 로그인 버튼"/>
-                </button> -->
                 <a id="kakao-login-btn" href="javascript:loginWithKakao()">
-					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem" alt="카카오 로그인 버튼" />
+					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem;" alt="카카오 로그인 버튼" />
 				</a>
             </div>
-            <div style="margin-top:10px;">
-                <a id="naver-login-btn" href="javascript:loginWithNaver()">
-					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem" alt="네이버 로그인 버튼" />
-				</a>
-            </div>
+            <div id="naver_id_login" style="margin-top:10px;"></div>
+            <script type="text/javascript">
+			  	
+		  	</script>
+<!--                 <a id="naver-login-btn" href="#" role="button" style="margint-top:10px;"> -->
+<!-- 					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem" alt="네이버 로그인 버튼" /> -->
+<!-- 				</a> -->
+            
             <div id="findInfo" style="margin-top: 20px;">
                 <ul>
                     <li><a data-bs-toggle="modal" href="#findIdModal">아이디찾기</a></li>
@@ -112,11 +114,11 @@
                         <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">아이디 찾기</h1>
                         <div class="form-floating" style="margin-top: 20px;">
                             <input type="text" class="form-control" id="findIdName" name="userName" placeholder="이름">
-                            <label for="userName">이름</label>
+                            <label for="findIdName">이름</label>
                         </div>
                         <div class="form-floating" style="margin-bottom: 20px;">
                             <input type="text" class="form-control" id="findIdEmail" name="userEmail" placeholder="이메일">
-                            <label for="userEmail">이메일</label>
+                            <label for="findIdEmail">이메일</label>
                         </div>
                         <div class="form-floating">
                         	<p class="checkMessage" id="findIdMsg"></p>
@@ -139,11 +141,11 @@
                         <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">비밀번호 찾기</h1>
                         <div class="form-floating" style="margin-top: 20px;">
                             <input type="text" class="form-control" id="findPwId" name="userId" placeholder="아이디">
-                            <label for="userId">아이디</label>
+                            <label for="findPwId">아이디</label>
                         </div>
                         <div class="form-floating" style="margin-bottom: 20px;">
                             <input type="text" class="form-control" id="findPwEmail" name="userEmail" placeholder="이메일">
-                            <label for="userEmail">이메일</label>
+                            <label for="findPwEmail">이메일</label>
                         </div>
                         <div class="form-floating">
                         	<p class="checkMessage" id="findPwMsg"></p>
@@ -287,12 +289,12 @@
         	})
         	
         	
-        	//kakao로그인
+        	// kakao로그인
 			function loginWithKakao() {
 			  Kakao.Auth.authorize({
 			    redirectUri: 'http://localhost:9999/user/kakao',
 			    scope: 'account_email, profile_nickname, gender',
-	 		    success: function(success) {
+ 	 		    success: function(success) {
 			        console.log("카카오 인증 성공", authObj);
 			        // 로그인 또는 인증 성공 시 처리
 			    },
@@ -301,8 +303,15 @@
 			        // 로그인 또는 인증 실패 시 처리
 			    },
 			  });
-			}
-
+        	}
+	
+			// naver 로그인
+			var naver_id_login = new naver_id_login("_oGGF0Z6cE3TyVNrKEhh", "http://localhost:9999/user/naverCallback");
+		  	var state = naver_id_login.getUniqState();
+		  	naver_id_login.setButton("green", 3, 45);
+		  	naver_id_login.setDomain("http://localhost:9999/user/login");
+		  	naver_id_login.setState(state);
+		  	naver_id_login.init_naver_id_login();
         </script>
     </body>
 </html>

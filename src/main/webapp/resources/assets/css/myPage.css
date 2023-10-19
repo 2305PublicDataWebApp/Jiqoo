@@ -138,13 +138,13 @@ main {
 	justify-content: center;
 }
 
-.follow-btn {
+.follow-btn, .change-photo-btn {
 	background-color: #8BC34A;
 	color: white;
 	min-width: 85px; 
 }
 
-.follow-btn:hover {
+.follow-btn:hover, change-photo-btn:hover {
 	background-color: #388E3C;
 	color: white;
 }

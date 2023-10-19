@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public int insertUser(User user) {
-		int result = userStore.insertUser(sqlSession, user);
+		int result = userStore.naverUserInsert(sqlSession, user);
 		return result;
 	}
 
@@ -41,6 +41,12 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public int deleteUser(String userId) {
 		int result = userStore.deleteUser(sqlSession, userId);
+		return result;
+	}
+
+	@Override
+	public int deleteKakaoUser(String userId) {
+		int result = userStore.deleteKakaoUser(sqlSession, userId);
 		return result;
 	}
 
@@ -115,13 +121,6 @@ public class UserServiceImpl implements UserService{
 		int isFollowing = userStore.selectFollowStatus(sqlSession, followMap);
 		return isFollowing;
 	}
-
-	@Override
-	public int deleteKakaoUser(String userId) {
-		int result = userStore.deleteKakaoUser(sqlSession, userId);
-		return result;
-	}
-
 
 
 }

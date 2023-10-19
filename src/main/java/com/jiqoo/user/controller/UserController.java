@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -371,11 +372,11 @@ public class UserController {
 		// 전달 받은 code를 사용해서 access_token 받기
 		String accessToken = snsService.getKakaoAccessToken(code);
 		// return받은 access_token으로 사용자 정보 가져오기
-		Map<String, Object> userInfo = snsService.getKakaoInfo(accessToken);
+		Map<String, Object> kakaoUserInfo = snsService.getKakaoInfo(accessToken);
 		// HashMap<String, Object> userInfo = kakao.getUserInfo(accessToken); **Map <->
 		// HashMap 나중에 확인
-		System.out.println("카카오유저인포 : " + userInfo);
-		String userId = (String) userInfo.get("userId");
+		System.out.println("카카오유저인포 : " + kakaoUserInfo);
+		String userId = (String) kakaoUserInfo.get("userId");
 		System.out.println("카카오 userId : " + userId);
 		User kakaoUser = userService.selectUserOneById(userId);
 		// 회원가입한 카카오 유저있으면 로그인성공->세션저장
@@ -393,6 +394,53 @@ public class UserController {
 			model.addAttribute("msg", "카카오 로그인 실패");
 			model.addAttribute("url", "/");
 			return "common/message";
+		}
+	}
+
+	@ResponseBody
+	@PostMapping("/naver")
+	public String selectNaverLogin(@RequestBody Map<String, Object> naverUserInfo, HttpSession session) {
+		try {
+			// userInfo 맵을 통해 JSON 데이터의 필드에 접근
+			// 이메일로 사용자 정보 가져오기
+			String userId = (String) naverUserInfo.get("userEmail");
+			String accessToken = (String) naverUserInfo.get("accessToken");
+			String userName = (String) naverUserInfo.get("userName");
+			String userNickname = (String) naverUserInfo.get("userNickname");
+			String userEmail = (String) naverUserInfo.get("userEmail");
+			String userGender = (String) naverUserInfo.get("userGender");
+			String birthday = (String) naverUserInfo.get("birthday");
+			String birthyear = (String) naverUserInfo.get("birthyear");
+			System.out.println("naverUserInfo accessToken : " + accessToken);
+			System.out.println("naverUserInfo 이름 : " + userName);
+			System.out.println("naverUserInfo 닉네임 : " + userNickname);
+			System.out.println("naverUserInfo 이메일 : " + userEmail);
+			System.out.println("naverUserInfo 성별 : " + userGender);
+			System.out.println("naverUserInfo 생일 : " + birthday);
+			System.out.println("naverUserInfo 출생년도 : " + birthyear);
+			User naverUser = userService.selectUserOneById(userEmail);
+			if(naverUser == null) {
+				String userPw = this.generateRandomCode();
+				User naverUserInsert = new User(userId, userPw, userName, userNickname, userEmail, userGender);
+				//************************** 인서트 코드 추가 ****************************************
+				int insertResult = userService.insertUser(naverUserInsert);
+				if(insertResult > 0) {
+					System.out.println("네이버 회원가입 성공");
+				}
+				return "insert";
+			} else {
+				System.out.println("세션저장 accessToken : " + accessToken);
+				session.setAttribute("accessToken", accessToken); // accessToken 세션저장
+				session.setAttribute("userId", naverUser.getUserId());
+				session.setAttribute("userNickname", naverUser.getUserNickname());
+				session.setAttribute("userPhotoPath", naverUser.getUserPhotoPath());
+				session.setAttribute("adminYn", naverUser.getAdminYn());
+				System.out.println("네이버 로그인 성공");
+				return "success";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
 		}
 	}
 
@@ -445,17 +493,17 @@ public class UserController {
 	}
 
 	// 카카오로그아웃
-	@GetMapping("/kakaoLogout")
-	public String kakaoUserLogout(HttpSession session) {
-		String accessToken = ((String) session.getAttribute("accessToken"));
-		int responseCode = snsService.kakaoLogout(accessToken);
-		if (responseCode == 200) { // 카카오로그아웃 성공
-			session.removeAttribute(accessToken);
-			session.invalidate();
-			System.out.println("카카오 로그아웃 성공");
-		}
-		return "redirect:/";
-	} 
+//	@GetMapping("/kakaoLogout")
+//	public String kakaoUserLogout(HttpSession session) {
+//		String accessToken = ((String) session.getAttribute("accessToken"));
+//		int responseCode = snsService.kakaoLogout(accessToken);
+//		if (responseCode == 200) { // 카카오로그아웃 성공
+//			session.removeAttribute(accessToken);
+//			session.invalidate();
+//			System.out.println("카카오 로그아웃 성공");
+//		}
+//		return "redirect:/";
+//	} 
 
 	
 	// 로그아웃
@@ -474,6 +522,14 @@ public class UserController {
 		return mv;
 	}
 
+	//*********************************************** 네이버 ****************************************************
+	// 네이버 콜백페이지 접속
+	@GetMapping("/naverCallback")
+	public ModelAndView showNaverCallback(ModelAndView mv) {
+		mv.setViewName("user/naverCallback");
+		return mv;
+	}
+	
 	// 마이페이지 접속
 	@GetMapping("/myPage")
 	public String showMyPage(Model model, HttpSession session) {

@@ -111,8 +111,8 @@ public class UserStoreLogic implements UserStore{
 
 
 	@Override
-	public User selectKakaoUser(SqlSession sqlSession, String userEmail) {
-		User kakaoUser = sqlSession.selectOne("UserMapper.selectKakaoUser", userEmail);
+	public User selectSnsUserByEmail(SqlSession sqlSession, String userEmail) {
+		User kakaoUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", userEmail);
 		return kakaoUser;
 	}
 
@@ -125,6 +125,12 @@ public class UserStoreLogic implements UserStore{
 	@Override
 	public int deleteKakaoUser(SqlSession sqlSession, String userId) {
 		int result = sqlSession.delete("UserMapper.deleteKakaoUser", userId);
+		return result;
+	}
+
+	@Override
+	public int naverUserInsert(SqlSession sqlSession, User naverUser) {
+		int result = sqlSession.insert("UserMapper.naverUserInsert", naverUser);
 		return result;
 	}
 

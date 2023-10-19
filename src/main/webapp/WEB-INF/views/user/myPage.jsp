@@ -353,8 +353,8 @@
 			            <input type="file" class="form-control form-control-sm" id="modalUploadFile" name="uploadFile" accept="image/gif, image/png, image/jpeg" style="float:left;">
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
-                        <button type="button" class="btn btn-sm follow-btn" id="photoChange" >변경</button>
-                        <button type="button" class="btn btn-sm follow-btn" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-sm change-photo-btn" id="photoChange" >변경</button>
+                        <button type="button" class="btn btn-sm change-photo-btn" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
                 </div>
@@ -364,7 +364,7 @@
         <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
         <div id="preloader"></div>
-        <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script>
+<%--         <script src="${pageContext.request.contextPath}/js/bootstrap.bundle.min.js"></script> --%>
 
         <!-- Vendor JS Files -->
         <script src="../resources/assets/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -407,14 +407,15 @@
         	})
         	
         	//follow버튼
-        	$(".follow-btn").on("click", function () {
-			    const userId = $(this).data('user-id'); 
+         	$(".follow-btn").on("click", function () {
+         		console.log("이벤트 시작")
+			    const toUserId = $(this).data('user-id'); 
 			    const button = $(this);
 			
 			    $.ajax({
 			        type: 'POST',
 			        url: '/user/follow', 
-			        data: { userId: userId },
+			        data: { toUserId: toUserId },
 			        success: function (result) {
 			            if (result === "success") {
 			                button.removeClass("follow-btn").addClass("unfollow-btn");
@@ -428,6 +429,7 @@
 			            }
 			        },
 			        error: function (error) {
+			        	console.log(error);
 			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
 			            location.reload();
 			        }
@@ -472,6 +474,7 @@
 			                }
 			            },
 			            error: function(error) {
+			            	console.log(error);
 			                alert("[서버오류] 관리자에게 문의바랍니다.");
 			            }
 			        });

@@ -150,7 +150,7 @@ public class SnsServiceImpl implements SnsService {
 	        userInfo.put("userEmail", userEmail);
 	        userInfo.put("userGender", userGender);
 	        
-	        User kakaoUserOne = userStore.selectKakaoUser(sqlSession, userEmail);
+	        User kakaoUserOne = userStore.selectSnsUserByEmail(sqlSession, userEmail);
 	        if(kakaoUserOne == null) {
 	        	String userPw = this.generateRandomCode();
 	        	userInfo.put("userPw", userPw);
@@ -183,25 +183,6 @@ public class SnsServiceImpl implements SnsService {
 		return code.toString();
 	}
 
-	// 카카오 로그아웃
-	@Override
-	public int kakaoLogout(String accessToken) {
-		int response = 200;
-		try {
-			if(!accessToken.contains("/")) {
-				accessToken += "?client_id=18a1ca5fc86fe7e244209cf690a986e4";
-				accessToken += "&logout_redirect_uri=http://localhost:9999/index.jsp";
-			}
-			URL url = new URL(accessToken);
-			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-			conn.setRequestMethod("GET");
-			response = conn.getResponseCode();
-			System.out.println(conn.getResponseCode());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return response;
-	}
 //	@Override
 //	public int kakaoLogout(String accessToken) {
 //	    String reqURL = "https://kapi.kakao.com/v1/user/logout";

@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-        <!-- 제이쿼리 -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>     
         <!-- 카카오 로그인 -->
         <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
         <!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.4.0/kakao.min.js" ></script> -->
@@ -39,7 +36,7 @@
 		              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
 	              </c:if>
 	              <c:if test="${sessionScope.accessToken ne null }">
- 		              <li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/kakaoLogout" style="font-size:1.3em;">로그아웃</a></li> 
+ 		              <li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
 	              </c:if>
 	            </ul>
 	          </li>

@@ -139,12 +139,12 @@ public interface UserStore {
 	int selectFollowStatus(SqlSession sqlSession, Map<String, Object> followMap);
 
 	/**
-	 * 카카오 회원 조회 Store
+	 * sns 회원 조회 Store
 	 * @param sqlSession 
 	 * @param userEmail
 	 * @return
 	 */
-	User selectKakaoUser(SqlSession sqlSession, String userEmail);
+	User selectSnsUserByEmail(SqlSession sqlSession, String userEmail);
 
 	/**
 	 * 카카오 회원 가입 Store
@@ -161,5 +161,13 @@ public interface UserStore {
 	 * @return
 	 */
 	int deleteKakaoUser(SqlSession sqlSession, String userId);
+
+	/**
+	 * 네이버 회원 가입 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int naverUserInsert(SqlSession sqlSession, User naverUser);
 
 }
