@@ -133,7 +133,7 @@
                 <tbody>
 	                <c:forEach var="chatList" items="${chatRoomList}" varStatus="i">
 	                  <tr>
-	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  10 ) }</td> <!-- # -->
+	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
 	                    <td>${chatList.chatName }</td>  <!-- 채팅방이름 -->
 	                    <td>
 	                      <img src="../assets/img/no-profile.png" style="width:50px"> <!-- 프로필 -->

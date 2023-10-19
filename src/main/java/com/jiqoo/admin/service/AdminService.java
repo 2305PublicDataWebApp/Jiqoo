@@ -300,6 +300,10 @@ public interface AdminService {
 
 	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap);
 
+	public List<Map<String, Object>> selectAllChatRoom(PageInfo pInfo, Map<String, Object> chatMap);
+
+	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo);
+
 
 
 

@@ -394,7 +394,7 @@
 		SELECT COUNT (*) FROM CHAT_ROOM_TBL 
 	</select>
 	
-	<!-- 채팅방관리_ 총 채팅방 리스트 -->
+<!-- 	채팅방관리_ 총 채팅방 리스트 -->
 	<select id="selectAllChatRoom" resultType="ChatRoom">
 		SELECT * FROM CHAT_ROOM_TBL 
 <!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
@@ -412,32 +412,33 @@
 <!-- 		ORDER BY U_CREATE_DATE -->
 <!-- 	</select> -->
 	
+	<!-- 날짜별 지꾸모꾸회원 등록수 리스트 -->
 	<select id="dayCountList" resultType="map" parameterType="Map">	
 		WITH DateRange AS (
-		  SELECT TO_DATE('2023-10-10', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate
+		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate
 		  FROM DUAL
-		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-10', 'YYYY-MM-DD') + 1)
+		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-12', 'YYYY-MM-DD') + 1)
 		)
 		, JiqooCounts AS (
-		  SELECT TO_CHAR(DateRange.FullDate, 'DD') AS TheDate,
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
 		         COALESCE(COUNT(JT.J_CREATE_DATE), 0) AS JiqooCount
 		  FROM DateRange
 		  LEFT JOIN JIQOO_TBL JT ON DateRange.FullDate = TRUNC(JT.J_CREATE_DATE)
-		  GROUP BY TO_CHAR(DateRange.FullDate, 'DD')
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
 		)
 		, UserCounts AS (
-		  SELECT TO_CHAR(DateRange.FullDate, 'DD') AS TheDate,
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
 		         COALESCE(COUNT(UT.U_CREATE_DATE), 0) AS UserCount
 		  FROM DateRange
 		  LEFT JOIN USER_TBL UT ON DateRange.FullDate = TRUNC(UT.U_CREATE_DATE)
-		  GROUP BY TO_CHAR(DateRange.FullDate, 'DD')
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
 		)
 		, MoqooCounts AS (
-		  SELECT TO_CHAR(DateRange.FullDate, 'DD') AS TheDate,
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
 		         COALESCE(COUNT(MT.MOQOO_DATE), 0) AS MoqooCount
 		  FROM DateRange
 		  LEFT JOIN MOQOO_TBL MT ON DateRange.FullDate = TRUNC(MT.MOQOO_DATE)
-		  GROUP BY TO_CHAR(DateRange.FullDate, 'DD')
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
 		)
 		SELECT JiqooCounts.TheDate AS TheDate,
 		       JiqooCounts.JiqooCount AS JiqooCount,
@@ -448,6 +449,14 @@
 		JOIN UserCounts ON JiqooCounts.TheDate = UserCounts.TheDate
 		ORDER BY JiqooCounts.TheDate
 	</select>
+
+<!-- 	<select id="selectAllChatRoom" resultType="map" parameterType="Map">	 -->
+<!-- 		SELECT * FROM CHAT_ROOM_TBL  -->
+<!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
+<!-- 		JOIN CHAT_MSG_TBL ON CHAT_NO = REF_CHAT_NO -->
+<!-- 		ORDER BY C_CREATE_DATE DESC -->
+<!-- 	</select> -->
+
 
 	
 </mapper>

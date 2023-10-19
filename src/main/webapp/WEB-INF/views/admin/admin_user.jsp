@@ -164,8 +164,9 @@
 													test="${userList.userGender eq ''}"> - </c:if> <c:if
 													test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
 											</td>
-											<td class="col1"><c:if
-													test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
+											<td class="col1">
+												<c:if test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
+												<c:if test="${userList.platformType eq 'kakao'}"> 카카오 </c:if>
 											</td>
 											<td>${userList.userStatus }</td>
 											<td>10</td>

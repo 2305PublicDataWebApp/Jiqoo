@@ -274,6 +274,10 @@ public interface AdminStore {
 
 	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap);
 
+	public List<Map<String, Object>> selectAllChatRoom(SqlSession sqlSession, Map<String, Object> chatMap);
+
+	public List<Map<String, Object>> jiqooChartList(SqlSession sqlSession, Jiqoo jiqoo);
+
 
 
 
