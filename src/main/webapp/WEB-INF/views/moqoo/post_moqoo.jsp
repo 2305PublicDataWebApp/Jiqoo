@@ -275,80 +275,99 @@
 		<!-- 댓글 -->
         <div class="comment-section col-md-12 col-xxl-10 mx-auto">
 		  <span>댓글</span><span>3</span>
-          <ul class="comment-list">
-          <c:forEach var="comt" items="${comtList }">
-            <li class="comment">
-			  <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
-			  <div id="report-div" style="display: none;">
-			    <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
-				  <i class="bi bi-exclamation-circle"></i>
-			  </div>
-			  <div class="user-info">
-                <img src="${moqoo.user.userPhotoPath }" alt="User 1">
-                <span class="username">${moqoo.user.userNickname }</span>
-                <span class="date">${comt.comtDate }</span>
-                <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a>
-                <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
-                <a href="#" class="comt">삭제</a>
-              </div>
-              <!-- ■■■■■ 신고하기 버튼 ■■■■■ -->
-              <div id="report-div" style="display: none;">
-                <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
-                <i class="bi bi-exclamation-circle"></i>
-              </div>
-              <p class="comment-text">${comt.comtContent }</p>
-              <!-- ■■■■■ 댓글 수정 폼 ■■■■■ -->
-              <div class="div-none">
-	              <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto">
-	                <textarea>${comt.comtContent }</textarea>
-	                <button class="btn postbtn" id="mod-submit-btn">등록</button>
-	              </form>
-              </div>
-              <!-- ■■■■■ 대댓글 입력 폼 ■■■■■ -->
-              <div class="div-none">
-	              <div class="re-comment-form col-md-12 col-xxl-10 mx-auto">
-	                <textarea id="reComtContent">댓글을 입력하세요</textarea>
-	                <button class="btn postbtn" id="re-comt-submit-btn">등록</button>
-	              </div>
-              </div>
-            </li>
-<!--             대댓글 -->
-		  <c:forEach var="comt" items="${comtList }">
-            <li class="comment reply-comment">
-              <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)">
-              <div id="report-div" style="display: none;">
-                <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
-                <i class="bi bi-exclamation-circle"></i>
-              </div>
-              <div class="user-info">
-                <img src="${moqoo.user.userPhotoPath }" alt="User 2">
-                <span class="username">${moqoo.user.userNickname }</span>
-                <span class="date">${comt.comtDate }</span>
-                <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a>
-                <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a>
-                <a href="#" class="comt">삭제</a>
-              </div>
-              <p class="comment-text">대댓글</p>
-              <!-- 대댓글 입력 폼 -->
-              <div class="div-none">
-	            <form action="" method="" class="re-comment-form col-md-12 col-xxl-10 mx-auto">
-	              <textarea id="re-reComtContent"></textarea>
-	              <button class="btn postbtn" id="re-submit-btn">등록</button>
-	            </form>
-              </div>
-              <!-- 대댓글 수정 폼 -->
-              <div class="div-none">
-	            <form action="" method="" class="re-mod-comment-form col-md-12 col-xxl-10 mx-auto">
-	              <textarea>대댓글</textarea>
-	              <button class="btn postbtn" id="re-mod-submit-btn">등록</button>
-	            </form>
-              </div>
-            </li>
-          </c:forEach>
-        </c:forEach>
-<!--             // 첫번째 댓글의 답글 -->
-            <!--  --크게 forEach하고 답글만 따로 또 forEach하면 되나?----여기까지 반복------------------------ -->
-          </ul>
+		  <div id="comment-container">
+		  
+		  </div>
+<!--           <ul class="comment-list"> -->
+<%--           <c:forEach var="comt1" items="${comtList }" varStatus="i"> --%>
+<%--           	<c:if test=""></c:if> --%>
+<!--             <li class="comment"> -->
+<!--               <span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span> -->
+<!-- 	             <div class="action_menu"> -->
+<!-- 	               <ul> -->
+<!-- 	                 <li><a href="#"><i class="bi bi-person-vcard"></i> 프로필 보기</a></li> -->
+<!-- 	                 <li><a href="#" data-bs-toggle="modal" data-bs-target=".fade"><i -->
+<!-- 	                      class="bi bi-exclamation-triangle"></i> 신고하기</a></li> -->
+<!-- 	               </ul> -->
+<!-- 	             </div> -->
+
+
+<%-- 			  <input type="hidden" id="comtNo${i.index}" value="${comt1.comtNo }"> --%>
+<!-- 			  <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)"> -->
+<!-- 			  <div id="report-div" style="display: none;"> -->
+<!-- 			    <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a> -->
+<!-- 				  <i class="bi bi-exclamation-circle"></i> -->
+<!-- 			  </div> -->
+
+
+<!-- 			  <div class="user-info"> -->
+<%--                 <img src="${moqoo.user.userPhotoPath }" alt="User Photo"> --%>
+<%--                 <span class="username">${moqoo.user.userNickname }</span> --%>
+<%--                 <span class="date"><fmt:formatDate pattern="yy/MM/dd HH:mm" value="${comt1.comtDate }"/></span> --%>
+<!--                 <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a> -->
+<!--                 <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a> -->
+<!--                 <a href="#" class="comt">삭제</a> -->
+<!--               </div> -->
+<%--               <p class="comment-text">${comt1.comtContent }</p> --%>
+<!--               ■■■■■ 신고하기 버튼 ■■■■■ -->
+<!--               <div id="report-div" style="display: none;"> -->
+<!--                 <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a> -->
+<!--                 <i class="bi bi-exclamation-circle"></i> -->
+<!--               </div> -->
+<!--               ■■■■■ 댓글 수정 폼 ■■■■■ -->
+<!--               <div class="div-none"> -->
+<!-- 	              <form action="" method="" class="mod-comment-form col-md-12 col-xxl-10 mx-auto"> -->
+<%-- 	                <textarea>${comt1.comtContent }</textarea> --%>
+<!-- 	                <button class="btn postbtn" id="mod-submit-btn">등록</button> -->
+<!-- 	              </form> -->
+<!--               </div> -->
+<!--               ■■■■■ 대댓글 입력 폼 ■■■■■ -->
+<!--               <div class="div-none"> -->
+<!-- 	              <div class="re-comment-form col-md-12 col-xxl-10 mx-auto"> -->
+<!-- 	                <textarea id="reComtContent" placeholder="댓글을 입력하세요"></textarea> -->
+<%-- 	                <button class="btn postbtn" id="re-comt-submit-btn" onclick="reComtInsert(${i.index});">등록</button> --%>
+<!-- 	              </div> -->
+<!--               </div> -->
+<!--             </li> -->
+<!-- <!--             대댓글 --> 
+<%-- 			  <c:forEach var="comt2" items="${comtList }"> --%>
+<%-- 				<c:if test="${comt1.comtNo eq comt2.pComtNo } "> --%>
+<!-- 	            <li class="comment reply-comment"> -->
+<!-- 	              <img class="mini-dots" src="../../assets/img/etc/dots.png" alt="" onclick="toggleReportDiv(this)"> -->
+<!-- 	              <div id="report-div" style="display: none;"> -->
+<!-- 	                <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a> -->
+<!-- 	                <i class="bi bi-exclamation-circle"></i> -->
+<!-- 	              </div> -->
+<!-- 	              <div class="user-info"> -->
+<%-- 	                <img src="${moqoo.user.userPhotoPath }" alt="User 2"> --%>
+<%-- 	                <span class="username">${moqoo.user.userNickname }</span> --%>
+<%-- 	                <span class="date">${comt2.comtDate }</span> --%>
+<!-- 	                <a href="javascript:void(0);" class="comt" onclick="replyForm(this);">답글쓰기</a> -->
+<!-- 	                <a href="javascript:void(0);" class="comt" onclick="modReply(this);">수정</a> -->
+<!-- 	                <a href="#" class="comt">삭제</a> -->
+<!-- 	              </div> -->
+<%-- 	              <p class="comment-text">${comt2.comtContent }</p> --%>
+<!-- 	              대댓글 입력 폼 -->
+<!-- 	              <div class="div-none"> -->
+<!-- 		            <form action="" method="" class="re-comment-form col-md-12 col-xxl-10 mx-auto"> -->
+<!-- 		              <textarea id="re-reComtContent"></textarea> -->
+<!-- 		              <button class="btn postbtn" id="re-submit-btn">등록</button> -->
+<!-- 		            </form> -->
+<!-- 	              </div> -->
+<!-- 	              대댓글 수정 폼 -->
+<!-- 	              <div class="div-none"> -->
+<!-- 		            <form action="" method="" class="re-mod-comment-form col-md-12 col-xxl-10 mx-auto"> -->
+<!-- 		              <textarea>대댓글</textarea> -->
+<!-- 		              <button class="btn postbtn" id="re-mod-submit-btn">등록</button> -->
+<!-- 		            </form> -->
+<!-- 	              </div> -->
+<!-- 	            </li> -->
+<%--           </c:if> --%>
+<%-- 	          </c:forEach> --%>
+<%--         </c:forEach> --%>
+<!-- <!--             // 첫번째 댓글의 답글 --> 
+<!--              --크게 forEach하고 답글만 따로 또 forEach하면 되나?----여기까지 반복------------------------ -->
+<!--           </ul> -->
         </div>
         <!-- 페이징처리할 div -->
         <div class="comment-page-container">
@@ -422,60 +441,60 @@
   </script>
   <!-- 썸머노트 -->
 	<script>
-    $(document).ready(function() {
-    //여기 아래 부분
-        $('#summernote').summernote({
-            height: 300,                 // 에디터 높이
-            minHeight: null,             // 최소 높이
-            maxHeight: null,             // 최대 높이
-            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-            lang: "ko-KR",					// 한글 설정
-            placeholder: '내용을 입력하세요.',	//placeholder 설정
-            toolbar: [
-                    // [groupName, [list of button]]
-                    ['fontname', ['fontname']],
-                    ['fontsize', ['fontsize']],
-                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-                    ['color', ['forecolor','color']],
-                    ['table', ['table']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']],
-                    ['insert',['picture','link','video']],
-                    ['view', ['fullscreen', 'help']]
-                ],
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-		        callbacks:{ 
-		            onImageUpload : function(files){ 
-		               muploadSummernoteImageFile(files[0],this); 
-		           } 
-		        } 
-        });
-        function muploadSummernoteImageFile(file,editor){ 
-            data = new FormData(); 
-            data.append("file",file); 
-            $.ajax({ 
-        data:data, 
-        type:"POST", 
-        url:"moqoo/muploadSummernoteImageFile", 
-        /* dataType:"JSON", */ 
-        enctype:'multipart/form-data',
-        contentType:false, 
-        processData:false
+//     $(document).ready(function() {
+//     //여기 아래 부분
+//         $('#summernote').summernote({
+//             height: 300,                 // 에디터 높이
+//             minHeight: null,             // 최소 높이
+//             maxHeight: null,             // 최대 높이
+//             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+//             lang: "ko-KR",					// 한글 설정
+//             placeholder: '내용을 입력하세요.',	//placeholder 설정
+//             toolbar: [
+//                     // [groupName, [list of button]]
+//                     ['fontname', ['fontname']],
+//                     ['fontsize', ['fontsize']],
+//                     ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+//                     ['color', ['forecolor','color']],
+//                     ['table', ['table']],
+//                     ['para', ['ul', 'ol', 'paragraph']],
+//                     ['height', ['height']],
+//                     ['insert',['picture','link','video']],
+//                     ['view', ['fullscreen', 'help']]
+//                 ],
+//                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+//                 fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+// 		        callbacks:{ 
+// 		            onImageUpload : function(files){ 
+// 		               muploadSummernoteImageFile(files[0],this); 
+// 		           } 
+// 		        } 
+//         });
+//         function muploadSummernoteImageFile(file,editor){ 
+//             data = new FormData(); 
+//             data.append("file",file); 
+//             $.ajax({ 
+//         data:data, 
+//         type:"POST", 
+//         url:"moqoo/muploadSummernoteImageFile", 
+//         /* dataType:"JSON", */ 
+//         enctype:'multipart/form-data',
+//         contentType:false, 
+//         processData:false
         
-      }).done(function(data) {
-      	console.log(data)
-      	var imgNode = $("<img>");
-      	imgNode.attr("src", data);
-      	$(".note-editable").append(imgNode);
-      }).fail(function(a,b,c){
-      	console.log(a);
-      	console.log(b);
-      	console.log(c);
-      });
-          }
+//       }).done(function(data) {
+//       	console.log(data)
+//       	var imgNode = $("<img>");
+//       	imgNode.attr("src", data);
+//       	$(".note-editable").append(imgNode);
+//       }).fail(function(a,b,c){
+//       	console.log(a);
+//       	console.log(b);
+//       	console.log(c);
+//       });
+//           }
     
-    });
+//     });
   </script>
 
 <!-- 카카오맵 -->
@@ -866,17 +885,17 @@
 	// 댓글 등록
 	$("#submit-btn").on("click", function() {
 		const cContent = $("#comtContent").val();
-		const moqooNo = ${moqoo.moqooNo };
+		const refMoqooNo = ${moqoo.moqooNo };
 		$.ajax({
 			url : "/comt/insert",
-			data : {refMoqooNo : moqooNo, comtContent : cContent},
+			data : {refMoqooNo : refMoqooNo, comtContent : cContent},
 			type : "POST",
 			success : function(result){
 				if(result == "success"){
 					alert("댓글 등록 성공!");
 // 					location.reload();
 					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
-					$("#rContent").val("");  // 댓글 창 초기화
+					$("#comtContent").val("");  // 댓글 창 초기화
 				}
 				else {
 					alert("댓글 등록 실패");
@@ -890,45 +909,201 @@
 	});
 	
 	
-// 	// 댓글 리스트를 불러오는 ajax Function
-// 	const getReplyList = () => {
-// 		const moqooNo = ${moqoo.moqooNo};
-// 		$.ajax({
-// 			url : "/comt/list",
-// 			data : { moqooNo : moqooNo },
-// 			type : "GET",
-// 			success : function(data) {
-// 				/* console.log(result); */
-// 				const liComt = $(".comment");
-// 				let tr;
-// 				let replyWriter;
-// 				let replyContent;
-// 				let replyCreateDate;
-// 				let btnArea;
-// 				tableBody.children().remove();
-// 				if(data.length > 0) {
-// 					for(let i in data) {
-// 						tr = $("<tr>"); // <tr></tr>
-// 						replyWriter = $("<td>").text(data[i].replyWriter); // <td></td>
-// 						replyContent = $("<td>").text(data[i].replyContent); // <td></td>
-// 						replyCreateDate = $("<td width='100'>").text(data[i].rCreateDate); // <td></td>
-// 						btnArea = $("<td width='80'>")
-// 									.append("<a href='javascript:void(0)' onclick='modifyView(this, \""+data[i].replyContent+"\", "+data[i].replyNo+");'>수정하기</a> ")
-// 									.append("<a href='javascript:void(0)' onclick='removeReply("+data[i].replyNo+");'>삭제하기</a>");
-// 						// 문자를 매개변수로 넘겨줄 경우에는 역슬래쉬 붙여줘야함
-// 						tr.append(replyWriter);
-// 						tr.append(replyContent);
-// 						tr.append(replyCreateDate);
-// 						tr.append(btnArea);
-// 						tableBody.append(tr);
-// 					}
-// 				}
-// 			},
-// 			error : function() {
-// 				alert("Ajax 오류!! 관리자에게 문의하삼");
-// 			}
-// 		})
-// 	}
+	
+	
+	// 댓글 리스트를 불러오는 ajax Function
+	const getComtList = () => {
+		const moqooNo = ${moqoo.moqooNo};
+		const currentUserId = "${sessionScope.userId }";
+		
+		$.ajax({
+			url : "/moqoo/listComt",
+			data : { moqooNo : moqooNo },
+			type : "GET",
+			success : function(data) {
+				/* console.log(result); */
+				const commentContainer = $("#comment-container");
+				commentContainer.children().remove(); // 기존 댓글을 비웁니다.
+				
+				if (data.length > 0) {
+	                // 하나의 ul 요소를 추가합니다.
+	                const commentList = $("<ul>").addClass("comment-list");
+	                
+	                for (let i in data) {
+	                	const comment = data[i];
+	                	const li = $("<li>").addClass("comment");
+	                	
+	                	// 댓글 작성자의 ID와 현재 로그인한 사용자의 ID를 비교하여 신고하기 링크를 표시할지 결정합니다.
+	                    const isCurrentUser = comment.user.userId === currentUserId;
+	                    const showReportLink = !isCurrentUser;
+	                    
+	                    const actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	                    const actionMenu = $("<div>").addClass("action_menu");
+	                    const actionMenuList = $("<ul>");
+	                    const profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
+	                    const reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='.fade'><i class='bi bi-exclamation-triangle'></i> 신고하기</a>`);
+	                    const action = $("<div>").addClass("action");
+	                    
+	                    if(isCurrentUser) {
+	                    	// 현재 사용자가 댓글 작성자인 경우
+	                        const modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>');
+	                        const removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>');
+	                        
+	                        // 수정하기와 삭제하기 링크에 이벤트 핸들러 설정
+	                        modifyLink.on("click", function() {
+	                            modifyView(this, comment.comtContent, comment.comtNo);
+	                        });
+	                        removeLink.on("click", function() {
+	                            removeComment(comment.comtNo);
+	                        });
+	                        
+	                        action.append(modifyLink);
+	                        action.append(removeLink);
+	                    }
+	                    
+	                 	// 답글쓰기 링크
+	                    const replyLink = $("<a>").attr("href", 'javascript:void(0)').text("답글쓰기");
+	                    replyLink.on("click", function() {
+	                    	showComtView(this, comment.comtNo);
+	                    });
+	                    action.append(replyLink);
+	                    
+	                    actionMenuList.append(profileMenuItem);
+	                    
+	                    if (showReportLink) {
+	                        actionMenuList.append(reportMenuItem);
+	                    }
+	                    
+	                    actionMenu.append(actionMenuList);
+	                    
+	                    const userInfo = $("<div>").addClass("user-info");
+	                    const userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
+	                    const username = $("<span>").addClass("username").text(comment.user.userNickname);
+	                    const date = $("<span>").addClass("date").text(comment.comtDate);
+	                    const commentText = $("<p>").addClass("comment-text").text(comment.comtContent);
+	                    
+	                    userInfo.append(userImage);
+	                    userInfo.append(username);
+	                    userInfo.append(date);
+	                    userInfo.append(action);
+
+	                    li.append(actionMenuBtn);
+	                    li.append(actionMenu);
+	                    li.append(userInfo);
+	                    li.append(commentText);
+	                    
+	                 	// li 요소를 commentList에 추가
+	                    commentList.append(li);
+	                }
+	                
+	             	// commentList를 commentContainer에 추가
+	                commentContainer.append(commentList);
+	            }
+			},
+	        error: function () {
+	            alert("Ajax 오류!! 관리자에게 문의하십시오.");
+	        }
+		});
+	}
+	
+	// 최초 로딩 시 댓글 목록을 불러옵니다.
+	getComtList();
+	
+
+	function showReplyForm(comtNo) {
+	    // 해당 댓글을 찾아서 그 안에 있는 'comment-text' 클래스를 가진 요소 뒤에 추가
+	    const commentContainer = $("#comment-container");
+	    const targetComment = commentContainer.find(".comment").filter(function() {
+	        return $(this).data("comtNo") === comtNo;
+	    });
+
+	    // 'comment-text' 클래스를 가진 요소를 찾아 그 뒤에 replyForm 추가
+	    const replyForm = $("<div>").addClass("reply-form");
+	    const replyTextarea = $("<textarea>").attr("placeholder", "답글을 작성하세요");
+	    const replyButton = $("<button>").text("작성");
+
+	    function onReplyButtonClick() {
+	        const comtContent = replyTextarea.val();
+	        if (comtContent.trim() !== "") {
+	            $.ajax({
+	                url: "/moqoo/insertReply",
+	                type: "POST",
+	                data: {
+	                    pComtNo: comtNo,
+	                    comtContent: comtContent
+	                },
+	                success: function(data) {
+	                    if (data.success) {
+	                        addReplyToList(data.newReply);
+	                        replyForm.remove();
+	                    } else {
+	                        alert("답글을 작성하지 못했습니다. 다시 시도해 주세요.");
+	                    }
+	                },
+	                error: function() {
+	                    alert("서버 오류로 답글을 작성하지 못했습니다. 관리자에게 문의하세요.");
+	                }
+	            });
+	        }
+	    }
+
+	    replyButton.on("click", onReplyButtonClick);
+
+	    replyForm.append(replyTextarea);
+	    replyForm.append(replyButton);
+
+	    targetComment.find('.comment-text').after(replyForm);
+	}
+	
+	// 답글을 목록에 추가하는 함수
+	function addReplyToList(newReply) {
+	    // 여기에서 새 답글을 생성하고 목록에 추가하는 로직을 작성
+	    const newReplyItem = $("<li>").addClass("comment");
+	    newReplyItem.data("comtNo", newReply.comtNo); // 답글의 번호를 저장
+
+	    // 댓글 작성자 정보, 날짜, 텍스트 등을 newReplyItem에 추가
+	    const userImage = $("<img>").attr("src", newReply.user.userPhotoPath).attr("alt", "UserPhoto");
+	    const username = $("<span>").addClass("username").text(newReply.user.userNickname);
+	    const date = $("<span>").addClass("date").text(newReply.comtDate);
+	    const commentText = $("<p>").addClass("comment-text").text(newReply.comtContent);
+
+	    newReplyItem.append(userImage);
+	    newReplyItem.append(username);
+	    newReplyItem.append(date);
+	    newReplyItem.append(commentText);
+
+	    // 목록에 새 답글을 추가
+	    const commentContainer = $("#comment-container");
+	    const commentList = commentContainer.find(".comment-list");
+	    commentList.append(newReplyItem);
+	}
+	
+	function addLike() {
+		if(${sessionScope.userId eq null}){
+			  alert("로그인이 필요한 서비스입니다.");
+		  }
+		  
+		let refPostNo = '${moqoo.moqooNo}';
+		let lUserId = '${sessionScope.userNo}';
+
+		$.ajax({
+			url : "/moqoo/like",
+			type : "POST",
+			data : {
+				refPostNo : refPostNo,
+				lUserId : lUserId
+			},
+			success : function(result) {
+				if (result === "success") {
+					$("#like").load(location.href + " #like");
+				} else if(result === "fail"){
+					alert("좋아요 추가 실패!");
+				}
+			}
+			
+		});
+	}
+			
 	
 	
 // 	const modReply = (this) => {
@@ -958,7 +1133,7 @@
 // 	}
 
 	// 댓글 삭제
-	const removeReply = (comtNo) => {
+	const removeComment = (comtNo) => {
 		$.ajax({
 			url : "/moqoo/delComt",
 			data : {comtNo : comtNo},
@@ -966,7 +1141,7 @@
 			success : function(result) {
 				if(result == "success") {
 					alert("댓글 삭제 성공");
-					getReplyList();
+					getComtList();
 				}else {
 					alert("댓글 삭제 실패");
 				}
@@ -976,33 +1151,82 @@
 			}
 		})
 	}
+	
+	
+	const modifyView = (obj, comtContent, comtNo) => {
+	    const inputField = $("<input>").attr("type", "text").attr("size", "50").attr("value", comtContent);
+	    const saveButton = $("<button type='button'>").text("수정 완료").click(function() {
+	        const newContent = inputField.val();
+	        const refPostNo = "${moqoo.moqooNo}";
+	        modifyComment(obj, refPostNo, comtNo, newContent);
+	    });
+
+	    const form = $("<form>").append(inputField).append(saveButton);
+
+	    // 수정 폼을 현재 댓글 위치에 추가
+	    $(obj).parent().after(form);
+	};
+
+	const modifyComment = (obj, refPostNo, comtNo, newContent) => {
+	    const comment = {
+	    	refPostNo: refPostNo,
+	        comtNo: comtNo,
+	        comtContent: newContent
+	    };
+
+	    $.ajax({
+	        url: "/moqoo/updateComt",
+	        data: {
+	        	refPostNo: refPostNo,
+		        comtNo: comtNo,
+		        comtContent: newContent
+	        },
+	        type: "GET",
+	        success: function (result) {
+	            if (result === "success") {
+	                alert("댓글 수정 완료");
+	                getReplyList();
+	            } else {
+	                alert("댓글 수정 실패");
+	            }
+	        },
+	        error: function () {
+	            alert("Ajax 오류~ 관리자에게 문의하삼");
+	        }
+	    });
+	};
 
 	
-// 	// 답글 등록
+	// 답글 등록
+	const reComtInsert = (comtNoId) => {
+		
+	
 // 	$("#re-comt-submit-btn").on("click", function() {
-// 		const reContent = $("#reComtContent").val();
-// 		const moqooNo = ${moqoo.moqooNo };
-// 		$.ajax({
-// 			url : "/comt/insert",
-// 			data : {refMoqooNo : moqooNo, comtContent : cContent},
-// 			type : "POST",
-// 			success : function(result){
-// 				if(result == "success"){
-// 					alert("댓글 등록 성공!");
-// // 					location.reload();
-// 					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
-// 					$("#rContent").val("");  // 댓글 창 초기화
-// 				}
-// 				else {
-// 					alert("댓글 등록 실패");
-// 				}
-// 				location.reload();  // 새로고침 해주는 애
-// 			},
-// 			error : function(){
+		const reContent = $("#reComtContent").val();
+		const moqooNo = ${moqoo.moqooNo };
+		const pComtNo = $("#comtNo" + comtNoId).val();
+		console.log(pComtNo);
+		$.ajax({
+			url : "/comt/reComtInsert",
+			data : {refMoqooNo : moqooNo, comtContent : reContent, pComtNo : pComtNo},
+			type : "POST",
+			success : function(result){
+				if(result == "success"){
+					alert("댓글 등록 성공!");
+// 					location.reload();
+					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
+					$("#reComtContent").val("");  // 댓글 창 초기화
+				}
+				else {
+					alert("댓글 등록 실패");
+				}
+				location.reload();  // 새로고침 해주는 애
+			},
+			error : function(){
 				
-// 			}
-// 		});
-// 	});
+			}
+		});
+	};
 </script>
 </body>
 

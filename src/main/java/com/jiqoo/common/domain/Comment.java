@@ -12,7 +12,7 @@ public class Comment {
 	private Timestamp comtDate;
 	private Timestamp cUpdateDate;
 	private int refPostNo;  // 해당 게시물 번호
-	private int pComtNO;  // 부모댓글 번호(답글을 위한거)
+	private int pComtNo;  // 부모댓글 번호(답글을 위한거)
 	private char comtStatus;
 	private String cBoardType;  // 지꾸 모꾸 중 어디 댓글인지 식별용
 	
@@ -60,11 +60,11 @@ public class Comment {
 	public void setRefPostNo(int refPostNo) {
 		this.refPostNo = refPostNo;
 	}
-	public int getpComtNO() {
-		return pComtNO;
+	public int getpComtNo() {
+		return pComtNo;
 	}
-	public void setpComtNO(int pComtNO) {
-		this.pComtNO = pComtNO;
+	public void setpComtNo(int pComtNo) {
+		this.pComtNo = pComtNo;
 	}
 	public char getComtStatus() {
 		return comtStatus;
@@ -84,7 +84,7 @@ public class Comment {
 	public String toString() {
 		return "댓글 [댓글번호=" + comtNo + ", 댓글내용=" + comtContent + ", 작성자=" + comtWriter
 				+ ", 작성일=" + comtDate + ", 수정일=" + cUpdateDate + ", 게시물번호=" + refPostNo + ", 부모댓글번호="
-				+ pComtNO + ", 사용여부=" + comtStatus + ", 게시물타입=" + cBoardType + "]";
+				+ pComtNo + ", 사용여부=" + comtStatus + ", 게시물타입=" + cBoardType + "]";
 	}
 	
 }
