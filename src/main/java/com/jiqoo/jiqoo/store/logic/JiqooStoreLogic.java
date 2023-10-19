@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.store.JiqooStore;
 import com.jiqoo.user.domain.User;
@@ -77,6 +78,24 @@ public class JiqooStoreLogic implements JiqooStore {
 	public List<Jiqoo> selectJiqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
 		List<Jiqoo> jiqooSearchList = sqlSession.selectList("JiqooMapper.selectJiqooSearchList", params);
 		return jiqooSearchList;
+	}
+
+	@Override
+	public int selectLikeOrNot(SqlSession sqlSession, Like like) {
+		int result = sqlSession.selectOne("JiqooMapper.selectLikeOrNot", like);
+		return result;
+	}
+
+	@Override
+	public int insertLike(SqlSession sqlSession, Like like) {
+		int result = sqlSession.insert("JiqooMapper.insertLike", like);
+		return result;
+	}
+
+	@Override
+	public int deleteLike(SqlSession sqlSession, Like like) {
+		int result = sqlSession.delete("JiqooMapper.deleteLike", like);
+		return result;
 	}
 
 }

@@ -8,7 +8,6 @@ public class Like {
 
 	public Like() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Like(int refPostNo, String refBoardType, String lUserId) {
@@ -18,6 +17,12 @@ public class Like {
 		this.lUserId = lUserId;
 	}
 	
+	public Like(int refPostNo, String lUserId) {
+		super();
+		this.refPostNo = refPostNo;
+		this.lUserId = lUserId;
+	}
+
 	public Like(int refPostNo) {
 		super();
 		this.refPostNo = refPostNo;

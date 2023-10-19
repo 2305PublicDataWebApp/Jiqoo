@@ -1,6 +1,7 @@
 package com.jiqoo.jiqoo.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,11 @@ public class JiqooComtServiceImpl implements JiqooComtService{
 		return result;
 	}
 
-	@Override
-	public List<Comment> selectCommentList(int jiqooNo) {
-		List<Comment> commentList = jiqooComtStore.selectCommentList(sqlSession, jiqooNo);
-		return commentList;
-	}
+//	@Override
+//	public List<Comment> selectCommentList(int jiqooNo) {
+//		List<Comment> commentList = jiqooComtStore.selectCommentList(sqlSession, jiqooNo);
+//		return commentList;
+//	}
 
 	@Override
 	public int insertReply(Comment comment) {
@@ -49,4 +50,16 @@ public class JiqooComtServiceImpl implements JiqooComtService{
 		return result;
 	}
 
+
+	@Override
+	public List<Comment> loadMoreComments(Map<String, Object> params) {
+		List<Comment> comments = jiqooComtStore.loadMoreComments(sqlSession, params);
+        return comments;
+	}
+
+	@Override
+	public List<Comment> initialComments(int jiqooNo) {
+		List<Comment> comments = jiqooComtStore.initialComments(sqlSession, jiqooNo);
+		return comments;
+	}
 }

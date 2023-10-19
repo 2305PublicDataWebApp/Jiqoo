@@ -45,12 +45,25 @@
 		<result property="cName" column="C_NAME"/>
 		<result property="cImgPath" column="C_IMG_PATH"/>
 	</resultMap>
+	
 	<insert id="insertJiqoo">
 		INSERT INTO JIQOO_TBL VALUES(SEQ_JIQOO_NO.NEXTVAL,
 		#{jiqooW3W }, #{jiqooDate }, #{jiqooCtgr }, #{jiqooTitle },
 		#{jiqooContent }, #{jiqooWriter }, #{jOpenStatus }, #{jAllowComt },
 		DEFAULT, DEFAULT, DEFAULT, #{jiqooLat }, #{jiqooLng }, DEFAULT )
 	</insert>
+	
+	<insert id="insertLike">
+		INSERT INTO LIKE_TBL VALUES(#{refPostNo }, 'J', #{lUserId })
+	</insert>
+	
+	<delete id="deleteLike">
+		DELETE FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId }
+	</delete>
+	
+	<select id="selectLikeOrNot" resultType="_int">
+		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId } AND REF_BOARD_TYPE = 'J'
+	</select>
 	
 	<update id="deleteJiqoo">
 		UPDATE JIQOO_TBL SET JIQOO_STATUS = 'N' WHERE JIQOO_NO = #{jiqooNo }

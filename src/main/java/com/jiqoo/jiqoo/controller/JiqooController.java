@@ -122,21 +122,24 @@ public class JiqooController {
 	}
 
 	@GetMapping("/jiqoo/detail")
-	public String showJiqooDetail(@RequestParam int jiqooNo, Model model) {
+	public String showJiqooDetail(@RequestParam int jiqooNo, Model model, HttpSession session) {
 		try {
+			String lUserId = (String) session.getAttribute("userId");
+			Like like = new Like(jiqooNo, lUserId);
 			jiqooService.updateJiqooCount(jiqooNo);
 			Jiqoo jiqoo = jiqooService.selectOneByNo(jiqooNo);
 			String jiqooCName = jiqoo.getJiqooCtgr();
 			Category category = jiqooService.selectCategoryByNo(jiqooCName);
 			int likeCount = jiqooService.selectLikeCountByNo(jiqooNo);
-			List<Comment> commentList = jiqooComtService.selectCommentList(jiqooNo);
+			int likeOrNot = jiqooService.selectLikeOrNot(like);
+//			List<Comment> commentList = jiqooComtService.selectCommentList(jiqooNo);
 			List<Category> categoryList = jiqooService.selectCategoryList();
 			if (jiqoo != null) {
 				model.addAttribute("jiqoo", jiqoo);
 				model.addAttribute("likeCount", likeCount);
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("category", category);
-				model.addAttribute("commentList", commentList);
+				model.addAttribute("likeOrNot", likeOrNot);
 				return "jiqoo/post_jiqoo";
 			} else {
 				model.addAttribute("msg", "게시물 조회에 실패하였습니다.");
@@ -285,63 +288,30 @@ public class JiqooController {
 		return src;
 	}
 
-//	// 좋아요
-//	   @PostMapping("/jiqoo/like")
-//	   @ResponseBody
-//	   public String addLike(int memberNo, int reviewNo) {
-//	      try {
-//	         Like like = new Like();
-//	         like.setMemberNo(memberNo);
-//	         like.setReviewNo(reviewNo);
-//	         int result = rService.addLike(like);
-//	         if(result > 0) {
-//	            return "success";  // 좋아요 성공
-//	         } else {
-//	            return "fail";    //좋아요 실패
-//	         }
-//	      } catch (Exception e) {
-//	         e.printStackTrace();
-//	         return "error";
-//	      }
-//	   }
-//	   
-//	   @PostMapping("/jiqoo/remove")
-//	   @ResponseBody
-//	   public String removeLike(int reviewNo, int memberNo) {
-//	      try {
-//	         Like like = new Like();
-//	         like.setMemberNo(memberNo);
-//	         like.setReviewNo(reviewNo);
-//	         int result = rService.removeLike(like);
-//	         if(result > 0) {
-//	            return "success";  // 좋아요 삭제 성공
-//	         } else {
-//	            return "fail";  // 좋아요 삭제 실패 
-//	         }
-//	      } catch (Exception e) {
-//	         e.printStackTrace();
-//	         return "error";
-//	      }
-//	   }
+	
+	// 좋아요
+	@ResponseBody
+	@GetMapping("/jiqoo/like")
+	public String like(@RequestParam("refPostNo") int refPostNo, HttpSession session) {
+		String lUserId = (String)session.getAttribute("userId");
+		Like like = new Like(refPostNo, lUserId);
+		int result = jiqooService.selectLikeOrNot(like);
+		if(result == 0) {
+			int insertLike = jiqooService.insertLike(like);
+			if(insertLike > 0) {
+				return "insert";
+			}else {
+				return "fail";
+			}
+		}else {
+			int deleteLike = jiqooService.deleteLike(like);
+			if(deleteLike > 0) {
+				return "delete";
+			}else {
+				return "fail";
+			}
+		}
+	}
 
-//	public PageInfo getPageInfo(int currentPage, int totalCount) {
-//		PageInfo pi = null;
-//		int recordCountPerPage = 8;
-//		int naviCountPerPage = 10;
-//		int naviTotalCount;
-//		int startNavi;
-//		int endNavi;
-//		
-//		naviTotalCount = (int)((double)totalCount/recordCountPerPage + 0.9);
-//		// Math.ceil((double)totalCount/recordCountPerPage)
-//		// currentPage값이 1~5일때 startNavi가 1로 고정되도록 구해주는 식
-//		startNavi = (((int)((double)currentPage/naviCountPerPage+0.9))-1)*naviCountPerPage + 1;
-//		endNavi = startNavi + naviCountPerPage - 1;
-//		// endNavi는 startNavi에 무조건 naviCountPerPage값을 더하므로 실제 최댓값보다 커질 수 있음.
-//		if(endNavi > naviTotalCount) {
-//			endNavi = naviTotalCount;
-//		}
-//		pi = new PageInfo(currentPage, recordCountPerPage, naviCountPerPage, startNavi, endNavi, totalCount, naviTotalCount);
-//		return pi;
-//	}
+
 }

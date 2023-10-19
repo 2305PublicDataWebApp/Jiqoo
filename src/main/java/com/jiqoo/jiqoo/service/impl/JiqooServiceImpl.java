@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.service.JiqooService;
 import com.jiqoo.jiqoo.store.JiqooStore;
@@ -86,6 +87,24 @@ public class JiqooServiceImpl implements JiqooService{
 	public List<Jiqoo> selectJiqooSearchList(Map<String, Object> params) {
 		List<Jiqoo> jiqooSearchList = jiqooStore.selectJiqooSearchList(sqlSession, params);
 		return jiqooSearchList;
+	}
+
+	@Override
+	public int selectLikeOrNot(Like like) {
+		int result = jiqooStore.selectLikeOrNot(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int insertLike(Like like) {
+		int result = jiqooStore.insertLike(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int deleteLike(Like like) {
+		int result = jiqooStore.deleteLike(sqlSession, like);
+		return result;
 	}
 
 

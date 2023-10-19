@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.user.domain.User;
 
@@ -83,5 +84,26 @@ public interface JiqooService {
 	 * @return
 	 */
 	List<Jiqoo> selectJiqooSearchList(Map<String, Object> params);
+
+	/**
+	 * 좋아요 여부 판단 Service
+	 * @param like
+	 * @return
+	 */
+	int selectLikeOrNot(Like like);
+
+	/**
+	 * 좋아요 Service
+	 * @param like
+	 * @return
+	 */
+	int insertLike(Like like);
+
+	/**
+	 * 좋아요 취소 Service
+	 * @param like
+	 * @return
+	 */
+	int deleteLike(Like like);
 
 }

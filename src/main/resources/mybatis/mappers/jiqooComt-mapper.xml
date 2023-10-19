@@ -50,17 +50,47 @@
 		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
 	</update>
 	
-	<select id="selectCommentList" resultMap="CommentResultMap">
+<!-- 	<select id="selectCommentList" resultMap="CommentResultMap"> -->
 <!-- 		SELECT * FROM COMT_TBL C -->
 <!-- 		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' ORDER BY COMT_DATE ASC -->
-		
-		SELECT C.*, U.*
-		FROM COMT_TBL C
-		LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
-		WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' AND REF_POST_NO = #{jiqooNo }
-		START WITH P_COMT_NO IS NULL
-		CONNECT BY PRIOR COMT_NO = P_COMT_NO
-		ORDER SIBLINGS BY COMT_DATE ASC
+<!-- 	</select> -->
+
+
+	<select id="initialComments" resultMap="CommentResultMap">
+<!-- 		SELECT * FROM COMT_TBL C -->
+<!-- 		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' ORDER BY COMT_DATE ASC -->
+				SELECT * 
+		FROM (
+		    SELECT F.*, ROWNUM AS rnum
+		    FROM (
+		        SELECT C.*, U.*
+		        FROM COMT_TBL C
+		        LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+		        WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' AND REF_POST_NO = #{jiqooNo }
+		        START WITH P_COMT_NO IS NULL
+		        CONNECT BY PRIOR COMT_NO = P_COMT_NO
+		        ORDER SIBLINGS BY COMT_DATE ASC
+		    ) F
+		    WHERE ROWNUM &lt;= 10
+		) 
+		WHERE rnum &gt;= 1
 	</select>
 	
+	<select id="loadMoreComments" resultMap="CommentResultMap">
+	    SELECT * 
+		FROM (
+		    SELECT F.*, ROWNUM AS rnum
+		    FROM (
+		        SELECT C.*, U.*
+		        FROM COMT_TBL C
+		        LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+		        WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' AND REF_POST_NO = #{jiqooNo }
+		        START WITH P_COMT_NO IS NULL
+		        CONNECT BY PRIOR COMT_NO = P_COMT_NO
+		        ORDER SIBLINGS BY COMT_DATE ASC
+		    ) F
+		    WHERE ROWNUM &lt;= (#{offset} + #{limit})
+		) 
+		WHERE rnum &gt; #{offset}
+	</select>
 </mapper>

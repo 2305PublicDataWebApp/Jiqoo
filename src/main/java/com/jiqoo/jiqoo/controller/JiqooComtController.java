@@ -1,11 +1,15 @@
 package com.jiqoo.jiqoo.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,28 +101,15 @@ public class JiqooComtController {
 			return "fail";
 		}
 	}
-	
-	// 댓글 리스트
-	@ResponseBody
-	@GetMapping(value = "/jiqoo/listComt", produces = "application/json;charset=UTF-8;")
-	public String showReplyList(@RequestParam int jiqooNo ) {
-		List<Comment> commentList = jiqooComtService.selectCommentList(jiqooNo);
-		// List 데이터를 JSON 형태로 만드는 방법
-		// 1. JSObject, JSONArray
-		// 2. Gson
-		// 3. HashMap
-		Gson gson = new Gson();
-		return gson.toJson(commentList);
-	}
-	
 	@ResponseBody
 	@GetMapping("/jiqoo/insertReply")
-	public String insertReply(@RequestParam("pComtNo") int pComtNo, @RequestParam("comtContent") String comtContent , HttpSession session) {
+	public String insertReply(@RequestParam("pComtNo") int pComtNo, @RequestParam("comtContent") String comtContent , @RequestParam("refPostNo") int refPostNo,HttpSession session) {
 		String comtWriter = (String)session.getAttribute("userId");
 		Comment comment = new Comment();
 		comment.setComtWriter(comtWriter);
 		comment.setpComtNo(pComtNo);
 		comment.setComtContent(comtContent);
+		comment.setRefPostNo(refPostNo);
 		int result = jiqooComtService.insertReply(comment);
 		if(result > 0) {
 			return "success";
@@ -126,5 +117,44 @@ public class JiqooComtController {
 			return "fail";
 		}
 	}
-	   
+	
+//	// 댓글 리스트
+//	@ResponseBody
+//	@GetMapping(value = "/jiqoo/listComt", produces = "application/json;charset=UTF-8;")
+//	public String showReplyList(@RequestParam int jiqooNo ) {
+//		List<Comment> commentList = jiqooComtService.selectCommentList(jiqooNo);
+//		// List 데이터를 JSON 형태로 만드는 방법
+//		// 1. JSObject, JSONArray
+//		// 2. Gson
+//		// 3. HashMap
+//		Gson gson = new Gson();
+//		return gson.toJson(commentList);
+//	}
+	
+	
+	@GetMapping("/jiqoo/loadInitialComments")
+    public List<Comment> loadInitialComments(@RequestParam int jiqooNo) {
+        // jiqooNo를 사용하여 초기 댓글 데이터를 가져오는 로직을 구현합니다.
+        // 여기에서는 더미 데이터로 예시를 제공합니다.
+        List<Comment> initialComments = jiqooComtService.initialComments(jiqooNo);
+        
+//        // 댓글 데이터를 더미로 생성하여 추가합니다.
+//        Comment comment1 = new Comment(1, "User1", "첫 번째 댓글입니다.");
+//        Comment comment2 = new Comment(2, "User2", "두 번째 댓글입니다.");
+//        initialComments.add(comment1);
+//        initialComments.add(comment2);
+
+        return initialComments;
+    }
+	
+	@ResponseBody
+	@GetMapping("/jiqoo/loadMoreComments")
+	public ResponseEntity<List<Comment>> loadMoreComments(@RequestParam("offset") int offset, @RequestParam("limit") int limit, @RequestParam("jiqooNo") int jiqooNo) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+        params.put("jiqooNo", jiqooNo);
+		List<Comment> newComments = jiqooComtService.loadMoreComments(params);
+        return ResponseEntity.ok(newComments);
+	}
 }

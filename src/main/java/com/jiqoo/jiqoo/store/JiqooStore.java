@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.user.domain.User;
 
@@ -95,5 +96,29 @@ public interface JiqooStore {
 	 * @return
 	 */
 	List<Jiqoo> selectJiqooSearchList(SqlSession sqlSession, Map<String, Object> params);
+
+	/**
+	 * 좋아요 여부 판단 Store
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int selectLikeOrNot(SqlSession sqlSession, Like like);
+
+	/**
+	 * 좋아요 Store
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int insertLike(SqlSession sqlSession, Like like);
+
+	/**
+	 * 좋아요 취소 Store
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int deleteLike(SqlSession sqlSession, Like like);
 
 }

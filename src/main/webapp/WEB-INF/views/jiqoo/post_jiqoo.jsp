@@ -156,12 +156,17 @@
 				<hr>
 				<div id="content">${jiqoo.jiqooContent }</div>
 				<div class="post-footer">
-					<div class="heart-container">
-						<button id="likeButton" onclick="toggleLike()">좋아요</button>
-						<span class="likeCount">${likeCount }</span>
+					<div id="heart-container">
+						<button id="likeButton"  onclick="like(${jiqoo.jiqooNo})">
+						    <c:if test="${likeOrNot == 0 }">
+						        <i class="bi bi-heart heart"></i>
+						    </c:if>
+						    <c:if test="${likeOrNot == 1 }">
+						    	<i class="bi bi-heart-fill heart"></i>
+						    </c:if>
+						</button>
+						<span id="like-count">${likeCount }</span>
 						<!-- 좋아요 버튼 -->
-
-
 					</div>
 					<c:if
 						test="${not empty sessionScope.userId && sessionScope.userId eq jiqoo.user.userId}">
@@ -279,6 +284,7 @@
 				<textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
 				<button class="btn" id="c-submit">등록</button>
 			</div>
+		<input type="hidden" id="CurrentUserId" value="${sessionScope.userId }">
 		</div>
 		</div>
 	</main>
@@ -358,24 +364,142 @@
     });
         }
     });
-</script>
 
-	<script>
     function toggleReportDiv() {
         const reportDiv = document.getElementById("report-div");
         reportDiv.style.display = reportDiv.style.display === "none" ? "block" : "none";
     }
+    
     function deleteJiqoo() {
     	if(confirm("정말 삭제하시겠습니까?")){
     		location.href= "/jiqoo/delete?jiqooNo=${jiqoo.jiqooNo}";
     	}
     }
+    
+//  댓글 목록 조회
+// 	const getReplyList = () => {
+// 	    const jiqooNo = ${jiqoo.jiqooNo};
+// 	    const currentUserId = "${sessionScope.userId}"; // 현재 로그인한 사용자의 ID
+
+// 	    $.ajax({
+// 	        url: "/jiqoo/listComt",
+// 	        data: { jiqooNo: jiqooNo },
+// 	        type: "GET",
+// 	        success: function (data) {
+// 	            const commentContainer = $("#comment-container");
+// 	            commentContainer.children().remove(); // 기존 댓글을 비웁니다.
+
+// 	            if (data.length > 0) {
+// 	                // 하나의 ul 요소를 추가합니다.
+// 	                const commentList = $("<ul>").addClass("comment-list");
+
+// 	                for (let i in data) {
+// 	                    var comment = data[i];
+// 	                    var li = $("<li>").addClass("comment");
+	                    
+
+	                    
+// 	                    // 댓글 작성자의 ID와 현재 로그인한 사용자의 ID를 비교하여 신고하기 링크를 표시할지 결정합니다.
+// 	                    var isCurrentUser = comment.user.userId === currentUserId;
+// 	                    var showReportLink = !isCurrentUser;
+
+// 	                    var actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+// 	                    var actionMenu = $("<div>").addClass("action_menu");
+// 	                    var actionMenuList = $("<ul>");
+// 	                    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
+// 	                    var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기</a`);
+// 	                    var action = $("<div>").addClass("action");
+	                   
+
+	                    
+// 	                    if (isCurrentUser) {
+// 	                        // 현재 사용자가 댓글 작성자인 경우
+// 	                        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent); // 데이터 속성에 comtNo와 comtContent 추가
+// 	                        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo);
+
+// 	                        // 수정하기와 삭제하기 링크에 이벤트 핸들러 설정
+// 	                        modifyLink.on("click", function() {
+// 	                        	var comtNo = $(this).data("comtNo");
+// 	                            var comtContent = $(this).data("comtContent");
+// 	                            modifyView(this, comtContent, comtNo);
+// 	                        });
+// 	                        removeLink.on("click", function() {
+// 	                        	var comtNo = $(this).data("comtNo");
+// 	                            removeComment(this, comtNo);
+// 	                        });
+
+// 	                        action.append(modifyLink);
+// 	                        action.append(removeLink);
+// 	                    }
+// 	                    if (comment.pComtNo === 0) {
+// 		                    // 답글쓰기 링크
+// 		                    var replyLink = $("<a>").attr("href", 'javascript:void(0)').data("pComtNo", comment.comtNo).text("답글쓰기");
+// 		                    replyLink.on("click", function() {
+// 		                    	var pComtNo = $(this).data("pComtNo");
+// 		                        showReplyForm(this, pComtNo);
+// 		                    });
+		                    
+// 		                    action.append(replyLink);
+// 	                    }
+	                    
+// 	                    actionMenuList.append(profileMenuItem);
+
+// 	                    if (showReportLink) {
+// 	                        actionMenuList.append(reportMenuItem);
+// 	                    }
+
+// 	                    actionMenu.append(actionMenuList);
+
+// 	                    var userInfo = $("<div>").addClass("user-info");
+// 	                    var userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
+// 	                    var username = $("<span>").addClass("username").text(comment.user.userNickname);
+// 	                    var date = $("<span>").addClass("date").text(comment.comtDate);
+// 	                    var commentText = $("<p>").addClass("comment-text").text(comment.comtContent);
+						
+// 	                    userInfo.append(userImage);
+// 	                    userInfo.append(username);
+// 	                    userInfo.append(date);
+// 	                    userInfo.append(action);
+
+// 	                    li.append(actionMenuBtn);
+// 	                    li.append(actionMenu);
+// 	                    li.append(userInfo);
+// 	                    li.append(commentText);
+
+// 	                    // comtNo를 input hidden 요소로 추가
+// 	                    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
+// 	                    li.append(comtNoInput);
+// 	                    if (comment.pComtNo !== 0) { // comment.pComtNo가 null이 아닌 경우에 클래스 추가
+// 	                        li.addClass("has-parent-comment");
+	                    
+// 	                    	// 대댓글 아이콘 추가
+// 		                    var replyIcon = $("<div>").addClass("reply-icon").html('<i class="bi bi-arrow-return-right"></i>');// 대댓글 아이콘
+// 		                    userInfo.prepend(replyIcon); // 앞에 추가하려면 prepend 사용
+// 	                    }
+	                    
+
+// 	                    // li 요소를 commentList에 추가
+// 	                    commentList.append(li);
+// 	                }
+
+// 	                // commentList를 commentContainer에 추가
+// 	                commentContainer.append(commentList);
+// 	            }
+// 	        },
+// 	        error: function () {
+// 	            alert("Ajax 오류!! 관리자에게 문의하십시오.");
+// 	        }
+// 	    });
+// 	}
+
+
+// // 	최초 로딩 시 댓글 목록을 불러옵니다.
+// 	getReplyList();
      
-  </script>
-
-
-	<script>
+	// 전역변수
 	var jiqooNo = "${jiqoo.jiqooNo}";
+	var currentUserId = "${sessionScope.userId}"
+	
   function toggleCC() {
     const categoryContainer = document.querySelector(".category-container");
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
@@ -407,26 +531,29 @@
 
   
   // 댓글 삭제
-  const removeComment = (obj, comtNo) => {
-	  console.log(comtNo);
-		$.ajax({
-			url : "/jiqoo/delComment",
-			data : {comtNo : comtNo},
-			type : "GET",
-			success : function(result) {
-				if(result == "success") {
-					alert("댓글이 삭제되었습니다.");
-					getReplyList();
-				}else {
-					alert("댓글이 삭제되지 않았습니다.");
+	const removeComment = (obj, comtNo) => {
+		if(confirm("정말 삭제하시겠습니까?")){
+			$.ajax({
+				url : "/jiqoo/delComment",
+				data : {comtNo : comtNo},
+				type : "GET",
+				success : function(result) {
+					if(result == "success") {
+						alert("댓글이 삭제되었습니다.");
+						getReplyList();
+					}else {
+						alert("댓글이 삭제되지 않았습니다.");
+					}
+				},
+				error : function() {
+					alert("Ajax 오류~ 관리자에게 문의하삼");
 				}
-			},
-			error : function() {
-				alert("Ajax 오류~ 관리자에게 문의하삼");
-			}
-		})
-	}
+			})
+		}
+  		
+		}
   
+  // 댓글 수정폼 조회
   const modifyView = (obj, comtContent, comtNo) => {
 	  console.log("comtNo:", comtNo);
 	    // 이미 수정 폼이 표시되고 있는지 확인
@@ -451,7 +578,7 @@
 	};
 
 
-
+	// 댓글 수정
 	const modifyComment = (obj, refPostNo, comtNo, newContent) => {
 	    const comment = {
 	    	refPostNo: refPostNo,
@@ -482,303 +609,303 @@
 	};
 
 
-  
-	const getReplyList = () => {
-	    const jiqooNo = ${jiqoo.jiqooNo};
-	    const currentUserId = "${sessionScope.userId}"; // 현재 로그인한 사용자의 ID
+	// 대댓글 폼, 대댓글 작성
+	function showReplyForm(obj, pComtNo) {
+// 		var currentUserId = $("#CurrentUserId").val();
+// 		var currentUserId = "${sessionScope.userId}"; // 현재 로그인한 사용자의 ID
+		console.log(currentUserId);
+	 	if (currentUserId == "") {
+	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+	            // 사용자가 확인을 누르면 로그인 페이지로 이동
+	            window.location.href = "/user/login";
+	            return; // 이동 후 함수를 종료
+	        }
+	    }else {
+		    const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
+		    // 'comment-text' 클래스를 가진 요소 뒤에 replyForm 추가
+		    const replyForm = $("<div>").addClass("reply-form");
+		    const replyTextarea = $("<textarea>").attr("placeholder", "답글을 작성하세요");
+		    const replyButton = $("<button>").addClass("reply-btn").text("작성");
+			if($(".reply-form").length != 1){
+			    replyForm.append(replyTextarea);
+			    replyForm.append(replyButton);
+			 // 'comment-text' 뒤에 추가
+			    targetComment.find('.comment-text').after(replyForm);
+			}else {
+				$(".reply-form").remove();
+			}
+		 
+			replyButton.on("click", function() {
+			    const comtContent = replyTextarea.val();
+			    if (comtContent.trim() !== "") {
+			    	$.ajax({
+			    	    url: "/jiqoo/insertReply",
+			    	    type: "get",
+			    	    data: {
+			    	    	refPostNo : jiqooNo,
+			    	        pComtNo: pComtNo,
+			    	        comtContent: comtContent
+			    	    },
+			    	    success: function(data) {
+			    	        if (data === "success") {
+								alert("답글등록에 성공하였습니다.");
+			    	            replyForm.remove(); // 답글 작성 폼 제거
+			    	            getReplyList();
+			    	        } else {
+			    	            // 서버에서 success가 false인 경우, errorMessage를 표시
+			    	            alert("서버에서 오류가 발생했습니다: " + data.errorMessage);
+			    	        }
+			    	    },
+			    	    error: function(xhr, status, error) {
+			    	        // AJAX 요청이 실패했을 때 실행되는 코드
+			    	        alert("서버 오류로 인해 답글을 작성하지 못했습니다. 관리자에게 문의하세요.");
+			    	        console.log("에러 상태:", status);
+			    	        console.log("에러 내용:", error);
+			    	    }
+			    	});
+			    }
+			});
+	    }
+	}
+	
+	var loading = false; // 중복 로드 방지용 플래그
+	var currentOffset = 0; // 현재 offset 값
+
+	// 초기 댓글을 로드하는 함수
+	function loadInitialComments() {
+		var jiqooNo = "${jiqoo.jiqooNo}";
+	    // 페이지 로딩 중 메시지를 표시
+	    const loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+	    const commentContainer = $("#comment-container");
+	    
+	    commentContainer.append(loadingMessage);
 
 	    $.ajax({
-	        url: "/jiqoo/listComt",
-	        data: { jiqooNo: jiqooNo },
-	        type: "GET",
+	        url: "/jiqoo/loadInitialComments", // 서버로 요청 보낼 URL
+	        type: "get",
+	        data: {
+	        	jiqooNo : jiqooNo
+	        },
 	        success: function (data) {
+	            // 로딩 메시지를 제거
+	            loadingMessage.remove();
+
 	            const commentContainer = $("#comment-container");
-	            commentContainer.children().remove(); // 기존 댓글을 비웁니다.
 
 	            if (data.length > 0) {
-	                // 하나의 ul 요소를 추가합니다.
 	                const commentList = $("<ul>").addClass("comment-list");
 
-	                for (let i in data) {
-	                    var comment = data[i];
-	                    var li = $("<li>").addClass("comment");
+	                data.forEach(comment => {
+	                    const commentItem = createCommentItem(comment);
+	                    commentList.append(commentItem);
+	                });
 
-	                    // 댓글 작성자의 ID와 현재 로그인한 사용자의 ID를 비교하여 신고하기 링크를 표시할지 결정합니다.
-	                    var isCurrentUser = comment.user.userId === currentUserId;
-	                    var showReportLink = !isCurrentUser;
-
-	                    var actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
-	                    var actionMenu = $("<div>").addClass("action_menu");
-	                    var actionMenuList = $("<ul>");
-	                    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
-	                    var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기</a`);
-	                    var action = $("<div>").addClass("action");
-
-	                    if (isCurrentUser) {
-	                        // 현재 사용자가 댓글 작성자인 경우
-	                        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent); // 데이터 속성에 comtNo와 comtContent 추가
-	                        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo);
-
-	                        // 수정하기와 삭제하기 링크에 이벤트 핸들러 설정
-	                        modifyLink.on("click", function() {
-	                        	var comtNo = $(this).data("comtNo");
-	                            var comtContent = $(this).data("comtContent");
-	                            modifyView(this, comtContent, comtNo);
-	                        });
-	                        removeLink.on("click", function() {
-	                        	var comtNo = $(this).data("comtNo");
-	                            removeComment(this, comtNo);
-	                        });
-
-	                        action.append(modifyLink);
-	                        action.append(removeLink);
-	                    }
-
-	                    // 답글쓰기 링크
-	                    var replyLink = $("<a>").attr("href", 'javascript:void(0)').data("pComtNo", comment.comtNo).text("답글쓰기");
-	                    replyLink.on("click", function() {
-	                    	var pComtNo = $(this).data("pComtNo");
-	                        showReplyForm(this, pComtNo);
-	                    });
-	                    action.append(replyLink);
-
-	                    actionMenuList.append(profileMenuItem);
-
-	                    if (showReportLink) {
-	                        actionMenuList.append(reportMenuItem);
-	                    }
-
-	                    actionMenu.append(actionMenuList);
-
-	                    var userInfo = $("<div>").addClass("user-info");
-	                    var userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
-	                    var username = $("<span>").addClass("username").text(comment.user.userNickname);
-	                    var date = $("<span>").addClass("date").text(comment.comtDate);
-	                    var commentText = $("<p>").addClass("comment-text").text(comment.comtContent);
-
-	                    userInfo.append(userImage);
-	                    userInfo.append(username);
-	                    userInfo.append(date);
-	                    userInfo.append(action);
-
-	                    li.append(actionMenuBtn);
-	                    li.append(actionMenu);
-	                    li.append(userInfo);
-	                    li.append(commentText);
-
-	                    // comtNo를 input hidden 요소로 추가
-	                    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
-	                    li.append(comtNoInput);
-
-	                    // li 요소를 commentList에 추가
-	                    commentList.append(li);
-	                }
-
-	                // commentList를 commentContainer에 추가
 	                commentContainer.append(commentList);
+
+	                // 현재 offset 값을 업데이트
+	                currentOffset += 10;
 	            }
 	        },
 	        error: function () {
-	            alert("Ajax 오류!! 관리자에게 문의하십시오.");
+	            // 서버 통신 오류 시 오류 메시지를 표시
+	            const errorContainer = $("#error-container");
+	            errorContainer.text("댓글을 불러오는 중 오류가 발생했습니다.");
+
+	            // 로딩 메시지를 제거
+	            loadingMessage.remove();
 	        }
 	    });
 	}
 
+	// 페이지가 로드될 때 초기 댓글을 로드
+	$(document).ready(function () {
+	    loadInitialComments();
+	});
 
-	// 최초 로딩 시 댓글 목록을 불러옵니다.
-	getReplyList();
+	// 스크롤 이벤트 핸들러
+	$(window).scroll(function () {
+	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
+	        if (!loading) {
+	            loading = true;
 
-	function showReplyForm(obj, pComtNo) {
-	    const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
-	    // 'comment-text' 클래스를 가진 요소 뒤에 replyForm 추가
-	    const replyForm = $("<div>").addClass("reply-form");
-	    const replyTextarea = $("<textarea>").attr("placeholder", "답글을 작성하세요");
-	    const replyButton = $("<button>").addClass("reply-btn").text("작성");
-		if($(".reply-form").length != 1){
-		    replyForm.append(replyTextarea);
-		    replyForm.append(replyButton);
-		 // 'comment-text' 뒤에 추가
-		    targetComment.find('.comment-text').after(replyForm);
-		}else {
-			$(".reply-form").remove();
-		}
-	 
-		replyButton.on("click", function() {
-		    const comtContent = replyTextarea.val();
-		    if (comtContent.trim() !== "") {
-		    	$.ajax({
-		    	    url: "/jiqoo/insertReply",
-		    	    type: "get",
-		    	    data: {
-		    	    	refPostNo : jiqooNo,
-		    	        pComtNo: pComtNo,
-		    	        comtContent: comtContent
-		    	    },
-		    	    success: function(data) {
-		    	        if (data === "success") {
-							alert("답글등록에 성공하였습니다.");
-		    	            replyForm.remove(); // 답글 작성 폼 제거
-		    	        } else {
-		    	            // 서버에서 success가 false인 경우, errorMessage를 표시
-		    	            alert("서버에서 오류가 발생했습니다: " + data.errorMessage);
-		    	        }
-		    	    },
-		    	    error: function(xhr, status, error) {
-		    	        // AJAX 요청이 실패했을 때 실행되는 코드
-		    	        alert("서버 오류로 인해 답글을 작성하지 못했습니다. 관리자에게 문의하세요.");
-		    	        console.log("에러 상태:", status);
-		    	        console.log("에러 내용:", error);
-		    	    }
-		    	});
+	            // 서버로 데이터를 요청합니다.
+	            $.ajax({
+	                url: "/jiqoo/loadMoreComments", // 서버로 요청 보낼 URL
+	                type: "get", // GET 요청
+	                data: {
+	                	jiqooNo: jiqooNo,
+	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    limit: 10 // 페이지당 표시할 댓글 수
+	                },
+	                success: function (data) {
+	                    // 서버에서 성공적으로 데이터를 받아온 경우
+	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
 
-		    }
-		});
+	                    const commentContainer = $("#comment-container");
+
+	                    if (data.length > 0) {
+	                        const commentList = $("<ul>").addClass("comment-list");
+
+	                        data.forEach(comment => {
+	                            const commentItem = createCommentItem(comment);
+	                            commentList.append(commentItem);
+	                        });
+
+	                        commentContainer.append(commentList);
+
+	                        // 현재 offset 값을 업데이트
+	                        currentOffset += 10;
+	                    }
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                },
+	                error: function () {
+	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+	                    const errorContainer = $("#error-container");
+	                    errorContainer.text("댓글을 불러오는 중 오류가 발생했습니다.");
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                }
+	            });
+	        }
+	    }
+	});
+
+	function createLink(iconClass, text, clickHandler) {
+	    const link = $("<a>").attr("href", 'javascript:void(0)').html(`<i class='${iconClass}'></i> ${text}`);
+	    if (clickHandler) {
+	        link.on("click", clickHandler);
+	    }
+	    return link;
 	}
 
+	function createImage(src, alt) {
+	    return $("<img>").attr("src", src).attr("alt", alt);
+	}
 
+	function createSpan(className, text) {
+	    return $("<span>").addClass(className).text(text);
+	}
 
+	function createParagraph(className, text) {
+	    return $("<p>").addClass(className).text(text);
+	}
 
-// 	// 답글을 목록에 추가하는 함수
-// 	function addReplyToList(newReply) {
-// 	    // 여기에서 새 답글을 생성하고 목록에 추가하는 로직을 작성
-// 	    const newReplyItem = $("<li>").addClass("comment");
-// 	    newReplyItem.data("comtNo", newReply.comtNo); // 답글의 번호를 저장
+	function createIcon(iconClass) {
+	    return $("<i>").addClass(iconClass);
+	}
 
-// 	    // 댓글 작성자 정보, 날짜, 텍스트 등을 newReplyItem에 추가
-// 	    const userImage = $("<img>").attr("src", newReply.user.userPhotoPath).attr("alt", "UserPhoto");
-// 	    const username = $("<span>").addClass("username").text(newReply.user.userNickname);
-// 	    const date = $("<span>").addClass("date").text(newReply.comtDate);
-// 	    const commentText = $("<p>").addClass("comment-text").text(newReply.comtContent);
+	function createHiddenInput(value) {
+	    return $("<input>").attr("type", "hidden").val(value);
+	}
+	
+	function createCommentItem(comment, currentUserId) {
+	    const isCurrentUser = comment.user.userId === currentUserId;
+	    const showReportLink = !isCurrentUser;
 
-// 	    newReplyItem.append(userImage);
-// 	    newReplyItem.append(username);
-// 	    newReplyItem.append(date);
-// 	    newReplyItem.append(commentText);
+	    const commentItem = $("<li>").addClass("comment");
 
-// 	    // 목록에 새 답글을 추가
-// 	    const commentContainer = $("#comment-container");
-// 	    const commentList = commentContainer.find(".comment-list");
-// 	    commentList.append(newReplyItem);
-// 	}
+	    const actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	    const actionMenu = $("<div>").addClass("action_menu");
+	    const actionMenuList = $("<ul>");
+	    const profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
+	    
+	    const reportMenuItem = showReportLink ? $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기</a`) : null;
+	    const action = $("<div>").addClass("action");
 
+	    if (isCurrentUser) {
+	        const modifyLink = createLink("bi bi-pencil", "수정하기", () => modifyView(comment));
+	        const removeLink = createLink("bi bi-x", "삭제하기", () => removeComment(comment));
 
-// 	function addLike() {
-// 		if(${sessionScope.userId eq null}){
-// 			  alert("로그인이 필요한 서비스입니다.");
-// 		  }
-		  
-// 		let refPostNo = '${jiqoo.jiqooNo}';
-// 		let lUserId = '${sessionScope.userNo}';
+	        action.append(modifyLink);
+	        action.append(removeLink);
+	    }
 
-// 		$.ajax({
-// 			url : "/jiqoo/like",
-// 			type : "POST",
-// 			data : {
-// 				refPostNo : refPostNo,
-// 				lUserId : lUserId
-// 			},
-// 			success : function(result) {
-// 				if (result === "success") {
-// 					$("#like").load(location.href + " #like");
-// 				} else if(result === "fail"){
-// 					alert("좋아요 추가 실패!");
-// 				}
-// 			}
-			
-// 		});
-// 	}
+	    if (comment.pComtNo === 0) {
+	        const replyLink = createLink("bi bi-chat-right-text", "답글쓰기", () => showReplyForm(comment));
+	        action.append(replyLink);
+	    }
 
-// 	function removeLike(reviewNo, memberNo) { // likeNo 값을 인자로 받도록 변경
-// 		if(${sessionScope.userId eq null}){
-// 			  alert("로그인이 필요한 서비스입니다.");
-// 		  }
-		  
-// 		$.ajax({
-// 			url : "/review/remove",
-// 			type : "POST",
-// 			data : {
-// 				reviewNo : reviewNo,
-// 				memberNo : memberNo
-// 			},
-// 			success : function(result) {
-// 				$("#like").load(location.href + " #like");
-// 			}
-// 		});
-// 	}
+	    actionMenuList.append(profileMenuItem);
+	    if (reportMenuItem) {
+	        actionMenuList.append(reportMenuItem);
+	    }
 
+	    actionMenu.append(actionMenuList);
 
-// 	// 초기 좋아요 상태와 좋아요 수 (서버에서 가져와야 함)
-// 	let isLiked = false;
-// 	let likeCount = 0;
+	    const userInfo = $("<div>").addClass("user-info");
+	    const userImage = createImage(comment.user.userPhotoPath, "UserPhoto");
+	    const username = createSpan("username", comment.user.userNickname);
+	    const date = createSpan("date", comment.comtDate);
+	    const commentText = createParagraph("comment-text", comment.comtContent);
 
-// 	// 클라이언트에서 좋아요 토글 처리
-// 	function toggleLike() {
-// 	    if (isLiked) {
-// 	        // 좋아요를 이미 누른 경우 -> 좋아요 취소
-// 	        unlikeJiqoo();
-// 	    } else {
-// 	        // 좋아요를 아직 누르지 않은 경우 -> 좋아요
-// 	        likeJiqoo();
-// 	    }
-// 	}
+	    userInfo.append(userImage);
+	    userInfo.append(username);
+	    userInfo.append(date);
+	    userInfo.append(action);
 
-// 	// 좋아요 처리 (AJAX를 사용하여 서버에 요청)
-// 	function likeJiqoo() {
-// 	    // 좋아요 요청을 서버에 보내는 AJAX 호출
-// 	    $.ajax({
-// 	        type: "POST",  // 예: POST 요청
-// 	        url: "/jiqoo/like",   // 실제 서버 엔드포인트
-// 	        data: { jiqooNo: jiqooNo }, // 게시물 ID 또는 필요한 데이터
-// 	        success: function (data) {
-// 	            if (data.success) {
-// 	                // 서버에서 처리가 성공하면 클라이언트 업데이트
-// 	                isLiked = true;
-// 	                likeCount = data.likeCount;
-// 	                updateLikeUI();
-// 	            } else {
-// 	                alert("좋아요를 처리하는 중 오류가 발생했습니다.");
-// 	            }
-// 	        },
-// 	        error: function () {
-// 	            alert("AJAX 오류 발생. 관리자에게 문의하세요.");
-// 	        }
-// 	    });
-// 	}
+	    commentItem.append(actionMenuBtn);
+	    commentItem.append(actionMenu);
+	    commentItem.append(userInfo);
+	    commentItem.append(commentText);
+	    commentItem.append(createHiddenInput(comment.comtNo));
 
-// 	// 좋아요 취소 처리 (AJAX를 사용하여 서버에 요청)
-// 	function unlikeJiqoo() {
-// 	    // 좋아요 취소 요청을 서버에 보내는 AJAX 호출
-// 	    $.ajax({
-// 	        type: "POST",  // 예: POST 요청
-// 	        url: "/jiqoo/unlike", // 실제 서버 엔드포인트
-// 	        data: { jiqooNo: jiqooNo }, // 게시물 ID 또는 필요한 데이터
-// 	        success: function (data) {
-// 	            if (data.success) {
-// 	                // 서버에서 처리가 성공하면 클라이언트 업데이트
-// 	                isLiked = false;
-// 	                likeCount = data.likeCount;
-// 	                updateLikeUI();
-// 	            } else {
-// 	                alert("좋아요를 취소하는 중 오류가 발생했습니다.");
-// 	            }
-// 	        },
-// 	        error: function () {
-// 	            alert("AJAX 오류 발생. 관리자에게 문의하세요.");
-// 	        }
-// 	    });
-// 	}
+	    if (comment.pComtNo !== 0) {
+	        commentItem.addClass("has-parent-comment");
+	        const replyIcon = createIcon("bi bi-arrow-return-right");
+	        userInfo.prepend(replyIcon);
+	    }
 
-// 	// 좋아요 UI 업데이트
-// 	function updateLikeUI() {
-// 	    const likeButton = document.getElementById("likeButton");
-// 	    const likeCountSpan = document.getElementById("likeCount");
+	    return commentItem;
+	}
 
-// 	    likeButton.innerText = isLiked ? "좋아요 취소" : "좋아요";
-// 	    likeCountSpan.innerText = likeCount;
-// 	}
+	
+	// 좋아요
+	function like() {
+		var jiqooNo = ${jiqoo.jiqooNo };
+		var likeCount = ${likeCount };
+		if (currentUserId == "") {
+	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+	            // 사용자가 확인을 누르면 로그인 페이지로 이동
+	            window.location.href = "/user/login";
+	            return; // 이동 후 함수를 종료
+	        }
+	    }else {
+	    	$.ajax({
+	    		url: "/jiqoo/like",
+	    		type: "get",
+	    		data: {
+	    			refPostNo : jiqooNo
+	    		},
+	    		success: function(data) {
+	    			if (data === "insert") {
+	                    $("#likeButton i").removeClass("bi-heart").addClass("bi-heart-fill");
+	                    updateLikeCount(1); // 좋아요 숫자를 1 증가
+	                    alert("좋아요를 등록하였습니다.");
+	                } else if (data === "delete") {
+	                    $("#likeButton i").removeClass("bi-heart-fill").addClass("bi-heart");
+	                    updateLikeCount(-1); // 좋아요 숫자를 1 감소
+	                    alert("좋아요를 취소하였습니다.");
+	                } else if (data === "fail") {
+	                    alert("좋아요에 실패하였습니다.");
+	                }
+	    		}, error: function () {
+		            alert("관리자에게 문의해주세요");
+		        }
+	    	});
+	    }
+	}
+	
+	function updateLikeCount(change) {
+	    var likeCountElement = document.getElementById("like-count");
+	    var currentLikeCount = parseInt(likeCountElement.textContent);
+	    var newLikeCount = currentLikeCount + change;
+	    likeCountElement.textContent = newLikeCount;
+	}
 
-// 	// 페이지 로드 시 초기화
-// 	updateLikeUI();
 	</script>
 
 </body>
