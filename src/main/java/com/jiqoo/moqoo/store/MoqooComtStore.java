@@ -32,4 +32,20 @@ public interface MoqooComtStore {
 	 */
 	int deleteComt(SqlSession sqlSession, Comment comt);
 
+	/**
+	 * 답글 등록
+	 * @param sqlSession
+	 * @param comt
+	 * @return
+	 */
+	int insertReComt(SqlSession sqlSession, Comment comt);
+
+	/**
+	 * 댓글 수정
+	 * @param sqlSession
+	 * @param comt
+	 * @return
+	 */
+	int updateComment(SqlSession sqlSession, Comment comt);
+
 }

@@ -27,4 +27,18 @@ public interface MoqooComtService {
 	 */
 	int deleteComt(Comment comt);
 
+	/**
+	 * 답글 등록
+	 * @param comt
+	 * @return
+	 */
+	int insertReComt(Comment comt);
+
+	/**
+	 * 댓글 수정
+	 * @param comment
+	 * @return
+	 */
+	int updateComment(Comment comment);
+
 }

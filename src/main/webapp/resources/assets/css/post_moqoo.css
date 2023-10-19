@@ -504,7 +504,9 @@ p {
 /*--------------------------------------------------------------
 # post
 --------------------------------------------------------------*/
-
+.action_menu ul{
+	list-style: none;
+}
 /* 게시물 스타일 */
 #post {
   border: 1px solid #C2D1D9;
@@ -550,6 +552,17 @@ p {
   .bi-exclamation-circle{
     color: #007bff;
   }
+  
+  /* --- */
+    
+    #post-category-img {
+    	width: 50px;
+    }
+	
+	#post-category-img-container, .location {
+		display: inline-block;
+		vertical-align: middle;
+	}
 
   .location {  /* w3w디자인 */
     width: 300px;
@@ -563,15 +576,17 @@ p {
 
 
     #post-location {  /* w3w디자인 */
-      font-size: 2em;
-      width: 246px;
-      font-weight: bold;
-      box-shadow: inset 0 -21px 0 #FFED7C;
-      background: linear-gradient(to top, #FFC107 40%, transparent 40%);
-      color: black;
-      text-align: center;
-      margin-bottom: 10px;
+      	font-size: 28px;
+/*         width: 246px; */
+        font-weight: bold;
+        color: black;
+        text-align: center;
+        margin-bottom: 10px;
+        margin-bottom: 0;
+        box-shadow: inset 0 -21px 0 #ffed7c;
       }
+      
+      
 
 
   #post-title {
@@ -784,15 +799,20 @@ p {
     width: 15px;
 }
 
-.comment-list li:first-child {
-  border-top: 1px solid #ddd; /* border-top 스타일을 원하는 스타일로 설정합니다. */
+.comment-list{
+	border-top: 1px solid #ddd;
 }
+
 
 .comment {
   display: flex;
   flex-direction: column; /* 이 부분이 내용을 아래로 내리는 역할을 합니다. */
   padding: 10px;
   border-bottom: 1px solid #ddd;
+}
+
+.action_menu {
+	display :none;
 }
 
 .user-info {
