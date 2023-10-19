@@ -82,6 +82,16 @@
 	                            </div>
 	                        </div>
                         </c:if>
+                        <c:if test="${user.platformType eq 'naver' }">
+							<div class="row">
+	                            <div class="col-12 col-sm-3" style="text-align: left;">
+	                                <label for="userName">이름</label>
+	                            </div>
+	                            <div class="col-8 col-sm-7 text-start">
+	                                <p id="userName" name="userName">${user.userName }</p>
+	                            </div>
+	                        </div>
+                        </c:if>
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
 	                            <label for="userNickname">닉네임</label>
@@ -188,6 +198,11 @@
                        <button class="btn btn-block subBtn" onclick="history.back();" type="button">뒤로가기</button>
                        <c:if test="${user.platformType eq 'kakao'}">
 	                       <button type="button" id="delKakaoUserBtn" class="btn btn-block del-User-Btn">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
+                       <c:if test="${user.platformType eq 'naver'}">
+	                       <button type="button" id="delNaverUserBtn" class="btn btn-block del-User-Btn">
 	                           회원탈퇴
 	                       </button>
                        </c:if>
@@ -498,6 +513,33 @@
 			    	})
         		}
         	});
+        	
+        	// 네이버 회원탈퇴
+        	$('#delNaverUserBtn').on("click", function(){
+        		if(confirm("정말 탈퇴하시겠습니까?")) {
+        			
+			    	$.ajax({
+			    		url: "/user/naverUnlink",
+			    		type: "GET",
+			    		success: function(response){
+			                if (response === "success") {
+			                    alert("SNS 회원탈퇴가 완료되었습니다.");
+			                    window.location.href="/";  
+			                } else if (response === "checkLogin") {
+			                	alert("로그인 후 이용해주세요");
+			                    window.location.href="/";  
+			                } else {
+			                	alert("SNS 회원탈퇴가 완료되지 않았습니다. 다시 시도해주세요.");
+			                    window.location.href="/user/modify";  
+			                }
+			    		},
+			    		error : function(){
+				            alert("[서버오류] 관리자에게 문의바랍니다.");
+			    		}
+			    	})
+        		}
+        	});        	
+        	
         	
         	
             // textarea 체크

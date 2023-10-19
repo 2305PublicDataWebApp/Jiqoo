@@ -228,4 +228,52 @@ public class SnsServiceImpl implements SnsService {
 	    return responseCode;
 	}
 
+	// 네이버 회원탈퇴
+	public int deleteNaverUser(String accessToken) {
+		String clientId = "_oGGF0Z6cE3TyVNrKEhh";
+		String clientSecret = "lpL1o57qHI";
+		String reqURL = "https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=" + clientId 
+						+ "&client_secret=" + clientSecret 
+						+ "&access_token=" + accessToken 
+						+ "&service_provider=NAVER";
+	    int responseCode = 0;
+	    try {
+	        URL url = new URL(reqURL);
+	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	        conn.setRequestMethod("POST");
+	        
+	        //conn.setRequestProperty("Authorization", "Bearer " + accessToken); 네이버 회원탈퇴시에는 필요없는 코드
+	        
+	        responseCode = conn.getResponseCode();
+	        System.out.println("responseCode : " + responseCode); //200이면 성공
+	        
+	        if (responseCode == 200) { // 탈퇴 요청 성공
+	        	System.out.println("네이버 회원 탈퇴 성공->DB삭제 진행");
+	        } else { //탈퇴요청실패
+	            BufferedReader errorReader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+	            String errorLine;
+	            StringBuilder errorResponse = new StringBuilder();
+	            
+	            while ((errorLine = errorReader.readLine()) != null) {
+	                errorResponse.append(errorLine);
+	            }
+	            
+	            System.out.println("네이버 회원 탈퇴 실패");
+	            System.out.println("에러 응답 본문: " + errorResponse.toString());
+	        }
+	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        
+	        String result = "";
+	        String line = "";
+	        
+	        while ((line = br.readLine()) != null) {
+	            result += line;
+	        }
+	        System.out.println("네이버 탈퇴 처리 : " +result);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return responseCode;
+	}
+
 }

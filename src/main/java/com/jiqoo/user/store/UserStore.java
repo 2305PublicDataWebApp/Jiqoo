@@ -155,12 +155,12 @@ public interface UserStore {
 	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser);
 
 	/**
-	 * 카카오 회원 탈퇴 Store
+	 * Sns 회원 탈퇴 Store
 	 * @param sqlSession
-	 * @param snsEmailMap
+	 * @param snsIdMap
 	 * @return
 	 */
-	int deleteKakaoUser(SqlSession sqlSession, Map<String, Object> snsEmailMap);
+	int deleteSnsUser(SqlSession sqlSession, Map<String, Object> snsIdMap);
 
 	/**
 	 * 네이버 회원 가입 Store

@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public int deleteKakaoUser(Map<String, Object> snsEmailMap) {
-		int result = userStore.deleteKakaoUser(sqlSession, snsEmailMap);
+	public int deleteSnsUser(Map<String, Object> snsIdMap) {
+		int result = userStore.deleteSnsUser(sqlSession, snsIdMap);
 		return result;
 	}
 

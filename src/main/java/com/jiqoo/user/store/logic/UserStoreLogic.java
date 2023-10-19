@@ -123,8 +123,8 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public int deleteKakaoUser(SqlSession sqlSession, Map<String, Object> snsEmailMap) {
-		int result = sqlSession.delete("UserMapper.deleteKakaoUser", snsEmailMap);
+	public int deleteSnsUser(SqlSession sqlSession, Map<String, Object> snsIdMap) {
+		int result = sqlSession.delete("UserMapper.deleteSnsUser", snsIdMap);
 		return result;
 	}
 

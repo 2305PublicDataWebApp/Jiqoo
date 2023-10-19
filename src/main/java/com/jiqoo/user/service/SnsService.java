@@ -28,7 +28,14 @@ public interface SnsService {
 	 * 카카오 회원탈퇴 service
 	 * @param attribute
 	 */
-	int deleteKakaoUser(String attribute);
+	int deleteKakaoUser(String accessToken);
+
+	/**
+	 * 네이버 회원탈퇴 service
+	 * @param accessToken
+	 * @return
+	 */
+	int deleteNaverUser(String accessToken);
 
 
 }
