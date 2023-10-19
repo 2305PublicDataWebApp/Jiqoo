@@ -14,6 +14,11 @@
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'kakao', #{userGender}, NULL, NULL, NULL, NULL, NULL, NULL, DEFAULT, NULL, DEFAULT, DEFAULT) 
 	</insert>
 	
+	<insert id="naverUserInsert">
+		INSERT INTO USER_TBL
+		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'naver', #{userGender}, NULL, NULL, NULL, NULL, NULL, NULL, DEFAULT, NULL, DEFAULT, DEFAULT) 
+	</insert>
+	
 	<update id="updateUser">
 		UPDATE USER_TBL
 		SET USER_NICKNAME = #{userNickname}, USER_EMAIL = #{userEmail}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}

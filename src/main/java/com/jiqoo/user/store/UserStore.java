@@ -162,4 +162,12 @@ public interface UserStore {
 	 */
 	int deleteKakaoUser(SqlSession sqlSession, String userId);
 
+	/**
+	 * 네이버 회원 가입 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int naverUserInsert(SqlSession sqlSession, User naverUser);
+
 }

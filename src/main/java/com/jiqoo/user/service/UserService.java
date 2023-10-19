@@ -127,11 +127,6 @@ public interface UserService {
 	 */
 	int deleteKakaoUser(String userId);
 
-	/**
-	 * naver 회원 조회 service
-	 * @param userEmail
-	 * @return
-	 */
-	User selectNaverUserByEmail(String userEmail);
+
 
 }

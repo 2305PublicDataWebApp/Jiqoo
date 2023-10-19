@@ -128,5 +128,11 @@ public class UserStoreLogic implements UserStore{
 		return result;
 	}
 
+	@Override
+	public int naverUserInsert(SqlSession sqlSession, User naverUser) {
+		int result = sqlSession.insert("UserMapper.naverUserInsert", naverUser);
+		return result;
+	}
+
 
 }
