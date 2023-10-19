@@ -1,48 +1,60 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>지꾸 : No.1 지도 다이어리</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
+<title>지꾸 : No.1 지도 다이어리</title>
+<meta content="" name="description">
+<meta content="" name="keywords">
 
-  <!-- Favicons -->
-  <link href="../resources/assets/img/earth-globe.png" rel="icon">
+<!-- Favicons -->
+<link href="../resources/assets/img/earth-globe.png" rel="icon">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+<!-- Google Fonts -->
+<link
+	href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+	rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
-  <link href="../resources/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="../resources/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+<!-- Vendor CSS Files -->
+<link href="../resources/assets/vendor/aos/aos.css" rel="stylesheet">
+<link href="../resources/assets/vendor/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="../resources/assets/vendor/bootstrap-icons/bootstrap-icons.css"
+	rel="stylesheet">
+<link href="../resources/assets/vendor/boxicons/css/boxicons.min.css"
+	rel="stylesheet">
+<link href="../resources/assets/vendor/glightbox/css/glightbox.min.css"
+	rel="stylesheet">
+<link href="../resources/assets/vendor/remixicon/remixicon.css"
+	rel="stylesheet">
+<link href="../resources/assets/vendor/swiper/swiper-bundle.min.css"
+	rel="stylesheet">
 
-  <!-- Template Main CSS File -->
-  <link href="../resources/assets/css/post_jiqoo.css" rel="stylesheet">
-  <link href="../resources/assets/css/header.css" rel="stylesheet">
-  <link href="../resources/assets/css/footer.css" rel="stylesheet">
-  
-<!--   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
-  
-   <!-- 서머노트를 위해 추가해야할 부분 -->
-  <!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
+<!-- Template Main CSS File -->
+<link href="../resources/assets/css/post_jiqoo.css" rel="stylesheet">
+<link href="../resources/assets/css/header.css" rel="stylesheet">
+<link href="../resources/assets/css/footer.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<!-- 서머노트를 위해 추가해야할 부분 -->
+<!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
   <script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
   <link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
-  <!-- =======================================================
+<!-- =======================================================
   * Template Name: Bootslander
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
   * Template URL: https://bootstrapmade.com/bootslander-free-bootstrap-landing-page-template/
@@ -52,207 +64,247 @@
 </head>
 
 <body>
-  <jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include> 
+	<jsp:include page="/WEB-INF/views/include/header.jsp"></jsp:include>
 
-  <!-- ======= Hero Section ======= -->
-  <section id="hero">
-    <svg class="hero-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+	<!-- ======= Hero Section ======= -->
+	<section id="hero">
+		<svg class="hero-waves" xmlns="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 "
+			preserveAspectRatio="none">
       <defs>
-        <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
+        <path id="wave-path"
+				d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z">
       </defs>
       <g class="wave1">
-        <use xlink:href="#wave-path" x="50" y="3" fill="rgba(255,255,255, .1)">
+        <use xlink:href="#wave-path" x="50" y="3"
+				fill="rgba(255,255,255, .1)">
       </g>
       <g class="wave2">
-        <use xlink:href="#wave-path" x="50" y="0" fill="rgba(255,255,255, .2)">
+        <use xlink:href="#wave-path" x="50" y="0"
+				fill="rgba(255,255,255, .2)">
       </g>
       <g class="wave3">
         <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
       </g>
     </svg>
-  </section><!-- End Hero -->
+	</section>
+	<!-- End Hero -->
 
-  <main id="main">
-      <!-- ======= Search Section ======= -->
-      <div class="search-container">
-        <form action="" method="" class="search-form">
-            <input type="text" placeholder="search"/>
-            <button type="submit" id="search-btn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-            </svg></button>
-        </form>
-      </div>
-
-
-
-      <div id="container" data-aos=fade-in> 
-
-      
-      <!-- ======= Post ======= -->
-          <div id="post" class="col-md-12 col-xxl-10 mx-auto">
-          <div class="post-header">
-	          <c:if test="${sessionScope.userId ne jiqoo.user.userId }">
-	            <span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
-                <div class="action_menu">
-                  <ul>
-                    <li><a href="#"><i class="bi bi-person-vcard"></i> 프로필 보기</a></li>
-                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
-                  </ul>
-                </div>
-	          </c:if>
-				<div style="text-align: center;">
-				    <div  id="post-category-img-container">
-				        <img id="post-category-img" alt="" src="${category.cImgPath}">
-				    </div>
-				    <div class="location col-xs-12 col-sm-8 col-md-6"><span id="location-text">${jiqoo.jiqooW3W}</span></div>
-				</div>
-	            <div id="title">${jiqoo.jiqooTitle }</div>
-	            <div id="writer-info">
-	              <div id="profile-img" class="col-sm-12">
-	                <img src="${jiqoo.user.userPhotoPath }" alt="프로필 이미지" class="profile-image">
-	            </div>
-	            <div class="col-md-10">
-	                <div class="author">${jiqoo.user.userNickname }</div>
-	                <div class="row">
-	                  <div class="info post-date col-lg-6 col-md-12"><fmt:formatDate pattern="yy/MM/dd HH:mm" value="${jiqoo.jCreateDate }"/> </div>
-	                  <div class="info view-count col-lg-3 col-md-12"><span>조회수</span>${jiqoo.jViewCount }</div>
-	                </div>
-	            </div>
-	            </div>
-          </div>
-          <hr>
-            <div id="content">${jiqoo.jiqooContent }</div>
-            <div class="post-footer">
-              <div class="heart-container">
-                <button id="likeButton" onclick="toggleLike()">좋아요</button>
-                <span class="likeCount">${likeCount }</span>
-                <!-- 좋아요 버튼 -->
+	<main id="main">
+		<!-- ======= Search Section ======= -->
+		<div class="search-container">
+			<form action="" method="" class="search-form">
+				<input type="text" placeholder="search" />
+				<button type="submit" id="search-btn">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+						fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path
+							d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+				</button>
+			</form>
+		</div>
 
 
-              </div>
-              <c:if test="${not empty sessionScope.userId && sessionScope.userId eq jiqoo.user.userId}">
-	              <div class="button-container">
-	                  <button class="btn postbtn" id="modify-btn" data-bs-toggle="modal" data-bs-target=".modal">수정</button>
-	                  <button class="btn postbtn" id="delete-btn" onclick="deleteJiqoo()">삭제</button>
-	              </div>
-              </c:if>
-            </div>
-        </div>
-        <!-- ======= Modal ======= -->
-        <div class="modal" tabindex="-1" id="insert-modal">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content"
-					style="background-color: #6DBE45; color: #fff;">
-					<div class="modal-header">
-						<h5 class="modal-title">게시물 입력</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
+
+		<div id="container" data-aos=fade-in>
+
+
+			<!-- ======= Post ======= -->
+			<div id="post" class="col-md-12 col-xxl-10 mx-auto">
+				<div class="post-header">
+					<c:if test="${sessionScope.userId ne jiqoo.user.userId }">
+						<span id="action_menu_btn"><i
+							class="bi bi-three-dots-vertical"></i></span>
+						<div class="action_menu">
+							<ul>
+								<li><a href="#"><i class="bi bi-person-vcard"></i> 프로필
+										보기</a></li>
+								<li><a href="#" data-bs-toggle="modal"
+									data-bs-target="#reportModal"><i
+										class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+							</ul>
+						</div>
+					</c:if>
+					<div style="text-align: center;">
+						<div id="post-category-img-container">
+							<img id="post-category-img" alt="" src="${category.cImgPath}">
+						</div>
+						<div class="location col-xs-12 col-sm-8 col-md-6">
+							<span id="location-text">${jiqoo.jiqooW3W}</span>
+						</div>
 					</div>
-					<div class="modal-body">
-						<!-- 게시물 입력 폼 -->
-						<form action="/jiqoo/insert" method="POST">
-							<div class="mb-3 col-lg-5 mx-auto location-container">
-								<input type="text" class="form-control" id="location"
-									name="jiqooW3W" value="${jiqoo.jiqooW3W }" readonly>
-								<button id="open-map-btn">+</button>
+					<div id="title">${jiqoo.jiqooTitle }</div>
+					<div id="writer-info">
+						<div id="profile-img" class="col-sm-12">
+							<img src="${jiqoo.user.userPhotoPath }" alt="프로필 이미지"
+								class="profile-image">
+						</div>
+						<div class="col-md-10">
+							<div class="author">${jiqoo.user.userNickname }</div>
+							<div class="row">
+								<div class="info post-date col-lg-6 col-md-12">
+									<fmt:formatDate pattern="yy/MM/dd HH:mm"
+										value="${jiqoo.jCreateDate }" />
+								</div>
+								<div class="info view-count col-lg-3 col-md-12">
+									<span>조회수</span>${jiqoo.jViewCount }</div>
 							</div>
-							<div class="mb-3 row date-tag-container">
-								<div class="date-container col-md-3">
-									<input type="date" class="form-control" id="date" name="jiqooDate" value="${jiqoo.jiqooDate }" required>
+						</div>
+					</div>
+				</div>
+				<hr>
+				<div id="content">${jiqoo.jiqooContent }</div>
+				<div class="post-footer">
+					<div class="heart-container">
+						<button id="likeButton" onclick="toggleLike()">좋아요</button>
+						<span class="likeCount">${likeCount }</span>
+						<!-- 좋아요 버튼 -->
+
+
+					</div>
+					<c:if
+						test="${not empty sessionScope.userId && sessionScope.userId eq jiqoo.user.userId}">
+						<div class="button-container">
+							<button class="btn postbtn" id="modify-btn"
+								data-bs-toggle="modal" data-bs-target=".modal">수정</button>
+							<button class="btn postbtn" id="delete-btn"
+								onclick="deleteJiqoo()">삭제</button>
+						</div>
+					</c:if>
+				</div>
+			</div>
+			<!-- ======= Modal ======= -->
+			<div class="modal" tabindex="-1" id="insert-modal">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content"
+						style="background-color: #6DBE45; color: #fff;">
+						<div class="modal-header">
+							<h5 class="modal-title">게시물 입력</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+								aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<!-- 게시물 입력 폼 -->
+							<form action="/jiqoo/insert" method="POST">
+								<div class="mb-3 col-lg-5 mx-auto location-container">
+									<input type="text" class="form-control" id="location"
+										name="jiqooW3W" value="${jiqoo.jiqooW3W }" readonly>
+									<button id="open-map-btn">+</button>
 								</div>
-								<div class="col-md-2 c-btn">
-									<span>카테고리</span> <i class="bi bi-caret-down-fill"
-										onclick="toggleCC()"></i>
-								</div>
-								<div class="category-container" style="display: none;">
-									<div class="category-list">
-										<c:forEach var="categoryList" items="${categoryList }">
-											<div class="form-check category"> 
-												<input class="form-check-input" type="radio" name="jiqooCtgr"
-													 <c:if test="${jiqoo.jiqooCtgr eq categoryList.cName }">checked</c:if> required> <label
-													class="form-check-label" for="${categoryList.cName }"> <img
-													class="tag-img" src="${categoryList.cImgPath }"
-													alt="${categoryList.cName }">
-												</label>
-											</div>
-										</c:forEach>
+								<div class="mb-3 row date-tag-container">
+									<div class="date-container col-md-3">
+										<input type="date" class="form-control" id="date"
+											name="jiqooDate" value="${jiqoo.jiqooDate }" required>
 									</div>
-<!-- 									<div class="form-check"> -->
-<!-- 										<input class="form-check-input" type="radio" name="category" -->
-<!-- 											id="category1" value="option1" required> <label -->
-<!-- 											class="form-check-label" for="category1"> <img -->
-<!-- 											class="tag-img" src="../resources/assets/img/rice.png" -->
-<!-- 											alt="밥"> -->
-<!-- 										</label> -->
-<!-- 									</div> -->
+									<div class="col-md-2 c-btn">
+										<span>카테고리</span> <i class="bi bi-caret-down-fill"
+											onclick="toggleCC()"></i>
+									</div>
+									<div class="category-container" style="display: none;">
+										<div class="category-list">
+											<c:forEach var="categoryList" items="${categoryList }">
+												<div class="form-check category">
+													<input class="form-check-input" type="radio"
+														name="jiqooCtgr"
+														<c:if test="${jiqoo.jiqooCtgr eq categoryList.cName }">checked</c:if>
+														required> <label class="form-check-label"
+														for="${categoryList.cName }"> <img class="tag-img"
+														src="${categoryList.cImgPath }"
+														alt="${categoryList.cName }">
+													</label>
+												</div>
+											</c:forEach>
+										</div>
+										<!-- 									<div class="form-check"> -->
+										<!-- 										<input class="form-check-input" type="radio" name="category" -->
+										<!-- 											id="category1" value="option1" required> <label -->
+										<!-- 											class="form-check-label" for="category1"> <img -->
+										<!-- 											class="tag-img" src="../resources/assets/img/rice.png" -->
+										<!-- 											alt="밥"> -->
+										<!-- 										</label> -->
+										<!-- 									</div> -->
+									</div>
 								</div>
-							</div>
-							<input type="hidden" id="lat" name="jiqooLat" value="${jiqoo.jiqooLat }">
-							<input type="hidden" id="lng" name="jiqooLng" value="${jiqoo.jiqooLng }">
-							<input type="hidden" id="jiqoo-writer" name="jiqooWriter" value="${sessionScope.userId }">
-							<div class="mb-3">
-								<input type="text" class="form-control" id="modify-title" name="jiqooTitle" placeholder="제목" value="${jiqoo.jiqooTitle }" required>
-							</div>
-					           <div class="mb-3">
-				                <textarea id="summernote" name="jiqooContent" required> ${jiqoo.jiqooContent }</textarea>
-				              </div>
-							 <div class="mb-3 form-switch">
-				                <input type="checkbox" class="form-check-input" id="private" name="jOpenStatus" <c:if test="${jiqoo.jOpenStatus eq 'Y' }">checked</c:if>>
-				                <label class="form-check-label" for="private">비공개</label>
-				              </div>
-				              <div class="mb-3 form-switch">
-				                <input type="checkbox" class="form-check-input" id="allowComments" name="jAllowComt" <c:if test="${jiqoo.jAllowComt eq 'Y' }">checked</c:if>>
-				                <label class="form-check-label" for="allowComments">댓글 허용</label>
-				              </div>
-							<div class="modal-footer">
-								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
-								<button type="submit" class="btn insert">등록</button>
-							</div>
-						</form>
+								<input type="hidden" id="lat" name="jiqooLat"
+									value="${jiqoo.jiqooLat }"> <input type="hidden"
+									id="lng" name="jiqooLng" value="${jiqoo.jiqooLng }"> <input
+									type="hidden" id="jiqoo-writer" name="jiqooWriter"
+									value="${sessionScope.userId }">
+								<div class="mb-3">
+									<input type="text" class="form-control" id="modify-title"
+										name="jiqooTitle" placeholder="제목"
+										value="${jiqoo.jiqooTitle }" required>
+								</div>
+								<div class="mb-3">
+									<textarea id="summernote" name="jiqooContent" required> ${jiqoo.jiqooContent }</textarea>
+								</div>
+								<div class="mb-3 form-switch">
+									<input type="checkbox" class="form-check-input" id="private"
+										name="jOpenStatus"
+										<c:if test="${jiqoo.jOpenStatus eq 'Y' }">checked</c:if>>
+									<label class="form-check-label" for="private">비공개</label>
+								</div>
+								<div class="mb-3 form-switch">
+									<input type="checkbox" class="form-check-input"
+										id="allowComments" name="jAllowComt"
+										<c:if test="${jiqoo.jAllowComt eq 'Y' }">checked</c:if>>
+									<label class="form-check-label" for="allowComments">댓글
+										허용</label>
+								</div>
+								<div class="modal-footer">
+									<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+									<button type="submit" class="btn insert">등록</button>
+								</div>
+							</form>
+						</div>
 					</div>
 				</div>
+			</div>
+			<!-- 댓글 -->
+			<div class="comment-section col-md-12 col-xxl-10 mx-auto">
+				<span>댓글</span>
+				<div id="comment-container"></div>
+				<div id="reportPopup" class="popup">
+					<h2>댓글 신고하기</h2>
+					<textarea id="reportReason" placeholder="신고 이유를 입력하세요"></textarea>
+					<button onclick="reportComment()">신고</button>
+					<button onclick="closeReportPopup()">닫기</button>
+				</div>
+			</div>
+			<div class="comment-page-container">
+				<span class="comment-page">< 1 2 3 4 5 ></span>
+			</div>
+			<div class="comment-form col-md-12 col-xxl-10 mx-auto">
+				<textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
+				<button class="btn" id="c-submit">등록</button>
 			</div>
 		</div>
-        <!-- 댓글 -->
-        <div class="comment-section col-md-12 col-xxl-10 mx-auto">
-          <span>댓글</span>
-          <div id="comment-container">
-          </div>
-          <div id="reportPopup" class="popup">
-            <h2>댓글 신고하기</h2>
-            <textarea id="reportReason" placeholder="신고 이유를 입력하세요"></textarea>
-            <button onclick="reportComment()">신고</button>
-            <button onclick="closeReportPopup()">닫기</button>
-        </div>    
-      </div>
-      <div class="comment-page-container">
-        <span class="comment-page">< 1 2 3 4 5 ></span>
-      </div>
-            <div class="comment-form col-md-12 col-xxl-10 mx-auto">
-			  <textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
-			  <button class="btn" id="c-submit">등록</button>
-			</div>
-          </div>
-        </div>
-  </main><!-- End #main -->
-  <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
+		</div>
+	</main>
+	<!-- End #main -->
+	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <div id="preloader"></div>
+	<a href="#"
+		class="back-to-top d-flex align-items-center justify-content-center"><i
+		class="bi bi-arrow-up-short"></i></a>
+	<div id="preloader"></div>
 
-  <!-- Vendor JS Files -->
-  <script src="../resources/assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="../resources/assets/vendor/aos/aos.js"></script>
-  <script src="../resources/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../resources/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="../resources/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="../resources/assets/vendor/php-email-form/validate.js"></script>
+	<!-- Vendor JS Files -->
+	<script
+		src="../resources/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+	<script src="../resources/assets/vendor/aos/aos.js"></script>
+	<script
+		src="../resources/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../resources/assets/vendor/glightbox/js/glightbox.min.js"></script>
+	<script src="../resources/assets/vendor/swiper/swiper-bundle.min.js"></script>
+	<script src="../resources/assets/vendor/php-email-form/validate.js"></script>
 
-  <!-- Template Main JS File -->
-  <script src="../resources/assets/js/main.js"></script>
-  
-  <!-- 썸머노트 -->
-  <script>
+	<!-- Template Main JS File -->
+	<script src="../resources/assets/js/main.js"></script>
+
+	<!-- 썸머노트 -->
+	<script>
     $(document).ready(function() {
     //여기 아래 부분
         $('#summernote').summernote({
@@ -307,8 +359,8 @@
         }
     });
 </script>
-  
-  <script>
+
+	<script>
     function toggleReportDiv() {
         const reportDiv = document.getElementById("report-div");
         reportDiv.style.display = reportDiv.style.display === "none" ? "block" : "none";
@@ -320,9 +372,10 @@
     }
      
   </script>
-  
-  
+
+
 	<script>
+	var jiqooNo = "${jiqoo.jiqooNo}";
   function toggleCC() {
     const categoryContainer = document.querySelector(".category-container");
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
@@ -354,7 +407,8 @@
 
   
   // 댓글 삭제
-  const removeComment = (comtNo) => {
+  const removeComment = (obj, comtNo) => {
+	  console.log(comtNo);
 		$.ajax({
 			url : "/jiqoo/delComment",
 			data : {comtNo : comtNo},
@@ -374,6 +428,7 @@
 	}
   
   const modifyView = (obj, comtContent, comtNo) => {
+	  console.log("comtNo:", comtNo);
 	    // 이미 수정 폼이 표시되고 있는지 확인
 	    const existingForm = $(obj).closest('.comment').find('.modify-form');
 
@@ -461,15 +516,18 @@
 
 	                    if (isCurrentUser) {
 	                        // 현재 사용자가 댓글 작성자인 경우
-	                        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>');
-	                        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>');
+	                        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent); // 데이터 속성에 comtNo와 comtContent 추가
+	                        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo);
 
 	                        // 수정하기와 삭제하기 링크에 이벤트 핸들러 설정
 	                        modifyLink.on("click", function() {
-	                            modifyView(this, comment.comtContent, comment.comtNo);
+	                        	var comtNo = $(this).data("comtNo");
+	                            var comtContent = $(this).data("comtContent");
+	                            modifyView(this, comtContent, comtNo);
 	                        });
 	                        removeLink.on("click", function() {
-	                            removeComment(comment.comtNo);
+	                        	var comtNo = $(this).data("comtNo");
+	                            removeComment(this, comtNo);
 	                        });
 
 	                        action.append(modifyLink);
@@ -477,9 +535,10 @@
 	                    }
 
 	                    // 답글쓰기 링크
-	                    var replyLink = $("<a>").attr("href", 'javascript:void(0)').text("답글쓰기");
+	                    var replyLink = $("<a>").attr("href", 'javascript:void(0)').data("pComtNo", comment.comtNo).text("답글쓰기");
 	                    replyLink.on("click", function() {
-	                        showReplyForm(this, comment.comtNo);
+	                    	var pComtNo = $(this).data("pComtNo");
+	                        showReplyForm(this, pComtNo);
 	                    });
 	                    action.append(replyLink);
 
@@ -507,9 +566,9 @@
 	                    li.append(userInfo);
 	                    li.append(commentText);
 
-	                    // jiqooNo를 input hidden 요소로 추가
-	                    var jiqooNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
-	                    li.append(jiqooNoInput);
+	                    // comtNo를 input hidden 요소로 추가
+	                    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
+	                    li.append(comtNoInput);
 
 	                    // li 요소를 commentList에 추가
 	                    commentList.append(li);
@@ -529,7 +588,7 @@
 	// 최초 로딩 시 댓글 목록을 불러옵니다.
 	getReplyList();
 
-	function showReplyForm(obj, comtNo) {
+	function showReplyForm(obj, pComtNo) {
 	    const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
 	    // 'comment-text' 클래스를 가진 요소 뒤에 replyForm 추가
 	    const replyForm = $("<div>").addClass("reply-form");
@@ -551,7 +610,8 @@
 		    	    url: "/jiqoo/insertReply",
 		    	    type: "get",
 		    	    data: {
-		    	        pComtNo: comtNo,
+		    	    	refPostNo : jiqooNo,
+		    	        pComtNo: pComtNo,
 		    	        comtContent: comtContent
 		    	    },
 		    	    success: function(data) {
@@ -720,7 +780,7 @@
 // 	// 페이지 로드 시 초기화
 // 	updateLikeUI();
 	</script>
-	
+
 </body>
 
 </html>

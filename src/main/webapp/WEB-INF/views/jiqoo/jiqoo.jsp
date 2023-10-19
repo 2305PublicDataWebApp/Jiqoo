@@ -50,11 +50,11 @@
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
 <!-- 서머노트를 위해 추가해야할 부분 -->
 <!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
 <script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
