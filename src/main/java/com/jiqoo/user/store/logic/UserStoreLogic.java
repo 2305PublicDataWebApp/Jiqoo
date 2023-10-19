@@ -111,9 +111,9 @@ public class UserStoreLogic implements UserStore{
 
 
 	@Override
-	public User selectSnsUserByEmail(SqlSession sqlSession, String userEmail) {
-		User kakaoUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", userEmail);
-		return kakaoUser;
+	public User selectSnsUserByEmail(SqlSession sqlSession, Map<String, Object> snsEmailMap) {
+		User snsUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", snsEmailMap);
+		return snsUser;
 	}
 
 	@Override
@@ -123,8 +123,8 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public int deleteKakaoUser(SqlSession sqlSession, String userId) {
-		int result = sqlSession.delete("UserMapper.deleteKakaoUser", userId);
+	public int deleteKakaoUser(SqlSession sqlSession, Map<String, Object> snsEmailMap) {
+		int result = sqlSession.delete("UserMapper.deleteKakaoUser", snsEmailMap);
 		return result;
 	}
 

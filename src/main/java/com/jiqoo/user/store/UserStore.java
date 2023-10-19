@@ -141,10 +141,10 @@ public interface UserStore {
 	/**
 	 * sns 회원 조회 Store
 	 * @param sqlSession 
-	 * @param userEmail
+	 * @param snsEmailMap
 	 * @return
 	 */
-	User selectSnsUserByEmail(SqlSession sqlSession, String userEmail);
+	User selectSnsUserByEmail(SqlSession sqlSession, Map<String, Object> snsEmailMap);
 
 	/**
 	 * 카카오 회원 가입 Store
@@ -157,10 +157,10 @@ public interface UserStore {
 	/**
 	 * 카카오 회원 탈퇴 Store
 	 * @param sqlSession
-	 * @param userId
+	 * @param snsEmailMap
 	 * @return
 	 */
-	int deleteKakaoUser(SqlSession sqlSession, String userId);
+	int deleteKakaoUser(SqlSession sqlSession, Map<String, Object> snsEmailMap);
 
 	/**
 	 * 네이버 회원 가입 Store

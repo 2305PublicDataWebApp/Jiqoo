@@ -28,16 +28,29 @@
 	          </li>
           </c:if>
           <c:if test="${sessionScope.userId ne null && sessionScope.adminYn eq 'N'}">
-	          <li class="dropdown"><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-person-circle"></i></a>
+	          <!-- <li class="dropdown"><a class="nav-link" href="#"><i style="font-size:26px;" class="bi bi-person-circle"></i></a> -->
+	          <li class="dropdown"><a class="nav-link" href="#">
+		        <c:if test="${sessionScope.userPhotoPath eq null}">
+	          		<img src="../resources/assets/img/earth-globe.png" style="width:28px; height:28px; border-radius:50%">
+	            </c:if>
+		        <c:if test="${sessionScope.userPhotoPath ne null}">
+	          		<img src="${sessionScope.userPhotoPath}" style="width:28px; height:28px; border:2px solid rgba(0, 0, 0, 0.712); border-radius:50%">
+	            </c:if>
+	          </a>
 	            <ul>
-	              <li><a href="/user/myPage" style="font-size:1.3em;">마이페이지</a></li>
-	              <li><a href="/user/modify" style="font-size:1.3em;">회원정보수정</a></li>
-	              <c:if test="${sessionScope.accessToken eq null }">
-		              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
-	              </c:if>
-	              <c:if test="${sessionScope.accessToken ne null }">
- 		              <li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
-	              </c:if>
+	            	<li><a href="/user/myPage" style="font-size:1.3em;">마이페이지</a></li>
+					<c:if test="${sessionScope.accessToken eq null }">
+						<li><a href="/user/modify" style="font-size:1.3em;">회원정보수정</a></li>
+					</c:if>
+					<c:if test="${sessionScope.accessToken ne null }">
+						<li><a href="/user/modifySns" style="font-size:1.3em;">회원정보수정</a></li>
+					</c:if>
+					<c:if test="${sessionScope.accessToken eq null }">
+						<li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+					</c:if>
+					<c:if test="${sessionScope.accessToken ne null }">
+						<li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
+					</c:if>
 	            </ul>
 	          </li>
           </c:if>

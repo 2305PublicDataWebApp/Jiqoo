@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public int deleteKakaoUser(String userId) {
-		int result = userStore.deleteKakaoUser(sqlSession, userId);
+	public int deleteKakaoUser(Map<String, Object> snsEmailMap) {
+		int result = userStore.deleteKakaoUser(sqlSession, snsEmailMap);
 		return result;
 	}
 
@@ -120,6 +120,12 @@ public class UserServiceImpl implements UserService{
 	public int selectFollowStatus(Map<String, Object> followMap) {
 		int isFollowing = userStore.selectFollowStatus(sqlSession, followMap);
 		return isFollowing;
+	}
+
+	@Override
+	public User selectSnsUserByEmail(Map<String, Object> snsEmailMap) {
+		User snsUser = userStore.selectSnsUserByEmail(sqlSession, snsEmailMap);
+		return snsUser;
 	}
 
 

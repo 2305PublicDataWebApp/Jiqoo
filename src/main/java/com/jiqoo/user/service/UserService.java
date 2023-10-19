@@ -122,10 +122,17 @@ public interface UserService {
 
 	/**
 	 * 카카오회원 탈퇴 service
-	 * @param userId
+	 * @param snsEmailMap
 	 * @return
 	 */
-	int deleteKakaoUser(String userId);
+	int deleteKakaoUser(Map<String, Object> snsEmailMap);
+
+	/**
+	 *  sns 회원 조회 service
+	 * @param snsEmailMap
+	 * @return
+	 */
+	User selectSnsUserByEmail(Map<String, Object> snsEmailMap);
 
 
 

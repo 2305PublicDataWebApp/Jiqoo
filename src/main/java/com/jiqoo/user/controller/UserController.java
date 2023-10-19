@@ -121,6 +121,7 @@ public class UserController {
 			HttpServletRequest request, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		Map<String, Object> response = new HashMap<>();
+		Map<String, Object> userPhotoMap = new HashMap<>();
 		try {
 			if (userId != "" && userId != null) {
 				User user = userService.selectUserOneById(userId);
@@ -130,7 +131,7 @@ public class UserController {
 					if (fileName != null) { // 있으면 삭제
 						this.deleteFile(request, fileName);
 					}
-					Map<String, Object> userPhotoMap = this.saveFile(request, uploadFile);
+					userPhotoMap = this.saveFile(request, uploadFile);
 					user.setUserPhotoName((String) userPhotoMap.get("fileName"));
 					user.setUserPhotoRename((String) userPhotoMap.get("fileRename"));
 					user.setUserPhotoPath((String) userPhotoMap.get("filePath"));
@@ -138,6 +139,7 @@ public class UserController {
 				int result = userService.updateUser(user);
 				if (result > 0) {
 					System.out.println("프로필 사진 변경 성공");
+				    session.setAttribute("userPhotoPath", user.getUserPhotoPath());
 					response.put("success", "success");
 				} else {
 					System.out.println("프로필 사진 변경 실패");
@@ -295,16 +297,20 @@ public class UserController {
 		return response;
 	}
 
-	// 카카오탈퇴
+	// 카카오 회원탈퇴
 	@ResponseBody
 	@RequestMapping(value = "/kakaoUnlink")
 	public String deleteKakaoUser(HttpSession session) {
 		String accessToken = (String) session.getAttribute("accessToken");
-		String userId = (String) session.getAttribute("userId");
+		String userEmail = (String) session.getAttribute("userEmail");
 		int responseCode = snsService.deleteKakaoUser(accessToken);
 		if (responseCode == 200) { // 카카오 탈퇴 성공->DB삭제진행
-			if (userId != null && userId != "") {
-				int result = userService.deleteKakaoUser(userId);
+			if (userEmail != null && userEmail != "") {
+				Map<String, Object> snsEmailMap = new HashMap<>(); // sns 가입 유저 확인을 위한 map생성
+		        snsEmailMap.put("userEmail", userEmail);
+		        snsEmailMap.put("platformType", "kakao");
+		        
+				int result = userService.deleteKakaoUser(snsEmailMap);
 				if (result > 0) {
 					session.invalidate();
 					System.out.println("카카오 회원 DB삭제 성공");
@@ -376,14 +382,19 @@ public class UserController {
 		// HashMap<String, Object> userInfo = kakao.getUserInfo(accessToken); **Map <->
 		// HashMap 나중에 확인
 		System.out.println("카카오유저인포 : " + kakaoUserInfo);
-		String userId = (String) kakaoUserInfo.get("userId");
-		System.out.println("카카오 userId : " + userId);
-		User kakaoUser = userService.selectUserOneById(userId);
+		String userEmail = (String) kakaoUserInfo.get("userEmail");
+		// System.out.println("카카오 userId : " + userId);
+		Map<String, Object> snsEmailMap = new HashMap<>(); // sns 가입 유저 확인을 위한 map생성
+        snsEmailMap.put("userEmail", userEmail);
+        snsEmailMap.put("platformType", "kakao");
+        
+		User kakaoUser = userService.selectSnsUserByEmail(snsEmailMap);
 		// 회원가입한 카카오 유저있으면 로그인성공->세션저장
 		if (kakaoUser != null) {
-			System.out.println("세션저장 accessToken : " + accessToken);
+			//System.out.println("세션저장 accessToken : " + accessToken);
 			session.setAttribute("accessToken", accessToken); // accessToken 세션저장
 			session.setAttribute("userId", kakaoUser.getUserId());
+			session.setAttribute("userEmail", kakaoUser.getUserEmail());
 			session.setAttribute("userNickname", kakaoUser.getUserNickname());
 			session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
 			session.setAttribute("adminYn", kakaoUser.getAdminYn());
@@ -397,13 +408,13 @@ public class UserController {
 		}
 	}
 
+	// 네이버 로그인
 	@ResponseBody
 	@PostMapping("/naver")
 	public String selectNaverLogin(@RequestBody Map<String, Object> naverUserInfo, HttpSession session) {
 		try {
 			// userInfo 맵을 통해 JSON 데이터의 필드에 접근
 			// 이메일로 사용자 정보 가져오기
-			String userId = (String) naverUserInfo.get("userEmail");
 			String accessToken = (String) naverUserInfo.get("accessToken");
 			String userName = (String) naverUserInfo.get("userName");
 			String userNickname = (String) naverUserInfo.get("userNickname");
@@ -418,8 +429,15 @@ public class UserController {
 			System.out.println("naverUserInfo 성별 : " + userGender);
 			System.out.println("naverUserInfo 생일 : " + birthday);
 			System.out.println("naverUserInfo 출생년도 : " + birthyear);
-			User naverUser = userService.selectUserOneById(userEmail);
+			
+			Map<String, Object> snsEmailMap = new HashMap<>(); // sns 가입 유저 확인을 위한 map생성
+	        snsEmailMap.put("userEmail", userEmail);
+	        snsEmailMap.put("platformType", "naver");
+	        
+			User naverUser = userService.selectSnsUserByEmail(snsEmailMap);
 			if(naverUser == null) {
+				String userId = "naver";
+	        	userId += this.generateRandomCode();
 				String userPw = this.generateRandomCode();
 				User naverUserInsert = new User(userId, userPw, userName, userNickname, userEmail, userGender);
 				//************************** 인서트 코드 추가 ****************************************
@@ -431,6 +449,7 @@ public class UserController {
 			} else {
 				System.out.println("세션저장 accessToken : " + accessToken);
 				session.setAttribute("accessToken", accessToken); // accessToken 세션저장
+				session.setAttribute("userEmail", naverUser.getUserEmail());
 				session.setAttribute("userId", naverUser.getUserId());
 				session.setAttribute("userNickname", naverUser.getUserNickname());
 				session.setAttribute("userPhotoPath", naverUser.getUserPhotoPath());
@@ -451,6 +470,7 @@ public class UserController {
 		User uOne = userService.selectCheckLogin(user);
 		if (uOne != null) {
 			session.setAttribute("userId", uOne.getUserId());
+			session.setAttribute("userEmail", uOne.getUserEmail());
 			session.setAttribute("userNickname", uOne.getUserNickname());
 			session.setAttribute("userPhotoPath", uOne.getUserPhotoPath());
 			session.setAttribute("adminYn", uOne.getAdminYn());
@@ -522,7 +542,6 @@ public class UserController {
 		return mv;
 	}
 
-	//*********************************************** 네이버 ****************************************************
 	// 네이버 콜백페이지 접속
 	@GetMapping("/naverCallback")
 	public ModelAndView showNaverCallback(ModelAndView mv) {
@@ -625,6 +644,39 @@ public class UserController {
 		}
 	}
 
+	// 수정페이지 접속
+	@GetMapping("/modifySns")
+	public String showModifySnsForm(Model model, HttpSession session) {
+		try {
+			String userId = (String) session.getAttribute("userId");
+			User user = null;
+			if (userId != "" && userId != null) {
+				user = userService.selectUserOneById(userId);
+				if (user != null) {
+					if (user.getUserInfo() != null) {
+						String info = user.getUserInfo().replace("<br>", "\r\n");
+						user.setUserInfo(info);
+					}
+					model.addAttribute("user", user);
+					return "user/modifySns";
+				} else {
+					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
+					model.addAttribute("url", "/");
+					return "common/message";
+				}
+			} else {
+				model.addAttribute("msg", "로그인 후 이용해주시기 바랍니다.");
+				model.addAttribute("url", "/user/login");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", "[서비스실패] 관리자 문의바랍니다.");
+			model.addAttribute("url", "/");
+			return "common/message";
+		}
+	}
+	
 	// 인증메일 발송
 	private String sendEmail(String userEmail) {
 		// 랜덤한 인증 번호 생성

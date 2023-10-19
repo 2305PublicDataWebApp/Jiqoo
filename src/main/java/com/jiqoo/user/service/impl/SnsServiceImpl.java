@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.jiqoo.user.controller.UserController;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.SnsService;
 import com.jiqoo.user.store.UserStore;
@@ -127,10 +126,8 @@ public class SnsServiceImpl implements SnsService {
 			JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 			
 	        //콘솔창 확인 후 필요한 정보 추출
-	        System.out.println("----------properties"+properties);
-	        System.out.println("----------kakao_account"+kakao_account);
+	        System.out.println("kakao_account : "+kakao_account);
 	        
-			String userId = kakao_account.getAsJsonObject().get("email").getAsString();
 			String userEmail = kakao_account.getAsJsonObject().get("email").getAsString();
 			String userNickname = properties.getAsJsonObject().get("nickname").getAsString();
 			String userGender = "";
@@ -145,14 +142,20 @@ public class SnsServiceImpl implements SnsService {
 	        }
 
 	        
-			userInfo.put("userId", userId);
 			userInfo.put("userNickname", userNickname);
 	        userInfo.put("userEmail", userEmail);
 	        userInfo.put("userGender", userGender);
 	        
-	        User kakaoUserOne = userStore.selectSnsUserByEmail(sqlSession, userEmail);
+	        Map<String, Object> snsEmailMap = new HashMap<>(); // sns 가입 유저 확인을 위한 map생성
+	        snsEmailMap.put("userEmail", userEmail);
+	        snsEmailMap.put("platformType", "kakao");
+	        
+	        User kakaoUserOne = userStore.selectSnsUserByEmail(sqlSession, snsEmailMap);
 	        if(kakaoUserOne == null) {
+	        	String userId = "kakao";
+	        	userId += this.generateRandomCode();
 	        	String userPw = this.generateRandomCode();
+	        	userInfo.put("userId", userId);
 	        	userInfo.put("userPw", userPw);
 	        	User kakaoUser = new User(userId, userPw, userNickname, userNickname, userEmail, userGender);
 	        	int insertResult = userStore.kakaoUserInsert(sqlSession, kakaoUser);
@@ -182,46 +185,6 @@ public class SnsServiceImpl implements SnsService {
 
 		return code.toString();
 	}
-
-//	@Override
-//	public int kakaoLogout(String accessToken) {
-//	    String reqURL = "https://kapi.kakao.com/v1/user/logout";
-//	    int responseCode = 0;
-//	    try {
-//	        URL url = new URL(reqURL);
-//	        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//	        conn.setRequestMethod("POST");
-//	        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-//	        
-//	        responseCode = conn.getResponseCode();
-//	        System.out.println("responseCode : " + responseCode);
-//	        
-//	        if (responseCode == 200) { // 로그아웃 요청 성공
-//	            System.out.println("카카오 로그아웃 성공");
-//	        } else {
-//	            BufferedReader errorReader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-//	            String errorLine;
-//	            StringBuilder errorResponse = new StringBuilder();
-//	            
-//	            while ((errorLine = errorReader.readLine()) != null) {
-//	                errorResponse.append(errorLine);
-//	            }
-//	            System.out.println("카카오 로그아웃 성공");
-//	        }
-//	        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//	        
-//	        String result = "";
-//	        String line = "";
-//	        
-//	        while ((line = br.readLine()) != null) {
-//	            result += line;
-//	        }
-//	        System.out.println("카카오 유저 고유ID " + result);
-//	    } catch (IOException e) {
-//	        e.printStackTrace();
-//	    }
-//	    return responseCode;
-//	}
 
 	// 카카오 회원탈퇴
 	public int deleteKakaoUser(String accessToken) {

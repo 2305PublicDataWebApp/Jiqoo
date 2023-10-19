@@ -39,7 +39,7 @@
 	
 	<delete id="deleteKakaoUser">
 		DELETE USER_TBL
-		WHERE USER_ID = #{userId}	
+		WHERE USER_EMAIL = #{userEmail}	and PLATFORM_TYPE = #{platformType}
 	</delete>
 	
 	<select id="selectCheckLogin" resultType="User" >
@@ -51,7 +51,7 @@
 	<select id="selectSnsUserByEmail" resultType="User">
 		SELECT *
 		FROM USER_TBL
-		WHERE USER_ID = #{userId}
+		WHERE USER_EMAIL = #{userEmail} AND PLATFORM_TYPE = #{platformType}
 	</select>
 	
 	<select id="selectCheckId" resultType="_int">

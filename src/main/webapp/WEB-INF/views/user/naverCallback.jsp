@@ -36,24 +36,22 @@
  			$.ajax({
 				type: 'POST',
 				url: '/user/naver', 
-				data: naverUserInfo, // JSON객체 전달
-				dataType: 'text',
+				data: JSON.stringify(naverUserInfo), // JSON객체 전달
+				contentType: 'application/json',
 				success: function(result) {
 					if(result === 'insert') {
-						console.log("네이버 회원가입 성공! 로그인 후 이용해주세요");
+						alert("네이버 회원가입 성공! 로그인 후 이용해주세요");
 						window.location.href="/";   
 					} else if(result === 'success'){
-						console.log("로그인 성공");
 						window.location.href="/";   
 					} else {
-						console.log("[서버오류] 관리자 문의바랍니다.");
-						window.location.href="/";   
+						alert("[서버오류] 관리자 문의바랍니다.");
 					}
 				}, 
 				error: function(error) {
 					console.log("[서버오류] 관리자 문의바랍니다.");
 					console.log(error);
-					window.location.href="/";   
+					 
 				} 
 			});
 		  }
