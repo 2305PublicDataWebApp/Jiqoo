@@ -1551,3 +1551,12 @@ margin-bottom: 15px !important;
 .user-search-result {
 	vertical-align: center;
 }
+.add-btn {
+	border-radius: 31px;
+    box-shadow: rgb(255, 255, 255, 0.3);
+    background-color: revert;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.2);
+}
+.add-btn:hover {
+	background-color: #bbbbbb;
+}
