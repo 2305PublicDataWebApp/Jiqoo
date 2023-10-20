@@ -53,7 +53,7 @@ public interface ChatService {
 	int updateChatLastDate(ChatUser chatUser);
 
 	/**
-	 * 채팅방 나가기 Service 
+	 * 채팅방 나가기 Service
 	 * 
 	 * @param chatUser
 	 * @return int
@@ -95,7 +95,8 @@ public interface ChatService {
 
 	/**
 	 * 초대할 유저 검색 Service
-	 * @param chatNo 
+	 * 
+	 * @param chatNo
 	 * 
 	 * @param user
 	 * @return List<User>
@@ -106,7 +107,7 @@ public interface ChatService {
 	 * 채팅방 개설시 유저 검색 Service
 	 * 
 	 * @param userId
-	 * @param keyword 
+	 * @param keyword
 	 * @return List<User>
 	 */
 	List<User> selectJoinUserByKeyword(String userId, String keyword);
@@ -130,7 +131,7 @@ public interface ChatService {
 	/**
 	 * 개설된 채팅방에 유저 추가 Service
 	 * 
-	 * @param chatRoomNo 
+	 * @param chatRoomNo
 	 * @param userId
 	 * @return int
 	 */
@@ -144,5 +145,12 @@ public interface ChatService {
 	 */
 	String getUserPhotoPath(String userId);
 
+	/**
+	 * 채팅방 유저 추가시 채팅방 이름 업데이트 Service
+	 * 
+	 * @param str
+	 * @param chatNo 
+	 */
+	void updateChatName(String str, int chatNo);
 
 }

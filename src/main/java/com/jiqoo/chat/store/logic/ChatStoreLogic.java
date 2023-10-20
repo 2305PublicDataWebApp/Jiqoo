@@ -14,7 +14,7 @@ import com.jiqoo.chat.store.ChatStore;
 import com.jiqoo.user.domain.User;
 
 @Repository
-public class ChatStoreLogic implements ChatStore{
+public class ChatStoreLogic implements ChatStore {
 
 	@Override
 	public List<ChatRoom> selectChatRoomById(SqlSession sqlSession, String userId) {
@@ -77,7 +77,7 @@ public class ChatStoreLogic implements ChatStore{
 	}
 
 	@Override
-	public List<User> selectUsersByKeyword(SqlSession sqlSession, int chatNo,  String user) {
+	public List<User> selectUsersByKeyword(SqlSession sqlSession, int chatNo, String user) {
 		Map<String, Object> userMap = new HashMap<>();
 		userMap.put("chatNo", chatNo);
 		userMap.put("user", user);
@@ -128,5 +128,12 @@ public class ChatStoreLogic implements ChatStore{
 		return result;
 	}
 
+	@Override
+	public void updateChatName(SqlSession sqlSession, String str, int chatNo) {
+		Map<String, Object> chatMap = new HashMap<>();
+		chatMap.put("str", str);
+		chatMap.put("chatNo", chatNo);
+		sqlSession.update("ChatMapper.updateChatName", chatMap);
+	}
 
 }

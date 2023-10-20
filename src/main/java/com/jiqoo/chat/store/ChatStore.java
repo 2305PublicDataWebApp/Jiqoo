@@ -88,7 +88,7 @@ public interface ChatStore {
 	/**
 	 * 메시지 ID로 유저 정보 조회 Store
 	 * 
-	 * @param sqlSession 
+	 * @param sqlSession
 	 * @param userId
 	 * @return User
 	 */
@@ -107,7 +107,7 @@ public interface ChatStore {
 	 * 초대할 유저 검색 Store
 	 * 
 	 * @param sqlSession
-	 * @param chatNo 
+	 * @param chatNo
 	 * @param user
 	 * @return List<User>
 	 */
@@ -118,7 +118,7 @@ public interface ChatStore {
 	 * 
 	 * @param sqlSession
 	 * @param userId
-	 * @param keyword 
+	 * @param keyword
 	 * @return List<User>
 	 */
 	List<User> selectJoinUserByKeyword(SqlSession sqlSession, String userId, String keyword);
@@ -145,7 +145,7 @@ public interface ChatStore {
 	 * 채팅방 개설시 유저 추가 Store
 	 * 
 	 * @param sqlSession
-	 * @param chatRoomNo 
+	 * @param chatRoomNo
 	 * @param userId
 	 * @return int
 	 */
@@ -160,5 +160,13 @@ public interface ChatStore {
 	 */
 	String getUserPhotoPath(SqlSession sqlSession, String userId);
 
+	/**
+	 * 채팅방 유저 추가시 채팅방 이름 업데이트 Store
+	 * 
+	 * @param sqlSession
+	 * @param str
+	 * @param chatNo 
+	 */
+	void updateChatName(SqlSession sqlSession, String str, int chatNo);
 
 }

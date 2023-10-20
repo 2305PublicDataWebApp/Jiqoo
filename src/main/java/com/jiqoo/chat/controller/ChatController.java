@@ -184,12 +184,15 @@ public class ChatController {
 	public String insertChatUserByChatNo(@RequestBody Map<String, Object> requestData) {
 		int result = 0;
 		int chatNo = Integer.parseInt((String) requestData.get("chatNo"));
+		String str = "";
 		List<String> selectedUserIds = (List<String>) requestData.get("selectedUserIds");
 		for (String userId : selectedUserIds) {
 			result += chatService.insertChatUserByChatNo(chatNo, userId);
+			str += " " + chatService.getUserNickname(userId);
 		}
 		if (result >= selectedUserIds.size()) {
-			return "success";
+			chatService.updateChatName(str, chatNo);
+			return str;
 		} else {
 			return "fail";
 		}
@@ -220,25 +223,14 @@ public class ChatController {
 		String currentUserPhotoPath = (String) session.getAttribute("userPhotoPath");
 		String str = "";
 		String userNickname = "";
-		if (selectedUserIds.size() == 2) {
-			for (int i = 0; i < selectedUserIds.size(); i++) {
-				if (!currentUser.equals(selectedUserIds.get(i))) {
-					userNickname = chatService.getUserNickname(selectedUserIds.get(i));
-					chatRoom.setChatName(userNickname);
-					chatRoom.setcImagePath(chatService.getUserPhotoPath(selectedUserIds.get(i)));
-					
-				}
+		for (int i = 0; i < selectedUserIds.size(); i++) {
+			if (!currentUser.equals(selectedUserIds.get(i))) {
+				userNickname = chatService.getUserNickname(selectedUserIds.get(i));
+				str += userNickname + " ";
 			}
-		} else {
-			for (int i = 0; i < selectedUserIds.size(); i++) {
-				if (!currentUser.equals(selectedUserIds.get(i))) {
-					userNickname = chatService.getUserNickname(selectedUserIds.get(i));
-					str += userNickname + " ";
-				}
-			}
-			chatRoom.setChatName(str);
-			chatRoom.setcImagePath("../resources/assets/img/earth-globe.png");
 		}
+		chatRoom.setChatName(str);
+		chatRoom.setcImagePath("../resources/assets/img/earth-globe.png");
 		int chatNo = chatService.insertNewChatRoom(chatRoom);
 		for (String userId : selectedUserIds) {
 			result += chatService.insertChatUserById(chatNo, userId);

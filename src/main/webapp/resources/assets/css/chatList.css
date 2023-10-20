@@ -1560,3 +1560,14 @@ margin-bottom: 15px !important;
 .add-btn:hover {
 	background-color: #bbbbbb;
 }
+.user-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.user-box {
+  width: calc(25% - 10px); /* 4개씩 배치, 간격을 두기 위한 값 */
+  margin: 5px; /* 간격 설정 */
+  text-align: center;
+}
