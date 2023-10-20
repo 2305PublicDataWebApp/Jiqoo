@@ -107,6 +107,7 @@ public interface JiqooService {
 
 	/**
 	 * 지꾸 초기 전체 리스트 조회 Service
+	 * @param limit 
 	 * @return
 	 */
 	List<Jiqoo> loadInitialJiqooAllList();

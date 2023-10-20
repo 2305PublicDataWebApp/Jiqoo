@@ -124,6 +124,7 @@ public interface JiqooStore {
 	/**
 	 * 초기 전체 리스트 Store
 	 * @param sqlSession
+	 * @param limit 
 	 * @return
 	 */
 	List<Jiqoo> loadInitialJiqooAllList(SqlSession sqlSession);
