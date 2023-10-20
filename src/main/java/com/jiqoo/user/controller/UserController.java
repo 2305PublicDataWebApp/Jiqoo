@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
@@ -469,16 +470,8 @@ public class UserController {
 			String userNickname = (String) naverUserInfo.get("userNickname");
 			String userEmail = (String) naverUserInfo.get("userEmail");
 			String userGender = (String) naverUserInfo.get("userGender");
-			String birthday = (String) naverUserInfo.get("birthday");
-			String birthyear = (String) naverUserInfo.get("birthyear");
-			System.out.println("naverUserInfo accessToken : " + accessToken);
-			System.out.println("naverUserInfo 고유id : " + id);
-			System.out.println("naverUserInfo 이름 : " + userName);
-			System.out.println("naverUserInfo 닉네임 : " + userNickname);
-			System.out.println("naverUserInfo 이메일 : " + userEmail);
-			System.out.println("naverUserInfo 성별 : " + userGender);
-			System.out.println("naverUserInfo 생일 : " + birthday);
-			System.out.println("naverUserInfo 출생년도 : " + birthyear);
+//			String birthday = (String) naverUserInfo.get("birthday");
+//			String birthyear = (String) naverUserInfo.get("birthyear");
 			
 			Map<String, Object> snsEmailMap = new HashMap<>(); // sns 가입 유저 확인을 위한 map생성
 	        snsEmailMap.put("userEmail", userEmail);
@@ -489,6 +482,7 @@ public class UserController {
 				String userId = "naver";
 	        	userId += this.generateRandomCode();
 				String userPw = this.generateRandomCode();
+				//User naverUserInsert = new User(userId, userPw, userName, userNickname, userEmail, userGender);
 				User naverUserInsert = new User(userId, userPw, userName, userNickname, userEmail, userGender);
 				//************************** 인서트 코드 추가 ****************************************
 				int insertResult = userService.insertUser(naverUserInsert);
@@ -738,6 +732,17 @@ public class UserController {
 			return "common/message";
 		}
 	}
+	
+	// 
+	/*
+	 * @ResponseBody
+	 * 
+	 * @GetMapping("/myCommentsList") public List<Comment> getComments(HttpSession
+	 * session) { String userId = (String) session.getAttribute("userId");
+	 * List<Comment> comtList = userService.selectMyCommentList(userId); if(isAjax)
+	 * { Gson gson = new Gson(); return gson.toJson(comtList); } return commentList;
+	 * }
+	 */
 	
 	// 인증메일 발송
 	private String sendEmail(String userEmail) {

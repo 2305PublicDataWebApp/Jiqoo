@@ -131,7 +131,7 @@
                                     <a href="#moqoo" class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#reply" class="nav-link" data-toggle="pill" role="tab" aria-controls="reply" aria-selected="false">댓글</a>
+                                    <a href="#comment-div" id="myComment" class="nav-link" data-toggle="pill" role="tab" aria-controls="myComment" aria-selected="false">댓글</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
                                     <a href="#like" class="nav-link" data-toggle="pill" role="tab" aria-controls="like">좋아요</a>
@@ -155,7 +155,7 @@
                                 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                             </div>
                             <!-- 댓글리스트 -->
-                            <div class="tab-pane fade" id="reply" role="tabpanel" aria-labelledby="reply">
+                            <div class="tab-pane fade" id="comment-div" role="tabpanel" aria-labelledby="myComment">
                                 <span>총 </span><span class="greenColor">${user.myComtCount }</span>개의 <span class="greenColor">댓글</span>을 등록하셨습니다.
                                 <div class="container" id="commentsList">
                                 </div>
@@ -335,7 +335,99 @@
 
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script>
-        
+			// 댓글 로드
+			$("#myComment").on("click", function() {
+		        loadComments(); // 댓글 탭을 클릭한 경우 댓글을 불러오는 함수 호출
+		    });
+			
+			function loadComments() {
+		        $.ajax({
+		            url: "/user/comtList",
+		            method: "GET",
+		            success: function(data) {
+		                var commentsList = $("#commentsList");
+		                data.forEach(function(comment) {
+		                    // 댓글 HTML 생성 및 추가하는 코드 유지
+							var commentHtml = `
+							                        <div class="myReply row">
+							                            <a class="myReplyRefTitle" href="#">${comment.title}</a>
+							                            <div class="col-2 myReplyProfile">
+							                                <img src="${comment.profileImage}"><br>
+							                                <p>${comment.userName}</p>
+							                            </div>
+							                            <div class="col-10 myReplyContent text-start">
+							                                <p>${comment.text}</p>
+							                                <div class="row align-items-center">
+							                                    <span class="col-7">${comment.date}</span>
+							                                    <div class="col-5 myReplyContentBtn">
+							                                        <button class="btn btn-sm follow-btn col-2">수정</button>
+							                                        <button class="btn btn-sm follow-btn col-3">삭제</button>
+							                                    </div>
+							                                </div>
+							                            </div>
+							                        </div>
+							                    `;				
+		                    // 생성한 HTML을 댓글 목록에 추가
+		                    commentsList.append(commentHtml);
+		                });
+
+		                // 총 댓글 개수를 업데이트
+		                $("#commentCount").text(data.length);
+		            }
+		        });
+		    }
+			
+			
+			
+// **************************전체 목록 불러올때 적용하기			
+// 			$(document).ready(function() {
+// 			    // 페이지 로딩 후 댓글 목록을 불러오는 함수 호출
+// 			    getCommentList();
+			    
+// 			    // 스크롤 이벤트 리스너 추가
+// 			    $(window).scroll(function() {
+// 			        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+// 			            loadMoreComments();
+// 			        }
+// 			    });
+// 			});
+//************************************************************			
+			
+// 		    var currentPage = 1; // 초기 페이지 번호
+// 		    var pagePerComtCount = 5; // 한 번에 가져올 댓글 수
+		
+// 		    function loadComments() {
+// 		        $.ajax({
+// 		            url: "/user/comtList", // 댓글을 가져오는 API 엔드포인트
+// 		            method: "GET",
+// 		            data: { page: currentPage, pagePerComtCount: pagePerComtCount },
+// 		            success: function(data) {
+// 		                if (data.length > 0) {
+// 		                	var commentsList = $("commentsList");
+// 		                    var commentsHtml = "";
+// 		                    // data를 반복하면서 댓글을 commentsHtml에 추가
+// 		                    data.forEach(function(comment) {
+// 		                        commentsHtml += '<div class="comment">' + comment.text + '</div>';
+// 		                    });
+// 		                    $("#commentsList").append(commentsHtml);
+// 		                    isLoading = false;
+// 		                    page++;
+// 		                }
+// 		            }
+// 		        });
+
+			
+// 			    // 스크롤 이벤트 리스너를 등록하여 스크롤이 끝까지 도달하면 댓글을 추가로 로드
+// 			    $(window).scroll(function() {
+// 			        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+// 			            loadComments();
+// 			        }
+// 			    });
+			
+// 			    // 초기 페이지 로딩 시 댓글 로드
+// 			    loadComments();
+// 			});
+    
 <%--	    //let memId = $("form[name='fundinginfo']").find('#memId').val();
  	        let list ="";
 	        var result =[];
