@@ -44,11 +44,11 @@ public interface JiqooService {
 	 */
 	Category selectCategoryByNo(String jiqooCName);
 
-	/**
-	 * 지꾸 전체 리스트 조회 Service
-	 * @return
-	 */
-	List<Jiqoo> selectJiqooAllList();
+//	/**
+//	 * 지꾸 전체 리스트 조회 Service
+//	 * @return
+//	 */
+//	List<Jiqoo> selectJiqooAllList();
 
 	/**
 	 * 지꾸 본인 리스트 조회 Service
@@ -105,5 +105,20 @@ public interface JiqooService {
 	 * @return
 	 */
 	int deleteLike(Like like);
+
+	/**
+	 * 지꾸 초기 전체 리스트 조회 Service
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooAllList();
+
+	/**
+	 * 전체 리스트 무한스크롤 Service
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params);
+
+	List<Jiqoo> loadInitialJiqooMyList();
 
 }

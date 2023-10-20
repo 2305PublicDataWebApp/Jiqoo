@@ -50,12 +50,12 @@ public interface JiqooStore {
 	 */
 	Category selectCategoryByNo(SqlSession sqlSession, String jiqooCName);
 
-	/**
-	 * 게시물 전체 리스트 조회 Store
-	 * @param sqlSession
-	 * @return
-	 */
-	List<Jiqoo> selectJiqooAllList(SqlSession sqlSession);
+//	/**
+//	 * 게시물 전체 리스트 조회 Store
+//	 * @param sqlSession
+//	 * @return
+//	 */
+//	List<Jiqoo> selectJiqooAllList(SqlSession sqlSession);
 
 	/**
 	 * 지꾸 본인 리스트 조회 Store
@@ -120,5 +120,20 @@ public interface JiqooStore {
 	 * @return
 	 */
 	int deleteLike(SqlSession sqlSession, Like like);
+
+	/**
+	 * 초기 전체 리스트 Store
+	 * @param sqlSession
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooAllList(SqlSession sqlSession);
+
+	/**
+	 * 전체 리스트 무한스크롤 Store
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooAllList(SqlSession sqlSession, Map<String, Object> params);
 
 }

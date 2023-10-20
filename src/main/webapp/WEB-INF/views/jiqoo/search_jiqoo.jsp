@@ -180,96 +180,236 @@
 	</script>
  
 	<script>
-	$(document).ready(function() {
-		var userId = "${sessionScope.userId}";
+// 	$(document).ready(function() {
+// 		var userId = "${sessionScope.userId}";
 		
-// 		지꾸 전체리스트 함수 실행
-		showJiqooAllList();
-	});
-		
-// 	// 초기에는 '내꾸만 보기'가 선택되어 있으므로 'jiqooMyList'를 보이게 설정
-// 	$('#jiqooAllList').show();
-// 	$('#jiqooMyList').hide();
-	
-// 	// '내꾸만 보기' 버튼 클릭 시
-// 	$('#btn-myList').click(function() {
-// 	if(userId == null || userId === "") {
-// 		alert("로그인이 필요한 서비스입니다.");  
-// 	  }else {
-// 		$('#jiqooMyList').show();
-// 		$('#jiqooAllList').hide();			  
-// 	  }
-// 	 });
-	
-// 	  // '남꾸도 보기' 버튼 클릭 시
-// 	  $('#btn-allList').click(function() {
-// 	    $('#jiqooMyList').hide();
-// 	    $('#jiqooAllList').show();
-// 	  });
-	  
-// 	// search-btn 버튼을 클릭했을 때 searchJiqooList 함수 실행
-// 	    $('#search-btn').click(function() {
-// 	        searchJiqooList();
-// 	    });
-
+// // 		지꾸 전체리스트 함수 실행
+// 		showJiqooAllList();
 // 	});
 	
-	$("#search-btn").on('click', function() {
-		searchJiqooList();
-	})
-	function showJiqooAllList() {
-		// 스타일 클래스 없애기
-		document.getElementById("btn-myList").classList.remove("qoo");
-
-	    // 스타일 클래스 생성
-	    document.getElementById("btn-allList").classList.add("qoo");
-	    
+		$("#search-btn").on('click', function() {
+			searchJiqooList();
+		})
 		
+		
+		
+		var currentOffset = 0; // 현재 offset 값
+		var loading = false; // 중복 로드 방지용 플래그
+
+		
+		// 초기 지꾸 전체 리스트 로드하는 함수
+		function loadInitialJiqooAllList() {
+// 			var btnMyList = $("#btn-myList");
+// 			var btnAllList = $("#btn-allList");
+			
+			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+//         	 // "qoo" 클래스를 삭제합니다
+// 		    btnMyList.classList.remove("qoo");
+		    
+// 		    // "qoo" 클래스를 추가합니다
+// 		    btnAllList.classList.add("qoo");
+		    $.ajax({
+		        url: "/jiqoo/loadInitialJiqooAllList",
+		        type: "GET",
+		        success: function (result) {
+				    
+					// 로딩 메시지를 제거
+		            loadingMessage.remove();
+
+		            if (result.length > 0) {
+		                var listContainer = $("#list-container");
+		                
+		                for (var i = 0; i < result.length; i++) {
+		                    var jiqooAllList = result[i];
+		                    var listItem = createResultItem(jiqooAllList);
+		                    listContainer.append(listItem);
+		                }
+		                
+		             	// 현재 offset 값을 업데이트
+		                currentOffset += 10;
+		            }
+		        },
+		        error: function () {
+		            alert("지꾸 불러오는 중 오류가 발생했습니다.");
+		        }
+		    });
+		}
+		
+		// 지꾸 전체 리스트 스크롤 이벤트 핸들러 
+		$(window).scroll(function () {
+	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
+	        if (!loading) {
+	            loading = true;
+
+	            // 서버로 데이터를 요청합니다.
+	            $.ajax({
+	                url: "/jiqoo/loadMoreJiqllAllList", // 서버로 요청 보낼 URL
+	                type: "get", // GET 요청
+	                data: {
+	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    limit: 10 // 페이지당 표시할 댓글 수
+	                },
+	                success: function (result) {
+	                    // 서버에서 성공적으로 데이터를 받아온 경우
+	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
+
+			            if (result.length > 0) {
+			                var listContainer = $("#list-container");
+			                
+			                for (var i = 0; i < result.length; i++) {
+			                    var jiqooAllList = result[i];
+			                    var listItem = createResultItem(jiqooAllList);
+			                    listContainer.append(listItem);
+			                }
+			                
+			             	// 현재 offset 값을 업데이트
+			                currentOffset += 10;
+			            	}	
+	                    
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                },
+	                error: function () {
+	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+	                    const errorContainer = $("#error-container");
+	                    errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                }
+            	});
+	    	}
+	  		  }
+        	});
+		
+		$(document).ready(function () {
+			loadInitialJiqooAllList();
+		});
+		
+		
+		// 초기 지꾸 본인 리스트 로드하는 함수
+		function loadInitialJiqooMyList() {
+// 			var btnMyList = $("#btn-myList");
+// 			var btnAllList = $("#btn-allList");
+			
+			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+//         	 // "qoo" 클래스를 삭제합니다
+// 		    btnMyList.classList.remove("qoo");
+		    
+// 		    // "qoo" 클래스를 추가합니다
+// 		    btnAllList.classList.add("qoo");
+		    $.ajax({
+		        url: "/jiqoo/loadInitialJiqooMyList",
+		        type: "GET",
+		        success: function (result) {
+				    
+					// 로딩 메시지를 제거
+		            loadingMessage.remove();
+
+		            if (result.length > 0) {
+		                var listContainer = $("#list-container");
+		                
+		                for (var i = 0; i < result.length; i++) {
+		                    var jiqooMyList = result[i];
+		                    var listItem = createResultItem(jiqooMyList);
+		                    listContainer.append(listItem);
+		                }
+		                
+		             	// 현재 offset 값을 업데이트
+		                currentOffset += 10;
+		            }
+		        },
+		        error: function () {
+		            alert("지꾸 불러오는 중 오류가 발생했습니다.");
+		        }
+		    });
+		}
+		
+		// 지꾸 전체 리스트 스크롤 이벤트 핸들러 
+		$(window).scroll(function () {
+	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
+	        if (!loading) {
+	            loading = true;
+
+	            // 서버로 데이터를 요청합니다.
+	            $.ajax({
+	                url: "/jiqoo/loadMoreJiqllMyList", // 서버로 요청 보낼 URL
+	                type: "get", // GET 요청
+	                data: {
+	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    limit: 10 // 페이지당 표시할 댓글 수
+	                },
+	                success: function (result) {
+	                    // 서버에서 성공적으로 데이터를 받아온 경우
+	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
+
+			            if (result.length > 0) {
+			                var listContainer = $("#list-container");
+			                
+			                for (var i = 0; i < result.length; i++) {
+			                    var jiqooMyList = result[i];
+			                    var listItem = createResultItem(jiqooMyList);
+			                    listContainer.append(listItem);
+			                }
+			                
+			             	// 현재 offset 값을 업데이트
+			                currentOffset += 10;
+			            	}	
+	                    
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                },
+	                error: function () {
+	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+	                    const errorContainer = $("#error-container");
+	                    errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
+
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loading = false;
+	                }
+            	});
+	    	}
+	  		  }
+        	});
+		
+		
+		
+		
+		
+		
+		
+		
+		function showJiqooAllList() {
+	    var btnMyList = document.getElementById("btn-myList");
+	    var btnAllList = document.getElementById("btn-allList");
+	
+	    // "qoo" 클래스를 삭제합니다
+	    btnMyList.classList.remove("qoo");
+	    
+	    // "qoo" 클래스를 추가합니다
+	    btnAllList.classList.add("qoo");
+	    
 	    $.ajax({
 	        url: "/jiqoo/AllList",
 	        type: "GET",
 	        success: function (result) {
 	            if (result.length > 0) {
 	                var listContainer = $("#list-container");
-
-	                // 결과를 표시하기 전에 기존 결과를 지우기
+	                
+	                // 새로운 결과를 표시하기 전에 이전 결과를 지웁니다
 	                listContainer.empty();
-
-	                // 결과를 반복해서 표시
+	                
 	                for (var i = 0; i < result.length; i++) {
 	                    var jiqooAllList = result[i];
-
-	                    // 새로운 결과 항목을 생성
-	                    var listItem = $('<div class="row result-item">');
-	                    var postLink = $('<a href="/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo + '">'); // <a> 태그 생성
-	                    var postHeader = $('<div class="post-header">');
-	                    var category = $('<div class="category">');
-	                    var categoryImg = $('<img class="category-img" alt="">').attr('src', jiqooAllList.category.cImgPath);
-	                    var location = $('<div class="location"><span class="location-text">' + jiqooAllList.jiqooW3W + '</span></div>');
-	                    var profileImg = $('<div id="profile-img" class="col-sm-12">');
-	                    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', jiqooAllList.user.userPhotoPath);
-	                    var colMd10 = $('<div class="col-md-10">');
-	                    var title = $('<div class="title">' + jiqooAllList.jiqooTitle + '</div>');
-	                    var content = $('<div class="content">' + jiqooAllList.jiqooContent + '</div>'); // 실제 게시물 내용을 표시
-	                    var author = $('<div class="author col-md-12">' + jiqooAllList.user.userNickname + '</div>');
-	                    var info = $('<div class="info col-lg-6 col-sm-12">' + formatDate(jiqooAllList.jCreateDate) + '</div>');
-	                    var heartContainer = $('<div class="heart-container">');
-	                    var heartImage = $('<img class="heart" alt="" src="../resources/assets/img/heart(full).png">');
-
-	                    // 필요한 하위 요소들을 조립합니다.
-	                    category.append(categoryImg);
-	                    postHeader.append(category, location);
-	                    profileImg.append(profileImage);
-	                    colMd10.append(title, content, author, info, heartContainer);
-	                    heartContainer.append(heartImage);
-
-	                    // 결과를 결과 리스트 컨테이너에 추가
-	                    postLink.append(postHeader, profileImg, colMd10); // <a> 태그에 하위 요소 추가
-	                    listItem.append(postLink); // 결과 항목에 <a> 태그 추가
+	                    var listItem = createResultItem(jiqooAllList);
 	                    listContainer.append(listItem);
 	                }
 	            } else {
-	                // 결과가 없는 경우 처리
+	                // 결과가 없는 경우 처리합니다
 	                alert("검색 결과가 없습니다.");
 	            }
 	        },
@@ -277,7 +417,39 @@
 	            alert("Ajax 오류~ 관리자에게 문의하삼");
 	        }
 	    });
+	}
 
+	function createResultItem(jiqooAllList) {
+	    var listItem = $('<div class="row result-item">');
+	    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo);
+	    
+	    var postHeader = $('<div class="post-header">');
+	    var category = $('<div class="category">');
+	    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', jiqooAllList.category.cImgPath);
+	    var location = $('<div class="location"><span class="location-text">' + jiqooAllList.jiqooW3W + '</span></div');
+	    
+	    var profileImg = $('<div id="profile-img" class="col-sm-12">');
+	    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', jiqooAllList.user.userPhotoPath);
+	    
+	    var colMd10 = $('<div class="col-md-10">');
+	    var title = $('<div class="title">' + jiqooAllList.jiqooTitle + '</div>');
+	    var content = $('<div class="content">' + jiqooAllList.jiqooContent + '</div>');
+	    var author = $('<div class="author col-md-12">' + jiqooAllList.user.userNickname + '</div>');
+	    var info = $('<div class="info col-lg-6 col-sm-12">' + formatDate(jiqooAllList.jCreateDate) + '</div>');
+	    
+	    var heartContainer = $('<div class="heart-container">');
+	    var heartImage = $('<img class="heart" alt="" src="../resources/assets/img/heart(full).png">');
+	    
+	    category.append(categoryImg);
+	    postHeader.append(category, location);
+	    profileImg.append(profileImage);
+	    colMd10.append(title, content, author, info, heartContainer);
+	    heartContainer.append(heartImage);
+	    
+	    postLink.append(postHeader, profileImg, colMd10);
+	    listItem.append(postLink);
+	    
+	    return listItem;
 	}
 	
 	function showJiqooMyList() {

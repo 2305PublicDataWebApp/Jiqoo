@@ -131,19 +131,12 @@ public class JiqooComtController {
 //		return gson.toJson(commentList);
 //	}
 	
-	
+	@ResponseBody
 	@GetMapping("/jiqoo/loadInitialComments")
     public List<Comment> loadInitialComments(@RequestParam int jiqooNo) {
         // jiqooNo를 사용하여 초기 댓글 데이터를 가져오는 로직을 구현합니다.
         // 여기에서는 더미 데이터로 예시를 제공합니다.
         List<Comment> initialComments = jiqooComtService.initialComments(jiqooNo);
-        
-//        // 댓글 데이터를 더미로 생성하여 추가합니다.
-//        Comment comment1 = new Comment(1, "User1", "첫 번째 댓글입니다.");
-//        Comment comment2 = new Comment(2, "User2", "두 번째 댓글입니다.");
-//        initialComments.add(comment1);
-//        initialComments.add(comment2);
-
         return initialComments;
     }
 	

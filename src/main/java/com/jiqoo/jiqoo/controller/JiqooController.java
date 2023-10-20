@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,12 +47,12 @@ public class JiqooController {
 	public String showJiqooMapList(Model model, HttpSession session) {
 		try {
 			String userId = (String) session.getAttribute("userId");
-			List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+//			List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
 			List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
 			List<Category> categoryList = jiqooService.selectCategoryList();
 			if (categoryList != null) {
 				model.addAttribute("categoryList", categoryList);
-				model.addAttribute("jiqooAllList", jiqooAllList);
+//				model.addAttribute("jiqooAllList", jiqooAllList);
 				model.addAttribute("jiqooMyList", jiqooMyList);
 				return "jiqoo/jiqoo";
 			} else {
@@ -169,13 +170,13 @@ public class JiqooController {
 		return gson.toJson(jiqooSearchList);
 	}
 
-	@ResponseBody
-	@GetMapping(value = "/jiqoo/AllList", produces = "application/json;charset=UTF-8;")
-	public String showAllList() {
-		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
-		Gson gson = new Gson();
-		return gson.toJson(jiqooAllList);
-	}
+//	@ResponseBody
+//	@GetMapping(value = "/jiqoo/AllList", produces = "application/json;charset=UTF-8;")
+//	public String showAllList() {
+//		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+//		Gson gson = new Gson();
+//		return gson.toJson(jiqooAllList);
+//	}
 
 	@ResponseBody
 	@GetMapping(value = "/jiqoo/MyList", produces = "application/json;charset=UTF-8;")
@@ -198,13 +199,13 @@ public class JiqooController {
 		}
 	}
 
-	@ResponseBody
-	@GetMapping(value = "/jiqoo/showAllMap", produces = "application/json;charset=UTF-8;")
-	public String showAllMap() {
-		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
-		Gson gson = new Gson();
-		return gson.toJson(jiqooAllList);
-	}
+//	@ResponseBody
+//	@GetMapping(value = "/jiqoo/showAllMap", produces = "application/json;charset=UTF-8;")
+//	public String showAllMap() {
+//		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+//		Gson gson = new Gson();
+//		return gson.toJson(jiqooAllList);
+//	}
 
 	@GetMapping("/jiqoo/delete")
 	public String deleteJiqoo(@RequestParam("jiqooNo") int jiqooNo, Model model) {
@@ -312,6 +313,45 @@ public class JiqooController {
 			}
 		}
 	}
+	
+	// 초기 지꾸 전체 리스트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadInitialJiqooAllList")
+    public List<Jiqoo> loadInitialJiqooAllList() {
+        List<Jiqoo> initialJiqooAllList = jiqooService.loadInitialJiqooAllList();
+        return initialJiqooAllList;
+    }
+	
+	// 지꾸 전체 리스트 스크롤 이벤트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadMoreJiqllAllList")
+	public ResponseEntity<List<Jiqoo>> loadMoreJiqllAllList(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+		List<Jiqoo> newList = jiqooService.loadMoreJiqooAllList(params);
+        return ResponseEntity.ok(newList);
+	}
+	
 
+	// 초기 지꾸 본인 리스트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadInitialJiqooMyList")
+    public List<Jiqoo> loadInitialJiqooMyList() {
+        List<Jiqoo> initialJiqooMyList = jiqooService.loadInitialJiqooMyList();
+        return initialJiqooMyList;
+    }
+	
+	// 지꾸 본인 리스트 스크롤 이벤트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadMoreJiqllMyList")
+	public ResponseEntity<List<Jiqoo>> loadMoreComments(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+		List<Jiqoo> newList = jiqooService.loadMoreJiqooAllList(params);
+        return ResponseEntity.ok(newList);
+	}
+	
 
 }

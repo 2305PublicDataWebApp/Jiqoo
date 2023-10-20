@@ -53,11 +53,11 @@ public class JiqooServiceImpl implements JiqooService{
 		return category;
 	}
 
-	@Override
-	public List<Jiqoo> selectJiqooAllList() {
-		List<Jiqoo> jiqooList = jiqooStore.selectJiqooAllList(sqlSession);
-		return jiqooList;
-	}
+//	@Override
+//	public List<Jiqoo> selectJiqooAllList() {
+//		List<Jiqoo> jiqooList = jiqooStore.selectJiqooAllList(sqlSession);
+//		return jiqooList;
+//	}
 
 	@Override
 	public List<Jiqoo> selectJiqooMyList(String userId) {
@@ -105,6 +105,18 @@ public class JiqooServiceImpl implements JiqooService{
 	public int deleteLike(Like like) {
 		int result = jiqooStore.deleteLike(sqlSession, like);
 		return result;
+	}
+
+	@Override
+	public List<Jiqoo> loadInitialJiqooAllList() {
+		List<Jiqoo> list = jiqooStore.loadInitialJiqooAllList(sqlSession);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params) {
+		List<Jiqoo> list = jiqooStore.loadMoreJiqooAllList(sqlSession, params);
+		return list;
 	}
 
 

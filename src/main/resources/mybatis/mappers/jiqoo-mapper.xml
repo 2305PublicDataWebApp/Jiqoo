@@ -98,14 +98,14 @@
 		CATEGORY_TBL WHERE C_NAME = #{jiqooCName }
 	</select>
 
-	<select id="selectJiqooAllList" resultMap="JiqooResultMap">
-		SELECT * FROM JIQOO_TBL J
-		JOIN USER_TBL U ON
-		J.JIQOO_WRITER = U.USER_ID
-		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
-		ORDER BY J.JIQOO_DATE DESC
-	</select>
+<!-- 	<select id="selectJiqooAllList" resultMap="JiqooResultMap"> -->
+<!-- 		SELECT * FROM JIQOO_TBL J -->
+<!-- 		JOIN USER_TBL U ON -->
+<!-- 		J.JIQOO_WRITER = U.USER_ID -->
+<!-- 		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME -->
+<!-- 		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y' -->
+<!-- 		ORDER BY J.JIQOO_DATE DESC -->
+<!-- 	</select> -->
 
 	<select id="selectJiqooMyList" resultMap="JiqooResultMap">
 		SELECT * FROM JIQOO_TBL J
@@ -135,6 +135,40 @@
 		        ORDER BY J.J_CREATE_DATE DESC
 		    </when>
 	</choose>
+	</select>
+	
+	<select id="loadInitialJiqooAllList" resultMap="JiqooResultMap">
+		SELECT * 
+		FROM (
+			SELECT A.*, ROWNUM AS rnum
+			FROM (
+			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+			    FROM JIQOO_TBL J
+			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
+			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+			    ORDER BY J.JIQOO_DATE DESC
+			) A
+		WHERE ROWNUM &lt;= 10
+		)
+		WHERE rnum &gt;= 1
+	</select>
+	
+	<select id="loadMoreJiqooAllList" resultMap="JiqooResultMap">
+		SELECT * 
+		FROM (
+			SELECT A.*, ROWNUM AS rnum
+			FROM (
+			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+			    FROM JIQOO_TBL J
+			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
+			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+			    ORDER BY J.JIQOO_DATE DESC
+			) A
+		WHERE ROWNUM &lt;= (#{offset} + #{limit})
+		)
+		WHERE rnum &gt; #{offset}
 	</select>
 	
 	

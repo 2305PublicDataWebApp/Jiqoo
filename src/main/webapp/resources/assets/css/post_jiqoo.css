@@ -308,6 +308,7 @@ p {
 .comment-list {
   list-style-type: none;
   padding: 0;
+  margin-bottom: 0;
 }
 
 .comment {
@@ -321,9 +322,6 @@ p {
     width: 15px;
 }
 
-.comment-list li:first-child {
-  border-top: 1px solid #ddd; /* border-top 스타일을 원하는 스타일로 설정합니다. */
-}
 
 .comment {
   display: flex;

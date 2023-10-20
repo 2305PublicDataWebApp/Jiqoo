@@ -59,7 +59,7 @@
 	<select id="initialComments" resultMap="CommentResultMap">
 <!-- 		SELECT * FROM COMT_TBL C -->
 <!-- 		JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'J' ORDER BY COMT_DATE ASC -->
-				SELECT * 
+		SELECT * 
 		FROM (
 		    SELECT F.*, ROWNUM AS rnum
 		    FROM (
