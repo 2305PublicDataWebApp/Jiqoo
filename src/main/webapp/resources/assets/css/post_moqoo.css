@@ -59,10 +59,10 @@ p {
 .moqoo-table {
 	padding-right: 10px;
 }
-#moqoo-table-img {
-	width: 35px;
-    height: 35px;
-}
+/* #moqoo-table-img { */
+/* 	width: 35px; */
+/*     height: 35px; */
+/* } */
 .table-btn {
 	margin : 0 5px;
 	border-radius: 10px;
@@ -504,9 +504,6 @@ p {
 /*--------------------------------------------------------------
 # post
 --------------------------------------------------------------*/
-.action_menu ul{
-	list-style: none;
-}
 /* 게시물 스타일 */
 #post {
   border: 1px solid #C2D1D9;
@@ -516,42 +513,87 @@ p {
   margin: 50px;
   position: relative;
 }
-  .post-header {
-    display: flex;
-    justify-content: space-between;
-  }
 
-  /* 신고하기 */
-  #post .dots {
-    position: absolute; /* 자식 요소를 절대적으로 위치시킴 */
-    top: 5px;
-    right: 20px;
-    cursor: pointer;
-  }
 
-  /* report-div 스타일 */
-  #report-div {
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 10px;
-    position: absolute;
-    top: 35px; /* "dots" 이미지 아래로 위치시킴 */
-    right: 20px;
-    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); */
-  }
+/* 신고 */
+#action_menu_btn{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: black;
+	cursor: pointer;
+	font-size: 26px;
+}
 
-  /* report-text 스타일 */
-  #report-text {
-    cursor: pointer;
-    color: #007bff;
-    float: left;
-    margin-right: 10px;
-  }
+.action_menu{
+	z-index: 1;
+	position: absolute;
+	padding: 15px 0;
+	background-color: rgba(0,0,0,0.5);
+	color: white;
+	border-radius: 15px;
+	top: 30px;
+	right: 15px;
+	display: none;
+}
 
-  .bi-exclamation-circle{
-    color: #007bff;
-  }
+.action_menu ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.action_menu ul li{
+	width: 100%;
+	padding: 10px 15px;
+	margin-bottom: 5px;
+}
+
+.action_menu ul li a {
+  color : white;
+}
+
+.action_menu ul li i{
+	padding-right: 10px;
+}
+.action_menu ul li:hover{
+	cursor: pointer;
+	background-color: rgba(0,0,0,0.2);
+}
+
+
+
+/* 신고하기 */
+    #post .dots {
+        position: absolute; /* 자식 요소를 절대적으로 위치시킴 */
+        top: 5px;
+        right: 20px;
+        cursor: pointer;
+    }
+
+/* report-div 스타일 */
+#report-div {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  position: absolute;
+  top: 35px; /* "dots" 이미지 아래로 위치시킴 */
+  right: 20px;
+  /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); */
+}
+
+/* report-text 스타일 */
+#report-text {
+  cursor: pointer;
+  color: #007bff;
+  float: left;
+  margin-right: 10px;
+}
+
+.bi-exclamation-circle{
+  color: #007bff;
+}
   
   /* --- */
     
@@ -565,26 +607,19 @@ p {
 	}
 
   .location {  /* w3w디자인 */
-    width: 300px;
-    background-color: #388E3C;
-    border-radius: 10px;
-    color: white;
-    text-align: center;
-    padding: 5px 0;
-    margin-bottom: 10px;
+	font-size: 28px;
+	width: 246px;
+	font-weight: bold;
+	color: black;
+	text-align: center;
+	margin-bottom: 10px;
+	margin-bottom: 0;
   }
 
+	#location-text {
+		box-shadow: inset 0 -21px 0 #ffed7c;
+	}
 
-    #post-location {  /* w3w디자인 */
-      	font-size: 28px;
-/*         width: 246px; */
-        font-weight: bold;
-        color: black;
-        text-align: center;
-        margin-bottom: 10px;
-        margin-bottom: 0;
-        box-shadow: inset 0 -21px 0 #ffed7c;
-      }
       
       
 
@@ -593,6 +628,7 @@ p {
       font-size: 30px;
       font-weight: bold;
       margin-bottom: 40px;
+      margin-top : 30px;
   }
 
   #writer-info {
@@ -601,27 +637,34 @@ p {
       margin-bottom: 10px;
   }
 
-    /* #post-profile {
-      width: 120px;
-    } */
+    #post-profile {
+    	width: 70px;
+    	height: 70px;
+    	margin-right: 15px;
+    }
 
       #post-profile img {
-        width: 85px;
-        height: 85px;
         border-radius: 50%;
         background-color: #8BC34A;
-        margin-right: 15px;
         object-fit: cover;
+        overflow: hidden;
+        max-width: 100%;
+        height: auto;
       }
 
-      /* .post-date {
-        width: 350px;
-      } */
+	.post-date {
+		width: 180px;
+	}
 
       #writer-name {
           font-weight: bold;
           font-size: 20px;
       }
+      
+    /* 위치, 날짜, 좋아요 스타일 */
+	.info {
+	  color: #888;
+	}
 
       #write-info {
         display: flex;
@@ -811,10 +854,6 @@ p {
   border-bottom: 1px solid #ddd;
 }
 
-.action_menu {
-	display :none;
-}
-
 .user-info {
   display: flex;
   align-items: flex-end;
@@ -892,6 +931,17 @@ p {
     font-size: 16px;
 }
 
+/* 댓글 폼 스타일 */
+.comment-form, .reply-form, .modify-form {
+  border: 1px solid #C2D1D9;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 /* 신고하기 버튼 스타일 */
 .mini-dots {
   cursor: pointer;
@@ -903,17 +953,17 @@ p {
 }
 
 /* 댓글 폼 스타일 */
-.comment-form {
+.comment-form, .reply-form, .modify-form {
   border: 1px solid #C2D1D9;
   border-radius: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
 }
 
-.comment-form textarea {
+.comment-form textarea, .reply-form textarea, .modify-form input {
   border: none; /* 테두리 제거 */
   outline: none; /* 아웃라인 제거 */
   resize: none; /* 크기 조절 비활성화 */
@@ -921,7 +971,7 @@ p {
   height: auto;
 }
 
-#submit-btn {
+#submit-btn, .reply-btn, .modify-form button {
   width: 80px;
   height: 35px;
   background-color: #8BC34A;
@@ -932,6 +982,7 @@ p {
   transition: background-color 0.3s ease;
   right: 5px;
   bottom: 5px;
+  font-size: 14px;
 }
 
 #submit-btn:hover {

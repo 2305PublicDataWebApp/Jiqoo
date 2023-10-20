@@ -87,18 +87,27 @@
     <!-- ======= Post ======= -->
     <div id="post" class="col-md-12 col-xxl-10 mx-auto">
       <div class="post-header">
-        <div id="post-location" class="mx-auto">${moqoo.moqooW3W }</div>
-        <div class="report-button">
-          <img class="dots" src="../resources/assets/img/dots.png" alt="" onclick="toggleReportDiv(this)">
-          <div id="report-div" style="display: none;">
-            <a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"  id="report-btn">신고하기</a>
-              <i class="bi bi-exclamation-circle"></i>
-          </div>  
-        </div>
+		  <c:if test="${sessionScope.userId ne moqoo.user.userId }">
+			<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
+			<div class="action_menu">
+			  <ul>
+				<li><a href="#"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
+				<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+			  </ul>
+			</div>
+		  </c:if>
+		  <div style="text-align: center;">
+			<div id="post-category-img-container">
+			  <img id="post-category-img" alt="" src="${category.cImgPath}">
+			</div>
+			<div class="location col-xs-12 col-sm-8 col-md-6">
+			  <span id="location-text">${moqoo.moqooW3W}</span>
+			</div>
+		  </div>
       </div>
       <div id="post-title">${moqoo.moqooTitle }</div>
         <div id="writer-info">
-          <div id="post-profile" class="col-lg-2 col-md-3 col-sm-3">
+          <div id="post-profile" class="col-sm-12">
           	<c:if test="${moqoo.user.userPhotoPath eq null }">
    			  <img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" id="moqoo-table-img" class="profile-image">
             </c:if>
@@ -110,7 +119,8 @@
             <div id="writer-name">${moqoo.user.userNickname }</div>
             <input type="hidden" id="moqoo-writer" name="moqooWriter" value="${sessionScope.userId }">
             <div class="row">
-              <div class="info post-date col-lg-6 col-md-12">${moqoo.moqooDate }</div>
+              <div class="info post-date col-lg-6 col-md-12"><fmt:formatDate pattern="yy/MM/dd HH:mm" value="${moqoo.moqooDate }" />
+			  </div>
               <div class="info view-count col-lg-3 col-md-12">조회 140</div>
             </div>
           </div>
@@ -132,6 +142,7 @@
 	        <img id="heart" class="heart" src="../resources/assets/img/heart(empty).png" alt="빈 하트" onclick="changeImage()">
 	        <span class="heart-count">${likeCount }</span>
 	      </div>
+	      
 	      <div class="button-container">
 			<c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
 			    <c:url var="moqooDelUrl" value="/moqoo/delete">
@@ -275,9 +286,22 @@
 		<!-- 댓글 -->
         <div class="comment-section col-md-12 col-xxl-10 mx-auto">
 		  <span>댓글</span><span>3</span>
-		  <div id="comment-container">
-		  
+		  <div id="comment-container"></div>
+		  <div id="reportPopup" class="popup">
+			<h2>댓글 신고하기</h2>
+			<textarea id="reportReason" placeholder="신고 이유를 입력하세요"></textarea>
+			<button onclick="reportComment()">신고</button>
+			<button onclick="closeReportPopup()">닫기</button>
 		  </div>
+		</div>
+		<div class="comment-page-container">
+          <span class="comment-page">< 1 2 3 4 5 ></span>
+        </div>
+        <!-- 댓글 등록창 -->
+        <div class="comment-form col-md-12 col-xxl-10 mx-auto">
+         <textarea placeholder="댓글을 입력하세요" id="comtContent"></textarea>
+         <button class="btn postbtn" id="submit-btn">등록</button>
+        </div>
 <!--           <ul class="comment-list"> -->
 <%--           <c:forEach var="comt1" items="${comtList }" varStatus="i"> --%>
 <%--           	<c:if test=""></c:if> --%>
@@ -368,17 +392,9 @@
 <!-- <!--             // 첫번째 댓글의 답글 --> 
 <!--              --크게 forEach하고 답글만 따로 또 forEach하면 되나?----여기까지 반복------------------------ -->
 <!--           </ul> -->
-        </div>
         <!-- 페이징처리할 div -->
-        <div class="comment-page-container">
-          <span class="comment-page">< 1 2 3 4 5 ></span>
-        </div>
+        
 <!--         <form action="" method="" class="comment-form col-md-12 col-xxl-10 mx-auto"> -->
-      <!-- 댓글 등록창 -->
-        <div class="comment-form col-md-12 col-xxl-10 mx-auto">
-         <textarea placeholder="댓글을 입력하세요" id="comtContent"></textarea>
-         <button class="btn postbtn" id="submit-btn">등록</button>
-        </div>
 <!--         </form> -->
           
           
@@ -436,66 +452,66 @@
 
   <script>
   	function deleteMoqoo(moqooDelUrl) {
-		location.href = moqooDelUrl
+  		if(confirm("정말 삭제하시겠습니까?")){
+    		location.href= moqooDelUrl;
+    	}
 	}
   </script>
-  <!-- 썸머노트 -->
-	<script>
-//     $(document).ready(function() {
-//     //여기 아래 부분
-//         $('#summernote').summernote({
-//             height: 300,                 // 에디터 높이
-//             minHeight: null,             // 최소 높이
-//             maxHeight: null,             // 최대 높이
-//             focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-//             lang: "ko-KR",					// 한글 설정
-//             placeholder: '내용을 입력하세요.',	//placeholder 설정
-//             toolbar: [
-//                     // [groupName, [list of button]]
-//                     ['fontname', ['fontname']],
-//                     ['fontsize', ['fontsize']],
-//                     ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-//                     ['color', ['forecolor','color']],
-//                     ['table', ['table']],
-//                     ['para', ['ul', 'ol', 'paragraph']],
-//                     ['height', ['height']],
-//                     ['insert',['picture','link','video']],
-//                     ['view', ['fullscreen', 'help']]
-//                 ],
-//                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-//                 fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-// 		        callbacks:{ 
-// 		            onImageUpload : function(files){ 
-// 		               muploadSummernoteImageFile(files[0],this); 
-// 		           } 
-// 		        } 
-//         });
-//         function muploadSummernoteImageFile(file,editor){ 
-//             data = new FormData(); 
-//             data.append("file",file); 
-//             $.ajax({ 
-//         data:data, 
-//         type:"POST", 
-//         url:"moqoo/muploadSummernoteImageFile", 
-//         /* dataType:"JSON", */ 
-//         enctype:'multipart/form-data',
-//         contentType:false, 
-//         processData:false
+  <script>
+  $(document).ready(function() {
+    //여기 아래 부분
+        $('#summernote').summernote({
+            height: 300,                 // 에디터 높이
+            minHeight: null,             // 최소 높이
+            maxHeight: null,             // 최대 높이
+            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            lang: "ko-KR",					// 한글 설정
+            placeholder: '내용을 입력하세요.',	//placeholder 설정
+            toolbar: [
+                    // [groupName, [list of button]]
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+                    ['color', ['forecolor','color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert',['picture','link','video']],
+                    ['view', ['fullscreen', 'help']]
+                ],
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+                callbacks:{ 
+                    onImageUpload : function(files){ 
+                       muploadSummernoteImageFile(files[0],this); 
+                   } 
+                } 
+        });
+        function muploadSummernoteImageFile(file,editor){ 
+            data = new FormData(); 
+            data.append("file",file); 
+            $.ajax({ 
+        data:data, 
+        type:"POST", 
+        url:"/muploadSummernoteImageFile", 
+        /* dataType:"JSON", */ 
+        enctype:'multipart/form-data',
+        contentType:false, 
+        processData:false
         
-//       }).done(function(data) {
-//       	console.log(data)
-//       	var imgNode = $("<img>");
-//       	imgNode.attr("src", data);
-//       	$(".note-editable").append(imgNode);
-//       }).fail(function(a,b,c){
-//       	console.log(a);
-//       	console.log(b);
-//       	console.log(c);
-//       });
-//           }
-    
-//     });
-  </script>
+    }).done(function(data) {
+    	console.log(data)
+    	var imgNode = $("<img>");
+    	imgNode.attr("src", data);
+    	$(".note-editable").append(imgNode);
+    }).fail(function(a,b,c){
+    	console.log(a);
+    	console.log(b);
+    	console.log(c);
+    });
+        }
+    });
+</script>
 
 <!-- 카카오맵 -->
 	<script type="text/javascript"
@@ -515,8 +531,8 @@
     
     
  	// ■■■■■■■■■■■■■ 지도 위에 마커 생성하기 ■■■■■■■■■■■■■
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
-    imageSize = new kakao.maps.Size(50, 60), // 마커이미지의 크기입니다
+    var imageSrc = "${category.cImgPath}", // 마커이미지의 주소입니다    
+    imageSize = new kakao.maps.Size(50, 50), // 마커이미지의 크기입니다
     imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
 	// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
@@ -532,73 +548,6 @@
 	// 마커가 지도 위에 표시되도록 설정합니다
 	marker.setMap(map);  
 	
-	// 커스텀 오버레이에 표시할 컨텐츠 입니다
-	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
-	// 별도의 이벤트 메소드를 제공하지 않습니다 
-// 	var content = '<div class="wrap">' + 
-// 	            '    <div class="info">' + 
-// 	            '        <div class="title">' + 
-// 	            '            카카오 스페이스닷원' + 
-// 	            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-// 	            '        </div>' + 
-// 	            '        <div class="body">' + 
-// 	            '            <div class="img">' +
-// 	            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
-// 	            '           </div>' + 
-// 	            '            <div class="desc">' + 
-// 	            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
-// 	            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-// 	            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-// 	            '            </div>' + 
-// 	            '        </div>' + 
-// 	            '    </div>' +    
-// 	            '</div>';
-	
-//     // 마커 위에 커스텀오버레이를 표시합니다
-//    	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-//    	var overlay = new kakao.maps.CustomOverlay({
-//    	    content: content,
-// //    	    map: map,  // 커스텀 오버레이 숨김
-//    	    position: marker.getPosition()       
-//    	});
-	
-// 	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-// 	kakao.maps.event.addListener(marker, 'click', function() {
-// 	    overlay.setMap(map);
-// 	});
-	    
-// 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-// 	function closeOverlay() {
-// 	    overlay.setMap(null);     
-// 	}    
-    
-    
-
-//     // 장소 검색 객체를 생성합니다
-//     var ps = new kakao.maps.services.Places(); 
-
-//     // 키워드로 장소를 검색합니다
-//     ps.keywordSearch('이태원 맛집', placesSearchCB); 
-
-//     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-//     function placesSearchCB (data, status, pagination) {
-//         if (status === kakao.maps.services.Status.OK) {
-
-//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-//             // LatLngBounds 객체에 좌표를 추가합니다
-//             var bounds = new kakao.maps.LatLngBounds();
-
-//             for (var i=0; i<data.length; i++) {
-//                 displayMarker(data[i]);    
-//                 bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-//             }       
-
-//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-//             map.setBounds(bounds);
-//         } 
-//     }
-    
- 	
   </script>
   
   <script>
@@ -667,47 +616,47 @@
 
 
 
-  // 댓글 수정 & 답글 버튼 누를 때 동작
-  var replyFormVisible = false; // 대댓글 폼 상태 변수
-  var modFormVisible = false; // 수정 폼 상태 변수
+//   // 댓글 수정 & 답글 버튼 누를 때 동작
+//   var replyFormVisible = false; // 대댓글 폼 상태 변수
+//   var modFormVisible = false; // 수정 폼 상태 변수
 
-  // 대댓글 폼 화면에 띄우기
-  function replyForm(obj){
-    var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
-    var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
+//   // 대댓글 폼 화면에 띄우기
+//   function replyForm(obj){
+//     var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
+//     var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
       
-    if (modFormVisible) {
-      modFormElement.style.display = "none";
-      modFormVisible = false;
-    }
+//     if (modFormVisible) {
+//       modFormElement.style.display = "none";
+//       modFormVisible = false;
+//     }
     
-    if (replyFormVisible) {
-      replyFormElement.style.display = "none";
-      replyFormVisible = false;
-    } else {
-      replyFormElement.style.display = "block";
-      replyFormVisible = true;
-    }
-  }
+//     if (replyFormVisible) {
+//       replyFormElement.style.display = "none";
+//       replyFormVisible = false;
+//     } else {
+//       replyFormElement.style.display = "block";
+//       replyFormVisible = true;
+//     }
+//   }
 
-  // 댓글 수정 폼 띄우기
-  function modReply(obj){
-    var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
-    var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
+//   // 댓글 수정 폼 띄우기
+//   function modReply(obj){
+//     var modFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling;
+//     var replyFormElement = obj.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.nextElementSibling;
     
-    if (replyFormVisible) {
-      replyFormElement.style.display = "none";
-      replyFormVisible = false;
-    }
+//     if (replyFormVisible) {
+//       replyFormElement.style.display = "none";
+//       replyFormVisible = false;
+//     }
     
-    if (modFormVisible) {
-      modFormElement.style.display = "none";
-      modFormVisible = false;
-    } else {
-      modFormElement.style.display = "block";
-      modFormVisible = true;
-    }
-  }
+//     if (modFormVisible) {
+//       modFormElement.style.display = "none";
+//       modFormVisible = false;
+//     } else {
+//       modFormElement.style.display = "block";
+//       modFormVisible = true;
+//     }
+//   }
 
 
   // 신고버튼 등장
@@ -767,35 +716,35 @@
 	    }
 	}
 	
-// // 좋아요 클릭 정보 보내기
-// 	$(document).ready(function(){
+// 좋아요 클릭 정보 보내기
+	$(document).ready(function(){
 		
-// 		$("#heart").on("click",function(){
-// 			var refMoqooNo = "${moqoo.moqooNo }";
-// 			var userId = "${sessionScope.userId }";
-// 			$.ajax({
-// 				url : "/moqoo/heart",
-// 				data : {refPostNo : refMoqooNo, userId : userId, refBoardType : "M" },
-// 				type : "POST",
-// 				success : function(data){
-// 					if(data == "true"){
-// 						likeCount();
-// 					}
-// 					else if(data == "false"){
-// 						alert("좋아요 실패");
-// 					}
-// 					else {
-// 						alert("오류! 관리자에게 문의 바랍니다.");
-// 					}
-// // 					location.reload();  // 새로고침 해주는 애
+		$("#heart").on("click",function(){
+			var refMoqooNo = "${moqoo.moqooNo }";
+			var userId = "${sessionScope.userId }";
+			$.ajax({
+				url : "/moqoo/heart",
+				data : {refPostNo : refMoqooNo, userId : userId, refBoardType : "M" },
+				type : "POST",
+				success : function(data){
+					if(data == "true"){
+						likeCount();
+					}
+					else if(data == "false"){
+						alert("좋아요 실패");
+					}
+					else {
+						alert("오류! 관리자에게 문의 바랍니다.");
+					}
+// 					location.reload();  // 새로고침 해주는 애
 					
-// 				},
-// 				error : function(){
-// 					alert("관리자에게 문의 바랍니다.");
-// 				}
-// 			});
-// 		});
-// 	});
+				},
+				error : function(){
+					alert("관리자에게 문의 바랍니다.");
+				}
+			});
+		});
+	});
 
 	function likeCount(){
 			var refMoqooNo = "${moqoo.moqooNo }";
@@ -886,6 +835,8 @@
 	$("#submit-btn").on("click", function() {
 		const cContent = $("#comtContent").val();
 		const refMoqooNo = ${moqoo.moqooNo };
+		const sessionUserId = "${sessionScope.userId }";
+		
 		$.ajax({
 			url : "/comt/insert",
 			data : {refMoqooNo : refMoqooNo, comtContent : cContent},
@@ -946,15 +897,20 @@
 	                    
 	                    if(isCurrentUser) {
 	                    	// 현재 사용자가 댓글 작성자인 경우
-	                        const modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>');
-	                        const removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>');
+	                        const modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent); // 데이터 속성에 comtNo와 comtContent 추가;
+	                        const removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo);
 	                        
 	                        // 수정하기와 삭제하기 링크에 이벤트 핸들러 설정
 	                        modifyLink.on("click", function() {
-	                            modifyView(this, comment.comtContent, comment.comtNo);
+	                        	var comtNo = $(this).data("comtNo");
+	                            var comtContent = $(this).data("comtContent");
+	                            modifyView(this, comtContent, comtNo);
 	                        });
+	                        
+	                        
 	                        removeLink.on("click", function() {
-	                            removeComment(comment.comtNo);
+	                        	var comtNo = $(this).data("comtNo");
+	                            removeComment(this, comtNo);
 	                        });
 	                        
 	                        action.append(modifyLink);
@@ -962,9 +918,10 @@
 	                    }
 	                    
 	                 	// 답글쓰기 링크
-	                    const replyLink = $("<a>").attr("href", 'javascript:void(0)').text("답글쓰기");
+	                    const replyLink = $("<a>").attr("href", 'javascript:void(0)').data("pComtNo", comment.comtNo).text("답글쓰기");
 	                    replyLink.on("click", function() {
-	                    	showComtView(this, comment.comtNo);
+	                    	var pComtNo = $(this).data("pComtNo");
+	                    	showReplyForm(this, pComtNo);
 	                    });
 	                    action.append(replyLink);
 	                    
@@ -992,6 +949,10 @@
 	                    li.append(userInfo);
 	                    li.append(commentText);
 	                    
+	                	// comtNo를 input hidden 요소로 추가
+	                    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
+	                    li.append(comtNoInput);
+	                    
 	                 	// li 요소를 commentList에 추가
 	                    commentList.append(li);
 	                }
@@ -1009,131 +970,113 @@
 	// 최초 로딩 시 댓글 목록을 불러옵니다.
 	getComtList();
 	
+	var moqooNo = "${moqoo.moqooNo}";
 
-	function showReplyForm(comtNo) {
-	    // 해당 댓글을 찾아서 그 안에 있는 'comment-text' 클래스를 가진 요소 뒤에 추가
-	    const commentContainer = $("#comment-container");
-	    const targetComment = commentContainer.find(".comment").filter(function() {
-	        return $(this).data("comtNo") === comtNo;
-	    });
-
+	function showReplyForm(obj, pComtNo) {
+		const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
 	    // 'comment-text' 클래스를 가진 요소를 찾아 그 뒤에 replyForm 추가
 	    const replyForm = $("<div>").addClass("reply-form");
 	    const replyTextarea = $("<textarea>").attr("placeholder", "답글을 작성하세요");
-	    const replyButton = $("<button>").text("작성");
+	    const replyButton = $("<button>").addClass("reply-btn").text("작성");
 
-	    function onReplyButtonClick() {
-	        const comtContent = replyTextarea.val();
-	        if (comtContent.trim() !== "") {
-	            $.ajax({
-	                url: "/moqoo/insertReply",
-	                type: "POST",
-	                data: {
-	                    pComtNo: comtNo,
-	                    comtContent: comtContent
-	                },
-	                success: function(data) {
-	                    if (data.success) {
-	                        addReplyToList(data.newReply);
-	                        replyForm.remove();
-	                    } else {
-	                        alert("답글을 작성하지 못했습니다. 다시 시도해 주세요.");
-	                    }
-	                },
-	                error: function() {
-	                    alert("서버 오류로 답글을 작성하지 못했습니다. 관리자에게 문의하세요.");
-	                }
-	            });
-	        }
-	    }
+	    if($(".reply-form").length != 1){
+		    replyForm.append(replyTextarea);
+		    replyForm.append(replyButton);
+		 // 'comment-text' 뒤에 추가
+		    targetComment.find('.comment-text').after(replyForm);
+		}else {
+			$(".reply-form").remove();
+		}
+	    
+	    replyButton.on("click", function() {
+		    const comtContent = replyTextarea.val();
+// 		    const moqooNo = ${moqoo.moqooNo };
+// 		    const pComtNo = $(this).data("pComtNo");
+		    if (comtContent.trim() !== "") {
+		    	$.ajax({
+		    	    url: "/moqoo/insertReply",
+		    	    type: "GET",
+		    	    data: {
+		    	    	refPostNo : moqooNo,
+		    	        pComtNo: pComtNo,
+		    	        comtContent: comtContent
+		    	    },
+		    	    success: function(data) {
+		    	        if (data === "success") {
+							alert("답글등록에 성공하였습니다.");
+		    	            replyForm.remove(); // 답글 작성 폼 제거
+		    	        } else {
+		    	            // 서버에서 success가 false인 경우, errorMessage를 표시
+		    	            alert("서버에서 오류가 발생했습니다: " + data.errorMessage);
+		    	        }
+		    	    },
+		    	    error: function(xhr, status, error) {
+		    	        // AJAX 요청이 실패했을 때 실행되는 코드
+		    	        alert("서버 오류로 인해 답글을 작성하지 못했습니다. 관리자에게 문의하세요.");
+		    	        console.log("에러 상태:", status);
+		    	        console.log("에러 내용:", error);
+		    	    }
+		    	});
 
-	    replyButton.on("click", onReplyButtonClick);
-
-	    replyForm.append(replyTextarea);
-	    replyForm.append(replyButton);
-
-	    targetComment.find('.comment-text').after(replyForm);
+		    }
+	    });
 	}
 	
-	// 답글을 목록에 추가하는 함수
-	function addReplyToList(newReply) {
-	    // 여기에서 새 답글을 생성하고 목록에 추가하는 로직을 작성
-	    const newReplyItem = $("<li>").addClass("comment");
-	    newReplyItem.data("comtNo", newReply.comtNo); // 답글의 번호를 저장
+// 	// 답글을 목록에 추가하는 함수
+// 	function addReplyToList(newReply) {
+// 	    // 여기에서 새 답글을 생성하고 목록에 추가하는 로직을 작성
+// 	    const newReplyItem = $("<li>").addClass("comment");
+// 	    newReplyItem.data("comtNo", newReply.comtNo); // 답글의 번호를 저장
 
-	    // 댓글 작성자 정보, 날짜, 텍스트 등을 newReplyItem에 추가
-	    const userImage = $("<img>").attr("src", newReply.user.userPhotoPath).attr("alt", "UserPhoto");
-	    const username = $("<span>").addClass("username").text(newReply.user.userNickname);
-	    const date = $("<span>").addClass("date").text(newReply.comtDate);
-	    const commentText = $("<p>").addClass("comment-text").text(newReply.comtContent);
+// 	    // 댓글 작성자 정보, 날짜, 텍스트 등을 newReplyItem에 추가
+// 	    const userImage = $("<img>").attr("src", newReply.user.userPhotoPath).attr("alt", "UserPhoto");
+// 	    const username = $("<span>").addClass("username").text(newReply.user.userNickname);
+// 	    const date = $("<span>").addClass("date").text(newReply.comtDate);
+// 	    const commentText = $("<p>").addClass("comment-text").text(newReply.comtContent);
 
-	    newReplyItem.append(userImage);
-	    newReplyItem.append(username);
-	    newReplyItem.append(date);
-	    newReplyItem.append(commentText);
+// 	    newReplyItem.append(userImage);
+// 	    newReplyItem.append(username);
+// 	    newReplyItem.append(date);
+// 	    newReplyItem.append(commentText);
 
-	    // 목록에 새 답글을 추가
-	    const commentContainer = $("#comment-container");
-	    const commentList = commentContainer.find(".comment-list");
-	    commentList.append(newReplyItem);
-	}
-	
-	function addLike() {
-		if(${sessionScope.userId eq null}){
-			  alert("로그인이 필요한 서비스입니다.");
-		  }
-		  
-		let refPostNo = '${moqoo.moqooNo}';
-		let lUserId = '${sessionScope.userNo}';
-
-		$.ajax({
-			url : "/moqoo/like",
-			type : "POST",
-			data : {
-				refPostNo : refPostNo,
-				lUserId : lUserId
-			},
-			success : function(result) {
-				if (result === "success") {
-					$("#like").load(location.href + " #like");
-				} else if(result === "fail"){
-					alert("좋아요 추가 실패!");
-				}
-			}
-			
-		});
-	}
-			
-	
-	
-// 	const modReply = (this) => {
-		
+// 	    // 목록에 새 답글을 추가
+// 	    const commentContainer = $("#comment-container");
+// 	    const commentList = commentContainer.find(".comment-list");
+// 	    commentList.append(newReplyItem);
 // 	}
 	
-// 	const modifyComment = (comtNo, obj) => {
-// 		const inputTag = $(obj).parent().prev(), children();
-// 		const comtCotent = inputTag.val();
+// 	function addLike() {
+// 		if(${sessionScope.userId eq null}){
+// 			  alert("로그인이 필요한 서비스입니다.");
+// 		  }
+		  
+// 		let refPostNo = '${moqoo.moqooNo}';
+// 		let lUserId = '${sessionScope.userNo}';
+
 // 		$.ajax({
-// 			url : "/reply/update.kh",
-// 			data : {replyNo : replyNo, replyContent : replyContent},
+// 			url : "/moqoo/like",
 // 			type : "POST",
-// 			success : function(data){
-// 				if(data == "success") {
-// 					alert("댓글 수정 성공!");
-// 					getReplyList();
-// 				}
-// 				else{
-// 					alert("댓글 수정 실패!");	
-// 				}
+// 			data : {
+// 				refPostNo : refPostNo,
+// 				lUserId : lUserId
 // 			},
-// 			error : function(){
-// 				alert("오류! 관리자에게 문의바람");
+// 			success : function(result) {
+// 				if (result === "success") {
+// 					$("#like").load(location.href + " #like");
+// 				} else if(result === "fail"){
+// 					alert("좋아요 추가 실패!");
+// 				}
 // 			}
+			
 // 		});
 // 	}
+			
+	
+	
+ 
 
 	// 댓글 삭제
-	const removeComment = (comtNo) => {
+	const removeComment = (obj, comtNo) => {
 		$.ajax({
 			url : "/moqoo/delComt",
 			data : {comtNo : comtNo},
@@ -1152,20 +1095,28 @@
 		})
 	}
 	
-	
 	const modifyView = (obj, comtContent, comtNo) => {
-	    const inputField = $("<input>").attr("type", "text").attr("size", "50").attr("value", comtContent);
-	    const saveButton = $("<button type='button'>").text("수정 완료").click(function() {
-	        const newContent = inputField.val();
-	        const refPostNo = "${moqoo.moqooNo}";
-	        modifyComment(obj, refPostNo, comtNo, newContent);
-	    });
+		  console.log("comtNo:", comtNo);
+		    // 이미 수정 폼이 표시되고 있는지 확인
+		    const existingForm = $(obj).closest('.comment').find('.modify-form');
 
-	    const form = $("<form>").append(inputField).append(saveButton);
+		    if (existingForm.length > 0) {
+		        // 폼이 이미 표시 중이면, 폼을 숨깁니다.
+		        existingForm.remove();
+		    } else {
+		        // 폼이 표시 중이 아니면, 폼을 생성하고 추가합니다.
+		        const formDiv = $('<div>').addClass('modify-form');
+		        const inputField = $("<input>").attr("type", "text").attr("size", "50").attr("value", comtContent);
+		        const saveButton = $("<button type='button'>").text("수정 완료").click(function() {
+		            const newContent = inputField.val();
+		            const refPostNo = "${moqoo.moqooNo}";
+		            modifyComment(obj, refPostNo, comtNo, newContent);
+		        });
 
-	    // 수정 폼을 현재 댓글 위치에 추가
-	    $(obj).parent().after(form);
-	};
+		        formDiv.append(inputField, saveButton);
+		        $(obj).closest('.comment').append(formDiv);
+		    }
+		};
 
 	const modifyComment = (obj, refPostNo, comtNo, newContent) => {
 	    const comment = {
@@ -1185,7 +1136,7 @@
 	        success: function (result) {
 	            if (result === "success") {
 	                alert("댓글 수정 완료");
-	                getReplyList();
+	                getComtList();
 	            } else {
 	                alert("댓글 수정 실패");
 	            }
@@ -1197,36 +1148,36 @@
 	};
 
 	
-	// 답글 등록
-	const reComtInsert = (comtNoId) => {
+// 	// 답글 등록
+// 	const reComtInsert = (comtNoId) => {
 		
 	
-// 	$("#re-comt-submit-btn").on("click", function() {
-		const reContent = $("#reComtContent").val();
-		const moqooNo = ${moqoo.moqooNo };
-		const pComtNo = $("#comtNo" + comtNoId).val();
-		console.log(pComtNo);
-		$.ajax({
-			url : "/comt/reComtInsert",
-			data : {refMoqooNo : moqooNo, comtContent : reContent, pComtNo : pComtNo},
-			type : "POST",
-			success : function(result){
-				if(result == "success"){
-					alert("댓글 등록 성공!");
-// 					location.reload();
-					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
-					$("#reComtContent").val("");  // 댓글 창 초기화
-				}
-				else {
-					alert("댓글 등록 실패");
-				}
-				location.reload();  // 새로고침 해주는 애
-			},
-			error : function(){
+// // 	$("#re-comt-submit-btn").on("click", function() {
+// 		const reContent = $("#reComtContent").val();
+// 		const moqooNo = ${moqoo.moqooNo };
+// 		const pComtNo = $("#comtNo" + comtNoId).val();
+// 		console.log(pComtNo);
+// 		$.ajax({
+// 			url : "/comt/reComtInsert",
+// 			data : {refMoqooNo : moqooNo, comtContent : reContent, pComtNo : pComtNo},
+// 			type : "POST",
+// 			success : function(result){
+// 				if(result == "success"){
+// 					alert("댓글 등록 성공!");
+// // 					location.reload();
+// 					getComtList();  // 새로고침 안해도 되게 댓글 리스트 불러오는 메소드 호출
+// 					$("#reComtContent").val("");  // 댓글 창 초기화
+// 				}
+// 				else {
+// 					alert("댓글 등록 실패");
+// 				}
+// 				location.reload();  // 새로고침 해주는 애
+// 			},
+// 			error : function(){
 				
-			}
-		});
-	};
+// 			}
+// 		});
+// 	};
 </script>
 </body>
 

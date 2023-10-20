@@ -39,6 +39,10 @@
 		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, NULL, DEFAULT, 'M')
 	</insert>
 	
+	<insert id="insertReComt">
+		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, #{pComtNo }, DEFAULT, 'M')
+	</insert>
+	
 	<update id="deleteComt">
 		UPDATE COMT_TBL SET COMT_STATUS = 'N' WHERE COMT_NO = #{comtNo }
 	</update>
@@ -47,9 +51,7 @@
 		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
 	</update>
 	
-	<insert id="insertReComt">
-		INSERT INTO COMT_TBL VALUES(SEQ_COMT_NO.NEXTVAL, #{comtContent }, #{comtWriter }, DEFAULT, DEFAULT, #{refPostNo }, #{pComtNo }, DEFAULT, 'M')
-	</insert>
+	
 	
 	<select id="selectComtList" resultMap="CommentResultMap">
 		SELECT * FROM COMT_TBL JOIN USER_TBL ON COMT_WRITER = USER_ID WHERE COMT_STATUS = 'Y'AND C_BOARD_TYPE = 'M' ORDER BY COMT_DATE ASC

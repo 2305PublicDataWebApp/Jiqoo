@@ -134,4 +134,16 @@ public interface MoqooService {
 	 */
 	int deleteHeart(Like like);
 
+	/**
+	 * 모꾸 전체리스트 조회
+	 * @return
+	 */
+	List<Moqoo> selectMoqooAllList();
+
+	/**
+	 * 조회수 카운트
+	 * @param moqooNo
+	 */
+	int updateMoqooCount(int moqooNo);
+
 }

@@ -3,6 +3,7 @@ package com.jiqoo.moqoo.domain;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import com.jiqoo.common.domain.Category;
 import com.jiqoo.user.domain.User;
 
 public class Moqoo {
@@ -26,7 +27,7 @@ public class Moqoo {
 	private String moqooStatus;
 	private User user;  // user컬럼 목록
 	private MoqooUser moqooUser;  // 참여자목록 테이블
-	
+	private Category ctgr; 
 	
 	public int getMoqooNo() {
 		return moqooNo;
@@ -151,6 +152,14 @@ public class Moqoo {
 	
 	
 	
+	
+	
+	public Category getCtgr() {
+		return ctgr;
+	}
+	public void setCtgr(Category ctgr) {
+		this.ctgr = ctgr;
+	}
 	@Override
 	public String toString() {
 		return "모꾸 [모임번호=" + moqooNo + ", 모임카테고리=" + category + ", 모임W3W주소=" + moqooW3W + ", 모임제목="

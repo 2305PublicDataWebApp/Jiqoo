@@ -162,17 +162,14 @@
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
-
-<!-- 썸머노트 스타일 및 스크립트 추가 -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-	integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-	crossorigin="anonymous"></script>
-<link
-	href="https://cdn.jsdelivr.net/npm/summernote@latest/dist/summernote-bs4.css"
-	rel="stylesheet">
-<script
-	src="https://cdn.jsdelivr.net/npm/summernote@latest/dist/summernote-bs4.min.js"></script>
+<!-- 서머노트를 위해 추가해야할 부분 -->
+<!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
+<script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <!-- =======================================================
   * Template Name: Bootslander
@@ -422,9 +419,9 @@
 	<!-- Template Main JS File -->
 	<script src="../resources/assets/js/main.js"></script>
 
-	<!-- 썸머노트 -->
-	<script>
-    $(document).ready(function() {
+<script>
+<!-- 썸머노트 -->
+$(document).ready(function() {
     //여기 아래 부분
         $('#summernote').summernote({
             height: 300,                 // 에디터 높이
@@ -447,36 +444,35 @@
                 ],
                 fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
                 fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-		        callbacks:{ 
-		            onImageUpload : function(files){ 
-		               uploadSummernoteImageFile(files[0],this); 
-		           } 
-		        } 
+                callbacks:{ 
+                    onImageUpload : function(files){ 
+                       muploadSummernoteImageFile(files[0],this); 
+                   } 
+                } 
         });
-        function uploadSummernoteImageFile(file,editor){ 
+        function muploadSummernoteImageFile(file,editor){ 
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
         data:data, 
         type:"POST", 
-        url:"moqoo/uploadSummernoteImageFile", 
+        url:"/muploadSummernoteImageFile", 
         /* dataType:"JSON", */ 
         enctype:'multipart/form-data',
         contentType:false, 
         processData:false
         
-      }).done(function(data) {
-      	console.log(data)
-      	var imgNode = $("<img>");
-      	imgNode.attr("src", data);
-      	$(".note-editable").append(imgNode);
-      }).fail(function(a,b,c){
-      	console.log(a);
-      	console.log(b);
-      	console.log(c);
-      });
-          }
-    
+    }).done(function(data) {
+    	console.log(data)
+    	var imgNode = $("<img>");
+    	imgNode.attr("src", data);
+    	$(".note-editable").append(imgNode);
+    }).fail(function(a,b,c){
+    	console.log(a);
+    	console.log(b);
+    	console.log(c);
+    });
+        }
     });
   </script>
 
@@ -484,9 +480,6 @@
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ee58f1de69883c91d0d43b37d1a713ff&libraries=services,clusterer,drawing"></script>
 	<script>
-    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
-    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
-
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
         mapOption = { 
             center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
@@ -497,91 +490,108 @@
     var map = new kakao.maps.Map(mapContainer, mapOption); 
     
     
- 	// ■■■■■■■■■■■■■ 지도 위에 마커 생성하기 ■■■■■■■■■■■■■
-    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
-    imageSize = new kakao.maps.Size(50, 60), // 마커이미지의 크기입니다
-    imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+    function showAllMap() {
+  	  // 커스텀 오버레이 배열을 선언합니다
+  	  var customOverlays = [];
+		
+  	  $.ajax({
+  	    url: "/moqoo/showAllMap",
+  	    type: "GET",
+  	    dataType: 'json',
+  	    success: function (data) {
+  	      for (var i = 0; i < data.length; i++) {
+  	        // 마커 이미지의 이미지 크기 입니다
+  	        var imageSize = new kakao.maps.Size(70, 70);
 
-	// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-	var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
-	    markerPosition = new kakao.maps.LatLng(37.54699, 127.09598); // 마커가 표시될 위치입니다
+  	        // 마커 이미지를 생성합니다    
+  	        var markerImage = new kakao.maps.MarkerImage(data[i].ctgr.cImgPath, imageSize);
+
+  	        // 마커를 생성합니다
+  	        var marker = new kakao.maps.Marker({
+  	          map: map, // 마커를 표시할 지도
+  	          position: new kakao.maps.LatLng(data[i].moqooLat, data[i].moqooLng),
+  	          image: markerImage,
+  	          clickable: true
+  	        });
+
+  	        // 커스텀 오버레이에 표시될 내용을 생성합니다
+  	        var overlayContent = '<div class="wrap">' + 
+            '    <div class="info">' + 
+            '        <div class="title">' + data[i].moqooW3W +
+            '	 	 </div>' + 
+            '        <div class="body">' + data[i].moqooContent +
+//             '            <div class="img">' +
+//             '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
+//             '           </div>' + 
+            '            <div class="desc">' + 
+//             '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
+//             '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
+            '                <div><a href="/moqoo/detail?moqooNo='+data[i].moqooNo +'" class="link">상세보기</a></div>' + 
+            '            </div>' + 
+            '        </div>' + 
+            '    </div>' +    
+            '</div>';
+  	        	
+  	        // 커스텀 오버레이를 생성합니다
+  	        var customOverlay = new kakao.maps.CustomOverlay({
+  	          content: overlayContent,
+  	          position: marker.getPosition(),
+  	          clickable: true
+  	        });
+
+  	        // 커스텀 오버레이를 배열에 추가합니다
+  	        customOverlays.push(customOverlay);
+
+  	        
+  	   		// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+  	      	
+  	   		
+  	        // 마커에 클릭 이벤트를 등록합니다
+  	        (function (customOverlay) {
+  	          kakao.maps.event.addListener(marker, 'click', function () {
+  	        	// 클릭된 마커의 커스텀 오버레이만 엽니다
+  	            if (customOverlay.getMap()) {
+  	                customOverlay.setMap(null);
+  	            } else {
+  	        	  
+	  	        	// 모든 커스텀 오버레이를 닫습니다
+	  	            for (var j = 0; j < customOverlays.length; j++) {
+	  	              customOverlays[j].setMap(null);
+	  	            }	
+	  	            // 클릭된 마커의 커스텀 오버레이만 엽니다
+	  	            customOverlay.setMap(map);
+  	            }
+  	          });
+  	        })(customOverlay);
+  		    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+  	      function closeOverlay(clickedOverlay) {
+  	          var customOverlay = customOverlays.find(function(overlay) {
+  	              return overlay.getContent() === clickedOverlay.parentElement;
+  	          });
+
+  	          if (customOverlay) {
+  	              customOverlay.setMap(null);
+  	          }
+  	      }
+  	      }
+  	    
+	    }
+	  });
+    }
+   //btn-allMap 버튼 클릭 이벤트 처리
+   $("#btn-map").click(function() {
+       showAllMap(); // showAllMap 함수 호출
+   });
 	
-	// 마커를 생성합니다
-	var marker = new kakao.maps.Marker({
-	  position: markerPosition,
-	  image: markerImage // 마커이미지 설정 
-	});
 	
-	// 마커가 지도 위에 표시되도록 설정합니다
-	marker.setMap(map);  
-	
-	// 커스텀 오버레이에 표시할 컨텐츠 입니다
-	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
-	// 별도의 이벤트 메소드를 제공하지 않습니다 
-	var content = '<div class="wrap">' + 
-	            '    <div class="info">' + 
-	            '        <div class="title">' + 
-	            '            카카오 스페이스닷원' + 
-	            '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
-	            '        </div>' + 
-	            '        <div class="body">' + 
-	            '            <div class="img">' +
-	            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
-	            '           </div>' + 
-	            '            <div class="desc">' + 
-	            '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
-	            '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-	            '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-	            '            </div>' + 
-	            '        </div>' + 
-	            '    </div>' +    
-	            '</div>';
-	
-    // 마커 위에 커스텀오버레이를 표시합니다
-   	// 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
-   	var overlay = new kakao.maps.CustomOverlay({
-   	    content: content,
-//    	    map: map,  // 커스텀 오버레이 숨김
-   	    position: marker.getPosition()       
-   	});
-	
-	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-	kakao.maps.event.addListener(marker, 'click', function() {
-	    overlay.setMap(map);
-	});
-	    
-	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-	function closeOverlay() {
-	    overlay.setMap(null);     
-	}    
-    
-    
+// 	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+// 	kakao.maps.event.addListener(marker, 'click', function() {
+// 	    overlay.setMap(map);
+// 	});
 
-//     // 장소 검색 객체를 생성합니다
-//     var ps = new kakao.maps.services.Places(); 
 
-//     // 키워드로 장소를 검색합니다
-//     ps.keywordSearch('이태원 맛집', placesSearchCB); 
+ 
 
-//     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-//     function placesSearchCB (data, status, pagination) {
-//         if (status === kakao.maps.services.Status.OK) {
-
-//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-//             // LatLngBounds 객체에 좌표를 추가합니다
-//             var bounds = new kakao.maps.LatLngBounds();
-
-//             for (var i=0; i<data.length; i++) {
-//                 displayMarker(data[i]);    
-//                 bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
-//             }       
-
-//             // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-//             map.setBounds(bounds);
-//         } 
-//     }
-    
- 	
   </script>
 
 	<script>
@@ -627,6 +637,7 @@
     mapDiv.style.display = 'block';
     container.style.display = 'none';
     btnModal.style.display='block';
+    showAllMap();
   });
 
   // JavaScript로 버튼 클릭 이벤트 처리
