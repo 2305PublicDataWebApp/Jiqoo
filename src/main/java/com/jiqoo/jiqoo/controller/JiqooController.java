@@ -199,13 +199,13 @@ public class JiqooController {
 		}
 	}
 
-//	@ResponseBody
-//	@GetMapping(value = "/jiqoo/showAllMap", produces = "application/json;charset=UTF-8;")
-//	public String showAllMap() {
-//		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
-//		Gson gson = new Gson();
-//		return gson.toJson(jiqooAllList);
-//	}
+	@ResponseBody
+	@GetMapping(value = "/jiqoo/showAllMap", produces = "application/json;charset=UTF-8;")
+	public String showAllMap() {
+		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
+		Gson gson = new Gson();
+		return gson.toJson(jiqooAllList);
+	}
 
 	@GetMapping("/jiqoo/delete")
 	public String deleteJiqoo(@RequestParam("jiqooNo") int jiqooNo, Model model) {
@@ -337,21 +337,51 @@ public class JiqooController {
 	// 초기 지꾸 본인 리스트
 	@ResponseBody
 	@GetMapping("/jiqoo/loadInitialJiqooMyList")
-    public List<Jiqoo> loadInitialJiqooMyList() {
-        List<Jiqoo> initialJiqooMyList = jiqooService.loadInitialJiqooMyList();
+    public List<Jiqoo> loadInitialJiqooMyList(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+        List<Jiqoo> initialJiqooMyList = jiqooService.loadInitialJiqooMyList(userId);
         return initialJiqooMyList;
     }
 	
 	// 지꾸 본인 리스트 스크롤 이벤트
 	@ResponseBody
-	@GetMapping("/jiqoo/loadMoreJiqllMyList")
-	public ResponseEntity<List<Jiqoo>> loadMoreComments(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+	@GetMapping("/jiqoo/loadMoreJiqooMyList")
+	public ResponseEntity<List<Jiqoo>> loadMoreJiqooMyList(@RequestParam("offset") int offset, @RequestParam("limit") int limit, HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
 		Map<String, Object> params = new HashMap<>();
         params.put("offset", offset);
         params.put("limit", limit);
-		List<Jiqoo> newList = jiqooService.loadMoreJiqooAllList(params);
+        params.put("userId", userId);
+		List<Jiqoo> newList = jiqooService.loadMoreJiqooMyList(params);
         return ResponseEntity.ok(newList);
 	}
 	
+	// 초기 지꾸 검색 리스트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadInitialJiqooSearchList")
+    public List<Jiqoo> loadInitialJiqooSearchList(String searchValue, String searchOption, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		Map<String, Object> params = new HashMap<>();
+        params.put("searchValue", searchValue);
+        params.put("searchOption", searchOption);
+        params.put("userId", userId);
+        List<Jiqoo> initialJiqooSearchList = jiqooService.loadInitialJiqooSearchList(params);
+        return initialJiqooSearchList;
+    }
+	
+	// 지꾸 검색 리스트 스크롤 이벤트
+	@ResponseBody
+	@GetMapping("/jiqoo/loadMoreJiqooSearchList")
+	public ResponseEntity<List<Jiqoo>> loadMoreComments(String searchValue, String searchOption, @RequestParam("offset") int offset, @RequestParam("limit") int limit, HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+        params.put("searchValue", searchValue);
+        params.put("searchOption", searchOption);
+        params.put("userId", userId);
+		List<Jiqoo> newList = jiqooService.loadMoreJiqooSearchList(params);
+        return ResponseEntity.ok(newList);
+	}
 
 }

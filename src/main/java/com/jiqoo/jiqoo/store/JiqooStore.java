@@ -50,12 +50,12 @@ public interface JiqooStore {
 	 */
 	Category selectCategoryByNo(SqlSession sqlSession, String jiqooCName);
 
-//	/**
-//	 * 게시물 전체 리스트 조회 Store
-//	 * @param sqlSession
-//	 * @return
-//	 */
-//	List<Jiqoo> selectJiqooAllList(SqlSession sqlSession);
+	/**
+	 * 게시물 전체 리스트 조회 Store
+	 * @param sqlSession
+	 * @return
+	 */
+	List<Jiqoo> selectJiqooAllList(SqlSession sqlSession);
 
 	/**
 	 * 지꾸 본인 리스트 조회 Store
@@ -135,5 +135,37 @@ public interface JiqooStore {
 	 * @return
 	 */
 	List<Jiqoo> loadMoreJiqooAllList(SqlSession sqlSession, Map<String, Object> params);
+
+	/**
+	 * 초기 본인 리스트 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooMyList(SqlSession sqlSession, String userId);
+
+	/**
+	 * 본인 리스트 무한스크롤 Store
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooMyList(SqlSession sqlSession, Map<String, Object> params);
+
+	/**
+	 * 초기 검색 리스트 Store
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooSearchList(SqlSession sqlSession, Map<String, Object> params);
+
+	/**
+	 * 검색 리스트 무한스크롤 Store
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooSearchList(SqlSession sqlSession, Map<String, Object> params);
 
 }

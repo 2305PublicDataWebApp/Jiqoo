@@ -98,14 +98,14 @@
 		CATEGORY_TBL WHERE C_NAME = #{jiqooCName }
 	</select>
 
-<!-- 	<select id="selectJiqooAllList" resultMap="JiqooResultMap"> -->
-<!-- 		SELECT * FROM JIQOO_TBL J -->
-<!-- 		JOIN USER_TBL U ON -->
-<!-- 		J.JIQOO_WRITER = U.USER_ID -->
-<!-- 		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME -->
-<!-- 		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y' -->
-<!-- 		ORDER BY J.JIQOO_DATE DESC -->
-<!-- 	</select> -->
+	<select id="selectJiqooAllList" resultMap="JiqooResultMap">
+		SELECT * FROM JIQOO_TBL J
+		JOIN USER_TBL U ON
+		J.JIQOO_WRITER = U.USER_ID
+		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+		ORDER BY J.JIQOO_DATE DESC
+	</select>
 
 	<select id="selectJiqooMyList" resultMap="JiqooResultMap">
 		SELECT * FROM JIQOO_TBL J
@@ -116,60 +116,170 @@
 		ORDER BY J.JIQOO_DATE DESC
 	</select>
 	
-	<select id="selectJiqooSearchList" resultMap="JiqooResultMap">
-		<choose>
-		    <when test="searchOption == '내꾸'">
-		        SELECT *
-		        FROM JIQOO_TBL J
-		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
-		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-		        WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%')
-		        AND U.USER_ID = #{userId}
-		        ORDER BY J.J_CREATE_DATE DESC
-		    </when>
-		    <when test="searchOption == '남꾸'">
-		        SELECT * FROM JIQOO_TBL J
-		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
-		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-		        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
-		        ORDER BY J.J_CREATE_DATE DESC
-		    </when>
-	</choose>
-	</select>
+<!-- 	<select id="selectJiqooSearchList" resultMap="JiqooResultMap"> -->
+<!-- 		<choose> -->
+<!-- 		    <when test="searchOption == '내꾸'"> -->
+<!-- 		        SELECT * -->
+<!-- 		        FROM JIQOO_TBL J -->
+<!-- 		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER -->
+<!-- 		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME -->
+<!-- 		        WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%') -->
+<!-- 		        AND U.USER_ID = #{userId} -->
+<!-- 		        ORDER BY J.J_CREATE_DATE DESC -->
+<!-- 		    </when> -->
+<!-- 		    <when test="searchOption == '남꾸'"> -->
+<!-- 		        SELECT * FROM JIQOO_TBL J -->
+<!-- 		        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER -->
+<!-- 		        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME -->
+<!-- 		        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%' -->
+<!-- 		        ORDER BY J.J_CREATE_DATE DESC -->
+<!-- 		    </when> -->
+<!-- 		</choose> -->
+<!-- 	</select> -->
 	
+	<!-- 지꾸 초기 전체 리스트 -->
 	<select id="loadInitialJiqooAllList" resultMap="JiqooResultMap">
 		SELECT * 
 		FROM (
 			SELECT A.*, ROWNUM AS rnum
-			FROM (
-			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
-			    FROM JIQOO_TBL J
-			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
-			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
-			    ORDER BY J.JIQOO_DATE DESC
-			) A
-		WHERE ROWNUM &lt;= 10
-		)
+				FROM (
+				    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+				    FROM JIQOO_TBL J
+				    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
+				    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+				    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+				    ORDER BY J.J_CREATE_DATE DESC
+				) A
+			WHERE ROWNUM &lt;= 10
+			)
 		WHERE rnum &gt;= 1
 	</select>
 	
+	<!-- 지꾸 전체 리스트 스크롤 -->
 	<select id="loadMoreJiqooAllList" resultMap="JiqooResultMap">
 		SELECT * 
-		FROM (
-			SELECT A.*, ROWNUM AS rnum
 			FROM (
-			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
-			    FROM JIQOO_TBL J
-			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
-			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
-			    ORDER BY J.JIQOO_DATE DESC
-			) A
-		WHERE ROWNUM &lt;= (#{offset} + #{limit})
-		)
+				SELECT A.*, ROWNUM AS rnum
+				FROM (
+				    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+				    FROM JIQOO_TBL J
+				    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
+				    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+				    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+				    ORDER BY J.J_CREATE_DATE DESC
+				) A
+			WHERE ROWNUM &lt;= (#{offset} + #{limit})
+			)
 		WHERE rnum &gt; #{offset}
 	</select>
 	
+	<!-- 지꾸 초기 본인 리스트 -->
+	<select id="loadInitialJiqooMyList" resultMap="JiqooResultMap">
+		SELECT * 
+			FROM (
+				SELECT M.*, ROWNUM AS rnum
+				FROM (
+					SELECT * FROM JIQOO_TBL J
+					JOIN USER_TBL U ON
+					J.JIQOO_WRITER = U.USER_ID
+					JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+					WHERE J.JIQOO_WRITER = #{userId } AND J.JIQOO_STATUS = 'Y'
+					ORDER BY J.J_CREATE_DATE DESC
+				) M
+			WHERE ROWNUM &lt;= 10
+			)
+		WHERE rnum &gt;= 1
+	</select>
 	
+	<!-- 지꾸 본인 리스트 스크롤 -->
+	<select id="loadMoreJiqooMyList" resultMap="JiqooResultMap">
+		SELECT * 
+			FROM (
+				SELECT M.*, ROWNUM AS rnum
+				FROM (
+					SELECT * FROM JIQOO_TBL J
+					JOIN USER_TBL U ON
+					J.JIQOO_WRITER = U.USER_ID
+					JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+					WHERE J.JIQOO_WRITER = #{userId } AND J.JIQOO_STATUS = 'Y'
+					ORDER BY J.J_CREATE_DATE DESC
+				) M
+			WHERE ROWNUM &lt;= (#{offset} + #{limit})
+			)
+		WHERE rnum &gt; #{offset}
+	</select>
+	
+	<select id="loadInitialJiqooSearchList" resultMap="JiqooResultMap">
+		<choose>
+		    <when test="searchOption == '내꾸'">
+		    SELECT * 
+				FROM (
+					SELECT S.*, ROWNUM AS rnum
+					FROM (
+			        SELECT *
+			        FROM JIQOO_TBL J
+			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			        WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%')
+			        AND U.USER_ID = #{userId}
+			        ORDER BY J.J_CREATE_DATE DESC
+			        ) S
+				WHERE ROWNUM &lt;= 10
+				)
+			WHERE rnum &gt;= 1
+		    </when>
+		    <when test="searchOption == '남꾸'">
+		     SELECT * 
+				FROM (
+					SELECT S.*, ROWNUM AS rnum
+					FROM (
+			        SELECT * FROM JIQOO_TBL J
+			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
+			        ORDER BY J.J_CREATE_DATE DESC
+			        ) S
+				WHERE ROWNUM &lt;= 10
+				)
+			WHERE rnum &gt;= 1
+		    </when>
+		</choose>
+	</select>
+	
+	<select id="loadMoreJiqooSearchList" resultMap="JiqooResultMap">
+		<choose>
+		    <when test="searchOption == '내꾸'">
+		    SELECT * 
+				FROM (
+					SELECT S.*, ROWNUM AS rnum
+					FROM (
+			        SELECT *
+			        FROM JIQOO_TBL J
+			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			        WHERE (J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%')
+			        AND U.USER_ID = #{userId}
+			        ORDER BY J.J_CREATE_DATE DESC
+			        ) S
+				WHERE ROWNUM &lt;= (#{offset} + #{limit})
+				)
+			WHERE rnum &gt; #{offset}
+		    </when>
+		    <when test="searchOption == '남꾸'">
+		     SELECT * 
+				FROM (
+					SELECT S.*, ROWNUM AS rnum
+					FROM (
+			        SELECT * FROM JIQOO_TBL J
+			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
+			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
+			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
+			        ORDER BY J.J_CREATE_DATE DESC
+			        ) S
+				WHERE ROWNUM &lt;= (#{offset} + #{limit})
+				)
+			WHERE rnum &gt; #{offset}
+		    </when>
+		</choose>
+	</select>
 </mapper>

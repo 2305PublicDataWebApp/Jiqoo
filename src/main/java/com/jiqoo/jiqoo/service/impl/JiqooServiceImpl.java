@@ -12,7 +12,6 @@ import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.service.JiqooService;
 import com.jiqoo.jiqoo.store.JiqooStore;
-import com.jiqoo.user.domain.User;
 
 @Service
 public class JiqooServiceImpl implements JiqooService{
@@ -53,11 +52,11 @@ public class JiqooServiceImpl implements JiqooService{
 		return category;
 	}
 
-//	@Override
-//	public List<Jiqoo> selectJiqooAllList() {
-//		List<Jiqoo> jiqooList = jiqooStore.selectJiqooAllList(sqlSession);
-//		return jiqooList;
-//	}
+	@Override
+	public List<Jiqoo> selectJiqooAllList() {
+		List<Jiqoo> jiqooList = jiqooStore.selectJiqooAllList(sqlSession);
+		return jiqooList;
+	}
 
 	@Override
 	public List<Jiqoo> selectJiqooMyList(String userId) {
@@ -114,15 +113,33 @@ public class JiqooServiceImpl implements JiqooService{
 	}
 
 	@Override
-	public List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params) {
+	public List<Jiqoo> loadMoreJiqooMyList(Map<String, Object> params) {
 		List<Jiqoo> list = jiqooStore.loadMoreJiqooAllList(sqlSession, params);
 		return list;
 	}
 
 	@Override
-	public List<Jiqoo> loadInitialJiqooMyList() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Jiqoo> loadInitialJiqooMyList(String userId) {
+		List<Jiqoo> list = jiqooStore.loadInitialJiqooMyList(sqlSession, userId);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params) {
+		List<Jiqoo> list = jiqooStore.loadMoreJiqooMyList(sqlSession, params);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadInitialJiqooSearchList(Map<String, Object> params) {
+		List<Jiqoo> list = jiqooStore.loadInitialJiqooSearchList(sqlSession, params);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadMoreJiqooSearchList(Map<String, Object> params) {
+		List<Jiqoo> list = jiqooStore.loadMoreJiqooSearchList(sqlSession, params);
+		return list;
 	}
 
 

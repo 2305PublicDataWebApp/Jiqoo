@@ -6,7 +6,6 @@ import java.util.Map;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
-import com.jiqoo.user.domain.User;
 
 public interface JiqooService {
 
@@ -44,11 +43,11 @@ public interface JiqooService {
 	 */
 	Category selectCategoryByNo(String jiqooCName);
 
-//	/**
-//	 * 지꾸 전체 리스트 조회 Service
-//	 * @return
-//	 */
-//	List<Jiqoo> selectJiqooAllList();
+	/**
+	 * 지꾸 전체 리스트 조회 Service
+	 * @return
+	 */
+	List<Jiqoo> selectJiqooAllList();
 
 	/**
 	 * 지꾸 본인 리스트 조회 Service
@@ -119,6 +118,32 @@ public interface JiqooService {
 	 */
 	List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params);
 
-	List<Jiqoo> loadInitialJiqooMyList();
+	/**
+	 * 지꾸 초기 본인 리스트 조회 Service
+	 * @param userId 
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooMyList(String userId);
+
+	/**
+	 * 본인 리스트 무한스크롤 Service
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooMyList(Map<String, Object> params);
+
+	/**
+	 * 지꾸 초기 검색 리스트 조회 Service
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadInitialJiqooSearchList(Map<String, Object> params);
+
+	/**
+	 * 검색 리스트 무한스크롤 Service
+	 * @param params
+	 * @return
+	 */
+	List<Jiqoo> loadMoreJiqooSearchList(Map<String, Object> params);
 
 }

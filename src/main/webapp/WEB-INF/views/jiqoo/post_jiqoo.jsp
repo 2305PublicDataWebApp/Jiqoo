@@ -388,7 +388,7 @@
           success: function(result) {
               if (result === "success") {
                   alert("댓글이 등록되었습니다.");
-                  getReplyList();
+                  loadInitialComments();
                   $("#comtContent").val("");
               } else {
                   alert("댓글이 등록되지 않았습니다.");
@@ -409,7 +409,7 @@
 				success : function(result) {
 					if(result == "success") {
 						alert("댓글이 삭제되었습니다.");
-						getReplyList();
+						loadInitialComments();
 					}else {
 						alert("댓글이 삭제되지 않았습니다.");
 					}
@@ -466,7 +466,7 @@
 	        success: function (result) {
 	            if (result === "success") {
 	                alert("댓글이 수정되었습니다.");
-	                getReplyList();
+	                loadInitialComments();
 	            } else {
 	                alert("댓글이 수정되지 않았습니다.");
 	            }
@@ -519,7 +519,7 @@
 			    	        if (data === "success") {
 								alert("답글등록에 성공하였습니다.");
 			    	            replyForm.remove(); // 답글 작성 폼 제거
-			    	            getReplyList();
+			    	            loadInitialComments();
 			    	        } else {
 			    	            // 서버에서 success가 false인 경우, errorMessage를 표시
 			    	            alert("서버에서 오류가 발생했습니다: " + data.errorMessage);

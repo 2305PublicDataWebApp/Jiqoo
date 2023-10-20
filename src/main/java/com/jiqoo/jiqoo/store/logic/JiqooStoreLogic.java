@@ -45,11 +45,11 @@ public class JiqooStoreLogic implements JiqooStore {
 		return category;
 	}
 
-//	@Override
-//	public List<Jiqoo> selectJiqooAllList(SqlSession sqlSession) {
-//		List<Jiqoo> jiqooList = sqlSession.selectList("JiqooMapper.selectJiqooAllList");
-//		return jiqooList;
-//	}
+	@Override
+	public List<Jiqoo> selectJiqooAllList(SqlSession sqlSession) {
+		List<Jiqoo> jiqooList = sqlSession.selectList("JiqooMapper.selectJiqooAllList");
+		return jiqooList;
+	}
 
 	@Override
 	public List<Jiqoo> selectJiqooMyList(SqlSession sqlSession, String userId) {
@@ -107,6 +107,30 @@ public class JiqooStoreLogic implements JiqooStore {
 	@Override
 	public List<Jiqoo> loadMoreJiqooAllList(SqlSession sqlSession, Map<String, Object> params) {
 		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadMoreJiqooAllList", params);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadInitialJiqooMyList(SqlSession sqlSession, String userId) {
+		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadInitialJiqooMyList", userId);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadMoreJiqooMyList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadMoreJiqooMyList", params);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadInitialJiqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadInitialJiqooSearchList", params);
+		return list;
+	}
+
+	@Override
+	public List<Jiqoo> loadMoreJiqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadMoreJiqooSearchList", params);
 		return list;
 	}
 
