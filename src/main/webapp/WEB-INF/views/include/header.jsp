@@ -48,8 +48,11 @@
 					<c:if test="${sessionScope.accessToken eq null }">
 						<li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
 					</c:if>
-					<c:if test="${sessionScope.accessToken ne null }">
+					<c:if test="${sessionScope.accessToken ne null and sessionScope.platformType eq 'kakao'}">
 						<li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
+					</c:if>
+					<c:if test="${sessionScope.accessToken ne null and sessionScope.platformType eq 'naver'}">
+						<li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
 					</c:if>
 	            </ul>
 	          </li>

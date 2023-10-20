@@ -30,6 +30,7 @@ public class User {
 	private int followings; //내가 팔로우한 사람들
 	private boolean checkFollow;
 	
+	private int myTotalArticleCount;
 
 
 
@@ -200,7 +201,13 @@ public class User {
 		this.ageGroup = ageGroup;
 	}
 
-	
+	public int getMyTotalArticleCount() {
+		return myTotalArticleCount;
+	}
+
+	public void setMyTotalArticleCount(int myTotalArticleCount) {
+		this.myTotalArticleCount = myTotalArticleCount;
+	}
 
 	@Override
 	public String toString() {

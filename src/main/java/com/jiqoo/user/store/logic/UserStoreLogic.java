@@ -134,5 +134,17 @@ public class UserStoreLogic implements UserStore{
 		return result;
 	}
 
+	@Override
+	public int selectMyJiqooCount(SqlSession sqlSession, String userId) {
+		int myJiqooCount = sqlSession.selectOne("UserMapper.selectMyJiqooCount", userId);
+		return myJiqooCount;
+	}
+
+	@Override
+	public int selectMyMoqooCount(SqlSession sqlSession, String userId) {
+		int myMoqooCount = sqlSession.selectOne("UserMapper.selectMyMoqooCount", userId);
+		return myMoqooCount;
+	}
+
 
 }

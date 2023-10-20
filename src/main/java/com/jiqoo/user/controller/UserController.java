@@ -275,28 +275,6 @@ public class UserController {
 		}
 	}
 
-	// 회원탈퇴 유효성체크
-	@ResponseBody
-	@PostMapping("/delValidate")
-	public Map<String, Object> selectDelValidate(@RequestParam(value = "inputId") String inputId,
-			@RequestParam(value = "inputPw") String inputPw, HttpSession session) {
-		System.out.println("인풋아이디 " + inputId + " 인풋비밀번호 : " + inputPw);
-		String userId = (String) session.getAttribute("userId");
-		User user = userService.selectUserOneById(userId);
-		String userPw = user.getUserPw();
-		Map<String, Object> response = new HashMap<>();
-		if (userId != null && userId != "") {
-			if (userId.equals(inputId) && userPw.equals(inputPw)) {
-				response.put("isValidate", true);
-			} else {
-				response.put("isValidate", false);
-			}
-		} else {
-			response.put("checkLogin", "checkLogin");
-		}
-		return response;
-	}
-
 	// 카카오 회원탈퇴
 	@ResponseBody
 	@RequestMapping(value = "/kakaoUnlink")
@@ -359,10 +337,30 @@ public class UserController {
 			System.out.println("네이버 탈퇴 실패 : 에러확인");
 			return "fail";
 		}
-	}	
-	
-	
-	
+	}
+
+	// 회원탈퇴 유효성체크
+	@ResponseBody
+	@PostMapping("/delValidate")
+	public Map<String, Object> selectDelValidate(@RequestParam(value = "inputId") String inputId,
+			@RequestParam(value = "inputPw") String inputPw, HttpSession session) {
+		System.out.println("인풋아이디 " + inputId + " 인풋비밀번호 : " + inputPw);
+		String userId = (String) session.getAttribute("userId");
+		User user = userService.selectUserOneById(userId);
+		String userPw = user.getUserPw();
+		Map<String, Object> response = new HashMap<>();
+		if (userId != null && userId != "") {
+			if (userId.equals(inputId) && userPw.equals(inputPw)) {
+				response.put("isValidate", true);
+			} else {
+				response.put("isValidate", false);
+			}
+		} else {
+			response.put("checkLogin", "checkLogin");
+		}
+		return response;
+	}
+
 	// 비밀번호찾기
 	@ResponseBody
 	@PostMapping("/findPw")
@@ -601,13 +599,9 @@ public class UserController {
 					// 팔로워, 팔로잉 수 & 리스트
 					int followersCount = userService.selectFollowersCount(userId);
 					int followingsCount = userService.selectFollowingCount(userId);
-					/*
-					 * List<Follow> followersList = userService.selectFollowersListById(userId);
-					 * List<Follow> followingsList = userService.selectFollowingsListById(userId);
-					 */
+
 					List<User> followersList = userService.selectFollowersListById(userId);
 					List<User> followingsList = userService.selectFollowingsListById(userId);
-
 					for (User follower : followersList) {
 						boolean checkFollow = false;
 						for (User following : followingsList) { // followersList에 있는 사람이 내가 팔로우한 목록(followingsList)에 있는지
@@ -620,8 +614,15 @@ public class UserController {
 						follower.setCheckFollow(checkFollow);
 					}
 
+					
+					// 지꾸 모꾸 게시글 조회 수
+					int myJiqooCount = userService.selectMyJiqooCount(userId);
+					int myMoqooCount = userService.selectMyMoqooCount(userId);
+					int myTotalArticleCount = myJiqooCount + myMoqooCount;
+					
 					user.setFollowers(followersCount);
 					user.setFollowings(followingsCount);
+					user.setMyTotalArticleCount(myTotalArticleCount);
 					model.addAttribute("user", user);
 					model.addAttribute("followersList", followersList);
 					model.addAttribute("followingsList", followingsList);

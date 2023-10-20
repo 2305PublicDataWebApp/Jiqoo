@@ -134,6 +134,20 @@ public interface UserService {
 	 */
 	User selectSnsUserByEmail(Map<String, Object> snsEmailMap);
 
+	/**
+	 * 마이페이지 지꾸 게시물수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectMyJiqooCount(String userId);
+
+	/**
+	 * 마이페이지 모꾸 게시물수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectMyMoqooCount(String userId);
+
 
 
 }

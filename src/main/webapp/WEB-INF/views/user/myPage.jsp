@@ -67,7 +67,7 @@
                 <div class="profile-header bg"></div>
                 <div class="profile-body text-center">
                 	<c:if test="${user.userPhotoRename eq null}">
-	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png">
+	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png" >
                 	</c:if>
                 	<c:if test="${user.userPhotoRename ne null}">
 	                	<img alt="프로필사진" class="profile-img img-border-light" src="${user.userPhotoPath }">
@@ -87,7 +87,7 @@
                     <p class="zero-margin fontGray">${user.userInfo }</p>
                     <div class="profile-cnt">
                         <div class="profile-cnt-item">
-                            <div class="profile-cnt-total"><a href="#">21</a></div>
+                            <div class="profile-cnt-total"><a href="#">${user.myTotalArticleCount }</a></div>
                             <div class="profile-cnt-text">게시글</div>
                         </div>
                         <div class="profile-cnt-item profile-cnt-border">
@@ -103,8 +103,11 @@
                     <c:if test="${user.userId ne sessionScope.userId}">
                     	<button class="btn btn-sm profile-btn">Follow</button>
                     </c:if>
-                    <c:if test="${user.userId eq sessionScope.userId}">
+                    <c:if test="${user.platformType eq 'normal'}">
                     	<a href="/user/modify" class="btn btn-sm profile-btn" >Edit</a>
+                    </c:if>
+                    <c:if test="${user.platformType ne 'normal'}">
+                    	<a href="/user/modifySns" class="btn btn-sm profile-btn" >Edit</a>
                     </c:if>
                     <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
                     </div>

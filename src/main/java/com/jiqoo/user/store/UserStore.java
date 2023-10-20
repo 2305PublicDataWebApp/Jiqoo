@@ -170,4 +170,20 @@ public interface UserStore {
 	 */
 	int naverUserInsert(SqlSession sqlSession, User naverUser);
 
+	/**
+	 * 마이페이지 지꾸 게시물수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyJiqooCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 모꾸 게시물수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyMoqooCount(SqlSession sqlSession, String userId);
+
 }

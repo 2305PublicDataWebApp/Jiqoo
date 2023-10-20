@@ -128,5 +128,17 @@ public class UserServiceImpl implements UserService{
 		return snsUser;
 	}
 
+	@Override
+	public int selectMyJiqooCount(String userId) {
+		int myJiqooCount = userStore.selectMyJiqooCount(sqlSession, userId);
+		return myJiqooCount;
+	}
+
+	@Override
+	public int selectMyMoqooCount(String userId) {
+		int myMiqooCount = userStore.selectMyMoqooCount(sqlSession, userId);
+		return myMiqooCount;
+	}
+
 
 }
