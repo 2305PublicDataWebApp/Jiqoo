@@ -55,6 +55,7 @@ public class MoqooServiceImpl implements MoqooService {
 		return category;
 	}
 
+	// 좋아요 카운트
 	@Override
 	public int selectLikeCountByNo(int moqooNo) {
 		int result = moqooStore.selectLikeCountByNo(sqlSession, moqooNo);
@@ -108,29 +109,11 @@ public class MoqooServiceImpl implements MoqooService {
 		return moqooParticipants;
 	}
 
-	@Override
-	public int clickHeart(Like like) {
-		int result = moqooStore.clickHeart(sqlSession, like);
-		return result;
-	}
-
-	@Override
-	public int moqooLikeCount(int refPostNo) {
-		int result = moqooStore.moqooLikeCount(sqlSession, refPostNo);
-		return result;
-	}
-
-	@Override
-	public Like selectLikeOne(Like like) {
-		Like likeOne = moqooStore.selectLikeOne(sqlSession, like);
-		return likeOne;
-	}
-
-	@Override
-	public int deleteHeart(Like like) {
-		int result = moqooStore.deleteHeart(sqlSession, like);
-		return result;
-	}
+//	@Override
+//	public int moqooLikeCount(int refPostNo) {
+//		int result = moqooStore.moqooLikeCount(sqlSession, refPostNo);
+//		return result;
+//	}
 
 	@Override
 	public List<Moqoo> selectMoqooAllList() {
@@ -142,5 +125,23 @@ public class MoqooServiceImpl implements MoqooService {
 	public int updateMoqooCount(int moqooNo) {
 		return moqooStore.updateMoqooCount(sqlSession, moqooNo);
 		
+	}
+
+	@Override
+	public int insertLike(Like like) {
+		int result = moqooStore.insertLike(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int deleteLike(Like like) {
+		int result = moqooStore.deleteLike(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int selectLikeOrNot(Like like) {
+		int result = moqooStore.selectLikeOrNot(sqlSession, like);
+		return result;
 	}
 }

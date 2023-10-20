@@ -58,11 +58,32 @@ public interface MoqooService {
 	Category selectCategoryByNo(String moqooCName);
 
 	/**
+	 * 좋아요 클릭
+	 * @param like
+	 * @return
+	 */
+	int insertLike(Like like);
+
+	/**
+	 * 좋아요 취소
+	 * @param like
+	 * @return
+	 */
+	int deleteLike(Like like);
+
+	/**
 	 * 모꾸 게시물 좋아요 수
 	 * @param moqoo
 	 * @return
 	 */
 	int selectLikeCountByNo(int moqooNo);
+
+	/**
+	 * 좋아요 여부 판단
+	 * @param like
+	 * @return
+	 */
+	int selectLikeOrNot(Like like);
 
 	/**
 	 * 참여자 보내기
@@ -106,33 +127,14 @@ public interface MoqooService {
 	 */
 	int selectOneByMoqooJoin(int moqooNo);
 
-	/**
-	 * 좋아요 클릭했을 때 정보넘기기
-	 * @param like
-	 * @return
-	 */
-	int clickHeart(Like like);
+//	/**
+//	 * 좋아요 카운트
+//	 * @param refPostNo
+//	 * @return
+//	 */
+//	int moqooLikeCount(int refPostNo);
 
-	/**
-	 * 좋아요 카운트
-	 * @param refPostNo
-	 * @return
-	 */
-	int moqooLikeCount(int refPostNo);
 
-	/**
-	 * 좋아요 정보 조회
-	 * @param like
-	 * @return
-	 */
-	Like selectLikeOne(Like like);
-
-	/**
-	 * 좋아요 두번 클릭시 삭제
-	 * @param like
-	 * @return
-	 */
-	int deleteHeart(Like like);
 
 	/**
 	 * 모꾸 전체리스트 조회

@@ -45,6 +45,7 @@ public class MoqooStoreLogic implements MoqooStore{
 		return category;
 	}
 
+	// 좋아요 카운트
 	@Override
 	public int selectLikeCountByNo(SqlSession sqlSession, int moqooNo) {
 		int result = sqlSession.selectOne("MoqooMapper.selectLikeCountByNo", moqooNo);
@@ -98,29 +99,12 @@ public class MoqooStoreLogic implements MoqooStore{
 		return moqooParticipants;
 	}
 
-	@Override
-	public int clickHeart(SqlSession sqlSession, Like like) {
-		int result = sqlSession.insert("MoqooMapper.clickHeart", like);
-		return result;
-	}
+//	@Override
+//	public int moqooLikeCount(SqlSession sqlSession, int refPostNo) {
+//		int result = sqlSession.selectOne("MoqooMapper.moqooLikeCount", refPostNo);
+//		return result;
+//	}
 
-	@Override
-	public int moqooLikeCount(SqlSession sqlSession, int refPostNo) {
-		int result = sqlSession.selectOne("MoqooMapper.moqooLikeCount", refPostNo);
-		return result;
-	}
-
-	@Override
-	public Like selectLikeOne(SqlSession sqlSession, Like like) {
-		Like likeOne = sqlSession.selectOne("MoqooMapper.selectLikeOne", like);
-		return likeOne;
-	}
-
-	@Override
-	public int deleteHeart(SqlSession sqlSession, Like like) {
-		int result = sqlSession.delete("MoqooMapper.deleteHeart", like);
-		return result;
-	}
 
 	@Override
 	public List<Moqoo> selectMoqooAllList(SqlSession sqlSession) {
@@ -131,6 +115,24 @@ public class MoqooStoreLogic implements MoqooStore{
 	@Override
 	public int updateMoqooCount(SqlSession sqlSession, int moqooNo) {
 		return sqlSession.update("MoqooMapper.updateMoqooCount", moqooNo);
+	}
+
+	@Override
+	public int insertLike(SqlSession sqlSession, Like like) {
+		int result = sqlSession.insert("MoqooMapper.insertLike", like);
+		return result;
+	}
+
+	@Override
+	public int deleteLike(SqlSession sqlSession, Like like) {
+		int result = sqlSession.insert("MoqooMapper.deleteLike", like);
+		return result;
+	}
+
+	@Override
+	public int selectLikeOrNot(SqlSession sqlSession, Like like) {
+		int result = sqlSession.insert("MoqooMapper.selectLikeOrNot", like);
+		return result;
 	}
 
 }

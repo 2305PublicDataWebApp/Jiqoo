@@ -53,12 +53,36 @@ public interface MoqooStore {
 	Category selectCategoryByNo(SqlSession sqlSession, String moqooCName);
 
 	/**
+	 * 좋아요 클릭
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int insertLike(SqlSession sqlSession, Like like);
+
+	/**
+	 * 좋아요 취소
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int deleteLike(SqlSession sqlSession, Like like);
+
+	/**
 	 * 모꾸 게시물 좋아요 수
 	 * @param sqlSession
 	 * @param moqooNo
 	 * @return
 	 */
 	int selectLikeCountByNo(SqlSession sqlSession, int moqooNo);
+
+	/**
+	 * 좋아요 여부 판단
+	 * @param sqlSession
+	 * @param like
+	 * @return
+	 */
+	int selectLikeOrNot(SqlSession sqlSession, Like like);
 
 	/**
 	 * 모꾸 게시물 수정
@@ -123,37 +147,13 @@ public interface MoqooStore {
 	 */
 	int selectOneByMoqooJoin(SqlSession sqlSession, int moqooNo);
 
-	/**
-	 * 좋아요 클릭시 
-	 * @param sqlSession
-	 * @param like
-	 * @return
-	 */
-	int clickHeart(SqlSession sqlSession, Like like);
-
-	/**
-	 * 좋아요 카운트
-	 * @param sqlSession
-	 * @param refPostNo
-	 * @return
-	 */
-	int moqooLikeCount(SqlSession sqlSession, int refPostNo);
-
-	/**
-	 * 좋아요 조회
-	 * @param sqlSession
-	 * @param like
-	 * @return
-	 */
-	Like selectLikeOne(SqlSession sqlSession, Like like);
-
-	/**
-	 * 좋아요 두번 클릭시 삭제
-	 * @param sqlSession
-	 * @param like
-	 * @return
-	 */
-	int deleteHeart(SqlSession sqlSession, Like like);
+//	/**
+//	 * 좋아요 카운트
+//	 * @param sqlSession
+//	 * @param refPostNo
+//	 * @return
+//	 */
+//	int moqooLikeCount(SqlSession sqlSession, int refPostNo);
 
 	/**
 	 * 모꾸 전체 리스트 조회
@@ -162,6 +162,12 @@ public interface MoqooStore {
 	 */
 	List<Moqoo> selectMoqooAllList(SqlSession sqlSession);
 
+	/**
+	 * 모꾸 조회수 증가
+	 * @param sqlSession
+	 * @param moqooNo
+	 * @return
+	 */
 	int updateMoqooCount(SqlSession sqlSession, int moqooNo);
 
 }

@@ -221,11 +221,9 @@
 			<form action="" method="" class="search-form">
 				<input type="text" placeholder="search" />
 				<button type="submit" id="search-btn">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-						fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-              <path
-							d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            		</svg>
 				</button>
 			</form>
 		</div>
@@ -541,10 +539,6 @@ $(document).ready(function() {
 
   	        // 커스텀 오버레이를 배열에 추가합니다
   	        customOverlays.push(customOverlay);
-
-  	        
-  	   		// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-  	      	
   	   		
   	        // 마커에 클릭 이벤트를 등록합니다
   	        (function (customOverlay) {
@@ -564,7 +558,7 @@ $(document).ready(function() {
   	          });
   	        })(customOverlay);
   		    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-  	      function closeOverlay(clickedOverlay) {
+  	        function closeOverlay(clickedOverlay) {
   	          var customOverlay = customOverlays.find(function(overlay) {
   	              return overlay.getContent() === clickedOverlay.parentElement;
   	          });
@@ -572,9 +566,8 @@ $(document).ready(function() {
   	          if (customOverlay) {
   	              customOverlay.setMap(null);
   	          }
+  	        }
   	      }
-  	      }
-  	    
 	    }
 	  });
     }
@@ -583,15 +576,6 @@ $(document).ready(function() {
        showAllMap(); // showAllMap 함수 호출
    });
 	
-	
-// 	// 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
-// 	kakao.maps.event.addListener(marker, 'click', function() {
-// 	    overlay.setMap(map);
-// 	});
-
-
- 
-
   </script>
 
 	<script>
@@ -602,14 +586,12 @@ $(document).ready(function() {
     };
   </script>
 
-	<script>
-    function toggleCC() {
-      const categoryContainer = document.querySelector(".category-container");
-      categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
-    }
-  </script>
+<script>
+   function toggleCC() {
+     const categoryContainer = document.querySelector(".category-container");
+     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
+   }
 
-	<script type="text/javascript">
   // JavaScript 코드를 추가합니다.
   const radioButtons = document.querySelectorAll('.form-check-input');
   const imageLabels = document.querySelectorAll('.form-check-label');
@@ -630,7 +612,7 @@ $(document).ready(function() {
   btnList.addEventListener('click', () => {
     container.style.display = 'block';
     mapDiv.style.display = 'none';
-    btnModal.style.display='none';
+//     btnModal.style.display='none';
   });
 
   btnMap.addEventListener('click', () => {

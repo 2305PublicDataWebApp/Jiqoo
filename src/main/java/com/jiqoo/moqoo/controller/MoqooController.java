@@ -139,8 +139,11 @@ public class MoqooController {
 	
 	// 모꾸 게시글 상세페이지
 	@GetMapping("/moqoo/detail")
-	public String showMoqooDetail(@RequestParam("moqooNo") Integer moqooNo, Model model) {
+	public String showMoqooDetail(@RequestParam("moqooNo") Integer moqooNo, Model model, HttpSession session) {
 		try {
+			String lUserId = (String) session.getAttribute("userId");
+			// 좋아요
+			Like like = new Like(moqooNo, lUserId);
 			// 조회수
 			moqooService.updateMoqooCount(moqooNo);
 			// 게시글 내용 가져오면서 댓글도 같이 가져오기
@@ -149,14 +152,16 @@ public class MoqooController {
 			Category category = moqooService.selectCategoryByNo(moqooCName);
 			List<Category> categoryList = moqooService.selectCategoryList();
 			int likeCount = moqooService.selectLikeCountByNo(moqooNo);
+			int likeOrNot = moqooService.selectLikeOrNot(like);
 			int moqooJoinCount = moqooService.selectJoinCount(moqooNo);
 			if(moqoo != null) {
-				// 게시글 번호에 맞는 댓글들 가져오기
-				List<Comment> comtList = moqooComtService.selectComtList(moqooNo);
+//				// 게시글 번호에 맞는 댓글들 가져오기
+//				List<Comment> comtList = moqooComtService.initialComments(moqooNo);
+				// 모임 참여신청자들
 				List<MoqooUser> moqooUserList  = moqooService.selectMoqooUserList(moqooNo);
-				if(comtList.size() > 0) {
-					model.addAttribute("comtList", comtList);
-				}
+//				if(comtList.size() > 0) {
+//					model.addAttribute("comtList", comtList);
+//				}
 				if(moqooUserList.size() > 0) {
 					model.addAttribute("moqooList", moqooUserList);
 				}
@@ -165,6 +170,7 @@ public class MoqooController {
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("likeCount", likeCount);
 				model.addAttribute("joinCount", moqooJoinCount);
+				model.addAttribute("likeOrNot", likeOrNot);
 				return "moqoo/post_moqoo";
 			}
 			else {
@@ -200,6 +206,30 @@ public class MoqooController {
 			return "false";
 		}
 	}
+	
+	// 좋아요
+		@ResponseBody
+		@GetMapping("/moqoo/like")
+		public String like(@RequestParam("refPostNo") int refPostNo, HttpSession session) {
+			String lUserId = (String)session.getAttribute("userId");
+			Like like = new Like(refPostNo, lUserId);
+			int result = moqooService.selectLikeOrNot(like);
+			if(result == 0) {
+				int insertLike = moqooService.insertLike(like);
+				if(insertLike > 0) {
+					return "insert";
+				}else {
+					return "fail";
+				}
+			}else {
+				int deleteLike = moqooService.deleteLike(like);
+				if(deleteLike > 0) {
+					return "delete";
+				}else {
+					return "fail";
+				}
+			}
+		}
 	
 	@PostMapping("moqoo/update")
 	public String updateMoqoo(@ModelAttribute Moqoo moqoo,@RequestParam(value = "uploadFile", required=false) MultipartFile uploadFile, Model model, HttpServletRequest request) {
@@ -307,41 +337,41 @@ public class MoqooController {
     }
 	
 	
-    @PostMapping("/moqoo/heart")
-    @ResponseBody
-    public String clickHeart(@RequestParam("refPostNo") int refPostNo, @RequestParam("userId") String lUserId, @RequestParam("refBoardType") String refBoardType ) {
-    	
-    	Like like = new Like(refPostNo, refBoardType, lUserId);
-    	Like likeOne = moqooService.selectLikeOne(like);
-    	if(likeOne == null) {
-    		int result = moqooService.clickHeart(like);
-    		if(result > 0) {
-            	return "true";
-    		}
-    		else {
-    			return "false";
-            }
-    	}
-    	else {
-    		// 좋아요 테이블에서 삭제 (두번 클릭시 좋아요 취소)
-    		int result = moqooService.deleteHeart(like);
-    		if(result > 0) {
-    			return "true";
-    		}
-    		else {
-    			return "false";
-    		}
-    	}
-       
-        
-    }
+//    @PostMapping("/moqoo/heart")
+//    @ResponseBody
+//    public String clickHeart(@RequestParam("refPostNo") int refPostNo, @RequestParam("userId") String lUserId, @RequestParam("refBoardType") String refBoardType ) {
+//    	
+//    	Like like = new Like(refPostNo, refBoardType, lUserId);
+//    	Like likeOne = moqooService.selectLikeOne(like);
+//    	if(likeOne == null) {
+//    		int result = moqooService.clickHeart(like);
+//    		if(result > 0) {
+//            	return "true";
+//    		}
+//    		else {
+//    			return "false";
+//            }
+//    	}
+//    	else {
+//    		// 좋아요 테이블에서 삭제 (두번 클릭시 좋아요 취소)
+//    		int result = moqooService.deleteLike(like);
+//    		if(result > 0) {
+//    			return "true";
+//    		}
+//    		else {
+//    			return "false";
+//    		}
+//    	}
+//       
+//        
+//    }
     
-    @PostMapping("/moqoo/likeCount")
-    @ResponseBody
-    public String moqooLikeCount(@RequestParam("refPostNo") int refPostNo ) {
-       int result = moqooService.moqooLikeCount(refPostNo);
-    	return result + "";
-    }
+//    @PostMapping("/moqoo/likeCount")
+//    @ResponseBody
+//    public String moqooLikeCount(@RequestParam("refPostNo") int refPostNo ) {
+//       int result = moqooService.moqooLikeCount(refPostNo);
+//    	return result + "";
+//    }
 	
 
 	// 섬머노트 사진 저장하기

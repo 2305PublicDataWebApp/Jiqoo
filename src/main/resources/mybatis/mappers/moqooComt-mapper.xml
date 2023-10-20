@@ -52,15 +52,50 @@
 	</update>
 	
 	
-	
-	<select id="selectComtList" resultMap="CommentResultMap">
-		SELECT * FROM COMT_TBL JOIN USER_TBL ON COMT_WRITER = USER_ID WHERE COMT_STATUS = 'Y'AND C_BOARD_TYPE = 'M' ORDER BY COMT_DATE ASC
+<!-- 	<select id="selectComtList" resultMap="CommentResultMap"> -->
+<!-- 		SELECT * FROM COMT_TBL JOIN USER_TBL ON COMT_WRITER = USER_ID WHERE COMT_STATUS = 'Y'AND C_BOARD_TYPE = 'M' ORDER BY COMT_DATE ASC -->
+<!-- 	</select> -->
+
+	<select id="initialComments" resultMap="CommentResultMap">
+		SELECT * 
+			FROM (
+			    SELECT F.*, ROWNUM AS rnum
+			    FROM (
+			        SELECT C.*, U.*
+			        FROM COMT_TBL C
+			        LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+			        WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'M' AND REF_POST_NO = #{moqooNo }
+			        START WITH P_COMT_NO IS NULL
+			        CONNECT BY PRIOR COMT_NO = P_COMT_NO
+			        ORDER SIBLINGS BY COMT_DATE ASC
+			    ) F
+			    WHERE ROWNUM &lt;= 10
+			) 
+			WHERE rnum &gt;= 1
 	</select>
 	
-	<select id="selectReComtList">
-		SELECT * FROM COMT_TBL WHERE C_BOARD_TYPE = 'M' AND REF_POST_NO = #{refPostNo } 
-		START WITH P_COMT_NO IS NULL
-		CONNECT BY PRIOR COMT_NO = P_COMT_NO
-		ORDER SIBLINGS BY COMT_DATE ASC;
+	<select id="loadMoreComments" resultMap="CommentResultMap">
+	    SELECT * 
+		FROM (
+		    SELECT F.*, ROWNUM AS rnum
+		    FROM (
+		        SELECT C.*, U.*
+		        FROM COMT_TBL C
+		        LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+		        WHERE COMT_STATUS = 'Y' AND C_BOARD_TYPE = 'M' AND REF_POST_NO = #{moqooNo }
+		        START WITH P_COMT_NO IS NULL
+		        CONNECT BY PRIOR COMT_NO = P_COMT_NO
+		        ORDER SIBLINGS BY COMT_DATE ASC
+		    ) F
+		    WHERE ROWNUM &lt;= (#{offset} + #{limit})
+		) 
+		WHERE rnum &gt; #{offset}
 	</select>
+	
+<!-- 	<select id="selectReComtList"> -->
+<!-- 		SELECT * FROM COMT_TBL WHERE C_BOARD_TYPE = 'M' AND REF_POST_NO = #{refPostNo }  -->
+<!-- 		START WITH P_COMT_NO IS NULL -->
+<!-- 		CONNECT BY PRIOR COMT_NO = P_COMT_NO -->
+<!-- 		ORDER SIBLINGS BY COMT_DATE ASC; -->
+<!-- 	</select> -->
 </mapper>

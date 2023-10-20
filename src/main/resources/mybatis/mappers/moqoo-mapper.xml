@@ -101,21 +101,21 @@
 		SELECT MOQOO_JOIN FROM MOQOO_TBL WHERE MOQOO_NO = #{moqooNo }
 	</select>
 	
-	<insert id="clickHeart">
-		INSERT INTO LIKE_TBL VALUES(#{refPostNo },#{refBoardType }, #{lUserId }) 
+	<insert id="insertLike">
+		INSERT INTO LIKE_TBL VALUES(#{refPostNo }, 'M', #{lUserId }) 
 	</insert>
+
+	<delete id="deleteLike">
+		DELETE FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId }
+	</delete>
+	
+	<select id="selectLikeOrNot" resultType="_int">
+		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId } AND REF_BOARD_TYPE = 'M'
+	</select>
 	
 	<select id="moqooLikeCount" resultType="_int">
 		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo }
 	</select>
-	
-	<select id="selectLikeOne" resultType="Like">
-		SELECT * FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND REF_BOARD_TYPE = #{refBoardType } AND L_USER_ID = #{lUserId }
-	</select>
-	
-	<delete id="deleteHeart">
-		DELETE LIKE_TBL WHERE REF_POST_NO = #{refPostNo } and REF_BOARD_TYPE = #{refBoardType } and L_USER_ID = #{lUserId };
-	</delete>
 	
 	<select id="selectMoqooAllList" resultMap="MoqooResultMap">
 		SELECT * FROM MOQOO_TBL
