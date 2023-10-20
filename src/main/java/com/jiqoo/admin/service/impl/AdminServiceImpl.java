@@ -102,8 +102,8 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public List<Jiqoo> showUserJiqooList(PageInfo pInfoJiqoo, String jiqooWriter) {
-		List<Jiqoo> uJiqooList = adminStore.showUserJiqooList(sqlSession, pInfoJiqoo, jiqooWriter);
-		return uJiqooList;
+		List<Jiqoo> jiqooList = adminStore.showUserJiqooList(sqlSession, pInfoJiqoo, jiqooWriter);
+		return jiqooList;
 	}
 
 	/**
@@ -120,8 +120,8 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public List<Moqoo> showUserMoqooList(PageInfo pInfoMoqoo, String userId) {
-		List<Moqoo> uMoqooList = adminStore.showUserMoqooList(sqlSession, pInfoMoqoo, userId);
-		return uMoqooList;
+		List<Moqoo> moqooList = adminStore.showUserMoqooList(sqlSession, pInfoMoqoo, userId);
+		return moqooList;
 	}
 
 	/**
@@ -138,8 +138,8 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public List<Comment> showUserComtList(PageInfo pInfoComt, String comtWriter) {
-		List<Comment> uComtList = adminStore.showUserComtList(sqlSession, pInfoComt, comtWriter);
-		return uComtList;
+		List<Comment> comtList = adminStore.showUserComtList(sqlSession, pInfoComt, comtWriter);
+		return comtList;
 	}
 	
 	
@@ -378,6 +378,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 
+	/**
+	 * 당일 등록된 댓글 리스트
+	 */
 	@Override
 	public List<Comment> todayComtList(PageInfo pInfoJiqoo) {
 		List<Comment> todayComtList = adminStore.todayComtList(sqlSession, pInfoJiqoo);
@@ -390,6 +393,9 @@ public class AdminServiceImpl implements AdminService {
 		return userCountList;
 	}
 
+	/**
+	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
+	 */
 	@Override
 	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap) {
 		List<Map<String, Object>> dayCountList = adminStore.dayCountList(sqlSession, statsMap);
@@ -406,6 +412,78 @@ public class AdminServiceImpl implements AdminService {
 	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo) {
 		List<Map<String, Object>> jiqooChartList = adminStore.jiqooChartList(sqlSession, jiqoo);
 		return jiqooChartList;
+	}
+
+	/**
+	 * 이번주 등록된 지꾸 수
+	 */
+	@Override
+	public Integer thisWeekInsertJiqooCount() {
+		Integer resultThisWeek = adminStore.thisWeekInsertJiqooCount(sqlSession);
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 등록된 지꾸 수
+	 */
+	@Override
+	public Integer lastWeekInsertJiqooCount() {
+		Integer resultlastWeek = adminStore.lastWeekInsertJiqooCount(sqlSession);
+		return resultlastWeek;
+	}
+
+	/**
+	 * 이번주 등록된 모꾸 수
+	 */
+	@Override
+	public Integer thisWeekInsertMoqooCount() {
+		Integer resultThisWeek = adminStore.thisWeekInsertMoqooCount(sqlSession);
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 등록된 모꾸 수
+	 */
+	@Override
+	public Integer lastWeekInsertMoqooCount() {
+		Integer resultlastWeek = adminStore.lastWeekInsertMoqooCount(sqlSession);
+		return resultlastWeek;
+	}
+
+	/**
+	 * 이번주 가입한 회원수
+	 */
+	@Override
+	public Integer thisWeekJoinUserCount() {
+		Integer resultThisWeek = adminStore.thisWeekJoinUserCount(sqlSession);
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 가입한 회원 수
+	 */
+	@Override
+	public Integer lastWeekJoinUserCount() {
+		Integer resultlastWeek = adminStore.lastWeekJoinUserCount(sqlSession);
+		return resultlastWeek;
+	}
+
+	/**
+	 * 강제삭제 모꾸 복원
+	 */
+	@Override
+	public Integer reviveMoqooByAdmin(String moqooNo) {
+		Integer result = adminStore.reviveMoqooByAdmin(sqlSession, moqooNo);
+		return result;
+	}
+
+	/**
+	 * 강제삭제 지꾸 복원
+	 */
+	@Override
+	public Integer reviveJiqooByAdmin(String jiqooNo) {
+		Integer result = adminStore.reviveJiqooByAdmin(sqlSession, jiqooNo);
+		return result;
 	}
 
 	

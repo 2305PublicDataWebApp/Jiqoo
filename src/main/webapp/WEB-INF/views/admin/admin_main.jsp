@@ -102,23 +102,22 @@
                       <li class="dropdown-header text-start">
                         <h6>Filter</h6>
                       </li>
-                      <li><a class="dropdown-item" href="#">Today</a></li>
-                      <li><a class="dropdown-item" href="#">This Week</a></li>
-                      <!-- <li><a class="dropdown-item" href="#">This Year</a></li> -->
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="dailyJiqoo();">Today</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="WeeklyJiqoo();">This Week</a></li>
                     </ul>
                   </div>
                   <div class="card-body">
-                    <h5 class="card-title">지꾸 <span>| Today</span></h5>
+                    <h5 class="card-title title-jiqoo">지꾸 <span>| Today</span></h5>
                     <div class="d-flex align-items-center">
                       <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                         <i class="bi bi-journal-bookmark-fill"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>${ todayInsertJiqooCount } 개</h6>
-                        <span class="text-success small pt-1 fw-bold">
+                        <h6 class="jiqooCnt">${ todayInsertJiqooCount } 개</h6> <!-- 오늘의 지꾸 수  -->
+                        <span class="jiqoo-result text-success small pt-1 fw-bold">
                         	<c:set var="todayInsertJiqooCount" value="${ todayInsertJiqooCount }" />
 							<c:set var="yesterdayInsertJiqooCount" value="${yesterdayInsertJiqooCount}" />
-							<c:choose>
+							<c:choose> 
 							    <c:when test="${yesterdayInsertJiqooCount ne 0}">
 							   		<fmt:formatNumber value="${Math.abs(((todayInsertJiqooCount - yesterdayInsertJiqooCount) / yesterdayInsertJiqooCount) * 100)}" maxFractionDigits="0" />%
 							    </c:when>
@@ -127,7 +126,7 @@
 							    </c:otherwise>
 							</c:choose>
 						</span> 
-                        <span class="text-muted small pt-2 ps-1">
+                        <span class="jiqoo-indesame text-muted small pt-2 ps-1">
 							<span class="text-muted small pt-2 ps-1">
 								<c:if test="${todayInsertJiqooCount gt yesterdayInsertJiqooCount }">increase</c:if>
 	                        	<c:if test="${todayInsertJiqooCount lt yesterdayInsertJiqooCount}">decrease</c:if>
@@ -140,6 +139,97 @@
                   </div>
                 </div>
               </div>
+              <script>
+            	//지꾸카드 오늘 <-> 이번주 교체
+            	//지꾸카드 오늘
+	              function dailyJiqoo() {
+	          	    $.ajax({
+	          	    	url: "/admin/dailyjiqoocard", 
+	          	        type: "GET",
+	          	        dataType : "json",
+	          	        success: function(result) {
+	          	        	const cardTitle = "지꾸 <span>| Today</span>";
+	          	        	const todayjiqooCount = result.resultTodayCnt;
+	          	        	const yesterdayJiqooCount = result.resultYesterdayCnt;
+	
+	          	            // 결과를 원하는 위치에 표시
+	          	            $('.title-jiqoo').html(cardTitle);
+	                        $('.jiqooCnt').html(todayjiqooCount + ' 개');
+	          	            
+	                        var contentToDisplay = "";
+	          	            // 계산된 값을 표시
+	          	            if (yesterdayJiqooCount !== 0) {
+	          	            	var percentageChange = ((todayjiqooCount - yesterdayJiqooCount) / yesterdayJiqooCount) * 100;
+	 						    var absolutePercentageChange = Math.abs(percentageChange);
+	 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+	 							$(".jiqoo-result").text(displayText);
+		          	        }else {
+		          	            contentToDisplay = "어제 등록된 지꾸는 0개입니다";
+		          	            $(".jiqoo-result").html(contentToDisplay);
+		          	        }
+	
+	          	        	// 결과를 원하는 위치에 표시
+	          	            var changeText = ""; // 기본값
+	
+	          	            if (todayjiqooCount > yesterdayJiqooCount) {
+	          	                changeText = "increase";
+	          	            } else if (todayjiqooCount < yesterdayJiqooCount) {
+	          	                changeText = "decrease";
+	          	            } else {
+	          	            	changeText = "same";
+	          	            }
+	          	            
+	          	            $(".jiqoo-indesame").text(changeText);
+	          	        	
+	          	        },
+	          	        error: function() {
+	          	      		alert("에러가 발생했습니다 ")
+	          	        }
+	          	    });
+             	}
+				
+            	//지꾸 이번주
+              	function WeeklyJiqoo() {
+            	    $.ajax({
+            	    	url: "/admin/weeklyjiqoocard", 
+            	        type: "GET",
+            	        dataType : "json",
+            	        success: function(result) {
+            	        	const cardTitle = "지꾸 <span>| This Week</span>";
+            	        	const thisWeekjiqooCount = result.resultThisWeekCnt;
+            	        	const lastWeekJiqooCount = result.resultlastWeekCnt;
+
+            	            // 결과를 원하는 위치에 표시
+            	            $('.title-jiqoo').html(cardTitle);
+                            $('.jiqooCnt').html(thisWeekjiqooCount + ' 개');
+            	            
+
+            	            // 계산된 값을 표시
+            	            var percentageChange = ((thisWeekjiqooCount - lastWeekJiqooCount) / lastWeekJiqooCount) * 100;
+							var absolutePercentageChange = Math.abs(percentageChange);
+							var displayText = absolutePercentageChange.toFixed(0) + "%";
+							$(".jiqoo-result").text(displayText);
+							
+            	            var changeText = ""; // 기본값
+
+            	            if (thisWeekjiqooCount > lastWeekJiqooCount) {
+            	                changeText = "increase";
+            	            } else if (thisWeekjiqooCount < lastWeekJiqooCount) {
+            	                changeText = "decrease";
+            	            } else {
+            	            	changeText = "same";
+            	            }
+
+            	            // 결과를 원하는 위치에 표시
+            	            $(".jiqoo-indesame").text(changeText);
+            	        	
+            	        },
+            	        error: function() {
+            	      		alert("에러가 발생했습니다 ")
+            	        }
+            	    });
+               	}
+              </script>
               <!-- End 지꾸 Card -->
               
               
@@ -155,21 +245,21 @@
                       <li class="dropdown-header text-start">
                         <h6>Filter</h6>
                       </li>
-                      <li><a class="dropdown-item" href="#">Today</a></li>
-                      <li><a class="dropdown-item" href="#">This Week</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="dailyMoqoo();">Today</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="WeeklyMoqoo();">This Week</a></li>
                       <!-- <li><a class="dropdown-item" href="#">This Year</a></li> -->
                     </ul>
                   </div>
   
                   <div class="card-body">
-                    <h5 class="card-title">모꾸 <span>| --Today</span></h5>
+                    <h5 class="card-title title-moqoo">모꾸 <span>| Today</span></h5>
                     <div class="d-flex align-items-center">
                       <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                         <i class="bi bi-journal-richtext"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>${todayInsertMoqooCount } 개</h6>
-                        <span class="text-success small pt-1 fw-bold">
+                        <h6 class="moqooCnt">${todayInsertMoqooCount } 개</h6>
+                        <span class="moqoo-result text-success small pt-1 fw-bold">
 							<c:set var="todayInsertMoqooCount" value="${ todayInsertMoqooCount }" />
 							<c:set var="yesterdayInsertMoqooCount" value="${yesterdayInsertMoqooCount}" />
 							<c:choose>
@@ -184,7 +274,7 @@
 							</c:choose>
 							
 						</span> 
-						<span class="text-muted small pt-2 ps-1">
+						<span class="moqoo-indesame text-muted small pt-2 ps-1">
 							<c:if test="${todayInsertMoqooCount gt yesterdayInsertMoqooCount }">increase</c:if>
                         	<c:if test="${todayInsertMoqooCount lt yesterdayInsertMoqooCount}">decrease</c:if>
                         	<c:if test="${todayInsertMoqooCount eq yesterdayInsertMoqooCount}">same</c:if>
@@ -194,6 +284,109 @@
                   </div>
                 </div>
               </div>
+              
+               <script>
+              	//모꾸카드 오늘 <-> 이번주 교체
+              	//모꾸카드 오늘
+	              function dailyMoqoo() {
+	          	    $.ajax({
+	          	    	url: "/admin/dailymoqoocard", 
+	          	        type: "GET",
+	          	        dataType : "json",
+	          	        success: function(result) {
+	          	        	const cardTitle = "모꾸 <span>| Today</span>";
+	          	        	const todayMoqooCount = result.resultTodayCnt;
+	          	        	const yesterdayMoqooCount = result.resultYesterdayCnt;
+	
+	          	            // 결과를 원하는 위치에 표시
+	          	            $('.title-moqoo').html(cardTitle);
+	                        $('.moqooCnt').html(todayMoqooCount + ' 개');
+	          	            
+	                        var contentToDisplay = "";
+	          	            // 계산된 값을 표시
+	          	            if (yesterdayMoqooCount !== 0) {
+	          	            	var percentageChange = ((todayMoqooCount - yesterdayMoqooCount) / yesterdayMoqooCount) * 100;
+	 						    var absolutePercentageChange = Math.abs(percentageChange);
+	 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+	 							$(".moqoo-result").text(displayText);
+		          	        }else {
+		          	            contentToDisplay = "어제 등록된 모꾸는 0개입니다";
+		          	            $(".moqoo-result").html(contentToDisplay);
+		          	        }
+	
+	          	        	// 결과를 원하는 위치에 표시
+	          	            var changeText = ""; // 기본값
+	
+	          	            if (todayMoqooCount > yesterdayMoqooCount) {
+	          	                changeText = "increase";
+	          	            } else if (todayMoqooCount < yesterdayMoqooCount) {
+	          	                changeText = "decrease";
+	          	            } else {
+	          	            	changeText = "same";
+	          	            }
+	          	            
+	          	            $(".moqoo-indesame").text(changeText);
+	          	        	
+	          	        },
+	          	        error: function() {
+	          	      		alert("에러가 발생했습니다 ")
+	          	        }
+	          	    });
+             	}
+	            //모꾸카드 이번주
+              	function WeeklyMoqoo() {
+            	    $.ajax({
+            	    	url: "/admin/weeklymoqoocard", 
+            	        type: "GET",
+            	        dataType : "json",
+            	        success: function(result) {
+            	        	const cardTitle = "모꾸 <span>| This Week</span>";
+            	        	const thisWeekMoqooCount = result.resultThisWeekCnt;
+            	        	const lastWeekMoqooCount = result.resultlastWeekCnt;
+
+            	            // 결과를 원하는 위치에 표시
+            	            $('.title-moqoo').html(cardTitle);
+                            $('.moqooCnt').html(thisWeekMoqooCount + ' 개');
+            	            
+
+            	            // 계산된 값을 표시
+//             	            var percentageChange = ((thisWeekMoqooCount - lastWeekMoqooCount) / lastWeekMoqooCount) * 100;
+// 							var absolutePercentageChange = Math.abs(percentageChange);
+// 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+// 							$(".moqoo-result").text(displayText);
+
+							var contentToDisplay = "";
+	          	            // 계산된 값을 표시
+	          	            if (lastWeekMoqooCount !== 0) {
+	          	            	var percentageChange = ((thisWeekMoqooCount - lastWeekMoqooCount) / lastWeekMoqooCount) * 100;
+	 						    var absolutePercentageChange = Math.abs(percentageChange);
+	 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+	 							$(".moqoo-result").text(displayText);
+		          	        }else {
+		          	            contentToDisplay = "지난주 등록된 모꾸는 0개입니다";
+		          	            $(".moqoo-result").html(contentToDisplay);
+		          	        }
+							
+            	            var changeText = ""; 
+
+            	            if (thisWeekMoqooCount > lastWeekMoqooCount) {
+            	                changeText = "increase";
+            	            } else if (thisWeekMoqooCount < lastWeekMoqooCount) {
+            	                changeText = "decrease";
+            	            } else {
+            	            	changeText = "same";
+            	            }
+
+            	            // 결과를 원하는 위치에 표시
+            	            $(".moqoo-indesame").text(changeText);
+            	        	
+            	        },
+            	        error: function() {
+            	      		alert("에러가 발생했습니다 ")
+            	        }
+            	    });
+               	}
+              </script>
               <!-- End 모꾸 Card -->
   
               <!-- 회원  Card -->
@@ -205,20 +398,19 @@
                       <li class="dropdown-header text-start">
                         <h6>Filter</h6>
                       </li>
-                      <li><a class="dropdown-item" href="#">Today</a></li>
-                      <li><a class="dropdown-item" href="#">This Week</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="dailyUser();">Today</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="WeeklyUser();">This Week</a></li>
                     </ul>
                   </div>
-  -
                   <div class="card-body">
-                    <h5 class="card-title">회원 <span>| This Week</span></h5>
+                    <h5 class="card-title title-user">회원 <span>| Today</span></h5>
                     <div class="d-flex align-items-center">
                       <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                         <i class="bi bi-people"></i>
                       </div>
                       <div class="ps-3">
-                        <h6>${ todayJoinUserCount } 명</h6>
-                        <span class="text-danger small pt-1 fw-bold">
+                        <h6 class="userCnt">${ todayJoinUserCount } 명</h6>
+                        <span class="user-result text-danger small pt-1 fw-bold">
 							<c:set var="todayJoinUserCount" value="${ todayJoinUserCount }" />
 							<c:set var="yesterdayJoinUserCount" value="${yesterdayJoinUserCount}" />
 <%-- 							<c:set var="percent" value="" /> --%>
@@ -233,7 +425,7 @@
 							<fmt:formatNumber value="${percent}" type="number" groupingUsed="false" />
 							
 						</span> 
-						<span class="text-muted small pt-2 ps-1">
+						<span class="user-indesame text-muted small pt-2 ps-1">
 							<c:if test="${todayJoinUserCount gt yesterdayJoinUserCount }">increase</c:if>
                         	<c:if test="${todayJoinUserCount lt yesterdayJoinUserCount}">decrease</c:if>
                         	<c:if test="${todayJoinUserCount eq yesterdayJoinUserCount}">same</c:if>
@@ -243,15 +435,113 @@
                   </div>
                 </div>
               </div>
+              
+              <script>
+            	//회원카드 오늘 <-> 이번주 교체
+            	//회원카드 오늘
+	              function dailyUser() {
+	          	    $.ajax({
+	          	    	url: "/admin/dailyusercard", 
+	          	        type: "GET",
+	          	        dataType : "json",
+	          	        success: function(result) {
+	          	        	const cardTitle = "회원 <span>| Today</span>";
+	          	        	const todayUserCount = result.resultTodayCnt;
+	          	        	const yesterdayUserCount = result.resultYesterdayCnt;
+	
+	          	            // 결과를 원하는 위치에 표시
+	          	            $('.title-user').html(cardTitle);
+	                        $('.userCnt').html(todayUserCount + ' 명');
+	          	            
+	                        var contentToDisplay = "";
+	          	            // 계산된 값을 표시
+	          	            if (yesterdayUserCount !== 0) {
+	          	            	var percentageChange = ((todayUserCount - yesterdayUserCount) / yesterdayUserCount) * 100;
+	 						    var absolutePercentageChange = Math.abs(percentageChange);
+	 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+	 							$(".user-result").text(displayText);
+		          	        }else {
+		          	            contentToDisplay = "어제 가입한 회원은 0명입니다";
+		          	            $(".user-result").html(contentToDisplay);
+		          	        }
+	
+	          	        	// 결과를 원하는 위치에 표시
+	          	            var changeText = ""; // 기본값
+	
+	          	            if (todayUserCount > yesterdayUserCount) {
+	          	                changeText = "increase";
+	          	            } else if (todayUserCount < yesterdayUserCount) {
+	          	                changeText = "decrease";
+	          	            } else {
+	          	            	changeText = "same";
+	          	            }
+	          	            
+	          	            $(".user-indesame").text(changeText);
+	          	        	
+	          	        },
+	          	        error: function() {
+	          	      		alert("에러가 발생했습니다 ")
+	          	        }
+	          	    });
+             	}
+				
+            	//회원 이번주
+              	function WeeklyUser() {
+            	    $.ajax({
+            	    	url: "/admin/weeklyusercard", 
+            	        type: "GET",
+            	        dataType : "json",
+            	        success: function(result) {
+            	        	const cardTitle = "회원 <span>| This Week</span>";
+            	        	const thisWeekUserCount = result.resultThisWeekCnt;
+            	        	const lastWeekUserCount = result.resultlastWeekCnt;
+
+            	            // 결과를 원하는 위치에 표시
+            	            $('.title-user').html(cardTitle);
+                            $('.userCnt').html(thisWeekUserCount + ' 명');
+            	            
+
+                            var contentToDisplay = "";
+	          	            // 계산된 값을 표시
+	          	            if (lastWeekUserCount !== 0) {
+	          	            	var percentageChange = ((thisWeekUserCount - lastWeekUserCount) / lastWeekUserCount) * 100;
+	 						    var absolutePercentageChange = Math.abs(percentageChange);
+	 							var displayText = absolutePercentageChange.toFixed(0) + "%";
+	 							$(".user-result").text(displayText);
+		          	        }else {
+		          	            contentToDisplay = "지난주 가입한 회원은 0명입니다";
+		          	            $(".user-result").html(contentToDisplay);
+		          	        }
+							
+            	            var changeText = ""; // 기본값
+
+            	            if (thisWeekUserCount > lastWeekUserCount) {
+            	                changeText = "increase";
+            	            } else if (thisWeekUserCount < lastWeekUserCount) {
+            	                changeText = "decrease";
+            	            } else {
+            	            	changeText = "same";
+            	            }
+
+            	            // 결과를 원하는 위치에 표시
+            	            $(".user-indesame").text(changeText);
+            	        	
+            	        },
+            	        error: function() {
+            	      		alert("에러가 발생했습니다 ")
+            	        }
+            	    });
+               	}
+              </script>
               <!-- End 회원  Card -->
 
               <div class="col-lg-12">
                 <!-- 컬럼챠트 -->
                 <div class="card" >
                   <div class="card-body">
-                    <h5 class="card-title">지꾸/모꾸/회원 날짜별뭐시기</h5>
+                    <h5 class="card-title">지꾸/모꾸/회원 일자별 카운트</h5>
 					<!-- 차트 들어가는 곳 -->
-                    <div id="columnchart_material" style="width : 100%; height: 640px; padding: 10px;"></div>
+                    <div id="columnchart_material" style="width : 100%; height: 625px; padding: 10px;"></div>
 
                        	<script type="text/javascript">
 					 		google.charts.load('current', {'packages':['bar']});
@@ -316,13 +606,6 @@
 							}
 						})
 					}
-						
-						
-						
-					
-					 
-					 
-					
 					</script>
                   	</div>
                	</div>
@@ -519,7 +802,7 @@
 
           <div class="row box-margin ">
 
-              <!--지꾸 카드-->
+              <!--지꾸 테이블-->
               <div class="col-lg-6 ">
                 <h3 style="margin:15px 0 0 15px; color:#19A7CE">오늘의 지꾸</h3>
                 <div class="today-jiqoo " >
@@ -567,7 +850,7 @@
               </div>
             </div>
               
-              <!--모꾸 카드-->
+              <!--모꾸 테이블-->
               <div class="col-lg-6 ">
                 <h3 style="margin:15px 0 0 15px; color:#8BC34A">오늘의 모꾸</h3>
                 <div class="today-moqoo">
@@ -620,7 +903,7 @@
 
       
         <div class="row box-margin ">
-            <!--댓글 카드-->
+            <!--댓글 테이블-->
             <div class="col-lg-6 ">
               <h3 style="margin:15px 0 0 15px; color:#FCD8D4">오늘달린 댓글</h3>
               <div class="today-comment">
@@ -669,7 +952,7 @@
               </div>
             </div>
 
-            <!--가입자 카드-->
+            <!--가입자 테이블-->
             <div class="col-lg-6 ">
               <h3 style="margin:15px 0 0 15px; color:#ff771d">오늘 가입했어요!</h3>
               <div class="today-register">
@@ -850,7 +1133,7 @@
 
   <!-- Template Main JS File -->
   <script src="../resources/assets/js/main.js"></script>
-  <script src="../resources/assets/js/chart.js"></script>
+<!--   <script src="../resources/assets/js/chart.js"></script> -->
 
 </body>
 

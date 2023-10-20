@@ -40,7 +40,6 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	//User 도메인에 count, ageGroup 추가하기
 	// 관리자페이지 메인 접속+차트
 	@GetMapping("/admin/main")
 	public ModelAndView showAdminMain(ModelAndView mv
@@ -55,9 +54,9 @@ public class AdminController {
 		List<User> userGenderList = adminService.userGenderList();
 		//당일 등록된 지꾸 수 
 		Integer todayInsertJiqooCount = adminService.todayInsertJiqooCount();
-		//전일 등록된 모꾸 수 
+		//전일 등록된 지꾸 수 
 		Integer yesterdayInsertJiqooCount = adminService.yesterdayInsertJiqooCount();
-		//당일 등록된 지꾸 수 
+		//당일 등록된 모꾸 수 
 		Integer todayInsertMoqooCount = adminService.todayInsertMoqooCount();
 		//전일 등록된 모꾸 수 
 		Integer yesterdayInsertMoqooCount = adminService.yesterdayInsertMoqooCount();
@@ -81,7 +80,7 @@ public class AdminController {
 		//당일 등록된 모꾸 리스트 (+페이징)
 		List<Moqoo> todayMoqooList = adminService.todayMoqooList(pInfoJiqoo);
 		
-		//당일 등록된 모꾸 리스트 (+페이징)
+		//당일 등록된 댓글 리스트 (+페이징)
 		List<Comment> todayComtList = adminService.todayComtList(pInfoJiqoo);
 		
 		// 현재 가입중인 회원 나이대 비 
@@ -130,7 +129,7 @@ public class AdminController {
 		statsMap.put("jiqoo", jiqoo);
 		statsMap.put("moqoo", moqoo);
 		
-//		List<Map<String,Object>> dayCountList = adminService.dayCountList(statsMap);
+		List<Map<String,Object>> dayCountList = adminService.dayCountList(statsMap);
 			
 		try {
 			mv.addObject("usingJiqooCount", usingJiqooCount); //유지중인 지꾸 수 
@@ -146,8 +145,8 @@ public class AdminController {
 			mv.addObject("todayUserList", todayUserList); //당일 가입한 회원 리스트
 			mv.addObject("todayJiqooList", todayJiqooList); //당일 등록된 지꾸 리스트
 			mv.addObject("todayMoqooList", todayMoqooList); //당일 등록된 모꾸 리스트
-			mv.addObject("todayComtList", todayComtList); //당일 등록된 모꾸 리스트
-//			mv.addObject("dayCountList", dayCountList); //날짜별 지꾸 모꾸 회원 등록수 리스트
+			mv.addObject("todayComtList", todayComtList); //당일 등록된 댓글 리스트
+			mv.addObject("dayCountList", dayCountList); //날짜별 지꾸 모꾸 회원 등록수 리스트
 			
 			mv.setViewName("admin/admin_main");
 			
@@ -161,11 +160,12 @@ public class AdminController {
 	
 	
 	
-		//메인_통합 컬럼차트
+		//통합차트_날짜별 지꾸모꾸회원 등록수 리스트
 		@ResponseBody
 		@GetMapping("/admin/statschart")
 		public String statschart(User user, Jiqoo jiqoo, Moqoo moqoo) {
-				
+			
+			//유저카운트만 쓰는 리스트맵	
 //			List<Map<String,Object>> userCountList = adminService.userCountList(user);
 //			
 //			Gson gson = new Gson();
@@ -183,27 +183,107 @@ public class AdminController {
 			
 		}
 		
-		//지꾸_차트 
+		//메인_지꾸카드_데일리 
 		@ResponseBody
-		@GetMapping("/admin/jiqoochart")
-		public String jiqoochart(User user, Jiqoo jiqoo) {
-				
-//			List<Map<String,Object>> userCountList = adminService.userCountList(user);
-//			
-//			Gson gson = new Gson();
-//			return gson.toJson(userCountList);
+		@GetMapping("/admin/dailyjiqoocard")
+		public Map<String, Integer> todayInsertJiqooCount(@ModelAttribute Jiqoo jiqoo) {	
 			
-			Map<String,Object>jiqooChartMap = new HashMap<>();
-			jiqooChartMap.put("user", user);
-			jiqooChartMap.put("jiqoo", jiqoo);
-			
-			List<Map<String,Object>> jiqooChartList = adminService.jiqooChartList(jiqoo);
+			//이번주 등록된 지꾸 수 
+			Integer resultTodayCnt = adminService.todayInsertJiqooCount();
+			Integer resultYesterdayCnt = adminService.yesterdayInsertJiqooCount();
 
-			Gson gson = new Gson();
-			return gson.toJson(jiqooChartList);
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultTodayCnt", resultTodayCnt);
+			jiqooCntData.put("resultYesterdayCnt", resultYesterdayCnt);
+			return jiqooCntData;
+		}
+		
+		//메인_지꾸카드_위클리 
+		@ResponseBody
+		@GetMapping("/admin/weeklyjiqoocard")
+		public Map<String, Integer> thisWeekInsertJiqooCount(@ModelAttribute Jiqoo jiqoo) {	
 			
+			//이번주 등록된 지꾸 수 
+			Integer resultThisWeekCnt = adminService.thisWeekInsertJiqooCount();
+			//지난주 등록된 지꾸 수
+			Integer resultlastWeekCnt = adminService.lastWeekInsertJiqooCount();
+
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultThisWeekCnt", resultThisWeekCnt);
+			jiqooCntData.put("resultlastWeekCnt", resultlastWeekCnt);
+			return jiqooCntData;
+		}
+		
+		//메인_모꾸카드_데일리 
+		@ResponseBody
+		@GetMapping("/admin/dailymoqoocard")
+		public Map<String, Integer> todayInsertMoqooCount(@ModelAttribute Moqoo moqoo) {	
+			
+			//오늘 등록된 모꾸 수 
+			Integer resultTodayCnt = adminService.todayInsertMoqooCount();
+			//어제 등록된 모꾸 수
+			Integer resultYesterdayCnt = adminService.yesterdayInsertMoqooCount();
+
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultTodayCnt", resultTodayCnt);
+			jiqooCntData.put("resultYesterdayCnt", resultYesterdayCnt);
+			return jiqooCntData;
+		}
+		
+		//메인_모꾸카드_위클리 
+		@ResponseBody
+		@GetMapping("/admin/weeklymoqoocard")
+		public Map<String, Integer> thisWeekInsertMoqooCount(@ModelAttribute Moqoo moqoo) {	
+			
+			//이번주 등록된 모꾸 수 
+			Integer resultThisWeekCnt = adminService.thisWeekInsertMoqooCount();
+			//지난주 등록된 모꾸 수
+			Integer resultlastWeekCnt = adminService.lastWeekInsertMoqooCount();
+
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultThisWeekCnt", resultThisWeekCnt);
+			jiqooCntData.put("resultlastWeekCnt", resultlastWeekCnt);
+			return jiqooCntData;
 		}
 	
+		//메인_회원카드_데일리 
+		@ResponseBody
+		@GetMapping("/admin/dailyusercard")
+		public Map<String, Integer> todayInsertUserCount(@ModelAttribute User uer) {	
+			
+			//당일 가입한 회원 수
+			Integer resultTodayCnt = adminService.todayJoinUserCount();
+			//전일 가입한 회원 수
+			Integer resultYesterdayCnt = adminService.yesterdayJoinUserCount();
+
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultTodayCnt", resultTodayCnt);
+			jiqooCntData.put("resultYesterdayCnt", resultYesterdayCnt);
+			return jiqooCntData;
+		}
+		
+		//메인_회원카드_위클리 
+		@ResponseBody
+		@GetMapping("/admin/weeklyusercard")
+		public Map<String, Integer> thisWeekInsertUserCount(@ModelAttribute User uer) {	
+			
+			//이번주 가입한 회원수 
+			Integer resultThisWeekCnt = adminService.thisWeekJoinUserCount();
+			//지난주 가입한 회원 수
+			Integer resultlastWeekCnt = adminService.lastWeekJoinUserCount();
+
+			Map<String, Integer> jiqooCntData = new HashMap<String, Integer>();
+			jiqooCntData.put("resultThisWeekCnt", resultThisWeekCnt);
+			jiqooCntData.put("resultlastWeekCnt", resultlastWeekCnt);
+			return jiqooCntData;
+		}
+		
+		
+		
+		
+		
+		
+		
 
 	// 회원관리 리스트-총 회원리스트 (+페이징)
 	@GetMapping("/admin/userlist")
@@ -239,6 +319,12 @@ public class AdminController {
 		}
 		return mv;
 	}
+	
+	
+	
+	
+	
+	
 
 	// 회원관리_서치페이지 (+페이징)
 	@GetMapping("/admin/usersearch")
@@ -360,10 +446,10 @@ public class AdminController {
 				//회원별 지꾸 정보 가져오기 
 				Integer usersTotalJiqooCount = adminService.getUserJiqooListCount(userId); // 회원별 총 지꾸 수 카운트
 				PageInfo pInfoJiqoo = this.getPageInfo(5, currentJiqooPage, usersTotalJiqooCount); // 지꾸 리스트 페이징 
-				List<Jiqoo> uJiqooList = adminService.showUserJiqooList(pInfoJiqoo, userId); // 회원별 지꾸 리스트
+				List<Jiqoo> jiqooList = adminService.showUserJiqooList(pInfoJiqoo, userId); // 회원별 지꾸 리스트
 				
-				if(uJiqooList.size() > 0) {
-					mv.addObject("pInfoJiqoo",  pInfoJiqoo).addObject("uJiqooList", uJiqooList);	
+				if(jiqooList.size() > 0) {
+					mv.addObject("pInfoJiqoo",  pInfoJiqoo).addObject("jiqooList", jiqooList);	
 				}else {
 					mv.addObject("noJiqooMsg", "작성한 지꾸가 없습니다.");
 				}
@@ -371,10 +457,10 @@ public class AdminController {
 				//회원별 모꾸 정보 가져오기 
 				Integer usersTotalMoqooCount = adminService.getUserMoqooListCount(userId); // 회원별 총 모꾸 수 카운트
 				PageInfo pInfoMoqoo = this.getPageInfo(5, currentMoqooPage, usersTotalMoqooCount); // 모꾸 리스트 페이징 
-				List<Moqoo> uMoqooList = adminService.showUserMoqooList(pInfoMoqoo, userId); // 회원별 모꾸 리스트
+				List<Moqoo> moqooList = adminService.showUserMoqooList(pInfoMoqoo, userId); // 회원별 모꾸 리스트
 				
-				if(uMoqooList.size() > 0) {
-					mv.addObject("pInfoMoqoo",  pInfoMoqoo).addObject("uMoqooList", uMoqooList);	
+				if(moqooList.size() > 0) {
+					mv.addObject("pInfoMoqoo",  pInfoMoqoo).addObject("moqooList", moqooList);	
 				}else {
 					mv.addObject("noMoqooMsg", "작성한 모꾸가 없습니다.");
 				}
@@ -382,10 +468,10 @@ public class AdminController {
 				//회원별 댓글 정보 가져오기 
 				Integer usersTotalComtCount = adminService.getusersTotalComtCount(userId); // 회원별 총 댓글 수 카운트
 				PageInfo pInfoComt = this.getPageInfo(5, currentComtPage, usersTotalComtCount); // 지꾸 댓글 페이징 
-				List<Comment> uComtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
+				List<Comment> comtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
 				
-				if(uComtList.size() > 0) {
-					mv.addObject("pInfoComt",  pInfoComt).addObject("uComtList", uComtList);	
+				if(comtList.size() > 0) {
+					mv.addObject("pInfoComt",  pInfoComt).addObject("comtList", comtList);	
 				}else {
 					mv.addObject("noComtMsg", "작성한 댓글이 없습니다.");
 				}
@@ -411,62 +497,92 @@ public class AdminController {
 	}
 	
 	// 회원상세_지꾸강제삭제 + 지꾸관리페이지 지꾸 강제삭제 
-		@GetMapping("/admin/deletejiqoo")
-		public ModelAndView deleteJiqooByAdmin (ModelAndView mv
-												, @RequestParam(value="jiqooNo") Integer jiqooNo
-												, @RequestParam(value="userId", required=false) String userId
-												, HttpSession session) {
-			//UPDATE JIQOO_TBL SET JIQOO_STATUS ='A'  WHERE JIQOO_NO = ?
+	@GetMapping("/admin/deletejiqoo")
+	public ModelAndView deleteJiqooByAdmin (ModelAndView mv
+											, @RequestParam(value="jiqooNo") Integer jiqooNo
+											, @RequestParam(value="userId", required=false) String userId
+											, HttpSession session) {
+		//UPDATE JIQOO_TBL SET JIQOO_STATUS ='A'  WHERE JIQOO_NO = ?
+			
+			try {
+				String adminYn = (String)session.getAttribute("adminYn"); 
 				
-				try {
-					String adminYn = (String)session.getAttribute("adminYn"); 
+				if(adminYn != null && adminYn.equals("Y")) {  //어드민일때 삭제할수 있도록
+					Integer result = adminService.deleteJiqooByAdmin(jiqooNo);
 					
-					if(adminYn != null && adminYn.equals("Y")) {  //어드민일때 삭제할수 있도록
-						Integer result = adminService.deleteJiqooByAdmin(jiqooNo);
+					if(result>0) {
 						
-						if(result>0) {
-							
-							if(userId != null ) {
-								mv.addObject("url", "/admin/userdetail?userId=" + userId);
-								
-							}else {
-								mv.addObject("url", "/admin/jiqoo");
-							}
-							
-							mv.addObject("msg", "지꾸 삭제 완료");
-							mv.setViewName("common/message");
+						if(userId != null ) {
+							mv.addObject("url", "/admin/userdetail?userId=" + userId);
 							
 						}else {
-							
-							if(userId != null ) {
-								mv.addObject("url", "/admin/userdetail?userId=" + userId);
-								
-							}else {
-								mv.addObject("url", "/admin/jiqoo");
-							}
-							
-							mv.addObject("msg", "지꾸 삭제가 완료되지 않았습니다");
-							mv.setViewName("common/message");
+							mv.addObject("url", "/admin/jiqoolist");
 						}
-					}else {
-						mv.addObject("msg", "관리자만 삭제할 수 있습니다");
-						mv.addObject("url", "/");  //메인화면으로 돌아감
+						
+						mv.addObject("msg", "지꾸 삭제 완료");
 						mv.setViewName("common/message");
-					}
-				} catch (Exception e) {
-					
-					if(userId != null ) {
-						mv.addObject("url", "/admin/userdetail?userId=" + userId);
 						
 					}else {
-						mv.addObject("url", "/admin/jiqoo");
+						
+						if(userId != null ) {
+							mv.addObject("url", "/admin/userdetail?userId=" + userId);
+							
+						}else {
+							mv.addObject("url", "/admin/jiqoolist");
+						}
+						
+						mv.addObject("msg", "지꾸 삭제가 완료되지 않았습니다");
+						mv.setViewName("common/message");
 					}
-					
-					mv.addObject("msg", "지꾸 삭제 실패");
+				}else {
+					mv.addObject("msg", "관리자만 삭제할 수 있습니다");
+					mv.addObject("url", "/");  //메인화면으로 돌아감
 					mv.setViewName("common/message");
 				}
-				return mv;
+			} catch (Exception e) {
+				
+				if(userId != null ) {
+					mv.addObject("url", "/admin/userdetail?userId=" + userId);
+					
+				}else {
+					mv.addObject("url", "/admin/jiqoolist");
+				}
+				
+				mv.addObject("msg", "지꾸 삭제 실패");
+				mv.setViewName("common/message");
+			}
+			return mv;
+	}
+	
+	
+	//강제삭제 지꾸복원
+	@GetMapping("/admin/jiqoorevival")
+	public ModelAndView reviveJiqooByAdmin (ModelAndView mv
+								  		, @RequestParam("jiqooNo") String jiqooNo) {
+		//UPDATE JIQOO_TBL SET JIQOO_STATUS = 'Y' WHERE JIQOO_NO = ?
+		try {
+			Integer result = adminService.reviveJiqooByAdmin(jiqooNo);
+			if(result>0) {
+				mv.addObject("msg", "지꾸 복원 완료");
+				mv.addObject("url", "/admin/jiqoolist?jiqooNo="+jiqooNo);
+				mv.setViewName("common/message");
+				//탈퇴시킬때 회원 강제 로그아웃 시키려면?
+				
+			}else {
+				mv.addObject("msg", "지꾸 복원을 완료하지 못했습니다.");
+				mv.addObject("url", "/admin/jiqoolist");
+				mv.setViewName("common/message");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addObject("msg", "지꾸 복원 실패");
+			mv.addObject("url", "/admin/jiqoolist");
+			mv.setViewName("common/message");
 		}
+		return mv;
+	}
+	
 	
 	// 회원상세_모꾸강제삭제 + 모꾸관리페이지 모꾸 강제삭제 
 	@GetMapping("/admin/deletemoqoo")
@@ -485,10 +601,10 @@ public class AdminController {
 					if(result>0) {
 						
 						if(userId != null ) {
-							mv.addObject("url", "/admin/userdetail?userId=" + userId);
+							mv.addObject("url", "/admin/userdetail?userId=" + userId); //회원상세에서 삭제할때 userId 필요 
 							
 						}else {
-							mv.addObject("url", "/admin/moqoo");
+							mv.addObject("url", "/admin/moqoolist"); //모꾸관리페이지 상세에서 삭제할 때 
 						}
 						
 						mv.addObject("msg", "모꾸 삭제 완료");
@@ -500,7 +616,7 @@ public class AdminController {
 							mv.addObject("url", "/admin/userdetail?userId=" + userId);
 							
 						}else {
-							mv.addObject("url", "/admin/moqoo");
+							mv.addObject("url", "/admin/moqoolist");
 						}
 						
 						mv.addObject("msg", "모꾸 삭제가 완료되지 않았습니다");
@@ -517,13 +633,41 @@ public class AdminController {
 					mv.addObject("url", "/admin/userdetail?userId=" + userId);
 					
 				}else {
-					mv.addObject("url", "/admin/moqoo");
+					mv.addObject("url", "/admin/moqoolist");
 				}
 				
 				mv.addObject("msg", "모꾸 삭제 실패");
 				mv.setViewName("common/message");
 			}
 			return mv;
+	}
+	
+	//강제삭제 모꾸복원
+	@GetMapping("/admin/moqoorevival")
+	public ModelAndView reviveMoqooByAdmin (ModelAndView mv
+								  		, @RequestParam("moqooNo") String moqooNo) {
+		//UPDATE MOQOO_TBL SET MOQOO_STATUS = 'Y' WHERE MOQOO_NO = ?
+		try {
+			Integer result = adminService.reviveMoqooByAdmin(moqooNo);
+			if(result>0) {
+				mv.addObject("msg", "모꾸 복원 완료");
+				mv.addObject("url", "/admin/moqoolist?moqooNo="+moqooNo);
+				mv.setViewName("common/message");
+				//탈퇴시킬때 회원 강제 로그아웃 시키려면?
+				
+			}else {
+				mv.addObject("msg", "모꾸 복원을 완료하지 못했습니다.");
+				mv.addObject("url", "/admin/moqoolist");
+				mv.setViewName("common/message");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addObject("msg", "모꾸 복원 실패");
+			mv.addObject("url", "/admin/moqoolist");
+			mv.setViewName("common/message");
+		}
+		return mv;
 	}
 	
 	
@@ -602,6 +746,27 @@ public class AdminController {
 		return mv;
 	}
 	
+	
+	//지꾸관리페이지_차트 
+	@ResponseBody
+	@GetMapping("/admin/jiqoochart")
+	public String jiqoochart(User user, Jiqoo jiqoo) {
+			
+//		List<Map<String,Object>> userCountList = adminService.userCountList(user);
+//		
+//		Gson gson = new Gson();
+//		return gson.toJson(userCountList);
+		
+		Map<String,Object>jiqooChartMap = new HashMap<>();
+		jiqooChartMap.put("user", user);
+		jiqooChartMap.put("jiqoo", jiqoo);
+		
+		List<Map<String,Object>> jiqooChartList = adminService.jiqooChartList(jiqoo);
+
+		Gson gson = new Gson();
+		return gson.toJson(jiqooChartList);
+		
+	}
 	
 	// 지꾸관리_서치페이지 (+페이징)
 	@GetMapping("/admin/jiqoosearch")

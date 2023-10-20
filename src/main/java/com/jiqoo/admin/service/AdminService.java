@@ -298,11 +298,66 @@ public interface AdminService {
 
 	public List<Map<String, Object>> userCountList(User user);
 
+	/**
+	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
+	 * @param statsMap
+	 * @return
+	 */
 	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap);
 
 	public List<Map<String, Object>> selectAllChatRoom(PageInfo pInfo, Map<String, Object> chatMap);
 
 	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo);
+
+	/**
+	 * 이번주 등록된 지꾸 수
+	 * @return
+	 */
+	public Integer thisWeekInsertJiqooCount();
+
+	/**
+	 * 지난주 등록된 지꾸 수
+	 * @return
+	 */
+	public Integer lastWeekInsertJiqooCount();
+
+	/**
+	 * 이번주 등록된 모꾸 수
+	 * @return
+	 */
+	public Integer thisWeekInsertMoqooCount();
+
+	/**
+	 * 지난주 등록된 모꾸 수
+	 * @return
+	 */
+	public Integer lastWeekInsertMoqooCount();
+
+	/**
+	 * 이번주 가입한 회원수
+	 * @return
+	 */
+	public Integer thisWeekJoinUserCount();
+
+	/**
+	 * 지난주 가입한 회원 수
+	 * @return
+	 */
+	public Integer lastWeekJoinUserCount();
+
+	/**
+	 * 강제삭제 모꾸 복원
+	 * @param moqooNo
+	 * @return
+	 */
+	public Integer reviveMoqooByAdmin(String moqooNo);
+
+	/**
+	 * 강제삭제 지꾸 복원
+	 * @param jiqooNo
+	 * @return
+	 */
+	public Integer reviveJiqooByAdmin(String jiqooNo);
 
 
 

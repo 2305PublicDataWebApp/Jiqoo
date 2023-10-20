@@ -104,8 +104,8 @@ public class AdminStoreLogic implements AdminStore {
 		int offset = (pInfoJiqoo.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		List<Jiqoo> uJiqooList = sqlSession.selectList("AdminMapper.showUserJiqooList", jiqooWriter, rowBounds);
-		return uJiqooList;
+		List<Jiqoo> jiqooList = sqlSession.selectList("AdminMapper.showUserJiqooList", jiqooWriter, rowBounds);
+		return jiqooList;
 	}
 
 	/**
@@ -126,8 +126,8 @@ public class AdminStoreLogic implements AdminStore {
 		int offset = (pInfoMoqoo.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		List<Moqoo> uMoqooList = sqlSession.selectList("AdminMapper.showUserMoqooList", userId, rowBounds);
-		return uMoqooList;
+		List<Moqoo> moqooList = sqlSession.selectList("AdminMapper.showUserMoqooList", userId, rowBounds);
+		return moqooList;
 	}
 
 	/**
@@ -148,8 +148,8 @@ public class AdminStoreLogic implements AdminStore {
 		int offset = (pInfoComt.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		List<Comment> uComtList = sqlSession.selectList("AdminMapper.showUserComtList", comtWriter, rowBounds);
-		return uComtList;
+		List<Comment> comtList = sqlSession.selectList("AdminMapper.showUserComtList", comtWriter, rowBounds);
+		return comtList;
 	}
 	
 	/**
@@ -412,6 +412,9 @@ public class AdminStoreLogic implements AdminStore {
 		return userAgeList;
 	}
 
+	/**
+	 * 당일 등록된 댓글 리스트
+	 */
 	@Override
 	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo) {
 		int limit = pInfoJiqoo.getRecordCountPerPage();
@@ -428,6 +431,9 @@ public class AdminStoreLogic implements AdminStore {
 		return userCountList;
 	}
 
+	/**
+	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
+	 */
 	@Override
 	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap) {
 		List<Map<String, Object>> dayCountList = sqlSession.selectList("AdminMapper.dayCountList", statsMap);
@@ -444,6 +450,78 @@ public class AdminStoreLogic implements AdminStore {
 	public List<Map<String, Object>> jiqooChartList(SqlSession sqlSession, Jiqoo jiqoo) {
 		List<Map<String, Object>> jiqooChartList = sqlSession.selectList("AdminMapper.jiqooChartList", jiqoo);
 		return jiqooChartList;
+	}
+
+	/**
+	 * 이번주 등록된 지꾸 수
+	 */
+	@Override
+	public Integer thisWeekInsertJiqooCount(SqlSession sqlSession) {
+		Integer resultThisWeek = sqlSession.selectOne("AdminMapper.thisWeekInsertJiqooCount");
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 등록된 지꾸 수
+	 */
+	@Override
+	public Integer lastWeekInsertJiqooCount(SqlSession sqlSession) {
+		Integer resultlastWeek = sqlSession.selectOne("AdminMapper.lastWeekInsertJiqooCount");
+		return resultlastWeek;
+	}
+
+	/**
+	 * 이번주 등록된 모꾸 수
+	 */
+	@Override
+	public Integer thisWeekInsertMoqooCount(SqlSession sqlSession) {
+		Integer resultThisWeek = sqlSession.selectOne("AdminMapper.thisWeekInsertMoqooCount");
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 등록된 모꾸 수
+	 */
+	@Override
+	public Integer lastWeekInsertMoqooCount(SqlSession sqlSession) {
+		Integer resultlastWeek = sqlSession.selectOne("AdminMapper.lastWeekInsertMoqooCount");
+		return resultlastWeek;
+	}
+
+	/**
+	 * 이번주 가입한 회원수
+	 */
+	@Override
+	public Integer thisWeekJoinUserCount(SqlSession sqlSession) {
+		Integer resultThisWeek = sqlSession.selectOne("AdminMapper.thisWeekJoinUserCount");
+		return resultThisWeek;
+	}
+
+	/**
+	 * 지난주 가입한 회원 수
+	 */
+	@Override
+	public Integer lastWeekJoinUserCount(SqlSession sqlSession) {
+		Integer resultlastWeek = sqlSession.selectOne("AdminMapper.lastWeekJoinUserCount");
+		return resultlastWeek;
+	}
+
+	/**
+	 * 강제삭제 모꾸 복원
+	 */
+	@Override
+	public Integer reviveMoqooByAdmin(SqlSession sqlSession, String moqooNo) {
+		Integer result = sqlSession.update("AdminMapper.reviveMoqooByAdmin", moqooNo);
+		return result;
+	}
+
+	/**
+	 * 강제삭제 지꾸 복원
+	 */
+	@Override
+	public Integer reviveJiqooByAdmin(SqlSession sqlSession, String jiqooNo) {
+		Integer result = sqlSession.update("AdminMapper.reviveJiqooByAdmin", jiqooNo);
+		return result;
 	}
 
 

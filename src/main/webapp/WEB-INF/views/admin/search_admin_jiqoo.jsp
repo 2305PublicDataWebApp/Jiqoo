@@ -164,7 +164,7 @@
 							<tbody>
 								<c:forEach var="search" items="${searchJiqooList}" varStatus="i">
 									<tr>
-										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td>
+										<td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- 넘버링 -->
 										<td>${search.jiqooWriter}</td>
 										<td class="col4">
 											<c:set var="jiqooContent" value="${search.jiqooContent}"></c:set>
