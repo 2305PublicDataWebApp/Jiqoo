@@ -156,111 +156,45 @@
                             </div>
                             <!-- 댓글리스트 -->
                             <div class="tab-pane fade" id="reply" role="tabpanel" aria-labelledby="reply">
-                                <span>총 </span><span class="greenColor">5</span>개의 <span class="greenColor">댓글</span>을 등록하셨습니다.
-                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <span>총 </span><span class="greenColor">${user.myComtCount }</span>개의 <span class="greenColor">댓글</span>을 등록하셨습니다.
+                                <div class="container" id="commentsList">
                                 </div>
-                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                                                <div class="myReply row">
-                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
-                                    <div class="col-2 myReplyProfile">
-                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
-                                        <p>바소잔</p>
-                                    </div>
-                                    <div class="col-10 myReplyContent text-start">
-                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
-                                        <div class="row align-items-center">
-                                            <span class="col-7">2023-10-01</span>
-                                            <div class="col-5 myReplyContentBtn">
-                                                <button class="btn btn-sm follow-btn col-2">수정</button>
-                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div> 
+ <!--                            <div class="tab-pane fade" id="reply" role="tabpanel" aria-labelledby="reply">
+                                <span>총 </span><span class="greenColor">${user.myComtCount }</span>개의 <span class="greenColor">댓글</span>을 등록하셨습니다.
+                                <div id="comments-container">
+                                <c:if test="${commentList ne null }">
+	                                <c:forEach items="${commentList }" var="comment">
+		                                <div class="myReply row">
+		                                    <a class="myReplyRefTitle" href="#">부대찌개 맛집</a>
+		                                    <div class="col-2 myReplyProfile">
+		                                        <img src="../resources/assets/img/testimonials/testimonials-3.jpg"><br>
+		                                        <p>바소잔</p>
+		                                    </div>
+		                                    <div class="col-10 myReplyContent text-start">
+		                                        <p>존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛 존맛</p>
+		                                        <div class="row align-items-center">
+		                                            <span class="col-7">2023-10-01</span>
+		                                            <div class="col-5 myReplyContentBtn">
+		                                                <button class="btn btn-sm follow-btn col-2">수정</button>
+		                                                <button class="btn btn-sm follow-btn col-3">삭제</button>
+		                                            </div>
+		                                        </div>
+		                                    </div>
+		                                </div>
+	                                </c:forEach>
+                                </c:if>
+                                <c:if test="${commentList eq null }">
+	                                <div class="tab-pane fade show active" id="jiqoo" role="tabpanel" aria-labelledby="jiqoo"> 
+		                                <div class="noData">
+		                                    <img src="../resources/assets/img/user/jiqooNoData.png" alt="noData" style="width: 100px;"><br><br>
+		                                    <p>작성하신 댓글이 없습니다.</p>
+		                                </div>
+		                            </div>
+                                </c:if>
                                 </div>
                             </div>
-                            
+ -->                           
                             <!-- 좋아요리스트 -->
                             <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like">
                                 <span>총 </span><span class="greenColor">5</span>개의 글에 <span class="greenColor">좋아요</span>를 누르셨습니다.
@@ -401,6 +335,61 @@
 
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script>
+        
+<%--	    //let memId = $("form[name='fundinginfo']").find('#memId').val();
+ 	        let list ="";
+	        var result =[];
+	        let currentPage = 0;
+	
+	        function fn_funding_list(){
+	        	 $.ajax({
+	               url:"<c:url value='/member/myfundingget.wow'/>"
+	            	 , data:{memId : memId}
+	               , success: function(data) {
+	            	   		console.log(data);
+	        	    	   list = data.result;	    	 
+	        	    	   console.log(list)
+	        	    	   for(i=0; i < list.length; i += 12){
+	        	    	   		result.push(list.slice(i, i + 12));
+	        	    	   }
+	                },
+	        		error : function() {
+	                    alert('error');
+	              },
+	             complete : function() {       
+	            	 	fn_page(currentPage);
+	            	  }
+	        	 }); //ajax
+	        }
+	
+	        function fn_page (num){
+	        /* 	console.log(result[num]); */
+	        	str = "";
+	        	$.each(result[num], function(i, element) {				   
+	        		str+='<div class="funding">';
+	        		str+='<a href="<%=request.getContextPath()%>/funding/fundingView.wow?fuNo='+ element.fuNo +'&memId=${USER_INFO.userId}"><img class="fundingimg" alt="" src="'+ element.fuImg +'"></a>';
+	        		str+='<a href="<%=request.getContextPath()%>/funding/fundingView.wow?fuNo='+ element.fuNo +'&memId=${USER_INFO.userId}"><b>'+ element.fuTitle +'</b></a>';
+	        		str+='<div class="amount">'+ element.fuAmount +' 달성('+ element.fuPercent +' %)</div>';
+	        		str+='<div class="category">♥'+ element.fulike +' <b>｜</b> '+ element.fuCate +'	</div>';
+	        		str+='<div class="fuDday"><b>'+ element.fuDday +'일 남음｜</b> '+ element.fuSite +' </div>';
+	        		str+='</div>';
+	        	});
+	        		$("#list").append(str);
+	        }
+	
+	        $(function(){
+	        	fn_funding_list();
+	        });	
+	
+	        //스크롤 바닥 감지
+	        window.onscroll = function(e) {	
+	            if((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+	            	currentPage +=1;
+	            	fn_page(currentPage);
+	            }
+	        }; --%>
+        
+        
         	// unfollow 버튼
         	$(".unfollow-btn").on("click", function(){
         		const userId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
@@ -506,6 +495,7 @@
 			    }
 			});
 			
+        	// 댓글 조회 무한스크롤
 	        // $.datepicker.setDefaults({
 	        //     prevText: "이전달",
 	        //     nextText: "다음달",

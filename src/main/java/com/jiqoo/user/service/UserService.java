@@ -3,6 +3,7 @@ package com.jiqoo.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 
@@ -147,6 +148,27 @@ public interface UserService {
 	 * @return
 	 */
 	int selectMyMoqooCount(String userId);
+
+	/**
+	 * 마이페이지 모꾸 댓글 수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectMyCommentCount(String userId);
+
+	/**
+	 * 마이페이지 댓글 리스트 조회 service
+	 * @param userId
+	 * @return
+	 */
+	List<Comment> selectMyCommentList(String userId);
+
+	/**
+	 * sns 회원 정보 수정 service
+	 * @param user
+	 * @return
+	 */
+	int updateSnsUser(User user);
 
 
 

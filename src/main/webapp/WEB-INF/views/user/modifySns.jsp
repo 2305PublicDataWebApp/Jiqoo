@@ -63,35 +63,40 @@
                    <form id="updateForm" action="/user/update" method="POST" enctype="multipart/form-data">
                    		<input type="hidden" id="sessionNickname" value="${sessionScope.userNickname}">
                    		<input type="hidden" id="sessionEmail" value="${sessionScope.userEmail}">
-		                <input type="hidden" id="hiddenPw" name="userPw" value="${user.userPw }">
-                   		<input type="hidden" id="userEmail" value="${user.userEmail }">
+                   		<input type="hidden" name="userId" value="${user.userId }">
                    		<input type="hidden" name="userPhotoName" value="${user.userPhotoName }">
 						<input type="hidden" name="userPhotoRename" value="${user.userPhotoRename }">
 						<input type="hidden" name="userPhotoPath" value="${user.userPhotoPath }">
+						<input type="hidden" id="snsUserName" name="userName" value="${user.userName }">
 						<h1 style="margin-bottom: 60px;">회원정보수정</h1>
-						<c:if test="${fn:length(user.userName) < 2}">
-							<div class="row">
-	                            <div class="col-12 col-sm-3" style="text-align: left;">
-	                                <label for="userName">이름</label>
-	                            </div>
+						<div class="row">
+                            <div class="col-12 col-sm-3" style="text-align: left;">
+                                <label for="userName">이름</label>
+                            </div>
+							<c:if test="${fn:length(user.userName) < 2}">
 	                            <div class="col-8 col-sm-7">
-	                                <input type="text" class="form-control" id="userName" name="userName" oninput="nameCheck()" value="${user.userName }" placeholder="이름을 입력해주세요">
+	                                <input type="text" class="form-control" id="userName" name="changeUserName" oninput="nameCheck()" value="${user.userName }" placeholder="이름을 입력해주세요">
 	                            </div>
 	                            <div>
 	                            	<p class="checkMessage" id="nameMsg">* 이름은 2글자 이상이어야 합니다. 1회만 변경 가능</p>
 	                            </div>
-	                        </div>
-                        </c:if>
-                        <c:if test="${user.platformType eq 'naver' }">
+                       		</c:if>
+                       		<c:if test="${fn:length(user.userName) >= 2}">
+	                            <div class="col-8 col-sm-7 text-start">
+	                                <input type="text" class="form-control" id="userNameOk" value="${user.userName }" readonly>
+	                            </div>
+	                            <div>
+	                            	<p class="checkMessage" id="nameMsg" style="color:rgb(139, 195, 74);">* 변경을 원하실 경우 관리자 문의바랍니다.</p>
+	                            </div>
+                       		</c:if>
+                        </div>
+<%--                         <c:if test="${user.platformType eq 'naver' }">
 							<div class="row">
 	                            <div class="col-12 col-sm-3" style="text-align: left;">
 	                                <label for="userName">이름</label>
 	                            </div>
-	                            <div class="col-8 col-sm-7 text-start">
-	                                <p id="userName" name="userName">${user.userName }</p>
-	                            </div>
 	                        </div>
-                        </c:if>
+                        </c:if> --%>
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
 	                            <label for="userNickname">닉네임</label>
@@ -112,7 +117,7 @@
 		                            <label for="userEmail">${user.platformType} 로그인</label>
 		                        </div>
 		                        <div class="col-8 col-sm-7 text-start">
-			                        <p id="userEmail" name="userEmail">${user.userEmail }</p>
+			                        <p id="userEmail">${user.userEmail }</p>
 		                        </div>                           
 	                        </div>
                         </c:if>
@@ -284,7 +289,6 @@
         	
 			const sessionId = $("#sessionId").val();
 			const sessionNickname = $("#sessionNickname").val();
-			const validateEmail = $("#validateEmail").val();
 			
 			// 이름 체크메시지
 			function showNameMsg(message, color) {
@@ -301,16 +305,7 @@
 			function showPhotoMsg(message, color) {
 			    $("#photoMsg").html(message).css('color', color);
 			}
-			
-			// 비밀번호 체크 메시지
-			function showPwMsg(message, color) {
-			    $("#modalPwMsg").html(message).css('color', color);
-			}
-			
-			// 비밀번호 재입력 체크메시지
-			function showPwCheckMsg(message, color) {
-			    $("#modalPwCheckMsg").html(message).css('color', color);
-			}
+
 			
 			// 닉네임 체크메시지
 			function showNickMsg(message, color) {
@@ -386,41 +381,7 @@
 		            $('.profilePhoto').attr('src', reader.result); //result 꺼내서 src 속성에 담아주기
 		        };
 		    }); */
-		    
-			// 비밀번호 유효성체크
-			function pwCheck() {
-			    let userPw = $("#changeInputPw").val();
-			    if (!pwRegExp.test(userPw)) {
-			    	showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
-				} else {
-					showPwMsg("* 사용가능한 비밀번호입니다.", "rgb(139, 195, 74)");
-				}
-			} 
 
-
-			// 비밀번호재입력 유효성체크
- 			function pwReCheck() {
-			    let userPw = $("#changeInputPw").val();
-			    let userPwCheck = $("#changePwCheck").val();
-
-	            if(userPw === '' && userPwCheck === '') {
-	                window.alert('비밀번호를 입력해주세요.');
-			    	showPwMsg("* 비밀번호를 입력해주세요.", "red");
-			    	showPwCheckMsg("* 비밀번호를 입력해주세요.", "red");
-	                return;
-	            }
-	            if (pwRegExp.test(userPwCheck)) {
-		            if(userPwCheck === userPw) {
-						showPwCheckMsg("* 비밀번호가 일치합니다", "rgb(139, 195, 74)");
-		            }  else {
-					    showPwCheckMsg("* 비밀번호가 일치하지 않습니다.", "red");
-					    return;
-		            }
-	            } else {
-				    showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
-				    return;
-	            }
-			} 
 			
 			// 닉네임 유효성체크
 			function nickCheck() {
@@ -559,52 +520,7 @@
    			        alert('글자수는 150자까지 입력 가능합니다.');
    			    }
    			});
-        	
-        	// 비밀번호변경
-        	$("#changedPwSubBtn").on("click", function() {
-        		let userPw = $("#changeInputPw").val();
-			    let userPwCheck = $("#changePwCheck").val();
-			    
-			    if(!userPw) {
-			    	showPwMsg("* 비밀번호를 입력해주세요.", "red");
-			    	return;
-			    }
-			    if(!userPwCheck) {
-			    	showPwCheckMsg("* 비밀번호를 다시 입력해주세요.", "red");
-			    	return;
-			    }
-			    
-			    
-			    if($("#modalPwMsg").css('color') !== "rgb(139, 195, 74)"){
-			    	showPwMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
-			    } else if ($("#modalPwCheckMsg").css('color') !== "rgb(139, 195, 74)") {
-			    	if(userPw !== userPwCheck) {
-				    	showPwCheckMsg("* 비밀번호가 일치하지 않습니다.", "red");
-			    	} else {
-				    	showPwCheckMsg("* 비밀번호는 영문, 숫자 조합 6 ~ 20자 입력해주세요.", "red");
-			    	}
-			    } else {
-			    	$.ajax({
-			    		url: "/user/updatePw",
-			    		data: {userPw : userPw},
-			    		type: "POST",
-			    		success: function(response){
-			                if (response.success === "success") {
-			                    alert("비밀번호가 변경되었습니다. 다시 로그인해주세요.");
-			                    window.location.href="/user/login";  
-			                } else if (response.fail === "fail") {
-			                	alert("비밀번호가 변경되지 않았습니다. 다시 시도해주세요.");
-			                } else {
-			                	alert("로그인 후 이용해주세요.");
-			                    window.location.href="/user/login";  
-			                }
-			    		},
-			    		error : function(){
-				            alert("[서버오류] 관리자에게 문의바랍니다.");
-			    		}
-			    	})
-			    }
-        	});
+
         	
         	
         	// 정보수정
@@ -612,24 +528,23 @@
         		/* alert('hi'); */
       			event.preventDefault();
       		    console.log(sessionNickname);
-      		    console.log(validateEmail);
       			//필수입력정보
-/*       		    const changeUserPw = $("#changeUserPw").val();
-      		    const userPwCheck = $("#userPwCheck").val(); */
-      		    const userName = $("#userName").val();
+
+      		  	const snsUserName = $("#snsUserName").val()
+      		  	let userName = null;
       		    const userNickname = $("#userNickname").val();
       		    const userEmail = $("#userEmail").val();
       		    const userEmailCheck = $("#userEmailCheck").val();
 	        
+      		    if(snsUserName && snsUserName.length >= 2) { // 나이가 2자 이상인 경우에만 
+      		    	userName = snsUserName;
+      		    } else {
+      		    	alert("수정할 이름을 입력해주세요");
+      		    	return;
+      		    }
         		// 입력 유효성 검사
 				if(!userNickname){
         			alert("수정할 닉네임을 입력해주세요");
-        			return;
-				} else if (!userName) {
-					alert("수정할 이름을 입력해주세요");
-					return;
-				} else if (!userEmail) { 
-        			alert("수정할 이메일을 입력해주세요");
         			return;
 				} 
 				if ($("#nameMsg").css('color') !== "rgb(139, 195, 74)") {
@@ -645,14 +560,9 @@
 			            return;
 					}
 			    }
-			    if($("#changeMailBtn").is(":enabled") || $("#checkEmailCodeBtn").is(":enabled")) {
-			        if ($("#mailMsg").css('color') !== "rgb(139, 195, 74)" || $("#mailCheckMsg").css('color') !== "rgb(139, 195, 74)") {
-			            alert("이메일 인증을 완료해주세요.");
-			            $("#mailMsg").focus();
-			            return;
-			        }
-			    }
+
 				if(confirm("정보를 수정하시겠습니까?")) {
+
 				    $("#updateForm").submit();					
 				}
         	});

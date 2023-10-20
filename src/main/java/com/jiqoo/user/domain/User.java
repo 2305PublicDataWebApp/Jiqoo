@@ -31,7 +31,7 @@ public class User {
 	private boolean checkFollow;
 	
 	private int myTotalArticleCount;
-
+	private int myComtCount;
 
 
 	public User() {
@@ -183,8 +183,6 @@ public class User {
 		this.checkFollow = checkFollow;
 	}
 
-
-
 	public int getCount() {
 		return count;
 	}
@@ -207,6 +205,14 @@ public class User {
 
 	public void setMyTotalArticleCount(int myTotalArticleCount) {
 		this.myTotalArticleCount = myTotalArticleCount;
+	}
+
+	public int getMyComtCount() {
+		return myComtCount;
+	}
+
+	public void setMyComtCount(int myComtCount) {
+		this.myComtCount = myComtCount;
 	}
 
 	@Override

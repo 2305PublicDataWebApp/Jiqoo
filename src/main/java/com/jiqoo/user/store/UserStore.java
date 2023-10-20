@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 
@@ -185,5 +186,29 @@ public interface UserStore {
 	 * @return
 	 */
 	int selectMyMoqooCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 댓글 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyCommentCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 댓글 리스트 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	List<Comment> selectMyCommentList(SqlSession sqlSession, String userId);
+
+	/**
+	 * sns 회원 정보 수정 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int updateSnsUser(SqlSession sqlSession, User user);
 
 }

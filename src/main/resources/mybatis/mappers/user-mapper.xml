@@ -26,6 +26,12 @@
 		WHERE USER_ID = #{userId}
 	</update>
 	
+	<update id="updateSnsUser">
+		UPDATE USER_TBL
+		SET USER_NAME = #{userName}, USER_NICKNAME = #{userNickname}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}
+		WHERE USER_ID = #{userId}
+	</update>
+	
 	<update id="updateUserPw">
 		UPDATE USER_TBL
 		SET USER_PW = #{userPw}
@@ -109,5 +115,15 @@
 	<select id="selectMyMoqooCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM MOQOO_TBL WHERE MOQOO_WRITER = #{userId} AND MOQOO_STATUS NOT LIKE 'N'
+	</select>
+	
+	<select id="selectMyCommentCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM COMT_TBL WHERE COMT_WRITER = #{userId} AND COMT_STATUS NOT LIKE 'N'
+	</select>
+	
+	<select id="selectMyCommentList" resultType="Comment">
+		SELECT *
+		FROM COMT_TBL WHERE COMT_WRITER = #{userId} AND COMT_STATUS NOT LIKE 'N'
 	</select>
 </mapper>

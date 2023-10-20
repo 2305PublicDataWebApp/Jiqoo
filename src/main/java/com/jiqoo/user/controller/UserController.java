@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.FollowService;
@@ -189,7 +190,9 @@ public class UserController {
 			@RequestParam(value = "uploadFile", required = false) MultipartFile uploadFile, Model model,
 			HttpServletRequest request, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
+		String platformType = (String) session.getAttribute("platformType");
 		System.out.println("로그인 유저아이디 : " + userId);
+		int result = -1;
 		try {
 			if (userId != "" && userId != null) {
 				if (uploadFile != null && !uploadFile.isEmpty()) {
@@ -208,7 +211,12 @@ public class UserController {
 					String info = user.getUserInfo().replace("\r\n", "<br>");
 					user.setUserInfo(info);
 				}
-				int result = userService.updateUser(user);
+				
+				if(platformType.equals("normal")) {
+					result = userService.updateUser(user);
+				} else {
+					result = userService.updateSnsUser(user);
+				}
 				System.out.println(user);
 				if (result > 0) {
 					model.addAttribute("msg", "회원정보가 수정되었습니다. 다시 로그인해주세요");
@@ -216,9 +224,15 @@ public class UserController {
 					session.invalidate();
 					return "common/message";
 				} else {
-					model.addAttribute("msg", "회원정보가 수정되지 않았습니다.");
-					model.addAttribute("url", "/user/modify");
-					return "common/message";
+					if(platformType.equals("normal")) {
+						model.addAttribute("msg", "회원정보가 수정되지 않았습니다.");
+						model.addAttribute("url", "/user/modify");
+						return "common/message";
+					} else {
+						model.addAttribute("msg", "회원정보가 수정되지 않았습니다.");
+						model.addAttribute("url", "/user/modifySns");
+						return "common/message";
+					}
 				}
 			} else {
 				model.addAttribute("msg", "로그인 후 이용해주시기 바랍니다.");
@@ -233,6 +247,7 @@ public class UserController {
 		}
 	}
 
+	
 	// 언팔로우
 	@ResponseBody
 	@PostMapping("/unfollow")
@@ -615,17 +630,23 @@ public class UserController {
 					}
 
 					
-					// 지꾸 모꾸 게시글 조회 수
+					// 지꾸 모꾸 게시글 수 조회
 					int myJiqooCount = userService.selectMyJiqooCount(userId);
 					int myMoqooCount = userService.selectMyMoqooCount(userId);
 					int myTotalArticleCount = myJiqooCount + myMoqooCount;
+
+					// 댓글 수 조회
+					int myComtCount = userService.selectMyCommentCount(userId);
+					List<Comment> commentList = userService.selectMyCommentList(userId);
 					
 					user.setFollowers(followersCount);
 					user.setFollowings(followingsCount);
 					user.setMyTotalArticleCount(myTotalArticleCount);
+					user.setMyComtCount(myComtCount);
 					model.addAttribute("user", user);
 					model.addAttribute("followersList", followersList);
 					model.addAttribute("followingsList", followingsList);
+					model.addAttribute("commentList", commentList);
 					return "user/myPage";
 				} else {
 					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");

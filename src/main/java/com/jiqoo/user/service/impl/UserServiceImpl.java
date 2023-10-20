@@ -7,7 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jiqoo.user.domain.Follow;
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.service.UserService;
 import com.jiqoo.user.store.UserStore;
@@ -138,6 +138,24 @@ public class UserServiceImpl implements UserService{
 	public int selectMyMoqooCount(String userId) {
 		int myMiqooCount = userStore.selectMyMoqooCount(sqlSession, userId);
 		return myMiqooCount;
+	}
+
+	@Override
+	public int selectMyCommentCount(String userId) {
+		int myCommentCount = userStore.selectMyCommentCount(sqlSession, userId);
+		return myCommentCount;
+	}
+
+	@Override
+	public List<Comment> selectMyCommentList(String userId) {
+		List<Comment> myCommentList = userStore.selectMyCommentList(sqlSession, userId);
+		return myCommentList;
+	}
+
+	@Override
+	public int updateSnsUser(User user) {
+		int result = userStore.updateSnsUser(sqlSession, user);
+		return result;
 	}
 
 

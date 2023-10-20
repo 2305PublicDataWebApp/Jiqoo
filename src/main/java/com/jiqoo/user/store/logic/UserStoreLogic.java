@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.store.UserStore;
 
@@ -144,6 +145,24 @@ public class UserStoreLogic implements UserStore{
 	public int selectMyMoqooCount(SqlSession sqlSession, String userId) {
 		int myMoqooCount = sqlSession.selectOne("UserMapper.selectMyMoqooCount", userId);
 		return myMoqooCount;
+	}
+
+	@Override
+	public int selectMyCommentCount(SqlSession sqlSession, String userId) {
+		int myMoqooCount = sqlSession.selectOne("UserMapper.selectMyCommentCount", userId);
+		return myMoqooCount;
+	}
+
+	@Override
+	public List<Comment> selectMyCommentList(SqlSession sqlSession, String userId) {
+		List<Comment> myCommentList = sqlSession.selectList("UserMapper.selectMyCommentList", userId);
+		return myCommentList;
+	}
+
+	@Override
+	public int updateSnsUser(SqlSession sqlSession, User user) {
+		int result = sqlSession.update("UserMapper.updateSnsUser", user);
+		return result;
 	}
 
 
