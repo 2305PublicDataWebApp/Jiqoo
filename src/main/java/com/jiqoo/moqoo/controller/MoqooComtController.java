@@ -98,19 +98,18 @@ public class MoqooComtController {
 	
 	// 답글 작성
 	@ResponseBody
-	@PostMapping("/moqoo/insertReply")
+	@GetMapping("/moqoo/insertReply")
 	public String insertReComt(@RequestParam("comtContent") String comtContent
 			, @RequestParam("pComtNo") int pComtNo
+//			,@RequestParam("refPostNo") int refPostNo
 			, HttpSession session) {
 		String comtWriter = (String)session.getAttribute("userId");
 		Comment comt = new Comment();
 		comt.setComtContent(comtContent);
 		comt.setpComtNo(pComtNo);
-		int result = 0;
-		if(comtWriter != null && !comtWriter.equals("")) {
-			comt.setComtWriter(comtWriter);
-			result = moqooComtService.insertReComt(comt);
-		}
+//		comt.setRefPostNo(refPostNo);
+		comt.setComtWriter(comtWriter);
+		int result = moqooComtService.insertReComt(comt);
 		if(result > 0) {
 			return "success";
 		}

@@ -131,4 +131,16 @@ public class MoqooServiceImpl implements MoqooService {
 		int result = moqooStore.deleteHeart(sqlSession, like);
 		return result;
 	}
+
+	@Override
+	public List<Moqoo> selectMoqooAllList() {
+		List<Moqoo> moqooList = moqooStore.selectMoqooAllList(sqlSession);
+		return moqooList;
+	}
+
+	@Override
+	public int updateMoqooCount(int moqooNo) {
+		return moqooStore.updateMoqooCount(sqlSession, moqooNo);
+		
+	}
 }

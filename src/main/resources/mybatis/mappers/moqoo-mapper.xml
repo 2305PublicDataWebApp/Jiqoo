@@ -21,6 +21,7 @@
 		<result property="moqooStatus" column="MOQOO_STATUS"/>
 		<collection property="user" resultMap="UserResultMap"></collection>
 		<collection property="moqooUser" resultMap="MoqooUserResultMap"></collection>
+		<collection property="ctgr" resultMap="CategoryResultMap"/>
 	</resultMap>
 	
 	<resultMap type="User" id="UserResultMap">
@@ -49,6 +50,11 @@
 		<result property="attendStatus" column="ATTEND_STATUS"/>
 	</resultMap>
 	
+	<resultMap type="Category" id="CategoryResultMap">
+		<result property="cName" column="C_NAME"/>
+		<result property="cImgPath" column="C_IMG_PATH"/>
+	</resultMap>
+	
 	
 	<!-- view count 일단 default로 둠 -->
 	<insert id="insertMoqoo">
@@ -64,6 +70,10 @@
 	
 	<update id="deleteMoqoo">
 		UPDATE MOQOO_TBL SET MOQOO_STATUS = 'N' WHERE MOQOO_NO = #{moqooNo } 
+	</update>
+
+	<update id="updateMoqooCount" parameterType="int">
+		UPDATE MOQOO_TBL SET M_VIEW_COUNT = M_VIEW_COUNT+1 WHERE MOQOO_NO = #{moqooNo}
 	</update>
 
 	<select id="showSelectMoqooList" resultMap="MoqooResultMap">
@@ -106,4 +116,13 @@
 	<delete id="deleteHeart">
 		DELETE LIKE_TBL WHERE REF_POST_NO = #{refPostNo } and REF_BOARD_TYPE = #{refBoardType } and L_USER_ID = #{lUserId };
 	</delete>
+	
+	<select id="selectMoqooAllList" resultMap="MoqooResultMap">
+		SELECT * FROM MOQOO_TBL
+		JOIN USER_TBL ON
+		MOQOO_WRITER = USER_ID
+		JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
+		WHERE MOQOO_STATUS = 'Y'
+		ORDER BY MOQOO_DATE DESC
+	</select>
 </mapper>

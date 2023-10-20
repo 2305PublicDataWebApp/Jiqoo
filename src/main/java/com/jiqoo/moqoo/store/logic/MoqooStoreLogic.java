@@ -122,4 +122,15 @@ public class MoqooStoreLogic implements MoqooStore{
 		return result;
 	}
 
+	@Override
+	public List<Moqoo> selectMoqooAllList(SqlSession sqlSession) {
+		List<Moqoo> moqooList = sqlSession.selectList("MoqooMapper.selectMoqooAllList");
+		return moqooList;
+	}
+
+	@Override
+	public int updateMoqooCount(SqlSession sqlSession, int moqooNo) {
+		return sqlSession.update("MoqooMapper.updateMoqooCount", moqooNo);
+	}
+
 }

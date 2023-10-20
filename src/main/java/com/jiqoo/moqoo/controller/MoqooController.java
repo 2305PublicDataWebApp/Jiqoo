@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.gson.Gson;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.Like;
+import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooComtService;
@@ -39,10 +41,32 @@ public class MoqooController {
 	@Autowired
 	private MoqooComtService moqooComtService;
 	
+	
+	@GetMapping("/moqoo/mapList")
+	public String showMoqooMapList(Model model, HttpSession session) {
+		try {
+//			String userId = (String) session.getAttribute("userId");
+			List<Moqoo> moqooAllList = moqooService.selectMoqooAllList();
+			List<Category> categoryList = moqooService.selectCategoryList();
+			if (categoryList != null) {
+				model.addAttribute("categoryList", categoryList);
+				model.addAttribute("moqooAllList", moqooAllList);
+				return "moqoo/moqoo";
+			} else {
+				model.addAttribute("msg", "게시물 리스트 조회 실패");
+				model.addAttribute("url", "/");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("url", "/");
+			return "common/message";
+		}
+	}
 
 	// 모꾸 리스트 가져오면서 모꾸 페이지로 이동
 	@GetMapping("/moqoo/moqoo")
-	public String showSelectMoqooList(@ModelAttribute Moqoo moqoo, User user,  Model model, HttpSession session, HttpServletRequest request) {
+	public String showMoqooList(@ModelAttribute Moqoo moqoo, User user,  Model model, HttpSession session, HttpServletRequest request) {
 		try {
 	//		String moqooWriter = (String)session.getAttribute("userNickName");
 	//		String writerProfile = (String)session.getAttribute("userPhotoPath");
@@ -93,6 +117,7 @@ public class MoqooController {
 			int result = moqooService.insertMoqoo(moqoo);
 			MoqooUser moqooUser = new MoqooUser();
 			if(result > 0) {
+				// 게시글 작성하면서 작성자도 모임 참여되게 만들기
 				moqooUser.setRefMoqooNo(moqoo.getMoqooNo()); // 모임 번호 설정
 	            moqooUser.setRefUserId((String)session.getAttribute("userId")); // 사용자 ID 설정
 	            moqooUser.setAttendStatus("Y"); // 참석 상태 설정
@@ -116,6 +141,8 @@ public class MoqooController {
 	@GetMapping("/moqoo/detail")
 	public String showMoqooDetail(@RequestParam("moqooNo") Integer moqooNo, Model model) {
 		try {
+			// 조회수
+			moqooService.updateMoqooCount(moqooNo);
 			// 게시글 내용 가져오면서 댓글도 같이 가져오기
 			Moqoo moqoo = moqooService.selectOneByNo(moqooNo);
 			String moqooCName = moqoo.getCategory();
@@ -237,6 +264,22 @@ public class MoqooController {
 		}
 	}
 	
+	@ResponseBody
+	@GetMapping(value = "/moqoo/AllList", produces = "application/json;charset=UTF-8;")
+	public String showAllList() {
+		List<Moqoo> moqooAllList = moqooService.selectMoqooAllList();
+		Gson gson = new Gson();
+		return gson.toJson(moqooAllList);
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/moqoo/showAllMap", produces = "application/json;charset=UTF-8;")
+	public String showAllMap() {
+		List<Moqoo> moqooAllList = moqooService.selectMoqooAllList();
+		Gson gson = new Gson();
+		return gson.toJson(moqooAllList);
+	}
+	
 	@PostMapping("/moqoo/attendY")
     @ResponseBody
     public String approveUser(
@@ -304,7 +347,7 @@ public class MoqooController {
 	// 섬머노트 사진 저장하기
 	@ResponseBody
 	@PostMapping("/muploadSummernoteImageFile")
-	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
+	public String mUploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile,
 			HttpServletRequest request) {
 //	    JsonObject jsonObject = new JsonObject();
 		String src = "";
@@ -322,7 +365,7 @@ public class MoqooController {
 
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-			String moqooFileRename = sdf.format(new Date(System.currentTimeMillis())) + "." + extension;
+			String moqooFileRename = "m" + sdf.format(new Date(System.currentTimeMillis())) + "." + extension;
 
 			// 이미지 저장 코드
 			multipartFile.transferTo(new File(savePath + "\\" + moqooFileRename));
@@ -355,8 +398,8 @@ public class MoqooController {
 		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
 	
 		// 시간으로 파일 이름 바꾸기
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M" + "yyyyMMddHHmmss");
-		String fileRename = simpleDateFormat.format(new Date(System.currentTimeMillis())) + "." + extension;
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+		String fileRename = "m" + simpleDateFormat.format(new Date(System.currentTimeMillis())) + "." + extension;
 	
 		// 폴더 없을 시 자동 생성할 폴더
 		String savePath = root + "\\muploadFiles";

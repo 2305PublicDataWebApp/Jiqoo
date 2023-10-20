@@ -155,4 +155,13 @@ public interface MoqooStore {
 	 */
 	int deleteHeart(SqlSession sqlSession, Like like);
 
+	/**
+	 * 모꾸 전체 리스트 조회
+	 * @param sqlSession
+	 * @return
+	 */
+	List<Moqoo> selectMoqooAllList(SqlSession sqlSession);
+
+	int updateMoqooCount(SqlSession sqlSession, int moqooNo);
+
 }
