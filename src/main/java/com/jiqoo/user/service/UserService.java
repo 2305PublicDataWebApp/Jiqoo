@@ -121,11 +121,32 @@ public interface UserService {
 	int selectFollowStatus(Map<String, Object> followMap);
 
 	/**
-	 * 카카오회원 탈퇴 service
+	 * sns 회원 탈퇴 service
+	 * @param snsEmailMap
+	 * @return
+	 */
+	int deleteSnsUser(Map<String, Object> snsIdMap);
+
+	/**
+	 *  sns 회원 조회 service
+	 * @param snsEmailMap
+	 * @return
+	 */
+	User selectSnsUserByEmail(Map<String, Object> snsEmailMap);
+
+	/**
+	 * 마이페이지 지꾸 게시물수 조회 service
 	 * @param userId
 	 * @return
 	 */
-	int deleteKakaoUser(String userId);
+	int selectMyJiqooCount(String userId);
+
+	/**
+	 * 마이페이지 모꾸 게시물수 조회 service
+	 * @param userId
+	 * @return
+	 */
+	int selectMyMoqooCount(String userId);
 
 
 

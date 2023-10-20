@@ -141,10 +141,10 @@ public interface UserStore {
 	/**
 	 * sns 회원 조회 Store
 	 * @param sqlSession 
-	 * @param userEmail
+	 * @param snsEmailMap
 	 * @return
 	 */
-	User selectSnsUserByEmail(SqlSession sqlSession, String userEmail);
+	User selectSnsUserByEmail(SqlSession sqlSession, Map<String, Object> snsEmailMap);
 
 	/**
 	 * 카카오 회원 가입 Store
@@ -155,12 +155,12 @@ public interface UserStore {
 	public int kakaoUserInsert(SqlSession sqlSession, User kakaoUser);
 
 	/**
-	 * 카카오 회원 탈퇴 Store
+	 * Sns 회원 탈퇴 Store
 	 * @param sqlSession
-	 * @param userId
+	 * @param snsIdMap
 	 * @return
 	 */
-	int deleteKakaoUser(SqlSession sqlSession, String userId);
+	int deleteSnsUser(SqlSession sqlSession, Map<String, Object> snsIdMap);
 
 	/**
 	 * 네이버 회원 가입 Store
@@ -169,5 +169,21 @@ public interface UserStore {
 	 * @return
 	 */
 	int naverUserInsert(SqlSession sqlSession, User naverUser);
+
+	/**
+	 * 마이페이지 지꾸 게시물수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyJiqooCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 모꾸 게시물수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyMoqooCount(SqlSession sqlSession, String userId);
 
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko" data-bs-theme="auto">
     <head>
@@ -61,21 +62,36 @@
                <div class="input-form mx-auto">
                    <form id="updateForm" action="/user/update" method="POST" enctype="multipart/form-data">
                    		<input type="hidden" id="sessionNickname" value="${sessionScope.userNickname}">
-                   		<input type="hidden" id="sessionId" name="userId" value="${sessionScope.userId}">
+                   		<input type="hidden" id="sessionEmail" value="${sessionScope.userEmail}">
 		                <input type="hidden" id="hiddenPw" name="userPw" value="${user.userPw }">
-                   		<input type="hidden" id="validateEmail" value="${user.userEmail }">
+                   		<input type="hidden" id="userEmail" value="${user.userEmail }">
                    		<input type="hidden" name="userPhotoName" value="${user.userPhotoName }">
 						<input type="hidden" name="userPhotoRename" value="${user.userPhotoRename }">
 						<input type="hidden" name="userPhotoPath" value="${user.userPhotoPath }">
 						<h1 style="margin-bottom: 60px;">회원정보수정</h1>
-						<div class="row">
-                            <div class="col-12 col-sm-3" style="text-align: left;">
-                                <label for="changePwBtn">비밀번호</label>
-                            </div>
-                            <div class="col-4 col-sm-2">
-	                            <button class="btn btn-sm regBtn" type="button" id="changePwBtn" data-bs-toggle="modal" data-bs-target="#changePwModal">변경하기</button>
+						<c:if test="${fn:length(user.userName) < 2}">
+							<div class="row">
+	                            <div class="col-12 col-sm-3" style="text-align: left;">
+	                                <label for="userName">이름</label>
+	                            </div>
+	                            <div class="col-8 col-sm-7">
+	                                <input type="text" class="form-control" id="userName" name="userName" oninput="nameCheck()" value="${user.userName }" placeholder="이름을 입력해주세요">
+	                            </div>
+	                            <div>
+	                            	<p class="checkMessage" id="nameMsg">* 이름은 2글자 이상이어야 합니다. 1회만 변경 가능</p>
+	                            </div>
 	                        </div>
-                        </div>
+                        </c:if>
+                        <c:if test="${user.platformType eq 'naver' }">
+							<div class="row">
+	                            <div class="col-12 col-sm-3" style="text-align: left;">
+	                                <label for="userName">이름</label>
+	                            </div>
+	                            <div class="col-8 col-sm-7 text-start">
+	                                <p id="userName" name="userName">${user.userName }</p>
+	                            </div>
+	                        </div>
+                        </c:if>
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
 	                            <label for="userNickname">닉네임</label>
@@ -90,34 +106,16 @@
 	                        	<p class="checkMessage" id="nicknameMsg"></p>
 	                        </div>                               
                         </div>
- 	                    <div class="row">
-	                        <div class="col-12 col-sm-3" style="text-align: left;">
-	                            <label for="userEmail">메일주소</label>
+                        <c:if test="${user.platformType ne 'normal'}">
+                        	<div class="row">
+		                        <div class="col-12 col-sm-3" style="text-align: left;">
+		                            <label for="userEmail">${user.platformType} 로그인</label>
+		                        </div>
+		                        <div class="col-8 col-sm-7 text-start">
+			                        <p id="userEmail" name="userEmail">${user.userEmail }</p>
+		                        </div>                           
 	                        </div>
-	                        <div class="col-8 col-sm-7">
-		                        <input type="email" class="form-control" id="userEmail" name="userEmail" oninput="emailCheck()" value="${user.userEmail }">
-	                        </div>
-	                        <div class="col-4 col-sm-2">
-	                            <button class="btn btn-sm regBtn" type="button" id="changeMailBtn" onclick="emailDuplicate()" disabled>메일인증</button>
-	                        </div>
-	                        <div>
-	                        	<p class="checkMessage" id="mailMsg"></p>
-	                        </div>                            
-	                    </div>
-                        <div class="row">
-	                        <div class="col-12 col-sm-3">
-	                            <label for="userEmailCheck"></label>
-	                        </div>
-	                        <div class="col-8 col-sm-7">
-	                            <input type="text" class="form-control" id="userEmailCheck" placeholder="인증번호를 입력해주세요" disabled>
-	                        </div>
-	                        <div class="col-4 col-sm-2">
-	                            <button class="btn btn-sm regBtn" id="checkEmailCodeBtn" type="button" onclick="codeCheck()" disabled>인증확인</button>
-	                        </div>
-	                         <div>
-	                        	<p class="checkMessage" id="mailCheckMsg"></p>
-	                        </div>                            
-                        </div>
+                        </c:if>
 						<c:if test="${user.userGender eq null}">                      
                         <div class="row">
 	                        <div class="col-12 col-sm-3" style="text-align: left;">
@@ -177,7 +175,7 @@
 	                        <c:if test="${user.userPhotoRename ne null }">
 	                         <div class="col-8 col-sm-7 text-start">
 	                         	<div style="margin-bottom:20px;">
-	                         		<img src="${user.userPhotoPath }" class="viewPhoto">
+	                         		<img src="${user.userPhotoPath }" class="viewPhoto" style="width:300px;">
 	                         	</div>
 	                         </div>
 	                         <div class="col-4 col-sm-2">
@@ -198,9 +196,16 @@
                        </div>
                        <button class="btn btn-block subBtn" id="submitBtn">수정완료</button>
                        <button class="btn btn-block subBtn" onclick="history.back();" type="button">뒤로가기</button>
-                       <button type="button" id="delUserBtn" class="btn btn-block del-User-Btn" data-bs-toggle="modal" data-bs-target="#delUserModal">
-                           회원탈퇴
-                       </button>
+                       <c:if test="${user.platformType eq 'kakao'}">
+	                       <button type="button" id="delKakaoUserBtn" class="btn btn-block del-User-Btn">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
+                       <c:if test="${user.platformType eq 'naver'}">
+	                       <button type="button" id="delNaverUserBtn" class="btn btn-block del-User-Btn">
+	                           회원탈퇴
+	                       </button>
+                       </c:if>
 	                </form>
                     </div>
                 </div>
@@ -234,34 +239,6 @@
 	                </div>
 	            </div>
                                 
-                <!-- 회원탈퇴 Modal -->
-                <div class="modal fade" id="delUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body" style="margin-top: 20px;">
-                            <h1 style="font-family: Black Han Sans; color:Black; padding-left: 10px;">회원탈퇴</h1>
-                            <form id="deleteForm">
-                            	<input type="hidden" id=userId value="${sessionScope.userId }">
-	                            <div class="text-start" style="margin-top:20px;">
-	                                <label for="delInputId">아이디</label>
-	                                <input type="text" class="form-control" id="delInputId" name="delInputId" placeholder="아이디를 입력해주세요.">
-	                            </div>
-	                            <div class="text-start" style="margin-top:20px;">
-	                                <label for="delInputPw">비밀번호</label>
-	                                <input type="password" class="form-control" id="delInputPw" name="delInputPw" placeholder="비밀번호를 입력해주세요.">
-	                            </div>
-                            </form>
-                            <div>
-	                    		<p class="checkMessage" id="modalDeleteMsg"></p>
-	                    	</div>  
-                        </div>
-                        <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
-                            <button type="button" class="btn subBtn" id="deleteSubBtn">탈퇴완료</button>
-                            <button type="button" class="btn subBtn" data-bs-dismiss="modal">탈퇴취소</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <!-- 사진변경 Modal -->
             <div class="modal fade" id="changePhotoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -303,21 +280,28 @@
      		// 정규식
         	const pwRegExp = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,20}$/;
         	const nicknameRegExp = /^(?!^\d+$)[a-zA-Z0-9가-힣]{2,10}$/;
-        	const emailRegExp = /^[a-zA-Z0-9]{4,20}@[a-z]+\.[a-z]{3}/g;
+        	const nameRegExp = /^[가-힣]{2,4}$/;
         	
 			const sessionId = $("#sessionId").val();
 			const sessionNickname = $("#sessionNickname").val();
 			const validateEmail = $("#validateEmail").val();
+			
+			// 이름 체크메시지
+			function showNameMsg(message, color) {
+			    $("#nameMsg").html(message).css('color', color);
+			}
 			
    			// 사진 알림창
    			function photoAlert(){
    				alert("본인 사진을 업로드하시면 모임 참가 확률이 올라갑니다!")
        			showPhotoMsg("* 본인 사진을 업로드하시면 모임 참가 확률이 올라갑니다!", "rgb(139, 195, 74)");
    			}
+   			
 			// 사진업로드 체크메시지
 			function showPhotoMsg(message, color) {
 			    $("#photoMsg").html(message).css('color', color);
 			}
+			
 			// 비밀번호 체크 메시지
 			function showPwMsg(message, color) {
 			    $("#modalPwMsg").html(message).css('color', color);
@@ -338,14 +322,14 @@
 			    }
 			}
 			
-			// 이메일 체크메시지
-			function showEmailMsg(message, color) {
-			    $("#mailMsg").html(message).css('color', color);
-			}
-			
-			// 이메일인증 체크메시지
-			function showEmailCheckMsg(message, color) {
-			    $("#mailCheckMsg").html(message).css('color', color);
+			// 이름 유효성체크
+			function nameCheck() {
+			    let userName = $("#userName").val();
+			    if (!nameRegExp.test(userName)) {
+			    	showNameMsg("* 올바른 이름을 입력해주세요.", "red");
+				} else {
+					showNameMsg("* 이름 입력 완료", "rgb(139, 195, 74)");
+				}
 			}
 			
 			// 사진변경
@@ -494,68 +478,6 @@
 			    }
 			}
 			
-			// 이메일 유효성체크
-			function emailCheck() {
-			    let userEmail = $("#userEmail").val();
-			    if(validateEmail === userEmail) {
-			    	$("#changeMailBtn").prop("disabled", true);
-			    	showEmailMsg("* 현재 등록된 메일과 동일합니다.", "rgb(139, 195, 74)");
-				} else if (validateEmail === userEmail) {
-			    	$("#changeMailBtn").prop("disabled", true);
-			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "red");
-				} else {
-					$("#changeMailBtn").prop("disabled", false);
-					showEmailMsg("* 메일인증을 진행해주세요.", "red");
-				}
-			}
-			
-			let checkCode; // 인증번호 전역변수로 선언
-			
-   			// 메일 중복 체크 및 인증메일 발송 
-        	function emailDuplicate(){
-			    showEmailMsg("* 잠시만 기다려주세요.", "red");
-			    const userEmail = $("#userEmail").val();
-			    if(userEmail != "") {
-			    	$.ajax({
-			    		url: "/user/emailCheck",
-			    		data: {userEmail : userEmail},
-			    		type: "POST",
-			    		success: function(response){
-			                if (response.isDuplicate) {
-			                    alert("중복된 이메일입니다.");
-			    				showEmailMsg("* 다른 이메일을 입력해주세요.", "red");
-			                } else {
-			                	checkCode = response.checkCode;
-			                	console.log(checkCode);
-			                    alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
-			    				showEmailMsg("* 메일발송완료. 발송된 인증번호를 입력해주세요.", "red");
-								$("#emailDuplicate").prop("disabled", false);
-								$("#userEmailCheck").prop("disabled", false);
-								$("#checkEmailCodeBtn").prop("disabled", false);
-			                }
-			    		},
-			    		error : function(){
-				            alert("[서버오류] 관리자에게 문의바랍니다.");
-			    		}
-			    	})
-			    } else {
-			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "red");
-			    }
-        	}
-   			
-   			//인증번호
-        	function codeCheck() {
-        		const userEmailCheck = $("#userEmailCheck").val();
-        		if(checkCode == null) {
-        			showEmailMsg("* 이메일인증을 진행해주세요", "#f7396e");
-        		} else if(userEmailCheck != checkCode) {
-        			showEmailCheckMsg("* 인증번호가 일치하지 않습니다.", "#f7396e");
-        			$("#userEmailCheck").focus();
-        		} else if(userEmailCheck == checkCode) {
-        			showEmailMsg("* 이메일인증완료", "rgb(139, 195, 74)");
-        			showEmailCheckMsg("* 인증번호가 일치합니다.", "rgb(139, 195, 74)");
-        		}
-        	}
    			
       		// 전화번호정규식
             function oninputPhone(target) {
@@ -563,60 +485,61 @@
                     .replace(/[^0-9]/g, '') //숫자를 제외한 모든 문자 제거
                     .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3"); 
             }
-      		
-        	// 회원탈퇴 메시지
-        	function showDelModalMsg(message, color) {
-			    $("#modalDeleteMsg").html(message).css('color', color);        		
-        	}
-	
-        	
-        	// 회원탈퇴
-        	$("#deleteSubBtn").on("click", function(){
-		        showDelModalMsg("", "red");
-        		const inputId = $("#delInputId").val();
-				const inputPw = $("#delInputPw").val();
-        		if(inputId === "" || inputPw === "") {
-        			showDelModalMsg("* 모든 값을 입력해주세요.", "red");
-        			return;
-        		}
 
-			    $.ajax({
-			        url: "/user/delValidate",
-			        data: { 
-			        	"inputId" : inputId, 
-			        	"inputPw" : inputPw
-			        },
-			        type: "POST",
-			        success: function (response) {
-			            if(response.isValidate) {
-			            	if(confirm("정말 탈퇴하시겠습니까?")) {
-			    			    $.ajax({
-			    			        url: "/user/delete",
-			    			        type: "GET",
-			    			        success: function (result) {
-			    			            if (result > 0) {
-			    			            	alert("회원탈퇴가 완료되었습니다.")
-			    			            	window.location.href="/";   
-			    			            }
-			    			        },
-			    			        error: function () {
-			    			            alert("[서버오류] 관리자에게 문의바랍니다.");
-			    			        }
-			    			    });
-			            	}
-			            } else if(response.checkLogin === "checkLogin") {
-			            	alert("로그인후 이용바랍니다.");
-			    			window.location.href="/";   
-			            } else {
-			            	showDelModalMsg("* 입력하신 정보가 일치하지 않습니다.", "red");
-			            }
-			        },
-			        error: function () {
-			            alert("[서버오류] 관리자에게 문의바랍니다.");
-			        }
-			    });
-        		
-        	})
+
+	        
+        	// 카카오 회원탈퇴
+        	$('#delKakaoUserBtn').on("click", function(){
+        		if(confirm("정말 탈퇴하시겠습니까?")) {
+        			
+			    	$.ajax({
+			    		url: "/user/kakaoUnlink",
+			    		type: "GET",
+			    		success: function(response){
+			                if (response === "success") {
+			                    alert("SNS 회원탈퇴가 완료되었습니다.");
+			                    window.location.href="/";  
+			                } else if (response === "checkLogin") {
+			                	alert("로그인 후 이용해주세요");
+			                    window.location.href="/";  
+			                } else {
+			                	alert("SNS 회원탈퇴가 완료되지 않았습니다. 다시 시도해주세요.");
+			                    window.location.href="/user/modify";  
+			                }
+			    		},
+			    		error : function(){
+				            alert("[서버오류] 관리자에게 문의바랍니다.");
+			    		}
+			    	})
+        		}
+        	});
+        	
+        	// 네이버 회원탈퇴
+        	$('#delNaverUserBtn').on("click", function(){
+        		if(confirm("정말 탈퇴하시겠습니까?")) {
+        			
+			    	$.ajax({
+			    		url: "/user/naverUnlink",
+			    		type: "GET",
+			    		success: function(response){
+			                if (response === "success") {
+			                    alert("SNS 회원탈퇴가 완료되었습니다.");
+			                    window.location.href="/";  
+			                } else if (response === "checkLogin") {
+			                	alert("로그인 후 이용해주세요");
+			                    window.location.href="/";  
+			                } else {
+			                	alert("SNS 회원탈퇴가 완료되지 않았습니다. 다시 시도해주세요.");
+			                    window.location.href="/user/modify";  
+			                }
+			    		},
+			    		error : function(){
+				            alert("[서버오류] 관리자에게 문의바랍니다.");
+			    		}
+			    	})
+        		}
+        	});        	
+        	
         	
         	
             // textarea 체크
@@ -693,6 +616,7 @@
       			//필수입력정보
 /*       		    const changeUserPw = $("#changeUserPw").val();
       		    const userPwCheck = $("#userPwCheck").val(); */
+      		    const userName = $("#userName").val();
       		    const userNickname = $("#userNickname").val();
       		    const userEmail = $("#userEmail").val();
       		    const userEmailCheck = $("#userEmailCheck").val();
@@ -701,10 +625,18 @@
 				if(!userNickname){
         			alert("수정할 닉네임을 입력해주세요");
         			return;
+				} else if (!userName) {
+					alert("수정할 이름을 입력해주세요");
+					return;
 				} else if (!userEmail) { 
         			alert("수정할 이메일을 입력해주세요");
         			return;
 				} 
+				if ($("#nameMsg").css('color') !== "rgb(139, 195, 74)") {
+		            alert("올바른 이름을 입력해주세요.");
+		            $("#userName").focus();
+		            return;
+				}
 				
 			    if($("#nicknameCheck").is(":enabled")) {
 					if ($("#nicknameMsg").css('color') !== "rgb(139, 195, 74)") {

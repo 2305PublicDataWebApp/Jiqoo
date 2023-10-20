@@ -15,6 +15,7 @@
 		  
 		 function naverSignInCallback() {
 		    const accessToken = naver_id_login.oauthParams.access_token;
+		    const id = naver_id_login.getProfileData('id');
 		    const userName = naver_id_login.getProfileData('name');
 		    const userNickname = naver_id_login.getProfileData('nickname');
 		    const userEmail = naver_id_login.getProfileData('email');
@@ -25,6 +26,7 @@
 		    // JSON 형태로 정보 저장
 			const naverUserInfo = {
 				accessToken: accessToken,
+				id: id,
 				userName: userName,
 				userNickname: userNickname,
 				userEmail: userEmail,
@@ -36,24 +38,24 @@
  			$.ajax({
 				type: 'POST',
 				url: '/user/naver', 
-				data: naverUserInfo, // JSON객체 전달
-				dataType: 'text',
+				data: JSON.stringify(naverUserInfo), // JSON객체 전달
+				contentType: 'application/json',
 				success: function(result) {
 					if(result === 'insert') {
-						console.log("네이버 회원가입 성공! 로그인 후 이용해주세요");
+						alert("네이버 회원가입 성공! 로그인 후 이용해주세요");
 						window.location.href="/";   
 					} else if(result === 'success'){
-						console.log("로그인 성공");
+						alert("지꾸에 오신 것을 환영합니다!");
 						window.location.href="/";   
 					} else {
-						console.log("[서버오류] 관리자 문의바랍니다.");
-						window.location.href="/";   
+						alert("[서버오류] 관리자 문의바랍니다.");
 					}
 				}, 
 				error: function(error) {
 					console.log("[서버오류] 관리자 문의바랍니다.");
 					console.log(error);
-					window.location.href="/";   
+					window.location.href="/user/login";   
+					 
 				} 
 			});
 		  }

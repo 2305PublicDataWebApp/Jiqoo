@@ -277,6 +277,7 @@
         			type: "POST",
         			success: function(data){
         				if(data === "true") {
+        					alert("지꾸에 오신 것을 환영합니다!");
 	        				window.location.href="/";   					
         				} else {
         					checkMessage.text("아이디와 비밀번호를 다시 확인해주세요.");
@@ -295,12 +296,13 @@
 			    redirectUri: 'http://localhost:9999/user/kakao',
 			    scope: 'account_email, profile_nickname, gender',
  	 		    success: function(success) {
-			        console.log("카카오 인증 성공", authObj);
 			        // 로그인 또는 인증 성공 시 처리
+ 	 		    	alert("지꾸에 오신 것을 환영합니다!");     
+ 	 		    	console.log("카카오 인증 성공", authObj);
 			    },
 			    fail: function(err) {
-			        console.log("카카오 인증 실패", err);
 			        // 로그인 또는 인증 실패 시 처리
+			        console.log("카카오 인증 실패", err);
 			    },
 			  });
         	}

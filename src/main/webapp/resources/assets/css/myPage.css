@@ -31,6 +31,8 @@ main {
 	margin-left: -75px;
 	top: -75px;
 	border-radius: 50%;
+	object-fit: cover;
+	background-color:white;
 }
 
 .icon-relative {

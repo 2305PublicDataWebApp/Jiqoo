@@ -111,9 +111,9 @@ public class UserStoreLogic implements UserStore{
 
 
 	@Override
-	public User selectSnsUserByEmail(SqlSession sqlSession, String userEmail) {
-		User kakaoUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", userEmail);
-		return kakaoUser;
+	public User selectSnsUserByEmail(SqlSession sqlSession, Map<String, Object> snsEmailMap) {
+		User snsUser = sqlSession.selectOne("UserMapper.selectSnsUserByEmail", snsEmailMap);
+		return snsUser;
 	}
 
 	@Override
@@ -123,8 +123,8 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public int deleteKakaoUser(SqlSession sqlSession, String userId) {
-		int result = sqlSession.delete("UserMapper.deleteKakaoUser", userId);
+	public int deleteSnsUser(SqlSession sqlSession, Map<String, Object> snsIdMap) {
+		int result = sqlSession.delete("UserMapper.deleteSnsUser", snsIdMap);
 		return result;
 	}
 
@@ -132,6 +132,18 @@ public class UserStoreLogic implements UserStore{
 	public int naverUserInsert(SqlSession sqlSession, User naverUser) {
 		int result = sqlSession.insert("UserMapper.naverUserInsert", naverUser);
 		return result;
+	}
+
+	@Override
+	public int selectMyJiqooCount(SqlSession sqlSession, String userId) {
+		int myJiqooCount = sqlSession.selectOne("UserMapper.selectMyJiqooCount", userId);
+		return myJiqooCount;
+	}
+
+	@Override
+	public int selectMyMoqooCount(SqlSession sqlSession, String userId) {
+		int myMoqooCount = sqlSession.selectOne("UserMapper.selectMyMoqooCount", userId);
+		return myMoqooCount;
 	}
 
 

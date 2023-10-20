@@ -4,6 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="UserMapper">
+
 	<insert id="insertUser">
 		INSERT INTO USER_TBL
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
@@ -37,9 +38,9 @@
 		WHERE USER_ID = #{userId}
 	</update>
 	
-	<delete id="deleteKakaoUser">
+	<delete id="deleteSnsUser">
 		DELETE USER_TBL
-		WHERE USER_ID = #{userId}	
+		WHERE USER_ID = #{userId} and PLATFORM_TYPE = #{platformType}
 	</delete>
 	
 	<select id="selectCheckLogin" resultType="User" >
@@ -51,7 +52,7 @@
 	<select id="selectSnsUserByEmail" resultType="User">
 		SELECT *
 		FROM USER_TBL
-		WHERE USER_ID = #{userId}
+		WHERE USER_EMAIL = #{userEmail} AND PLATFORM_TYPE = #{platformType}
 	</select>
 	
 	<select id="selectCheckId" resultType="_int">
@@ -98,5 +99,15 @@
 	<select id="selectFollowingsListById" resultType="User">
 		SELECT * FROM USER_TBL
 		WHERE USER_ID IN (SELECT TO_USER_ID FROM FOLLOW_TBL WHERE FROM_USER_ID = #{userId})
+	</select>
+	
+	<select id="selectMyJiqooCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM JIQOO_TBL WHERE JIQOO_WRITER = #{userId} AND JIQOO_STATUS NOT LIKE 'N'
+	</select>
+	
+	<select id="selectMyMoqooCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM MOQOO_TBL WHERE MOQOO_WRITER = #{userId} AND MOQOO_STATUS NOT LIKE 'N'
 	</select>
 </mapper>

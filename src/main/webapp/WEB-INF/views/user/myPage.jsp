@@ -67,7 +67,7 @@
                 <div class="profile-header bg"></div>
                 <div class="profile-body text-center">
                 	<c:if test="${user.userPhotoRename eq null}">
-	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png">
+	                	<img alt="프로필사진" class="profile-img" src="../resources/assets/img/no-profile.png" >
                 	</c:if>
                 	<c:if test="${user.userPhotoRename ne null}">
 	                	<img alt="프로필사진" class="profile-img img-border-light" src="${user.userPhotoPath }">
@@ -78,11 +78,16 @@
                 	</div>
                 	</c:if>
                     <h2 class="zero-margin">${user.userNickname }</h2>
-                    <p class="zero-margin fontGray">${user.userId }</p><br>
+                    <c:if test="${user.platformType eq 'normal'}">
+                    	<p class="zero-margin fontGray">${user.userId }</p><br>
+                    </c:if>
+                    <c:if test="${user.platformType ne 'normal'}">
+                    	<p class="zero-margin fontGray">${user.userEmail }</p><br>
+                    </c:if>
                     <p class="zero-margin fontGray">${user.userInfo }</p>
                     <div class="profile-cnt">
                         <div class="profile-cnt-item">
-                            <div class="profile-cnt-total"><a href="#">21</a></div>
+                            <div class="profile-cnt-total"><a href="#">${user.myTotalArticleCount }</a></div>
                             <div class="profile-cnt-text">게시글</div>
                         </div>
                         <div class="profile-cnt-item profile-cnt-border">
@@ -98,8 +103,11 @@
                     <c:if test="${user.userId ne sessionScope.userId}">
                     	<button class="btn btn-sm profile-btn">Follow</button>
                     </c:if>
-                    <c:if test="${user.userId eq sessionScope.userId}">
+                    <c:if test="${user.platformType eq 'normal'}">
                     	<a href="/user/modify" class="btn btn-sm profile-btn" >Edit</a>
+                    </c:if>
+                    <c:if test="${user.platformType ne 'normal'}">
+                    	<a href="/user/modifySns" class="btn btn-sm profile-btn" >Edit</a>
                     </c:if>
                     <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
                     </div>
@@ -272,34 +280,41 @@
                         <button type="button" class="btn-close closeModalButton" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                    <c:forEach items="${followersList}" var="follower">
-                        <div class="row">
-	                        <div class="col-3 modal-padding">
-	                        	<c:if test="${follower.userPhotoRename eq null}">
-		                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
-	                			</c:if>
-	                			<c:if test="${follower.userPhotoRename ne null}">
-	                                <img class="modal-profile-img modal-profile-border" src="${follower.userPhotoPath }" alt="프로필사진" >
-	                            </c:if>
+                    <c:if test="${user.followers eq 0}">
+                    	<div style="padding:20px;">
+	                    	${user.userNickname}님의 팔로워 사용자가 없습니다.
+                    	</div>
+                    </c:if>
+                    <c:if test="${user.followers ne 0}">
+	                    <c:forEach items="${followersList}" var="follower">
+	                        <div class="row">
+		                        <div class="col-3 modal-padding">
+		                        	<c:if test="${follower.userPhotoRename eq null}">
+			                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
+		                			</c:if>
+		                			<c:if test="${follower.userPhotoRename ne null}">
+		                                <img class="modal-profile-img modal-profile-border" src="${follower.userPhotoPath }" alt="프로필사진" >
+		                            </c:if>
+		                        </div>
+	                            <div class="col-6 list-sort">
+	                                <div class="row">
+	                                    <div>${follower.userId }</div>
+	                                </div>
+	                                <div class="row">
+	                                    <div>${follower.userNickname }</div>
+	                                </div>
+	                            </div>
+	                            <div class="col-3 list-sort">
+					                <c:if test="${follower.checkFollow}">
+					                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+					                </c:if>
+					                <c:if test="${not follower.checkFollow}">
+					                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+					                </c:if>
+	                            </div>
 	                        </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>${follower.userId }</div>
-                                </div>
-                                <div class="row">
-                                    <div>${follower.userNickname }</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-				                <c:if test="${follower.checkFollow}">
-				                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
-				                </c:if>
-				                <c:if test="${not follower.checkFollow}">
-				                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
-				                </c:if>
-                            </div>
-                        </div>
-                    </c:forEach>
+	                    </c:forEach>
+                    </c:if>
                     </div>
                     </div>
                 </div>
@@ -313,29 +328,36 @@
                         <button type="button" class="btn-close closeModalButton" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                    <c:forEach items="${followingsList }" var="following">
-                        <div class="row">
-                            <div class="col-3 modal-padding">
-                                <c:if test="${following.userPhotoRename eq null}">
-		                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
-	                			</c:if>
-	                			<c:if test="${following.userPhotoRename ne null}">
-	                                <img class="modal-profile-img modal-profile-border" src="${following.userPhotoPath }" alt="프로필사진" >
-	                            </c:if>
-                            </div>
-                            <div class="col-6 list-sort">
-                                <div class="row">
-                                    <div>${following.userId }</div>
-                                </div>
-                                <div class="row">
-                                    <div>${following.userNickname }</div>
-                                </div>
-                            </div>
-                            <div class="col-3 list-sort">
-                                <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
-                            </div>
-                        </div>
-                    </c:forEach>
+                    <c:if test="${user.followings eq 0}">
+                    	<div style="padding:20px;">
+	                    	${user.userNickname}님의 팔로잉 사용자가 없습니다.
+                    	</div>
+                    </c:if>
+                    <c:if test="${user.followings ne 0}">
+	                    <c:forEach items="${followingsList }" var="following">
+	                        <div class="row">
+	                            <div class="col-3 modal-padding">
+	                                <c:if test="${following.userPhotoRename eq null}">
+			                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
+		                			</c:if>
+		                			<c:if test="${following.userPhotoRename ne null}">
+		                                <img class="modal-profile-img modal-profile-border" src="${following.userPhotoPath }" alt="프로필사진" >
+		                            </c:if>
+	                            </div>
+	                            <div class="col-6 list-sort">
+	                                <div class="row">
+	                                    <div>${following.userId }</div>
+	                                </div>
+	                                <div class="row">
+	                                    <div>${following.userNickname }</div>
+	                                </div>
+	                            </div>
+	                            <div class="col-3 list-sort">
+	                                <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
+	                            </div>
+	                        </div>
+	                    </c:forEach>
+                    </c:if>
                     </div>
                     </div>
                 </div>
