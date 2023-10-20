@@ -13,6 +13,7 @@ public class ChatMessage {
 	private Timestamp msgSendDate;
 	private String msgSenderNickname;
 	private String msgSenderPhotoPath;
+	private String imgCode;
 	private User user;
 
 	public int getMsgNo() {
@@ -69,6 +70,15 @@ public class ChatMessage {
 
 	public void setMsgSenderPhotoPath(String msgSenderPhotoPath) {
 		this.msgSenderPhotoPath = msgSenderPhotoPath;
+	}
+	
+
+	public String getImgCode() {
+		return imgCode;
+	}
+
+	public void setImgCode(String imgCode) {
+		this.imgCode = imgCode;
 	}
 
 	public User getUser() {

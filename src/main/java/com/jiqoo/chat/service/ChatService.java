@@ -153,4 +153,5 @@ public interface ChatService {
 	 */
 	void updateChatName(String str, int chatNo);
 
+
 }

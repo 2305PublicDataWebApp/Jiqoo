@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -25,7 +26,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.google.gson.Gson;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
@@ -41,7 +46,9 @@ public class ChatController {
 	private ChatService chatService;
 	@Autowired
 	private SimpMessagingTemplate template;
-
+	@Autowired
+	private AmazonS3Client amazonS3Client;
+	private String s3Bucket = "daqoojiqoo";
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	// 채팅 페이지 접속
@@ -128,6 +135,40 @@ public class ChatController {
 			throw new RuntimeException("메시지를 저장하는 중에 문제가 발생했습니다.");
 		}
 	}
+	
+	// 채팅 이미지 전송시 aws 저장
+	@ResponseBody
+	@PostMapping("/upload-image")
+    public String uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            // 파일 이름을 생성 (유니크하게)
+            String fileName = generateUniqueFileName(file.getOriginalFilename());
+
+            // Amazon S3 버킷 이름과 파일 경로
+            String key = "https://s3.ap-northeast-2.amazonaws.com/arn:aws:s3:::daqoojiqoo/" + fileName;
+
+            // 이미지를 Amazon S3에 업로드
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+
+            amazonS3Client.putObject(new PutObjectRequest(s3Bucket, key, file.getInputStream(), metadata));
+
+            // 이미지 URL 생성
+            String imageUrl = amazonS3Client.getUrl(s3Bucket, key).toExternalForm();
+            
+            return imageUrl;
+        } catch (Exception e) {
+            // 업로드 실패 시 예외 처리
+            e.printStackTrace();
+            return "Upload failed";
+        }
+    }
+
+	// 파일 리네임
+    private String generateUniqueFileName(String originalFileName) {
+        return UUID.randomUUID().toString() + "_" + originalFileName;
+    }
+	
 
 	// 채팅방 나갈 때 마지막 접속시간 업데이트
 	@ResponseBody
