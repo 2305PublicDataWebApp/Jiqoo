@@ -119,6 +119,12 @@ public class JiqooServiceImpl implements JiqooService{
 		return list;
 	}
 
+	@Override
+	public List<Jiqoo> loadInitialJiqooMyList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }
