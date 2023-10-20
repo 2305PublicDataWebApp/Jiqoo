@@ -243,10 +243,19 @@
 		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = #{jiqooNo}
 	</update>
 	
+	<!-- 강제삭제 지꾸 복원-->
+	<update id="reviveJiqooByAdmin">
+		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'Y', JIQOO_STATUS = 'Y' WHERE JIQOO_NO = #{jiqooNo}
+	</update>
 	
 	<!-- 모꾸 강제삭제 -->
 	<update id="deleteMoqooByAdmin">
 		UPDATE MOQOO_TBL SET MOQOO_STATUS ='A'  WHERE MOQOO_NO = #{moqooNo}
+	</update>
+	
+	<!-- 강제삭제 모꾸 복원-->
+	<update id="reviveMoqooByAdmin">
+		UPDATE MOQOO_TBL SET MOQOO_STATUS = 'Y' WHERE MOQOO_NO = #{moqooNo}
 	</update>
 	
 	<!-- 회원상세_ 댓글 강제삭제 -->
@@ -255,13 +264,7 @@
 	</update>
 	
 	
-<!-- 	<select id="selectOneJiqoo" resultType="Jiqoo"> -->
-<!-- 		SELECT * FROM JIQOO_TBL WHERE JIQOO_NO = #{jiqooNo} -->
-<!-- 	</select> -->
-	
-<!-- 	<select id="selectOneUser" resultType="User"> -->
-<!-- 		SELECT * FROM USER_TBL WHERE USER_ID = #{userId} -->
-<!-- 	</select> -->
+
 	
 	<!--===== 지꾸 증감 카드 =====-->
 	<!-- 당일 등록된 지꾸 수  -->
@@ -276,6 +279,22 @@
 		SELECT COUNT(*) AS COUNT
 		FROM JIQOO_TBL
 		WHERE TRUNC(J_CREATE_DATE) = TRUNC(SYSDATE-1)
+	</select>
+	
+	<!-- 이번주 등록된 지꾸 수 -->
+	<select id="thisWeekInsertJiqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM JIQOO_TBL
+		WHERE J_CREATE_DATE &gt;= TRUNC(SYSDATE, 'D') <!-- 현재 주의 시작일(일요일) -->
+		AND J_CREATE_DATE &lt; TRUNC(SYSDATE, 'D') + 7 <!-- 현재 주의 끝일(토요일) -->
+	</select>
+	
+	<!-- 지난주 등록된 지꾸 수 -->
+	<select id="lastWeekInsertJiqooCount" resultType="_int">
+	    SELECT COUNT(*) AS COUNT
+		FROM JIQOO_TBL
+		WHERE J_CREATE_DATE &gt;= TRUNC(SYSDATE, 'D') - 7 <!-- 지난주 일요일~ -->
+		AND J_CREATE_DATE &lt; TRUNC(SYSDATE, 'D') -1 <!-- ~토요일 -->
 	</select>
 	
 	<!--===== 모꾸증감카드 =====-->
@@ -293,6 +312,22 @@
 		WHERE TRUNC(MOQOO_DATE) = TRUNC(SYSDATE-1)
 	</select>
 	
+	<!-- 이번주 등록된 모꾸 수 -->
+	<select id="thisWeekInsertMoqooCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM MOQOO_TBL
+		WHERE MOQOO_DATE &gt;= TRUNC(SYSDATE, 'D') <!-- 현재 주의 시작일(일요일) -->
+		AND MOQOO_DATE &lt; TRUNC(SYSDATE, 'D') + 7 <!-- 현재 주의 끝일(토요일) -->
+	</select>
+	
+	<!-- 지난주 등록된 모꾸 수 -->
+	<select id="lastWeekInsertMoqooCount" resultType="_int">
+	    SELECT COUNT(*) AS COUNT
+		FROM MOQOO_TBL
+		WHERE MOQOO_DATE &gt;= TRUNC(SYSDATE, 'D') - 7 <!-- 지난주 일요일~ -->
+		AND MOQOO_DATE &lt; TRUNC(SYSDATE, 'D') -1 <!-- ~토요일 -->
+	</select>
+	
 	<!--===== 회원증감카드 =====-->
 	<!-- 당일 가입한 회원 수  -->
 	<select id="todayJoinUserCount" resultType="_int">
@@ -306,6 +341,22 @@
 		SELECT COUNT(*) AS COUNT
 		FROM USER_TBL
 		WHERE TRUNC(U_CREATE_DATE) = TRUNC(SYSDATE-1)
+	</select>
+	
+	<!-- 이번주 가입한 회원수 -->
+	<select id="thisWeekJoinUserCount" resultType="_int">
+		SELECT COUNT(*) AS COUNT
+		FROM USER_TBL
+		WHERE U_CREATE_DATE &gt;= TRUNC(SYSDATE, 'D') <!-- 현재 주의 시작일(일요일) -->
+		AND U_CREATE_DATE &lt; TRUNC(SYSDATE, 'D') + 7 <!-- 현재 주의 끝일(토요일) -->
+	</select>
+	
+	<!-- 지난주 가입한 회원 수 -->
+	<select id="lastWeekJoinUserCount" resultType="_int">
+	    SELECT COUNT(*) AS COUNT
+		FROM USER_TBL
+		WHERE U_CREATE_DATE &gt;= TRUNC(SYSDATE, 'D') - 7 <!-- 지난주 일요일~ -->
+		AND U_CREATE_DATE &lt; TRUNC(SYSDATE, 'D') -1 <!-- ~토요일 -->
 	</select>
 	
 	

@@ -267,16 +267,85 @@ public interface AdminStore {
 
 	public Integer deleteComtByAdmin(SqlSession sqlSession, Integer comtNo);
 
+	/**
+	 * 당일 등록된 댓글 리스트
+	 * @param sqlSession
+	 * @param pInfoJiqoo
+	 * @return
+	 */
 	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo);
 
 	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
 
-
+	/**
+	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
+	 * @param sqlSession
+	 * @param statsMap
+	 * @return
+	 */
 	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap);
 
 	public List<Map<String, Object>> selectAllChatRoom(SqlSession sqlSession, Map<String, Object> chatMap);
 
 	public List<Map<String, Object>> jiqooChartList(SqlSession sqlSession, Jiqoo jiqoo);
+
+	/**
+	 * 이번주 등록된 지꾸 수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer thisWeekInsertJiqooCount(SqlSession sqlSession);
+
+	/**
+	 * 지난주 등록된 지꾸 수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer lastWeekInsertJiqooCount(SqlSession sqlSession);
+
+	/**
+	 * 이번주 등록된 모꾸 수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer thisWeekInsertMoqooCount(SqlSession sqlSession);
+
+	/**
+	 * 지난주 등록된 모꾸 수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer lastWeekInsertMoqooCount(SqlSession sqlSession);
+
+	/**
+	 * 이번주 가입한 회원수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer thisWeekJoinUserCount(SqlSession sqlSession);
+
+	/**
+	 * 지난주 가입한 회원 수
+	 * @param sqlSession
+	 * @return
+	 */
+	public Integer lastWeekJoinUserCount(SqlSession sqlSession);
+
+	/**
+	 * 강제삭제 모꾸 복원
+	 * @param sqlSession
+	 * @param moqooNo
+	 * @return
+	 */
+	public Integer reviveMoqooByAdmin(SqlSession sqlSession, String moqooNo);
+
+	/**
+	 * 강제삭제 지꾸 복원
+	 * @param sqlSession
+	 * @param jiqooNo
+	 * @return
+	 */
+	public Integer reviveJiqooByAdmin(SqlSession sqlSession, String jiqooNo);
 
 
 
