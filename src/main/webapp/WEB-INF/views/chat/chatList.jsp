@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -51,7 +51,8 @@
 <!-- socket.js -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.5/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <!-- =======================================================
   * Template Name: Bootslander
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -102,177 +103,208 @@
 		</section>
 		<section>
 			<c:if test="${!empty chatRoomList }">
-			<div class="container-fluid h-100" data-aos="fade-in"
-				style="background-color: #FFF9C5; padding-top: 100px; padding-bottom: 100px; margin-bottom: 100px; position: relative;">
-				<div class="row justify-content-center h-100">
-					<div class="col-md-4 col-xl-3 chat">
-						<div class="card mb-sm-3 mb-md-0 contacts_card"
-							data-aos="fade-right">
-							<div class="card-header">
-								<div class="input-group">
-									<input type="text" placeholder="채팅방을 추가하려면 클릭하세요." name=""
-										class="form-control search" id="newChat">
-									<div class="input-group-prepend">
-										<a href="javascript:void(0)" data-bs-toggle="modal"
-											data-bs-target="#addUserModal">
-										<span class="input-group-text search_btn"><i
-											class="bi bi-plus-circle" id="newChatBtn"></i></span></a>
-									</div>
-								</div>
-							</div>
-							<div class="card-body contacts_body">
-								<ul class="contacts">
-								<c:forEach items="${chatRoomList }" var="chatRoom">
-									<li class="a_active" id="chat-room-${chatRoom.chatRoom.chatNo }"><input type="hidden"
-										class="chat-room-id" value="${chatRoom.chatRoom.chatNo }">
-										<input type="hidden" class="chat-room-name" value="${chatRoom.chatRoom.chatName }">
-										<div class="d-flex bd-highlight">
-											<div class="img_cont">
-												<img src=<c:if test="${chatRoom.chatRoom.cImagePath eq null}">"../resources/assets/img/earth-globe.png"</c:if>
-														<c:if test="${chatRoom.chatRoom.cImagePath ne null }">"${chatRoom.chatRoom.cImagePath }"</c:if>
-													class="rounded-circle user_img" id="chat-list-img"> 
-<!-- 													<span class="online_icon"></span> -->
-											</div>
-											<div class="user_info">
-												<div class="col d-flex justify-content-between">
-													<span>${chatRoom.chatRoom.chatName }</span><br>
-													<fmt:formatDate value="${chatRoom.chatRoom.chatMessage.msgSendDate}" pattern="yyyy-MM-dd" var="formattedDate" />
-													<c:choose>
-													  <c:when test="${formattedDate == currentDate}">
-													    <!-- 오늘인 경우 -->
-													    <fmt:formatDate value="${chatRoom.chatRoom.chatMessage.msgSendDate}" pattern="a h:mm" var="formattedTime" />
-													    <p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">${formattedTime}</p>
-													  </c:when>
-													  <c:otherwise>
-													    <!-- 오늘이 아닌 경우 -->
-													    <p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">${formattedDate}</p>
-													  </c:otherwise>
-													</c:choose>
-													
-													
-													<%-- <p class="user_info_time"
-														style="font-size: 16px; color: #5f5f5f;">${chatRoom.chatRoom.chatMessage.msgSendDate }</p> --%>
-												</div>
-												<div class="col d-flex justify-content-between">
-													<p>${chatRoom.chatRoom.chatMessage.msgContent }</p>
-													<c:if test="${chatRoom.unreadMsgCount != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId}">
-													<p id="unreadCount-${chatRoom.chatRoom.chatNo }"
-													style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">
-													${chatRoom.unreadMsgCount }</p>
-													</c:if>
-												</div>
-											</div>
+				<div class="container-fluid h-100" data-aos="fade-in"
+					style="background-color: #FFF9C5; padding-top: 100px; padding-bottom: 100px; margin-bottom: 100px; position: relative;">
+					<div class="row justify-content-center h-100">
+						<div class="col-md-4 col-xl-3 chat">
+							<div class="card mb-sm-3 mb-md-0 contacts_card"
+								data-aos="fade-right">
+								<div class="card-header">
+									<div class="input-group">
+										<input type="text" placeholder="채팅방을 추가하려면 클릭하세요." name=""
+											class="form-control search" id="newChat">
+										<div class="input-group-prepend">
+											<a href="javascript:void(0)" data-bs-toggle="modal"
+												data-bs-target="#addUserModal"> <span
+												class="input-group-text search_btn"><i
+													class="bi bi-plus-circle" id="newChatBtn"></i></span></a>
 										</div>
-									</li>								
-								</c:forEach>
-								
-								</ul>
-							</div>
-							<div class="card-footer"></div>
-						</div>
-					</div>
-					<div class="col-md-8 col-xl-6 chat" id="chat_info_div"
-						data-aos="fade-left">
-						<div
-							class='chat_none row d-flex justify-content-center align-items-center'>
-							<div class='text-center'>
-								<img src='../resources/assets/img/jiqooLogo.png'>
-							</div>
-							<div class='text-center'>
-								<p>
-									<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>목록을
-									클릭하여 채팅을 시작해보세요.
-								<p>
-							</div>
-						</div>
-						<div class="card chat-info">
-							<div class="card-header msg_head">
-								<div class="d-flex bd-highlight">
-									<div class="img_cont">
-										<img src="../resources/assets/img/earth-globe.png"
-											class="rounded-circle user_img" id="info-img"> 
-<!-- 											<span -->
-<!-- 											class="online_icon"></span> -->
 									</div>
-									<div class="user_info">
-										<span id="chatName"></span>
-										<p id="chat-users"></p>
-									</div>
-
 								</div>
-								<span id="action_menu_btn"><i
-									class="bi bi-three-dots-vertical"></i></span>
-								<div class="action_menu">
-									<ul>
-										<li><a href="#"><i class="bi bi-person-vcard"></i>
-												프로필 보기</a></li>
-										<li><a href="#" data-bs-toggle="modal" data-bs-target="#inviteModal">
-											<i class="bi bi-person-add"></i> 초대하기</a>
-										</li>
-										<li><a href="javascript:void(0)" onClick="chatRoomOut();"><i class="bi bi-x-circle"></i> 채팅방
-												나가기</a></li>
-										<li><a href="#" data-bs-toggle="modal"
-											data-bs-target="#reportModal"><i
-												class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+								<div class="card-body contacts_body">
+									<ul class="contacts">
+										<c:forEach items="${chatRoomList }" var="chatRoom">
+											<li class="a_active"
+												id="chat-room-${chatRoom.chatRoom.chatNo }"><input
+												type="hidden" class="chat-room-id"
+												value="${chatRoom.chatRoom.chatNo }"> <input
+												type="hidden" class="chat-room-name"
+												value="${chatRoom.chatRoom.chatName }">
+												<div class="d-flex bd-highlight">
+													<div class="img_cont">
+														<img
+															src=<c:if test="${chatRoom.chatRoom.cImagePath eq null}">"../resources/assets/img/earth-globe.png"</c:if>
+															<c:if test="${chatRoom.chatRoom.cImagePath ne null }">"${chatRoom.chatRoom.cImagePath }"</c:if>
+															class="rounded-circle user_img" id="chat-list-img">
+														<!-- 													<span class="online_icon"></span> -->
+													</div>
+													<div class="user_info">
+														<div class="col d-flex justify-content-between">
+															<span>${chatRoom.chatRoom.chatName }</span><br>
+															<fmt:formatDate
+																value="${chatRoom.chatRoom.chatMessage.msgSendDate}"
+																pattern="yyyy-MM-dd" var="formattedDate" />
+															<c:choose>
+																<c:when test="${formattedDate == currentDate}">
+																	<!-- 오늘인 경우 -->
+																	<fmt:formatDate
+																		value="${chatRoom.chatRoom.chatMessage.msgSendDate}"
+																		pattern="a h:mm" var="formattedTime" />
+																	<p class="user_info_time"
+																		style="font-size: 16px; color: #5f5f5f;">${formattedTime}</p>
+																</c:when>
+																<c:otherwise>
+																	<!-- 오늘이 아닌 경우 -->
+																	<p class="user_info_time"
+																		style="font-size: 16px; color: #5f5f5f;">${formattedDate}</p>
+																</c:otherwise>
+															</c:choose>
+
+
+															<%-- <p class="user_info_time"
+														style="font-size: 16px; color: #5f5f5f;">${chatRoom.chatRoom.chatMessage.msgSendDate }</p> --%>
+														</div>
+														<div class="col d-flex justify-content-between">
+															<p>${chatRoom.chatRoom.chatMessage.msgContent }</p>
+															<c:if
+																test="${chatRoom.unreadMsgCount != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId}">
+																<p id="unreadCount-${chatRoom.chatRoom.chatNo }"
+																	style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">
+																	${chatRoom.unreadMsgCount }</p>
+															</c:if>
+														</div>
+													</div>
+												</div></li>
+										</c:forEach>
+
 									</ul>
 								</div>
+								<div class="card-footer"></div>
 							</div>
-							<div id="chat_body" class="card-body msg_card_body">
-								
+						</div>
+						<div class="col-md-8 col-xl-6 chat" id="chat_info_div"
+							data-aos="fade-left">
+							<div
+								class='chat_none row d-flex justify-content-center align-items-center'>
+								<div class='text-center'>
+									<img src='../resources/assets/img/jiqooLogo.png'>
+								</div>
+								<div class='text-center'>
+									<p>
+										<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>목록을
+										클릭하여 채팅을 시작해보세요.
+									<p>
+								</div>
 							</div>
-							<div class="card-footer">
-								<div class="input-group">
-									<div class="input-group-append">
-										<span class="input-group-text attach_btn"><i
-											class="bi bi-paperclip"></i></span>
-									</div>
+							<div class="card chat-info">
+								<div class="card-header msg_head">
+									<div class="d-flex bd-highlight">
+										<div class="img_cont">
+											<img src="../resources/assets/img/earth-globe.png"
+												class="rounded-circle user_img" id="info-img">
+											<!-- 											<span -->
+											<!-- 											class="online_icon"></span> -->
+										</div>
+										<div class="user_info">
+											<span id="chatName"></span>
+											<p id="chat-users"></p>
+										</div>
 
-									<textarea name="" class="form-control type_msg"
-										placeholder="메시지를 입력해주세요." id="textMessage"></textarea>
-									<div class="input-group-append">
-										<a href="javascript:void(0)" id="send_btn">
-											<span class="input-group-text send_btn"><i
-												class="bi bi-send"></i></span>
-										</a>
+									</div>
+									<span id="action_menu_btn"><i
+										class="bi bi-three-dots-vertical"></i></span>
+									<div class="action_menu">
+										<ul>
+											<li><a href="#" data-bs-toggle="modal"
+												data-bs-target="#profileModal"> <i
+													class="bi bi-person-vcard"></i>프로필 보기
+											</a></li>
+											<li><a href="#" data-bs-toggle="modal"
+												data-bs-target="#inviteModal"> <i
+													class="bi bi-person-add"></i> 초대하기
+											</a></li>
+											<li><a href="javascript:void(0)"
+												onClick="chatRoomOut();"><i class="bi bi-x-circle"></i>
+													채팅방 나가기</a></li>
+											<li><a href="#" data-bs-toggle="modal"
+												data-bs-target="#reportModal"><i
+													class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+										</ul>
+									</div>
+								</div>
+								<div id="chat_body" class="card-body msg_card_body"></div>
+								<div class="card-footer">
+									<div class="input-group">
+										<div class="input-group-append">
+											<span class="input-group-text attach_btn"><i
+												class="bi bi-paperclip"></i></span>
+										</div>
+
+										<textarea name="" class="form-control type_msg"
+											placeholder="메시지를 입력해주세요." id="textMessage"></textarea>
+										<div class="input-group-append">
+											<a href="javascript:void(0)" id="send_btn"> <span
+												class="input-group-text send_btn"><i
+													class="bi bi-send"></i></span>
+											</a>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 			</c:if>
 			<c:if test="${empty chatRoomList }">
-			<div class="container-fluid h-100" data-aos="fade-in"
-				style="background-color: white; padding-top: 120px; padding-bottom: 120px; margin-bottom: 100px; position: relative;">
-				<div class="row justify-content-center h-100">
-				<div class="col-md-12 col-xl-12 chat" id="chat_start_div"
-				data-aos="fade-in" >
-					<div
-						class='chat_none row d-flex justify-content-center align-items-center'>
-<!-- 						<div class='text-center'> -->
-<!-- 							<img src='../resources/assets/img/jiqooLogo.png'> -->
-<!-- 						</div> -->
-						<div class="text-center">
-							<button class="btn add-btn" id="none-add-btn" data-bs-toggle="modal"
-											data-bs-target="#addUserModal">
-								<img alt="add-chat" src="../resources/assets/img/chat-add.png" style="width:100px;height:100px;">
-							</button>
-						</div>
-						<div class='text-center' style="margin-top:20px;">
-							<p>
-								<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>
-								아직 개설된 채팅방이 없네요<img alt="없음" src="../resources/assets/img/thingking.png" style="width:18px;height:18px;">
-								<br>
-								버튼을 클릭하여 채팅을 시작해보세요!
-							<p>
+				<div class="container-fluid h-100" data-aos="fade-in"
+					style="background-color: white; padding-top: 120px; padding-bottom: 120px; margin-bottom: 100px; position: relative;">
+					<div class="row justify-content-center h-100">
+						<div class="col-md-12 col-xl-12 chat" id="chat_start_div"
+							data-aos="fade-in">
+							<div
+								class='chat_none row d-flex justify-content-center align-items-center'>
+								<!-- 						<div class='text-center'> -->
+								<!-- 							<img src='../resources/assets/img/jiqooLogo.png'> -->
+								<!-- 						</div> -->
+								<div class="text-center">
+									<button class="btn add-btn" id="none-add-btn"
+										data-bs-toggle="modal" data-bs-target="#addUserModal">
+										<img alt="add-chat" src="../resources/assets/img/chat-add.png"
+											style="width: 100px; height: 100px;">
+									</button>
+								</div>
+								<div class='text-center' style="margin-top: 20px;">
+									<p>
+										<span style='color: #388E3C'>${userNickname }</span>님 환영합니다!<br>
+										아직 개설된 채팅방이 없네요<img alt="없음"
+											src="../resources/assets/img/thingking.png"
+											style="width: 18px; height: 18px;"> <br> 버튼을 클릭하여
+										채팅을 시작해보세요!
+									<p>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				</div>
 				</div>
 			</c:if>
 		</section>
+		<!-- 프로필 페이지 Modal -->
+		<div class="modal fade" id="profileModal" tabindex="-1"
+			aria-labelledby="profileModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header text-center">
+						<h1 class="modal-title fs-5" id="addUserModalLabel">프로필</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body col">
+						<div id="user-profile" class="row d-flex"></div>
+					</div>
+					<div class="modal-footer"></div>
+				</div>
+			</div>
+		</div>
 		<!-- 채팅방 개설 Modal -->
 		<div class="modal fade" id="addUserModal" tabindex="-1"
 			aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -285,10 +317,12 @@
 					</div>
 					<div class="modal-body col">
 						<div>
-							<input type="text" class="form-control" name="add-user-input" id="add-user-input" placeholder="아이디나 닉네임을 입력해주세요.">
+							<input type="text" class="form-control" name="add-user-input"
+								id="add-user-input" placeholder="아이디나 닉네임을 입력해주세요.">
 						</div>
 						<div id="add-user-result" class="row">
-							<table id="add-user-result-table" style="text-align:center;margin-top:10px;">
+							<table id="add-user-result-table"
+								style="text-align: center; margin-top: 10px;">
 								<tbody></tbody>
 							</table>
 						</div>
@@ -313,16 +347,19 @@
 					</div>
 					<div class="modal-body col">
 						<div>
-							<input type="text" class="form-control" name="user-input" id="user-input" placeholder="아이디나 닉네임을 입력해주세요.">
+							<input type="text" class="form-control" name="user-input"
+								id="user-input" placeholder="아이디나 닉네임을 입력해주세요.">
 						</div>
 						<div id="result" class="row">
-							<table id="resultTable" style="text-align:center;margin-top:10px;">
+							<table id="resultTable"
+								style="text-align: center; margin-top: 10px;">
 								<tbody></tbody>
 							</table>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" id="inviteUsersButton" class="btn send-report">완료</button>
+						<button type="button" id="inviteUsersButton"
+							class="btn send-report">완료</button>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
 					</div>
@@ -401,101 +438,59 @@
 			$('#action_menu_btn').click(function() {
 				$('.action_menu').toggle();
 			});
-			$('.a_active').on('click', function() {
-				// 클릭 시 실행하고 싶은 코드를 추가하세요.
-				// $('.chat_none').remove();
-				// $('#chat_info_div').append("<div class='chat_none row d-flex justify-content-center align-items-center'><div class='text-center'><img src='../resources/assets/img/jiqooLogo.png'></div><div class='text-center'><p><span style='color:#388E3C'>채채채</span>님 환영합니다!<br>목록을 클릭하여 채팅을 시작해보세요.<p></div></div>");
-				$('.chat_none').remove();
-				$('.chat-info').show();
-				disconnectWebSocket();
-				chatRoomId = $(this).find(".chat-room-id").val();
-				chatRoomName = $(this).find(".chat-room-name").val();
-				chatImg = $(this).find("#chat-list-img").attr("src");
-				if($('#hiddenChatNo')) {
-					$('#hiddenChatNo').remove();
-				}
-				var hiddenNo = $('<input>').attr({
-				    type: 'hidden',
-				    name: 'hiddenChatNo',
-				    id : 'hiddenChatNo',
-				    value: chatRoomId
-				});
-				$('.chat-info').append(hiddenNo);
-				$("#chatName").text(chatRoomName);
-				$("#info-img").attr("src", chatImg);
-				// 채팅방을 클릭하면 마지막 접속시간 업데이트하기
-				$.ajax({
-		        	url : "/chat/disconnect",
-		        	data : {
-		        		refChatNo : chatRoomId,
-		        		userId : userId
-		        	},
-		        	type : "POST",
-		        	success : function(data) {
-		        		if(data == "success") {
-		        			console.log("마지막 접속시간 업데이트 성공");
-		        		}
-		        	}
-		        })
-		        if($('#hiddenChatNo').val() == chatRoomId) {  // 채팅방 클릭하면 안읽은 메시지를 숨김
-	            	$('#unreadCount-' + chatRoomId).hide();
-	            }
-				$.ajax({
-					url : "/chat/users",
-					data : {
-						chatNo : chatRoomId
-					},
-					type : "GET",
-					dataType: 'json',
-					success : function(data) {
-						var users = "참여자 : "; // 사용자 목록을 저장할 변수 초기화
-				        for (var i = 0; i < data.length; i++) {
-				            users += data[i].userNickname + " ";
-				        }
-						$("#chat-users").text(users);
-						$.ajax({
-							url : "/chat/room",
-							data : {
-								chatNo : chatRoomId
-							},
-							type : "GET",
-							success : function(data) {
-								var chatBody = $("#chat_body");
-								chatBody.children().remove();
-								data.forEach(function(message) {
-									var isSent = message.msgSenderId == userId;
-									var messageText = message.msgContent;
-									var messageTime = message.msgSendDate;
-									// 현재 메시지의 날짜를 가져오고, 그 날짜와 이전 메시지의 날짜를 비교
-				                    var messageDate = new Date(messageTime);
-				                 
-		
-				                    if (previousDate === null || !areDatesEqual(previousDate, messageDate)) {
-				                        // 날짜가 바뀌면 새로운 날짜 표시를 추가
-				                        chatBody.append(createDateDisplay(messageDate));
-				                        previousDate = messageDate;
-				                    }
-				                    var senderNickname = message.user.userNickname;
-				                    var senderPhotoPath = message.user.userPhotoPath;
-									addMessage(isSent, senderNickname, senderPhotoPath, messageText, formatTimestamp(messageTime));
-									$("#unreadCount-" + chatRoomId).text("");
-									$("#unreadCount-" + chatRoomId).hide();
-								})
-								// 웹소켓 연결 초기화
-								console.log(chatRoomId);
-			        			connect(chatRoomId);
-								scrollToBottom();
-							}
-						})
-					}
-				})
-				
-			});
+			chatListReload();
 
 		});
 		$(window).on('beforeunload', function() {
 		    disconnectWebSocket();
 		});
+		 // 모달이 열릴 때 데이터를 불러오는 함수
+		  function openProfileModal() {
+		    $.ajax({
+		      url: "/chat/users",
+		      type: "GET",
+		      data : {
+		    	  chatNo : chatRoomId
+		      },
+		      dataType : 'json',
+		      success: function(data) {
+		        displayUserInformation(data);
+		      }
+		    });
+		  }
+
+		  // 불러온 데이터를 모달에 표시하는 함수
+		  function displayUserInformation(data) {
+			  var userProfile = $("#user-profile");
+			  userProfile.empty(); // 기존 내용을 비웁니다.
+			  var userPhoto;
+			  $.each(data, function(index, user) {
+			    userPhoto = user.userPhotoPath;
+			    if (userPhoto == "" || userPhoto == null) {
+			      userPhoto = "../resources/assets/img/earth-globe.png";
+			    }
+			    var userBox = $("<div>").addClass("user-box");
+			    var userImg = $("<img>").addClass("rounded-circle user_img").attr({
+			      alt: user.userNickname,
+			      src: userPhoto
+			    });
+			    var userName = $("<p>").text(user.userNickname);
+			
+			    userBox.append(userImg, userName);
+			    userProfile.append(userBox);
+			  });
+			
+			  // 사용자 정보 상자의 개수에 따라 justify-content 조정
+			  var userBoxes = userProfile.find(".user-box");
+			  if (userBoxes.length < 4) {
+			    userProfile.css("justify-content", "center");
+			  } else {
+			    userProfile.css("justify-content", "space-between");
+			  }
+			}
+
+		  // 모달이 열릴 때 데이터를 불러오도록 이벤트 리스너를 추가합니다.
+		  $("#profileModal").on("shown.bs.modal", openProfileModal);
 		// 날짜 비교 함수
 	    function areDatesEqual(date1, date2) {
 	        return (
@@ -925,6 +920,7 @@
 			            $('#inviteModal').modal('hide');
 			            var before = $("#chat-users").text();
 			            var resultNickname;
+			            var chatNameBefore = $("#chatName").text();
 			        	for(var i = 0; i < selectedUserIds.length; i++) {
 			        		$.ajax({
 			        			url : "/chat/userinfo",
@@ -942,10 +938,12 @@
 						            	msgSenderNickname : resultNickname,
 						            	msgSenderPhotoPath : ""
 						            }));
-						        	before += selectedUserIds[i] + " ";
+						        	before += resultNickname + " ";
 			        			}
 			        		});
 			        	}
+			        	chatNameBefore += data;
+			        	$("#chatName").text(chatNameBefore);
 			        	$("#chat-users").text(before);
 			            // 생성한 메시지를 chat_body에 추가
 						chatListReload();
@@ -977,6 +975,7 @@
 				            }));
 							chatListReload();
 							$(".chat-info").hide();
+							location.reload(true);
 						}
 					}
 				})
@@ -999,104 +998,119 @@
 	    // JavaScript 함수 내에서 조건을 검사하고 HTML을 생성
 	    function updateChatList(data) {
 	        var chatList = $(".contacts"); // 채팅 리스트가 있는 DOM 요소를 선택
-	        chatList.children().remove(); // 기존 목록 지우기
-			var indUserInfo;
-	        var chatName;
-	        var photo;
-	        var isGroup = true;
-	        $.each(data, function (index, chatRoom) {
-		    	$.ajax({
-		    		url : "/chat/users",
-		    		data : {
-		    			chatNo : chatRoom.chatRoom.chatNo
-		    		},
-		    		type : "GET",
-		    		dataType : 'json',
-		    		success : function(userData) {
-		    			if(userData.length == 2) {
-	    					isGroup = false;
-		    				for(var i = 0; i < userData.length; i++){
-			    				if(userData[i].userId != userId){
-			    					indUserInfo = userData[i];
-			    				}
-		    				}
-		    				
-		    			}
-		    		}	
-		    	})
-		    	console.log(isGroup);
-// 	        	var chatName = chatRoom.chatRoom.chatName;
-		    	if(!isGroup) {
-		    		chatName = indUserInfo.userId;
-    				photo = indUserInfo.userPhotoPath;
-    			}else {
-    				chatName = chatRoom.chatRoom.chatName;
-    				photo = chatRoom.chatRoom.cImagePath;
-    			}
-		    	console.log(chatName);
-	        	var maxLength = 12;
-	        	/* if(chatName.length > maxLength) {
-	        		chatName = chatName.substring(0, maxLength) + "...";
-	        	} */
-// 	        	var photo = chatRoom.chatRoom.cImagePath;
-	        	if(photo == "" || photo == null) {
-	        		photo = "../resources/assets/img/earth-globe.png"
-	        	}
-	            var listItem = '<li class="a_active" id="chat-room-' + chatRoom.chatRoom.chatNo + '">';
-	            listItem += '<input type="hidden" class="chat-room-id" value="' + chatRoom.chatRoom.chatNo + '">';
-	            listItem += '<input type="hidden" class="chat-room-name" value="' + chatName + '">';
-	            listItem += '<div class="d-flex bd-highlight">';
-	            listItem += '<div class="img_cont">';
-	            listItem += '<img src="' + photo + '" class="rounded-circle user_img" id="chat-list-img">';
-// 	            listItem += '<span class="online_icon"></span>';
-	            listItem += '</div>';
-	            listItem += '<div class="user_info">';
-	            listItem += '<div class="col d-flex justify-content-between">';
-	            listItem += '<span>' + chatRoom.chatRoom.chatName + '</span><br>';
-	            
-	            // 날짜와 시간에 대한 조건 검사
-	            var currentDate = new Date(); // 현재 날짜와 시간
-	            var formattedDate = new Date(chatRoom.chatRoom.chatMessage.msgSendDate);
+	        chatList.children().remove();// 기존 목록 지우기
+	     // 비동기 함수를 Promise로 변환
+	        function fetchChatUserInfo(chatRoom) {
+	            return new Promise(function (resolve) {
+	                var chatChatNo = chatRoom.chatRoom.chatNo;
+	                $.ajax({
+	                    url: "/chat/users",
+	                    data: {
+	                        chatNo: chatChatNo
+	                    },
+	                    type: "GET",
+	                    dataType: 'json',
+	                    success: function (userData) {
+	                        var isGroup = true;
+	                        var indUserInfo;
 
-	            if (formattedDate.toDateString() === currentDate.toDateString()) {
-	            	// 오늘인 경우
-	                var hours = formattedDate.getHours();
-	                var minutes = formattedDate.getMinutes();
+	                        if (userData.length == 2) {
+	                            isGroup = false;
+	                            for (var i = 0; i < userData.length; i++) {
+	                                if (userData[i].userId != userId) {
+	                                    indUserInfo = userData[i];
+	                                }
+	                            }
+	                        }
 
-	                // 분 (minutes)이 10 미만인 경우, 0을 앞에 붙여줍니다.
-	                if (minutes < 10) {
-	                    minutes = "0" + minutes;
-	                }
+	                        var chatName;
+	                        var photo;
+							
+	                        if (!isGroup) {
+	                            chatName = indUserInfo.userNickname;
+	                            photo = indUserInfo.userPhotoPath;
+	                        } else {
+	                            chatName = chatRoom.chatRoom.chatName;
+	                            photo = chatRoom.chatRoom.cImagePath;
+	                        }
 
-	                var formattedTime = hours + ":" + minutes;
-	                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedTime + '</p>';
-	            } else {
-	                // 오늘이 아닌 경우
-	                var formattedDateStr = formattedDate.toLocaleDateString();
-	                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedDateStr + '</p>';
-	            }
+	                       
+	                        if (photo == "" || photo == null) {
+	                            photo = "../resources/assets/img/earth-globe.png";
+	                        }
 
-	            listItem += '</div>';
-	            listItem += '<div class="col d-flex justify-content-between">';
-	            listItem += '<p>' + chatRoom.chatRoom.chatMessage.msgContent + '</p>';
-	            var unread = chatRoom.unreadMsgCount;
-	            if(chatRoom.chatRoom.chatMessage.msgSenderId == userId) {
-	            	unread = 0;
-	            }
-	            if (unread != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId) {
-	                listItem += '<p id="unreadCount-' + chatRoom.chatRoom.chatNo + '" style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">' + unread + '</p>';
-	            }
-	            if($('#hiddenChatNo').val() == chatRoomId) {
-	            	$('#unreadCount-' + chatRoomId).hide();
-	            }
-	            
-	            listItem += '</div>';
-	            listItem += '</div>';
-	            listItem += '</div>';
-	            listItem += '</li>';
-
-	            chatList.append(listItem); // 리스트에 아이템 추가
+	                        resolve({ chatRoom, chatName, photo });
+	                    }
+	                });
+	            });
+	        }
+	        // Promise 배열 생성
+	        var promiseArray = data.map(function (chatRoom) {
+	            return fetchChatUserInfo(chatRoom);
 	        });
+	        Promise.all(promiseArray)
+	        .then(function (results) {
+	        	chatList.children().remove();
+	            results.forEach(function (result) {
+	                var { chatRoom, chatName, photo } = result;
+	                // 나머지 코드와 li 요소 생성 부분은 그대로 유지
+	                var listItem = '<li class="a_active" id="chat-room-' + chatRoom.chatRoom.chatNo + '">';
+	                listItem += '<input type="hidden" class="chat-room-id" value="' + chatRoom.chatRoom.chatNo + '">';
+	                listItem += '<input type="hidden" class="chat-room-name" value="' + chatName + '">';
+	                // ... 이하 생략
+	                listItem += '<div class="d-flex bd-highlight">';
+		            listItem += '<div class="img_cont">';
+		            listItem += '<img src="' + photo + '" class="rounded-circle user_img" id="chat-list-img">';
+	// 	            listItem += '<span class="online_icon"></span>';
+		            listItem += '</div>';
+		            listItem += '<div class="user_info">';
+		            listItem += '<div class="col d-flex justify-content-between">';
+		            listItem += '<span>' + chatName + '</span><br>';
+		            
+		            // 날짜와 시간에 대한 조건 검사
+		            var currentDate = new Date(); // 현재 날짜와 시간
+		            var formattedDate = new Date(chatRoom.chatRoom.chatMessage.msgSendDate);
+	
+		            if (formattedDate.toDateString() === currentDate.toDateString()) {
+		            	// 오늘인 경우
+		                var hours = formattedDate.getHours();
+		                var minutes = formattedDate.getMinutes();
+	
+		                // 분 (minutes)이 10 미만인 경우, 0을 앞에 붙여줍니다.
+		                if (minutes < 10) {
+		                    minutes = "0" + minutes;
+		                }
+	
+		                var formattedTime = hours + ":" + minutes;
+		                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedTime + '</p>';
+		            } else {
+		                // 오늘이 아닌 경우
+		                var formattedDateStr = formattedDate.toLocaleDateString();
+		                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedDateStr + '</p>';
+		            }
+	
+		            listItem += '</div>';
+		            listItem += '<div class="col d-flex justify-content-between">';
+		            listItem += '<p>' + chatRoom.chatRoom.chatMessage.msgContent + '</p>';
+		            var unread = chatRoom.unreadMsgCount;
+		            if(chatRoom.chatRoom.chatMessage.msgSenderId == userId) {
+		            	unread = 0;
+		            }
+		            if (unread != 0 && chatRoom.chatRoom.chatMessage.msgSenderId != userId) {
+		                listItem += '<p id="unreadCount-' + chatRoom.chatRoom.chatNo + '" style="border-radius: 50px; color: white; background-color: #F24E1E; width: 25px; height: 25px; text-align: center;">' + unread + '</p>';
+		            }
+		            if($('#hiddenChatNo').val() == chatRoomId) {
+		            	$('#unreadCount-' + chatRoomId).hide();
+		            }
+		            
+		            listItem += '</div>';
+		            listItem += '</div>';
+		            listItem += '</div>';
+		            listItem += '</li>';
+		                chatList.append(listItem);
+		            });
+	        });
+	        
 	        $('.contacts').on('click', '.a_active', function() {
 	            // 클릭 시 실행하고 싶은 코드를 추가하세요.
 	            // 클릭한 채팅방과 관련된 동작을 이곳에 추가
@@ -1130,7 +1144,6 @@
 		        	}
 		        })
 	            // 아래에 채팅방 열기 및 관련 작업을 수행하는 코드를 추가
-	            // 이 예제는 클릭 시 아래의 예제 코드를 실행합니다.
 	            $('.chat_none').remove();
 	            $('.chat-info').show();
 	            chatRoomId = chatRoomId;
@@ -1192,11 +1205,9 @@
 	                    })
 	                }
 	            });
-	            // 아래에 채팅방 열기 등 원하는 동작 코드 추가
 	        });
 
 	    }
-	    // updateChatList(data); // data는 서버에서 받아온 채팅 데이터 배열입니다.
 	</script>
 </body>
 

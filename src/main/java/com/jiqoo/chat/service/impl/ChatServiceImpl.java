@@ -16,13 +16,13 @@ import com.jiqoo.chat.store.ChatStore;
 import com.jiqoo.user.domain.User;
 
 @Service
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
 
 	@Autowired
 	private ChatStore chatStore;
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	@Override
 	public int insertChatMessage(ChatMessage chatMessage) {
 		int result = chatStore.insertChatMessage(sqlSession, chatMessage);
@@ -119,5 +119,9 @@ public class ChatServiceImpl implements ChatService{
 		return result;
 	}
 
+	@Override
+	public void updateChatName(String str, int chatNo) {
+		chatStore.updateChatName(sqlSession, str, chatNo);
+	}
 
 }
