@@ -44,6 +44,12 @@ public class ChatStoreLogic implements ChatStore {
 	}
 
 	@Override
+	public int insertNewChatRoomByMoqoo(SqlSession sqlSession, ChatRoom chatRoom) {
+		int moqooChatNo = sqlSession.insert("ChatMapper.insertNewChatRoomByMoqoo", chatRoom);
+		return moqooChatNo;
+	}
+
+	@Override
 	public int updateChatLastDate(SqlSession sqlSession, ChatUser chatUser) {
 		int result = sqlSession.update("ChatMapper.updateChatLastDate", chatUser);
 		return result;
@@ -134,6 +140,18 @@ public class ChatStoreLogic implements ChatStore {
 		chatMap.put("str", str);
 		chatMap.put("chatNo", chatNo);
 		sqlSession.update("ChatMapper.updateChatName", chatMap);
+	}
+
+	@Override
+	public ChatRoom selectChatRoomByNo(SqlSession sqlSession, int chatNo) {
+		ChatRoom chatRoom = sqlSession.selectOne("ChatMapper.selectChatRoomByNo", chatNo);
+		return chatRoom;
+	}
+
+	@Override
+	public ChatRoom selectChatRoomByMoqoo(SqlSession sqlSession, int moqooNo) {
+		ChatRoom chatRoom = sqlSession.selectOne("ChatMapper.selectChatRoomByMoqoo", moqooNo);
+		return chatRoom;
 	}
 
 }

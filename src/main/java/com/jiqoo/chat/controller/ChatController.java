@@ -98,6 +98,13 @@ public class ChatController {
 		Gson gson = new Gson();
 		return gson.toJson(chatRoomWithCountList);
 	}
+	// 채팅방 번호로 조회
+	@ResponseBody
+	@GetMapping("/chat/room-info")
+	public ChatRoom getChatRoomInfo(@RequestParam int chatNo) {
+		ChatRoom chatRoom = chatService.selectChatRoomByNo(chatNo);
+		return chatRoom;
+	}
 
 	// 채팅방 접속
 	@ResponseBody
@@ -145,7 +152,7 @@ public class ChatController {
             String fileName = generateUniqueFileName(file.getOriginalFilename());
 
             // Amazon S3 버킷 이름과 파일 경로
-            String key = "https://s3.ap-northeast-2.amazonaws.com/arn:aws:s3:::daqoojiqoo/" + fileName;
+            String key = "http://s3.ap-northeast-2.amazonaws.com/daqoojiqoo/jiqoo/" + fileName;
 
             // 이미지를 Amazon S3에 업로드
             ObjectMetadata metadata = new ObjectMetadata();
@@ -265,10 +272,8 @@ public class ChatController {
 		String str = "";
 		String userNickname = "";
 		for (int i = 0; i < selectedUserIds.size(); i++) {
-			if (!currentUser.equals(selectedUserIds.get(i))) {
-				userNickname = chatService.getUserNickname(selectedUserIds.get(i));
-				str += userNickname + " ";
-			}
+			userNickname = chatService.getUserNickname(selectedUserIds.get(i));
+			str += userNickname + " ";
 		}
 		chatRoom.setChatName(str);
 		chatRoom.setcImagePath("../resources/assets/img/earth-globe.png");
@@ -292,6 +297,53 @@ public class ChatController {
 			return "fail";
 		}
 	}
+	
+	// 모꾸 채팅방 개설
+	@ResponseBody
+	@GetMapping("/chat/room-moqoo")
+	public String insertNewChatRoomByMoqoo(@ModelAttribute ChatRoom chatRoom, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		String userNickname = (String) session.getAttribute("userNickname");
+		String currentUserNickname = (String) session.getAttribute("userNickname");
+		String currentUserPhotoPath = (String) session.getAttribute("userPhotoPath");
+		int moqooChatNo = chatService.insertNewChatRoomByMoqoo(chatRoom);
+		if(moqooChatNo != 0) {
+			int result = chatService.insertChatUserById(moqooChatNo, userId);
+			if(result > 0) {
+				ChatMessage chatMessage = new ChatMessage();
+				chatMessage.setRefChatNo(moqooChatNo);
+				chatMessage.setMsgSenderId(userId);
+				chatMessage.setMsgContent(userNickname + "님이 채팅에 참여합니다.");
+				chatMessage.setMsgSenderNickname(currentUserNickname);
+				chatMessage.setMsgSenderPhotoPath(currentUserPhotoPath);
+				chatService.insertChatMessage(chatMessage);
+				return "success";
+			}else {
+				return "fail";
+			}
+		}else {
+			return "fail";
+		}
+	}
+	
+	// 모꾸 참여 승인시 채팅방 초대
+	@ResponseBody
+	@GetMapping("/chat/invite-users-moqoo")
+	public String insertChatUserByMoqoo(@RequestParam int moqooNo, @RequestParam String userId) {
+		ChatRoom chatRoom = chatService.selectChatRoomByMoqoo(moqooNo);
+		if(chatRoom != null) {
+			int chatNo = chatRoom.getChatNo();
+			int result = chatService.insertChatUserByChatNo(chatNo, userId);
+			if(result > 0) {
+				return "success";
+			}else {
+				return "fail";
+			}
+		}else {
+			return "fail";
+		}
+	}
+
 
 //	@MessageMapping(value = "/chat/chatRoom-{refChatNo}")
 //	public void receiveMessage(ChatMessage message, @DestinationVariable int refChatNo) {
