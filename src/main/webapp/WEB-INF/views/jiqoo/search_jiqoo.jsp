@@ -73,8 +73,8 @@
     </div>
 	<!-- ======= Tab Section ======= -->
 	<div id="tab">
-		<button id="btn-myList" class="btn-get-started scrollto myqoo" onclick="showJiqooMyList();">내꾸만 보기</button>
-		<button id="btn-allList" class="btn-get-started scrollto allqoo" onclick="showJiqooAllList();">남꾸도 보기</button>
+		<button id="btn-myList" class="btn-get-started scrollto" onclick="loadInitialJiqooMyList();">내꾸만 보기</button>
+		<button id="btn-allList" class="btn-get-started scrollto qoo" onclick="loadInitialJiqooAllList();">남꾸도 보기</button>
 	</div>
     <div id="container" data-aos=fade-in>
 	    <div id="list-container">
@@ -106,33 +106,47 @@
 	</script>
 
 	<script>
+	var currentOffsetAll = 0; // 현재 offset 값 for all
+	var currentOffsetMy = 0; // 현재 offset 값 for my
+	var currentOffsetSearch = 0; // 현재 offset 값 for search
+	var loadingAll = false; // 중복 로드 방지용 플래그 for all
+	var loadingMy = false; // 중복 로드 방지용 플래그 for my
+	var loadingSearch = false; // 중복 로드 방지용 플래그 for search
+	var loadingInProgress = false;
+    var searchValue = $("#search-input").val();
+	var searchOption = $("#search-option").val();
+
+	var btnMyList = $("#btn-myList");
+	var btnAllList = $("#btn-allList");
 	
 	$("#search-btn").on('click', function() {
-		searchJiqooList();
+		loadInitialJiqooSearchList();
 	})
-		// 스타일 클래스 없애기
-		document.getElementById("btn-myList").classList.remove("qoo");
-		$("#search-btn").on('click', function() {
-			searchJiqooList();
-		})
+// 		// 스타일 클래스 없애기
+// 		document.getElementById("btn-myList").classList.remove("qoo");
+// 		$("#search-btn").on('click', function() {
+// 			loadInitialJiqooSearchList();
+// 		})
 
-		var currentOffset = 0; // 현재 offset 값
-		var loading = false; // 중복 로드 방지용 플래그
-	    // 스타일 클래스 생성
-	    document.getElementById("btn-allList").classList.add("qoo");
+// 	    // 스타일 클래스 생성
+// 	    document.getElementById("btn-allList").classList.add("qoo");
 	    
 		
 		// 초기 지꾸 전체 리스트 로드하는 함수
 		function loadInitialJiqooAllList() {
-// 			var btnMyList = $("#btn-myList");
-// 			var btnAllList = $("#btn-allList");
+			loadingMy = false;
+			loadingSearch = false;
+			currentOffsetAll = 0;
 			
 			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
-//         	 // "qoo" 클래스를 삭제합니다
-// 		    btnMyList.classList.remove("qoo");
+			
+			if(btnMyList.hasClass("qoo")) {
+	        	 // "qoo" 클래스를 삭제합니다
+			    btnMyList.removeClass("qoo");
+			    // "qoo" 클래스를 추가합니다
+			    btnAllList.addClass("qoo");
+			}
 		    
-// 		    // "qoo" 클래스를 추가합니다
-// 		    btnAllList.classList.add("qoo");
 		    $.ajax({
 		        url: "/jiqoo/loadInitialJiqooAllList",
 		        type: "GET",
@@ -150,7 +164,8 @@
 		                }
 		                
 		             	// 현재 offset 값을 업데이트
-		                currentOffset += 10;
+		                currentOffsetAll += 10;
+		             	loadingAll = true;
 		            }
 		        },
 		        error: function () {
@@ -158,19 +173,19 @@
 		        }
 		    });
 		}
-		
+
 		// 지꾸 전체 리스트 스크롤 이벤트 핸들러 
 		$(window).scroll(function () {
-	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+	    if (!loadingInProgress && $(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
 	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
-	        if (!loading) {
-	            loading = true;
+	        if (!loadingMy && loadingAll && !loadingSearch) {
+	        loadingInProgress = true;
 	            // 서버로 데이터를 요청합니다.
 	            $.ajax({
 	                url: "/jiqoo/loadMoreJiqllAllList", // 서버로 요청 보낼 URL
 	                type: "get", // GET 요청
 	                data: {
-	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    offset: currentOffsetAll, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
 	                    limit: 10 // 페이지당 표시할 댓글 수
 	                },
 	                success: function (result) {
@@ -186,78 +201,36 @@
 			                }
 			                
 			             	// 현재 offset 값을 업데이트
-			                currentOffset += 10;
-			            	}	
-	                    
+			                currentOffsetAll += 10;
+			            	}else if(result.length < 10){
+			            		loadingAll = false;	
+			            	}else {
+			            		loadingAll = false;	
+			            	}
 	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+	                    alert("전체지롱" + loadingAll + ", " + loadingMy);
+	                    loadingInProgress = false;
 	                },
 	                error: function () {
 	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
 	                    const errorContainer = $("#error-container");
 	                    errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
 	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+	                    loadingAll = false;
 	                }
             	});
 	    	}
-	  		  }
-        	});
-		
-		$(document).ready(function () {
-			loadInitialJiqooAllList();
-		});
-		
-		
-		// 초기 지꾸 본인 리스트 로드하는 함수
-		function loadInitialJiqooMyList() {
-// 			var btnMyList = $("#btn-myList");
-// 			var btnAllList = $("#btn-allList");
-			
-			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
-//         	 // "qoo" 클래스를 삭제합니다
-// 		    btnMyList.classList.remove("qoo");
-		    
-// 		    // "qoo" 클래스를 추가합니다
-// 		    btnAllList.classList.add("qoo");
-		    $.ajax({
-		        url: "/jiqoo/loadInitialJiqooMyList",
-		        type: "GET",
-		        success: function (result) {
-				    
-					// 로딩 메시지를 제거
-		            loadingMessage.remove();
-		            if (result.length > 0) {
-		                var listContainer = $("#list-container");
-		                
-		                for (var i = 0; i < result.length; i++) {
-		                    var jiqooMyList = result[i];
-		                    var listItem = createResultItem(jiqooMyList);
-		                    listContainer.append(listItem);
-		                }
-		                
-		             	// 현재 offset 값을 업데이트
-		                currentOffset += 10;
-		            }
-		        },
-		        error: function () {
-		            alert("지꾸 불러오는 중 오류가 발생했습니다.");
-		        }
-		    });
-		}
-		
-		// 지꾸 전체 리스트 스크롤 이벤트 핸들러 
-		$(window).scroll(function () {
-	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+	        
+	        
 	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
-	        if (!loading) {
-	            loading = true;
+	        if (loadingMy && !loadingAll && !loadingSearch) {
+	        	loadingInProgress = true;
 	            // 서버로 데이터를 요청합니다.
 	            $.ajax({
-	                url: "/jiqoo/loadMoreJiqllMyList", // 서버로 요청 보낼 URL
+	                url: "/jiqoo/loadMoreJiqooMyList", // 서버로 요청 보낼 URL
 	                type: "get", // GET 요청
 	                data: {
-	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    offset: currentOffsetMy, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
 	                    limit: 10 // 페이지당 표시할 댓글 수
 	                },
 	                success: function (result) {
@@ -273,23 +246,203 @@
 			                }
 			                
 			             	// 현재 offset 값을 업데이트
-			                currentOffset += 10;
-			            	}	
-	                    
-	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+			                currentOffsetMy += 10;
+			            	} else if(result.length < 10){
+			            		
+			                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+			                    loadingMy = false;
+			            		
+			            	}else {
+			            		 // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+			                    loadingMy = false;
+			            	}
+		                loadingInProgress = false;
+	                    alert("내꾸지롱" + loadingAll + ", " + loadingMy);
 	                },
 	                error: function () {
 	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
 	                    const errorContainer = $("#error-container");
 	                    errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
 	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+	                    loadingMy = false;
 	                }
             	});
 	    	}
-	  		  }
-        	});
+	        
+	        
+	        if (!loadingMy && !loadingAll && loadingSearch) {
+	        	searchValue = $("#search-input").val();
+	        	searchOption = $("#search-option").val();
+	        	loadingInProgress = true;
+	        	console.log(searchValue, searchOption);
+	            // 서버로 데이터를 요청합니다.
+	            $.ajax({
+	                url: "/jiqoo/loadMoreJiqooSearchList", // 서버로 요청 보낼 URL
+	                type: "get", // GET 요청
+	                data: {
+			        	searchValue: searchValue,
+			        	searchOption: searchOption,
+	                    offset: currentOffsetSearch, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    limit: 10 // 페이지당 표시할 댓글 수
+	                },
+	                success: function (result) {
+	                    // 서버에서 성공적으로 데이터를 받아온 경우
+	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
+			            if (result.length > 0) {
+			                var listContainer = $("#list-container");
+			                
+			                for (var i = 0; i < result.length; i++) {
+			                    var jiqooSearchList = result[i];
+			                    var listItem = createResultItem(jiqooSearchList);
+			                    listContainer.append(listItem);
+			                }
+			                
+			             	// 현재 offset 값을 업데이트
+			                currentOffsetSearch += 10;
+			            	}else if(result.length < 10){
+			            		
+			                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+			                    loadingSearch = false;
+			            		
+			            	}else {
+			            		 // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+			                    loadingSearch = false;
+			            	}
+			            alert("서치지롱" + loadingAll + ", " + loadingMy + ", " + loadingSearch);
+		                loadingInProgress = false;
+	                },
+	                error: function () {
+	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+	                    const errorContainer = $("#error-container");
+	                    errorContainer.text("검색결과를 불러오는 중 오류가 발생했습니다.");
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loadingSearch = false;
+	                }
+           		});
+    		}
+	        
+  		  }
+       	});
+		
+		
+		
+		$(document).ready(function () {
+			loadInitialJiqooAllList();
+		});
+		
+		
+		// 초기 지꾸 본인 리스트 로드하는 함수
+		function loadInitialJiqooMyList() {
+			currentOffsetMy = 0;
+			loadingAll = false;
+			loadingSearch = false;
+			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+			if(btnAllList.hasClass("qoo")) {
+	        	 // "qoo" 클래스를 삭제합니다
+			    btnAllList.removeClass("qoo");
+			    // "qoo" 클래스를 추가합니다
+			    btnMyList.addClass("qoo");
+			}
+		    $.ajax({
+		        url: "/jiqoo/loadInitialJiqooMyList",
+		        type: "GET",
+		        success: function (result) {
+				    
+	                var listContainer = $("#list-container");
+		        	
+					// 로딩 메시지를 제거
+		            loadingMessage.remove();
+					listContainer.empty();
+		            if (result.length > 0) {
+		                
+		                for (var i = 0; i < result.length; i++) {
+		                    var jiqooMyList = result[i];
+		                    var listItem = createResultItem(jiqooMyList);
+		                    listContainer.append(listItem);
+		                }
+		                
+		             	// 현재 offset 값을 업데이트
+		                currentOffsetMy += 10;
+		             	loadingMy = true;
+		        		
+		            }
+		        },
+		        error: function () {
+		            alert("지꾸 불러오는 중 오류가 발생했습니다.");
+		        }
+		    });
+		}
+		
+		// 초기 지꾸 검색 리스트 로드하는 함수
+		function loadInitialJiqooSearchList() {
+		    // 검색어를 가져옴
+		    var searchValue = $("#search-input").val();
+			var searchOption = $("#search-option").val();
+			if(searchOption == "남꾸"){
+				if(!btnAllList.hasClass("qoo")){
+				    btnAllList.addClass("qoo");
+				    btnMyList.removeClass("qoo");
+				}
+			}else {
+				if(!btnMyList.hasClass("qoo")) {
+				    btnAllList.removeClass("qoo");
+				    btnMyList.addClass("qoo");
+				}
+			}
+			currentOffsetSearch = 0;
+			loadingAll = false;
+			loadingMy = false;
+			console.log(searchValue, searchOption);
+			
+			var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+//         	 // "qoo" 클래스를 삭제합니다
+// 		    btnMyList.classList.remove("qoo");
+		    
+// 		    // "qoo" 클래스를 추가합니다
+// 		    btnAllList.classList.add("qoo");
+		    $.ajax({
+		        url: "/jiqoo/loadInitialJiqooSearchList",
+		        type: "GET",
+		        data: {
+		        	searchValue: searchValue,
+		        	searchOption: searchOption,
+                    offset: currentOffsetSearch, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+                    limit: 10 // 페이지당 표시할 댓글 수
+                },
+		        success: function (result) {
+				    
+					// 로딩 메시지를 제거
+		            loadingMessage.remove();
+	                var listContainer = $("#list-container");
+		            if (result.length > 0) {
+			            listContainer.empty();
+		                
+		                for (var i = 0; i < result.length; i++) {
+		                    var jiqooSearchList = result[i];
+		                    var listItem = createResultItem(jiqooSearchList);
+		                    listContainer.append(listItem);
+		                }
+		                
+		             	// 현재 offset 값을 업데이트
+		                currentOffsetSearch += 10;
+		             	loadingSearch = true;
+		            } else{
+		                // result가 비어있는 경우 표시할 내용
+		                listContainer.empty();
+		                
+		                listContainer.html(`<div id="empty-container">
+			                    <img id="logo-img" src="../resources/assets/img/jiqooLogo.png">
+			                    <span id="empty-text"><br>
+			                    검색결과가 없습니다.</span></div>
+			                `);
+		            }
+		        },
+		        error: function () {
+		            alert("검색결과를 불러오는 중 오류가 발생했습니다.");
+		        }
+		    });
+		}
+		
 	function createResultItem(jiqooAllList) {
 	    var listItem = $('<div class="row result-item">');
 	    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo);
@@ -338,99 +491,99 @@
 	
 /////
 
-$(document).ready(function () {
-    var currentOffsetAll = 0; // 현재 offset 값 for all
-    var currentOffsetMy = 0; // 현재 offset 값 for my
-    var loadingAll = false; // 중복 로드 방지용 플래그 for all
-    var loadingMy = false; // 중복 로드 방지용 플래그 for my
+// $(document).ready(function () {
+//     var currentOffsetAll = 0; // 현재 offset 값 for all
+//     var currentOffsetMy = 0; // 현재 offset 값 for my
+//     var loadingAll = false; // 중복 로드 방지용 플래그 for all
+//     var loadingMy = false; // 중복 로드 방지용 플래그 for my
 
-    // 초기 지꾸 전체 리스트 로드하는 함수
-    function loadInitialJiqooAllList() {
-        // ...
-        // 여기에 all 리스트 로드 관련 코드 추가
-    }
+//     // 초기 지꾸 전체 리스트 로드하는 함수
+//     function loadInitialJiqooAllList() {
+//         // ...
+//         // 여기에 all 리스트 로드 관련 코드 추가
+//     }
 
-    // 초기 지꾸 본인 리스트 로드하는 함수
-    function loadInitialJiqooMyList() {
-        // ...
-        // 여기에 my 리스트 로드 관련 코드 추가
-    }
+//     // 초기 지꾸 본인 리스트 로드하는 함수
+//     function loadInitialJiqooMyList() {
+//         // ...
+//         // 여기에 my 리스트 로드 관련 코드 추가
+//     }
 
-    // 지꾸 전체 리스트 스크롤 이벤트 핸들러 for all
-    $(window).scroll(function () {
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-            if (!loadingAll) {
-                loadingAll = true;
-                var ajaxUrlAll = "/jiqoo/loadMoreJiqllAllList"; // URL for all
+//     // 지꾸 전체 리스트 스크롤 이벤트 핸들러 for all
+//     $(window).scroll(function () {
+//         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+//             if (!loadingAll) {
+//                 loadingAll = true;
+//                 var ajaxUrlAll = "/jiqoo/loadMoreJiqllAllList"; // URL for all
 
-                $.ajax({
-                    url: ajaxUrlAll,
-                    type: "get",
-                    data: {
-                        offset: currentOffsetAll,
-                        limit: 10
-                    },
-                    success: function (result) {
-                        if (result.length > 0) {
-                            var listContainer = $("#list-container");
-                            for (var i = 0; i < result.length; i++) {
-                                var jiqooAllList = result[i];
-                                var listItem = createResultItem(jiqooAllList);
-                                listContainer.append(listItem);
-                            }
-                            currentOffsetAll += 10;
-                        }
-                        loadingAll = false;
-                    },
-                    error: function () {
-                        const errorContainer = $("#error-container");
-                        errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
-                        loadingAll = false;
-                    }
-                });
-            }
-        }
-    });
+//                 $.ajax({
+//                     url: ajaxUrlAll,
+//                     type: "get",
+//                     data: {
+//                         offset: currentOffsetAll,
+//                         limit: 10
+//                     },
+//                     success: function (result) {
+//                         if (result.length > 0) {
+//                             var listContainer = $("#list-container");
+//                             for (var i = 0; i < result.length; i++) {
+//                                 var jiqooAllList = result[i];
+//                                 var listItem = createResultItem(jiqooAllList);
+//                                 listContainer.append(listItem);
+//                             }
+//                             currentOffsetAll += 10;
+//                         }
+//                         loadingAll = false;
+//                     },
+//                     error: function () {
+//                         const errorContainer = $("#error-container");
+//                         errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
+//                         loadingAll = false;
+//                     }
+//                 });
+//             }
+//         }
+//     });
 
-    // 지꾸 본인 리스트 스크롤 이벤트 핸들러 for my
-    $(window).scroll(function () {
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-            if (!loadingMy) {
-                loadingMy = true;
-                var ajaxUrlMy = "/jiqoo/loadMoreJiqllMyList"; // URL for my
+//     // 지꾸 본인 리스트 스크롤 이벤트 핸들러 for my
+//     $(window).scroll(function () {
+//         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+//             if (!loadingMy) {
+//                 loadingMy = true;
+//                 var ajaxUrlMy = "/jiqoo/loadMoreJiqllMyList"; // URL for my
 
-                $.ajax({
-                    url: ajaxUrlMy,
-                    type: "get",
-                    data: {
-                        offset: currentOffsetMy,
-                        limit: 10
-                    },
-                    success: function (result) {
-                        if (result.length > 0) {
-                            var listContainer = $("#list-container");
-                            for (var i = 0; i < result.length; i++) {
-                                var jiqooMyList = result[i];
-                                var listItem = createResultItem(jiqooMyList);
-                                listContainer.append(listItem);
-                            }
-                            currentOffsetMy += 10;
-                        }
-                        loadingMy = false;
-                    },
-                    error: function () {
-                        const errorContainer = $("#error-container");
-                        errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
-                        loadingMy = false;
-                    }
-                });
-            }
-        }
-    });
+//                 $.ajax({
+//                     url: ajaxUrlMy,
+//                     type: "get",
+//                     data: {
+//                         offset: currentOffsetMy,
+//                         limit: 10
+//                     },
+//                     success: function (result) {
+//                         if (result.length > 0) {
+//                             var listContainer = $("#list-container");
+//                             for (var i = 0; i < result.length; i++) {
+//                                 var jiqooMyList = result[i];
+//                                 var listItem = createResultItem(jiqooMyList);
+//                                 listContainer.append(listItem);
+//                             }
+//                             currentOffsetMy += 10;
+//                         }
+//                         loadingMy = false;
+//                     },
+//                     error: function () {
+//                         const errorContainer = $("#error-container");
+//                         errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
+//                         loadingMy = false;
+//                     }
+//                 });
+//             }
+//         }
+//     });
 
-    loadInitialJiqooAllList();
-    loadInitialJiqooMyList();
-});
+//     loadInitialJiqooAllList();
+//     loadInitialJiqooMyList();
+// });
 
 	</script>
 </body>

@@ -54,4 +54,16 @@ public class JiqooComtStoreLogic implements JiqooComtStore{
 		return comments;
 	}
 
+	@Override
+	public int countChildComment(SqlSession sqlSession, Comment comment) {
+		int result = sqlSession.selectOne("JiqooComtMapper.countChildComment", comment);
+		return result;
+	}
+
+	@Override
+	public int updateDelComment(SqlSession sqlSession, Comment comment) {
+		int result = sqlSession.update("JiqooComtMapper.updateDelComment", comment);
+		return result;
+	}
+
 }

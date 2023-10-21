@@ -62,4 +62,16 @@ public class JiqooComtServiceImpl implements JiqooComtService{
 		List<Comment> comments = jiqooComtStore.initialComments(sqlSession, jiqooNo);
 		return comments;
 	}
+
+	@Override
+	public int countChildComment(Comment comment) {
+		int result = jiqooComtStore.countChildComment(sqlSession, comment);
+		return result;
+	}
+
+	@Override
+	public int updateDelComment(Comment comment) {
+		int result = jiqooComtStore.updateDelComment(sqlSession, comment);
+		return result;
+	}
 }

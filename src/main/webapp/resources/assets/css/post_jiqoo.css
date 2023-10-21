@@ -410,13 +410,14 @@ p {
 
 /* 댓글 폼 스타일 */
 .comment-form, .reply-form, .modify-form {
-  border: 1px solid #C2D1D9;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+	width: 100%;
+	border: 1px solid #C2D1D9;
+	border-radius: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
 }
 
 .comment-form textarea, .reply-form textarea, .modify-form input {

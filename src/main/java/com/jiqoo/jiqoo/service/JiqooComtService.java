@@ -56,4 +56,18 @@ public interface JiqooComtService {
 	 */
 	List<Comment> initialComments(int jiqooNo);
 
+	/**
+	 * 대댓글 카운트 Service
+	 * @param comment
+	 * @return
+	 */
+	int countChildComment(Comment comment);
+
+	/**
+	 * 댓글 삭제시 내용 변경 Service
+	 * @param comment
+	 * @return
+	 */
+	int updateDelComment(Comment comment);
+
 }

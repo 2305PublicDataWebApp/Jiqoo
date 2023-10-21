@@ -73,12 +73,22 @@ public class JiqooComtController {
 	public String deleteComment(
 			@ModelAttribute Comment comment
 			) {
-		int result = jiqooComtService.delComment(comment);
-		if(result > 0) {
-			return "success";
-	}else {
-		return "fail";
-		}
+	   int countChildComt = jiqooComtService.countChildComment(comment);
+	   if(countChildComt > 0) {
+		   int updateDelComment = jiqooComtService.updateDelComment(comment);
+		   if(updateDelComment > 0) {
+			   return "success";
+		   }else {
+			   return "fail";
+		   }
+	   }else {
+		   int result = jiqooComtService.delComment(comment);
+		   if(result > 0) {
+			   return "success";
+		   }else {
+			   return "fail";
+		   }
+	   }
    }
    
    // 댓글 수정

@@ -114,7 +114,7 @@ public class JiqooServiceImpl implements JiqooService{
 
 	@Override
 	public List<Jiqoo> loadMoreJiqooMyList(Map<String, Object> params) {
-		List<Jiqoo> list = jiqooStore.loadMoreJiqooAllList(sqlSession, params);
+		List<Jiqoo> list = jiqooStore.loadMoreJiqooMyList(sqlSession, params);
 		return list;
 	}
 
@@ -126,7 +126,7 @@ public class JiqooServiceImpl implements JiqooService{
 
 	@Override
 	public List<Jiqoo> loadMoreJiqooAllList(Map<String, Object> params) {
-		List<Jiqoo> list = jiqooStore.loadMoreJiqooMyList(sqlSession, params);
+		List<Jiqoo> list = jiqooStore.loadMoreJiqooAllList(sqlSession, params);
 		return list;
 	}
 

@@ -116,7 +116,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 		<!-- ======= Tab Section ======= -->
 		<div id="tab">
 			<button id="btn-myMap" class="btn-get-started scrollto">내꾸만 보기</button>
-			<button id="btn-allMap" class="btn-get-started scrollto">남꾸도 보기</button>
+			<button id="btn-allMap" class="btn-get-started scrollto qoo">남꾸도 보기</button>
 		</div>
 		<!-- ======= Modal ======= -->
 		<div class="modal-body"></div>
@@ -284,6 +284,8 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
     
 
   // JavaScript 코드를 추가합니다.
+  var btnMyMap = $("#btn-myMap");
+  var btnAllMap = $("#btn-allMap");
   const radioButtons = document.querySelectorAll('.form-check-input');
   const imageLabels = document.querySelectorAll('.form-check-label');
 
@@ -301,32 +303,129 @@ document.getElementById("open-map-btn").onclick = function() {
 
 //지도
 
-var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = { 
-        center: new kakao.maps.LatLng(37.54699, 127.09598), // 지도의 중심좌표
-        level: 4 // 지도의 확대 레벨
-    };
-
-var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+var map = null;
+var mapContainer = document.getElementById('map') // 지도를 표시할 div 
+    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    navigator.geolocation.getCurrentPosition(function(position) {
+        
+        var lat = position.coords.latitude, // 위도
+            lon = position.coords.longitude; // 경도
+            
+		var mapOption = { 
+		        center: new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude), // 지도의 중심좌표
+		        level: 4 // 지도의 확대 레벨
+		    };
+		
+		map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+		    
+      });
 
 function showMyMap(){
+	navigator.geolocation.getCurrentPosition(function(position) {
+	        
+	        var lat = position.coords.latitude, // 위도
+	            lon = position.coords.longitude; // 경도
+	            
+			var mapOption = { 
+			        center: new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude), // 지도의 중심좌표
+			        level: 4 // 지도의 확대 레벨
+			    };
+			
+			map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+			    
+	      });
+	if(btnAllMap.hasClass("qoo")) {
+   	 	// "qoo" 클래스를 삭제합니다
+	    btnAllMap.removeClass("qoo");
+	    // "qoo" 클래스를 추가합니다
+	    btnMyMap.addClass("qoo");
+	}
+	
+	 // 커스텀 오버레이 배열을 선언합니다
+	  var customOverlays = [];
 	 $.ajax({
 	        url: "/jiqoo/showMyMap",
 	        type: "GET",
-	        success: function (result) {
-	            if (result === "success") {
-	                alert("지꾸 리스트");
-	            } else {
-	                alert("실패");
-	            }
-	        },
-	        error: function () {
-	            alert("Ajax 오류~ 관리자에게 문의하삼");
-	        }
-	    });
-	}
+	        success: function (data) {
+	  	      for (var i = 0; i < data.length; i++) {
+	  	        // 마커 이미지의 이미지 크기 입니다
+	  	        var imageSize = new kakao.maps.Size(70, 70);
+
+	  	        // 마커 이미지를 생성합니다    
+	  	        var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize);
+
+	  	        // 마커를 생성합니다
+	  	        var marker = new kakao.maps.Marker({
+	  	          map: map, // 마커를 표시할 지도
+	  	          position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng),
+	  	          image: markerImage,
+	  	          clickable: true
+	  	        });
+
+	  	        // 커스텀 오버레이에 표시될 내용을 생성합니다
+	  	        var overlayContent =  '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
+	  	          '<div class="info-header"><a href="/jiqoo/detail?jiqooNo='+data[i].jiqooNo +'">' + data[i].jiqooW3W + '</a></div>' +
+	  	          '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
+	  	          '</div>';
+
+	  	   // 커스텀 오버레이를 생성합니다
+		        var customOverlay = new kakao.maps.CustomOverlay({
+		          content: overlayContent,
+		          position: marker.getPosition(),
+		          clickable: true
+		        });
+
+		        // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
+		        var overlayClicked = false;
+
+		     // 마커에 클릭 이벤트를 등록합니다
+		        (function (customOverlay, marker) {
+		            kakao.maps.event.addListener(marker, 'click', function () {
+		                if (customOverlay.getMap()) {
+		                    customOverlay.setMap(null);
+		                } else {
+		                    customOverlay.setMap(map);
+		                }
+
+		                lastClickedOverlay = customOverlay;
+
+		                for (var j = 0; j < customOverlays.length; j++) {
+		                    if (customOverlays[j] !== customOverlay) {
+		                        customOverlays[j].setMap(null);
+		                    }
+		                }
+		            });
+
+		            customOverlays.push(customOverlay);
+		        })(customOverlay, marker);
+		     
+		     
+
+		      }
+		    }
+		  });
+		}
 	
 function showAllMap() {
+	  navigator.geolocation.getCurrentPosition(function(position) {
+	    var lat = position.coords.latitude; // 위도
+	    var lon = position.coords.longitude; // 경도
+
+	    var mapOption = {
+	      center: new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude), // 지도의 중심좌표
+	      level: 4 // 지도의 확대 레벨
+	    };
+
+	    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	  });
+
+	  if (btnMyMap.hasClass("qoo")) {
+	    // "qoo" 클래스를 삭제합니다
+	    btnMyMap.removeClass("qoo");
+	    // "qoo" 클래스를 추가합니다
+	    btnAllMap.addClass("qoo");
+	  }
+
 	  // 커스텀 오버레이 배열을 선언합니다
 	  var customOverlays = [];
 
@@ -339,7 +438,7 @@ function showAllMap() {
 	        // 마커 이미지의 이미지 크기 입니다
 	        var imageSize = new kakao.maps.Size(70, 70);
 
-	        // 마커 이미지를 생성합니다    
+	        // 마커 이미지를 생성합니다
 	        var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize);
 
 	        // 마커를 생성합니다
@@ -351,10 +450,10 @@ function showAllMap() {
 	        });
 
 	        // 커스텀 오버레이에 표시될 내용을 생성합니다
-	        var overlayContent = '<div class="infoWindow">' +
+	        var overlayContent = '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
 	          '<div class="info-header">' + data[i].jiqooW3W + '</div>' +
 	          '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
-	          '</div>';
+	          '</div';
 
 	        // 커스텀 오버레이를 생성합니다
 	        var customOverlay = new kakao.maps.CustomOverlay({
@@ -363,25 +462,37 @@ function showAllMap() {
 	          clickable: true
 	        });
 
-	        // 커스텀 오버레이를 배열에 추가합니다
-	        customOverlays.push(customOverlay);
+	        // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
+	        var overlayClicked = false;
 
-	        // 마커에 클릭 이벤트를 등록합니다
-	        (function (customOverlay) {
+	     // 마커에 클릭 이벤트를 등록합니다
+	        (function (customOverlay, marker) {
 	          kakao.maps.event.addListener(marker, 'click', function () {
-	            // 모든 커스텀 오버레이를 닫습니다
-	            for (var j = 0; j < customOverlays.length; j++) {
-	              customOverlays[j].setMap(null);
+	            // 클릭된 마커의 커스텀 오버레이를 열고 닫기
+	            if (customOverlay.getMap()) {
+	              customOverlay.setMap(null); // 커스텀 오버레이 닫음
+	            } else {
+	              customOverlay.setMap(map); // 커스텀 오버레이 열음
 	            }
 
-	            // 클릭된 마커의 커스텀 오버레이만 엽니다
-	            customOverlay.setMap(map);
+	            // 마지막으로 클릭된 커스텀 오버레이 업데이트
+	            lastClickedOverlay = customOverlay;
+
+	            // 다른 커스텀 오버레이 닫기
+	            for (var j = 0; j < customOverlays.length; j++) {
+	              if (customOverlays[j] !== customOverlay) {
+	                customOverlays[j].setMap(null);
+	              }
+	            }
 	          });
-	        })(customOverlay);
+
+	          customOverlays.push(customOverlay);
+	        })(customOverlay, marker);
 	      }
 	    }
 	  });
 	}
+
 
 	
 //btn-allMap 버튼 클릭 이벤트 처리

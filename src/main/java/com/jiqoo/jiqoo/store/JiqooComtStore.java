@@ -66,4 +66,20 @@ public interface JiqooComtStore {
 	 */
 	List<Comment> initialComments(SqlSession sqlSession, int jiqooNo);
 
+	/**
+	 * 대댓글 카운트 Store
+	 * @param sqlSession
+	 * @param comment
+	 * @return
+	 */
+	int countChildComment(SqlSession sqlSession, Comment comment);
+
+	/**
+	 * 댓글 삭제시 내용 변경 Store
+	 * @param sqlSession
+	 * @param comment
+	 * @return
+	 */
+	int updateDelComment(SqlSession sqlSession, Comment comment);
+
 }

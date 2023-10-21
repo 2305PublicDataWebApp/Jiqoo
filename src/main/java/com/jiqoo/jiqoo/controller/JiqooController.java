@@ -170,33 +170,13 @@ public class JiqooController {
 		return gson.toJson(jiqooSearchList);
 	}
 
-//	@ResponseBody
-//	@GetMapping(value = "/jiqoo/AllList", produces = "application/json;charset=UTF-8;")
-//	public String showAllList() {
-//		List<Jiqoo> jiqooAllList = jiqooService.selectJiqooAllList();
-//		Gson gson = new Gson();
-//		return gson.toJson(jiqooAllList);
-//	}
-
-	@ResponseBody
-	@GetMapping(value = "/jiqoo/MyList", produces = "application/json;charset=UTF-8;")
-	public String showAllList(HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
-		List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
-		Gson gson = new Gson();
-		return gson.toJson(jiqooMyList);
-	}
-
 	@ResponseBody
 	@GetMapping(value = "/jiqoo/showMyMap", produces = "application/json;charset=UTF-8;")
 	public String showMyMap(HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		List<Jiqoo> jiqooMyList = jiqooService.selectJiqooMyList(userId);
-		if (jiqooMyList != null) {
-			return "success";
-		} else {
-			return "fail";
-		}
+		Gson gson = new Gson();
+		return gson.toJson(jiqooMyList);
 	}
 
 	@ResponseBody

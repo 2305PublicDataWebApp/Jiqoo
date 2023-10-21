@@ -91,21 +91,6 @@
 	<!-- End Hero -->
 
 	<main id="main">
-		<!-- ======= Search Section ======= -->
-		<div class="search-container">
-			<form action="" method="" class="search-form">
-				<input type="text" placeholder="search" />
-				<button type="submit" id="search-btn">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-						fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-              <path
-							d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
-				</button>
-			</form>
-		</div>
-
-
 
 		<div id="container" data-aos=fade-in>
 
@@ -273,7 +258,6 @@
 				</div>
 			</div>
 			<div class="comment-page-container">
-				<span class="comment-page">< 1 2 3 4 5 ></span>
 			</div>
 		</div>
 	</main>
@@ -352,6 +336,10 @@
     	console.log(c);
     });
         }
+
+        
+    	// 페이지가 로드될 때 초기 댓글을 로드
+    	loadInitialComments();
     });
 
     function toggleReportDiv() {
@@ -379,28 +367,35 @@
       const comtContent = $("#comtContent").val();
       const refPostNo = "${jiqoo.jiqooNo}";
       const sessionUserId = "${sessionScope.userId }";
-
-      
-      $.ajax({
-          url: "/jiqoo/insertComt",
-          data: { comtContent: comtContent, refPostNo: refPostNo },
-          type: "GET",
-          success: function(result) {
-              if (result === "success") {
-                  alert("댓글이 등록되었습니다.");
-                  loadInitialComments();
-                  $("#comtContent").val("");
-              } else {
-                  alert("댓글이 등록되지 않았습니다.");
-              }
-          },
-          error: function() {}
-      });
+      if (currentUserId == "") {
+	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+	            // 사용자가 확인을 누르면 로그인 페이지로 이동
+	            window.location.href = "/user/login";
+	            return; // 이동 후 함수를 종료
+	        }
+	    }else {
+			$.ajax({
+			    url: "/jiqoo/insertComt",
+			    data: { comtContent: comtContent, refPostNo: refPostNo },
+			    type: "GET",
+			    success: function(result) {
+			        if (result === "success") {
+			            alert("댓글이 등록되었습니다.");
+			            loadInitialComments();
+			            console.log(loading);
+			            $("#comtContent").val("");
+			        } else {
+			            alert("댓글이 등록되지 않았습니다.");
+			        }
+			    },
+			    error: function() {}
+			});
+	    }
   });
 
   
   // 댓글 삭제
-	const removeComment = (obj, comtNo) => {
+	const removeComment = (comtNo) => {
 		if(confirm("정말 삭제하시겠습니까?")){
 			$.ajax({
 				url : "/jiqoo/delComment",
@@ -480,9 +475,6 @@
 
 	// 대댓글 폼, 대댓글 작성
 	function showReplyForm(obj, pComtNo) {
-// 		var currentUserId = $("#CurrentUserId").val();
-// 		var currentUserId = "${sessionScope.userId}"; // 현재 로그인한 사용자의 ID
-		console.log(currentUserId);
 	 	if (currentUserId == "") {
 	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
 	            // 사용자가 확인을 누르면 로그인 페이지로 이동
@@ -542,39 +534,39 @@
 
 	// 초기 댓글을 로드하는 함수
 	function loadInitialComments() {
-		var jiqooNo = "${jiqoo.jiqooNo}";
+		currentOffset = 0;
+	    var jiqooNo = "${jiqoo.jiqooNo}";
 	    // 페이지 로딩 중 메시지를 표시
 	    const loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
 	    const commentContainer = $("#comment-container");
-	    
 	    commentContainer.append(loadingMessage);
 
 	    $.ajax({
 	        url: "/jiqoo/loadInitialComments", // 서버로 요청 보낼 URL
 	        type: "get",
 	        data: {
-	        	jiqooNo : jiqooNo
+	            jiqooNo: jiqooNo
 	        },
 	        success: function (data) {
-	            // 로딩 메시지를 제거
+                var commentContainer = $("#comment-container");
+				commentContainer.empty();
+            	 // 로딩 메시지를 제거
 	            loadingMessage.remove();
+                if (data.length > 0) {
+                	console.log(data)
+                    var commentList = $("<ul>").addClass("comment-list");
+					
+                    for(var i = 0; i < data.length; i++){
+                    	var comment = data[i];
+                    	var listItem = createCommentItem(comment);
+                    	commentList.append(listItem);
+                    }
+                    commentContainer.append(commentList);
+                    currentOffset += 10;
+                }
 
-	            const commentContainer = $("#comment-container");
-
-	            if (data.length > 0) {
-	                const commentList = $("<ul>").addClass("comment-list");
-
-	                data.forEach(comment => {
-	                    const commentItem = createCommentItem(comment);
-	                    commentList.append(commentItem);
-	                });
-
-	                commentContainer.append(commentList);
-
-	                // 현재 offset 값을 업데이트
-	                currentOffset += 10;
-	            }
-	        },
+                loading = false; // 로딩 완료 후 플래그 재설정
+            },
 	        error: function () {
 	            // 서버 통신 오류 시 오류 메시지를 표시
 	            const errorContainer = $("#error-container");
@@ -586,152 +578,140 @@
 	    });
 	}
 
-	// 페이지가 로드될 때 초기 댓글을 로드
-	$(document).ready(function () {
-	    loadInitialComments();
-	});
+
 
 	// 스크롤 이벤트 핸들러
 	$(window).scroll(function () {
 	    if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-	        // 스크롤이 아래로 내려갈 때 댓글 로드 시작
-	        if (!loading) {
-	            loading = true;
+	        if (!loading) { // 로딩 중인지 확인
+	            loading = true; // 로딩 중 플래그 설정
 
-	            // 서버로 데이터를 요청합니다.
 	            $.ajax({
-	                url: "/jiqoo/loadMoreComments", // 서버로 요청 보낼 URL
-	                type: "get", // GET 요청
+	                url: "/jiqoo/loadMoreComments",
+	                type: "get",
 	                data: {
-	                	jiqooNo: jiqooNo,
-	                    offset: currentOffset, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
-	                    limit: 10 // 페이지당 표시할 댓글 수
+	                    jiqooNo: jiqooNo,
+	                    offset: currentOffset,
+	                    limit: 10
 	                },
 	                success: function (data) {
-	                    // 서버에서 성공적으로 데이터를 받아온 경우
-	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
-
-	                    const commentContainer = $("#comment-container");
+	                    var commentContainer = $("#comment-container");
 
 	                    if (data.length > 0) {
-	                        const commentList = $("<ul>").addClass("comment-list");
+	                        var commentList = $("<ul>").addClass("comment-list");
 
 	                        data.forEach(comment => {
-	                            const commentItem = createCommentItem(comment);
+	                            var commentItem = createCommentItem(comment);
 	                            commentList.append(commentItem);
 	                        });
 
 	                        commentContainer.append(commentList);
 
-	                        // 현재 offset 값을 업데이트
 	                        currentOffset += 10;
 	                    }
 
-	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+	                    loading = false; // 로딩 완료 후 플래그 재설정
 	                },
 	                error: function () {
-	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
 	                    const errorContainer = $("#error-container");
 	                    errorContainer.text("댓글을 불러오는 중 오류가 발생했습니다.");
 
-	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    loading = false;
+	                    loading = false; // 로딩 완료 후 플래그 재설정
 	                }
 	            });
 	        }
 	    }
 	});
 
-	function createLink(iconClass, text, clickHandler) {
-	    const link = $("<a>").attr("href", 'javascript:void(0)').html(`<i class='${iconClass}'></i> ${text}`);
-	    if (clickHandler) {
-	        link.on("click", clickHandler);
+
+	function createCommentItem(comment) {
+		var currentUserId = "${sessionScope.userId}";
+		console.log(currentUserId);
+	    var commentItem = $("<li>").addClass("comment");
+	    var commentText = $("<p>").addClass("comment-text").text(comment.comtContent);
+	    if(commentText.text().includes('삭제된 댓글입니다.')){
+	    	commentText.css({
+	    		color : '#ccc'
+	    	})
 	    }
-	    return link;
-	}
+	    // 댓글 작성자의 정보와 작성 날짜, 액션 메뉴 등을 추가합니다
+	    var userInfo = $("<div>").addClass("user-info");
+	    var userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
+	    var username = $("<span>").addClass("username").text(comment.user.userNickname);
+	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 
-	function createImage(src, alt) {
-	    return $("<img>").attr("src", src).attr("alt", alt);
-	}
+	    // 액션 메뉴 추가
+	    var actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	    var actionMenu = $("<div>").addClass("action_menu");
+	    var actionMenuList = $("<ul>");
 
-	function createSpan(className, text) {
-	    return $("<span>").addClass(className).text(text);
-	}
-
-	function createParagraph(className, text) {
-	    return $("<p>").addClass(className).text(text);
-	}
-
-	function createIcon(iconClass) {
-	    return $("<i>").addClass(iconClass);
-	}
-
-	function createHiddenInput(value) {
-	    return $("<input>").attr("type", "hidden").val(value);
-	}
-	
-	function createCommentItem(comment, currentUserId) {
-	    const isCurrentUser = comment.user.userId === currentUserId;
-	    const showReportLink = !isCurrentUser;
-
-	    const commentItem = $("<li>").addClass("comment");
-
-	    const actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
-	    const actionMenu = $("<div>").addClass("action_menu");
-	    const actionMenuList = $("<ul>");
-	    const profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
-	    
-	    const reportMenuItem = showReportLink ? $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기</a`) : null;
-	    const action = $("<div>").addClass("action");
-
-	    if (isCurrentUser) {
-	        const modifyLink = createLink("bi bi-pencil", "수정하기", () => modifyView(comment));
-	        const removeLink = createLink("bi bi-x", "삭제하기", () => removeComment(comment));
-
-	        action.append(modifyLink);
-	        action.append(removeLink);
-	    }
-
-	    if (comment.pComtNo === 0) {
-	        const replyLink = createLink("bi bi-chat-right-text", "답글쓰기", () => showReplyForm(comment));
-	        action.append(replyLink);
-	    }
+	    // 프로필 보기 메뉴
+	    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기");
 
 	    actionMenuList.append(profileMenuItem);
-	    if (reportMenuItem) {
-	        actionMenuList.append(reportMenuItem);
-	    }
+
 
 	    actionMenu.append(actionMenuList);
-
-	    const userInfo = $("<div>").addClass("user-info");
-	    const userImage = createImage(comment.user.userPhotoPath, "UserPhoto");
-	    const username = createSpan("username", comment.user.userNickname);
-	    const date = createSpan("date", comment.comtDate);
-	    const commentText = createParagraph("comment-text", comment.comtContent);
 
 	    userInfo.append(userImage);
 	    userInfo.append(username);
 	    userInfo.append(date);
-	    userInfo.append(action);
+
+	    // 수정 및 삭제 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
+	    var isCurrentUser = comment.user.userId === currentUserId;
+	    console.log(isCurrentUser);
+	    if (isCurrentUser) {
+	        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent).on("click", function() { modifyView(this, comment.comtContent, comment.comtNo);});
+	        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo).on("click", function() {removeComment(comment.comtNo);});
+	        userInfo.append(modifyLink);
+	        userInfo.append(removeLink);
+	    }
+
+	    // 답글쓰기 링크 (pComtNo가 0이 아닌 경우에 표시)
+	    if (comment.pComtNo === 0) {
+	        var replyLink = $("<a>").attr("href", 'javascript:void(0)').data("pComtNo", comment.comtNo).text("답글쓰기");
+	        replyLink.on("click", function() {
+	            var pComtNo = $(this).data("pComtNo");
+	            showReplyForm(this, pComtNo);
+	        });
+	        userInfo.append(replyLink);
+	    }
+
+	    // 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
+	    var showReportLink = !isCurrentUser;
+	    if (showReportLink) {
+	        var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	        actionMenuList.append(reportMenuItem);
+	    }
 
 	    commentItem.append(actionMenuBtn);
 	    commentItem.append(actionMenu);
 	    commentItem.append(userInfo);
 	    commentItem.append(commentText);
-	    commentItem.append(createHiddenInput(comment.comtNo));
 
+	    // comtNo를 input hidden 요소로 추가
+	    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
+	    commentItem.append(comtNoInput);
+
+	    // comment.pComtNo가 0이 아닌 경우 클래스 추가
 	    if (comment.pComtNo !== 0) {
 	        commentItem.addClass("has-parent-comment");
-	        const replyIcon = createIcon("bi bi-arrow-return-right");
-	        userInfo.prepend(replyIcon);
 	    }
 
 	    return commentItem;
 	}
-
 	
+	function formatDate(date) {
+	    var d = new Date(date);
+	    var year = d.getFullYear().toString().slice(-2);
+	    var month = ('0' + (d.getMonth() + 1)).slice(-2);
+	    var day = ('0' + d.getDate()).slice(-2);
+	    var hours = ('0' + d.getHours()).slice(-2);
+	    var minutes = ('0' + d.getMinutes()).slice(-2);
+	    var formattedDate = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
+	    return formattedDate;
+	}
+
 	// 좋아요
 	function like() {
 		var jiqooNo = ${jiqoo.jiqooNo };

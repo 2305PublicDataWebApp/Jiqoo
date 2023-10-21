@@ -93,4 +93,12 @@
 		) 
 		WHERE rnum &gt; #{offset}
 	</select>
+	
+	<select id="countChildComment" resultType="_int">
+		SELECT COUNT(*) FROM COMT_TBL WHERE P_COMT_NO = #{comtNo }
+	</select>
+	
+	<update id="updateDelComment">
+		UPDATE COMT_TBL SET COMT_CONTENT = '삭제된 댓글입니다.', C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
+	</update>
 </mapper>
