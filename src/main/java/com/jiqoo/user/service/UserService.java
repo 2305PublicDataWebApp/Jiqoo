@@ -6,6 +6,7 @@ import java.util.Map;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
 
 public interface UserService {
 
@@ -161,7 +162,7 @@ public interface UserService {
 	 * @param userId
 	 * @return
 	 */
-	List<Comment> selectMyCommentList(String userId);
+	List<UserComment> selectMyCommentList(String userId);
 
 	/**
 	 * sns 회원 정보 수정 service

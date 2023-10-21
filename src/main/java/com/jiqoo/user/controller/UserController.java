@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
 import com.jiqoo.user.service.FollowService;
 import com.jiqoo.user.service.SnsService;
 import com.jiqoo.user.service.UserService;
@@ -596,6 +597,16 @@ public class UserController {
 		return mv;
 	}
 	
+	// 댓글 조회
+	@ResponseBody
+	@GetMapping("/myComtList")
+	public List<UserComment> showMyComtList(HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		List<UserComment> commentList = userService.selectMyCommentList(userId);
+		return commentList;
+	}
+	
+	
 	// 마이페이지 접속
 	@GetMapping("/myPage")
 	public String showMyPage(Model model, HttpSession session) {
@@ -631,7 +642,7 @@ public class UserController {
 
 					// 댓글 수 조회
 					int myComtCount = userService.selectMyCommentCount(userId);
-					List<Comment> commentList = userService.selectMyCommentList(userId);
+					//List<Comment> commentList = userService.selectMyCommentList(userId);
 					
 					user.setFollowers(followersCount);
 					user.setFollowings(followingsCount);
@@ -640,7 +651,7 @@ public class UserController {
 					model.addAttribute("user", user);
 					model.addAttribute("followersList", followersList);
 					model.addAttribute("followingsList", followingsList);
-					model.addAttribute("commentList", commentList);
+					//model.addAttribute("commentList", commentList);
 					return "user/myPage";
 				} else {
 					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");

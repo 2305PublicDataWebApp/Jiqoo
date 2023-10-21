@@ -468,13 +468,18 @@ main {
 	border: 3px solid #8BC34A;
 }
 
+.comtTitleArea {
+	border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
 .myReplyRefTitle {
 	font-weight: 600;
 	text-align: left;
 	font-size: 1em;
 	padding-bottom: 5px;
-	border-bottom: 1px solid #ddd;
 }
+	
 
 .myReplyContent, .myReplyProfile {
 	margin-top: 10px;
@@ -493,4 +498,12 @@ main {
 .myReplyContentBtn button {
 	max-width: 80px;
 	margin-left: 5px;
+}
+.comtListTitle {
+	color: white;
+    font-weight: 600;
+    background-color: #388E3C;
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 10px;
 }

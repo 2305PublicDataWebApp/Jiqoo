@@ -156,8 +156,7 @@
                             </div>
                             <!-- 댓글리스트 -->
                             <div class="tab-pane fade" id="comment-div" role="tabpanel" aria-labelledby="myComment">
-                                <span>총 </span><span class="greenColor">${user.myComtCount }</span>개의 <span class="greenColor">댓글</span>을 등록하셨습니다.
-                                <div class="container" id="commentsList">
+                                <div class="container" id="comtContainer" style="margin-top:20px;">
                                 </div>
                             </div> 
  <!--                            <div class="tab-pane fade" id="reply" role="tabpanel" aria-labelledby="reply">
@@ -335,43 +334,87 @@
 
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <script>
-			// 댓글 로드
+        	var pageSize = 5;
+        	var currentPage = 1;
+        	var loading = false; // 데이터를 로드 중인지 여부를 나타내는 플래그
+        	// 스크롤 이벤트 리스너 등록
+		    $(window).scroll(function () {
+		        if (!loading && $(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+		            loading = true; // 로딩 중 플래그 설정
+		            loadMoreComments();
+		        }
+		    });
+        	
+        	// 댓글 로드
 			$("#myComment").on("click", function() {
 		        loadComments(); // 댓글 탭을 클릭한 경우 댓글을 불러오는 함수 호출
 		    });
 			
 			function loadComments() {
-		        $.ajax({
-		            url: "/user/comtList",
-		            method: "GET",
-		            success: function(data) {
-		                var commentsList = $("#commentsList");
-		                data.forEach(function(comment) {
-		                    // 댓글 HTML 생성 및 추가하는 코드 유지
-							var commentHtml = `
-							                        <div class="myReply row">
-							                            <a class="myReplyRefTitle" href="#">${comment.title}</a>
-							                            <div class="col-2 myReplyProfile">
-							                                <img src="${comment.profileImage}"><br>
-							                                <p>${comment.userName}</p>
-							                            </div>
-							                            <div class="col-10 myReplyContent text-start">
-							                                <p>${comment.text}</p>
-							                                <div class="row align-items-center">
-							                                    <span class="col-7">${comment.date}</span>
-							                                    <div class="col-5 myReplyContentBtn">
-							                                        <button class="btn btn-sm follow-btn col-2">수정</button>
-							                                        <button class="btn btn-sm follow-btn col-3">삭제</button>
-							                                    </div>
-							                                </div>
-							                            </div>
-							                        </div>
-							                    `;				
-		                    // 생성한 HTML을 댓글 목록에 추가
-		                    commentsList.append(commentHtml);
-		                });
+//	 		    var currentPage = 1; // 초기 페이지 번호
+//	 		    var pagePerComtCount = 5; // 한 번에 가져올 댓글 수
 
-		                // 총 댓글 개수를 업데이트
+		        $.ajax({
+		            url: "/user/myComtList",
+		            type: "GET",
+		            success: function(data) {
+		                var comtContainer = $("#comtContainer");
+		                comtContainer.empty();
+		                
+		                if (data === null || data.length === 0) {
+		                    var noDataHtml = 
+		                        "<div class='tab-pane fade show active' id='jiqoo' role='tabpanel' aria-labelledby='jiqoo'>" +
+		                        "   <div class='noData'>" +
+		                        "       <img src='../resources/assets/img/user/jiqooNoData.png' alt='noData' style='width: 100px;'><br><br>" +
+		                        "       <p>작성하신 댓글이 없습니다.</p>" +
+		                        "   </div>" +
+		                        "</div>";
+		                    comtContainer.append(noDataHtml);
+		                } else {
+		                	
+		                	var comtCountHtml = "<span>총 </span><span class='greenColor'>"+${user.myComtCount }+"</span>개의 <span class='greenColor'>댓글</span>을 등록하셨습니다."
+		                	comtContainer.append(comtCountHtml);
+			                for (var i = 0; i < data.length; i++) {
+			                	var myComtList = data[i];
+				                var formatDate = myComtList.comtDate.split("T")[0];
+			                	console.log("c_board_type:", myComtList.cBoardType);
+			                	
+			                	var boardType = null;
+			                	var detailUrl = null;
+			                	if(myComtList.cBoardType === 'M') {
+			                		boardType = "모꾸";
+			                		detailUrl = "/moqoo/detail?moqooNo=";
+			                	} else if(myComtList.c_board_type === 'J'){
+			                		boardType = "지꾸";
+			                		detailUrl = "/jiqoo/detail?jiqooNo=";
+			                	}
+			                	console.log(boardType);
+			                	console.log(detailUrl);
+			                	
+								var commentHtml = "<div class='myReply row'>"
+													+"<div class='comtTitleArea'>"
+														+"<span class='comtListTitle'>"+boardType+"</span>"
+						                            	+"<a class='myReplyRefTitle' href='"+detailUrl+myComtList.refPostNo+"'>"+myComtList.postTitle+"</a>"
+						                            +"</div>"
+						                            +"<div class='col-2 myReplyProfile'>"
+						                                +"<img src='"+myComtList.user.userPhotoPath+"'><br>"
+						                                +"<p>"+myComtList.comtWriter+"</p>"
+						                            +"</div>"
+						                            +"<div class='col-10 myReplyContent text-start'>"
+						                                +"<p>"+myComtList.comtContent+"</p>"
+						                                +"<div class='row align-items-center'>"
+						                                    +"<span class='col-7'>"+formatDate+"</span>"
+						                                    +"<div class='col-5 myReplyContentBtn'>"
+						                                        +"<button class='btn btn-sm follow-btn col-2'>수정</button>"
+						                                        +"<button class='btn btn-sm follow-btn col-3'>삭제</button>"
+						                                    +"</div>"
+						                                +"</div>"
+						                            +"</div>"
+						                        +"</div>";				
+			                    comtContainer.append(commentHtml);
+			                }
+		                }
+
 		                $("#commentCount").text(data.length);
 		            }
 		        });

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
 import com.jiqoo.user.service.UserService;
 import com.jiqoo.user.store.UserStore;
 
@@ -147,8 +148,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<Comment> selectMyCommentList(String userId) {
-		List<Comment> myCommentList = userStore.selectMyCommentList(sqlSession, userId);
+	public List<UserComment> selectMyCommentList(String userId) {
+		List<UserComment> myCommentList = userStore.selectMyCommentList(sqlSession, userId);
 		return myCommentList;
 	}
 

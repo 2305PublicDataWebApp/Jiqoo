@@ -4,7 +4,40 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="UserMapper">
-
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userNickname" column="USER_NICKNAME"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+		<result property="userGender" column="USER_GENDER"/>
+		<result property="userBirth" column="USER_BIRTH"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userInfo" column="USER_INFO"/>
+		<result property="userPhotoName" column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" column="U_DELETE_DATE"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="adminYn" column="ADMIN_YN"/>
+	</resultMap>
+	
+	<resultMap type="UserComment" id="UserCommentResultMap">
+		<id property="comtNo" column="COMT_NO"/>
+		<result property="comtContent" column="COMT_CONTENT"/>
+		<result property="comtWriter" column="COMT_WRITER"/>
+		<result property="comtDate" column="COMT_DATE"/>
+		<result property="cUpdateDate" column="C_UPDATE_DATE"/>
+		<result property="refPostNo" column="REF_POST_NO"/>
+		<result property="pComtNo" column="P_COMT_NO"/>
+		<result property="comtStatus" column="COMT_STATUS"/>
+		<result property="cBoardType" column="C_BOARD_TYPE"/>
+		<result property="postTitle" column="POST_TITLE"/>
+		<collection property="user" resultMap="UserResultMap"/>
+	</resultMap>
+	
 	<insert id="insertUser">
 		INSERT INTO USER_TBL
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
@@ -121,9 +154,25 @@
 		SELECT COUNT(*)
 		FROM COMT_TBL WHERE COMT_WRITER = #{userId} AND COMT_STATUS NOT LIKE 'N'
 	</select>
-	
+<!-- 
 	<select id="selectMyCommentList" resultType="Comment">
 		SELECT *
 		FROM COMT_TBL WHERE COMT_WRITER = #{userId} AND COMT_STATUS NOT LIKE 'N'
 	</select>
+ -->
+ 	<select id="selectMyCommentList" resultMap="UserCommentResultMap">
+		SELECT C.COMT_NO, C.COMT_CONTENT, C.COMT_WRITER, C.COMT_DATE, C.REF_POST_NO, C.COMT_STATUS, C.C_BOARD_TYPE, 
+		       CASE 
+		           WHEN C.C_BOARD_TYPE = 'J' THEN J.JIQOO_TITLE
+		           WHEN C.C_BOARD_TYPE = 'M' THEN M.MOQOO_TITLE
+		           ELSE NULL
+		       END AS POST_TITLE,
+		       U.USER_PHOTO_PATH
+		FROM COMT_TBL C
+		LEFT JOIN JIQOO_TBL J ON C.C_BOARD_TYPE = 'J' AND C.REF_POST_NO = J.JIQOO_NO
+		LEFT JOIN MOQOO_TBL M ON C.C_BOARD_TYPE = 'M' AND C.REF_POST_NO = M.MOQOO_NO
+		LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+		WHERE C.COMT_WRITER = #{userId} AND C.COMT_STATUS NOT LIKE 'N' AND (J.JIQOO_STATUS NOT LIKE 'N' OR M.MOQOO_STATUS NOT LIKE 'N')
+	</select>
+	
 </mapper>

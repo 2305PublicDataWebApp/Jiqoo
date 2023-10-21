@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
 import com.jiqoo.user.store.UserStore;
 
 @Repository
@@ -154,8 +155,8 @@ public class UserStoreLogic implements UserStore{
 	}
 
 	@Override
-	public List<Comment> selectMyCommentList(SqlSession sqlSession, String userId) {
-		List<Comment> myCommentList = sqlSession.selectList("UserMapper.selectMyCommentList", userId);
+	public List<UserComment> selectMyCommentList(SqlSession sqlSession, String userId) {
+		List<UserComment> myCommentList = sqlSession.selectList("UserMapper.selectMyCommentList", userId);
 		return myCommentList;
 	}
 
