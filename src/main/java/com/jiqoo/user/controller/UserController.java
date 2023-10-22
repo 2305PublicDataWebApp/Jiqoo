@@ -28,11 +28,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-import com.jiqoo.common.domain.Comment;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
+import com.jiqoo.user.domain.UserJiqooDto;
+import com.jiqoo.user.domain.UserLikeDto;
+import com.jiqoo.user.domain.UserMoqooDto;
 import com.jiqoo.user.service.FollowService;
 import com.jiqoo.user.service.SnsService;
 import com.jiqoo.user.service.UserService;
@@ -597,15 +598,159 @@ public class UserController {
 		return mv;
 	}
 	
-	// 댓글 조회
+	// 지꾸 리스트 조회
+	@ResponseBody
+	@GetMapping("/myJiqooList")
+	public List<UserJiqooDto> showMyJiqooList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		Map<String, Object> jiqooMap = new HashMap<>();
+		jiqooMap.put("userId", userId);
+		jiqooMap.put("startNo", startNo);
+		jiqooMap.put("endNo", endNo);
+		List<UserJiqooDto> jiqooList = userService.selectMyJiqooList(jiqooMap);
+		return jiqooList;
+	}
+	
+	// 모꾸 리스트 조회
+	@ResponseBody
+	@GetMapping("/myMoqooList")
+	public List<UserMoqooDto> showMoqooList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		Map<String, Object> moqooMap = new HashMap<>();
+		moqooMap.put("userId", userId);
+		moqooMap.put("startNo", startNo);
+		moqooMap.put("endNo", endNo);
+		List<UserMoqooDto> jiqooList = userService.selectMyMoqooList(moqooMap);
+		return jiqooList;
+	}
+	
+	// 댓글 리스트 조회
+//	@ResponseBody
+//	@GetMapping("/myComtList")
+//	public List<UserComment> showMyComtList(
+//			@RequestParam("startNo") int startNo
+//			, @RequestParam("endNo") int endNo
+//			, @RequestParam(value = "selectedDate", required = false) String selectedDate
+//			, HttpSession session) {
+//		String userId = (String)session.getAttribute("userId");
+//		Map<String, Object> comtMap = new HashMap<>();
+//		comtMap.put("userId", userId);
+//		comtMap.put("startNo", startNo);
+//		comtMap.put("endNo", endNo);
+//		
+//	    if (selectedDate != null && !selectedDate.isEmpty()) {
+//	        // 만약 선택한 날짜가 존재한다면, 해당 날짜를 사용하여 데이터 필터링
+//	    	comtMap.put("selectedDate", selectedDate);
+//	    }
+//	    
+//		List<UserComment> commentList = userService.selectMyCommentList(comtMap);
+//
+//		return commentList;
+//	}
+	
 	@ResponseBody
 	@GetMapping("/myComtList")
-	public List<UserComment> showMyComtList(HttpSession session) {
+	public List<UserComment> showMyComtList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, HttpSession session) {
 		String userId = (String)session.getAttribute("userId");
-		List<UserComment> commentList = userService.selectMyCommentList(userId);
+		Map<String, Object> comtMap = new HashMap<>();
+		comtMap.put("userId", userId);
+		comtMap.put("startNo", startNo);
+		comtMap.put("endNo", endNo);
+		List<UserComment> commentList = userService.selectMyCommentList(comtMap);
+
 		return commentList;
 	}
 	
+	// 좋아요 리스트 조회
+	@ResponseBody
+	@GetMapping("/likedList")
+	public List<UserLikeDto> showLikedList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, HttpSession session) {
+		String userId = (String)session.getAttribute("userId");
+		Map<String, Object> likeMap = new HashMap<>();
+		likeMap.put("userId", userId);
+		likeMap.put("startNo", startNo);
+		likeMap.put("endNo", endNo);
+		List<UserLikeDto> likedList = userService.selectMyLikedPostList(likeMap);
+		return likedList;
+	}
+	
+	// 프로필페이지 접속
+	@GetMapping("/profile")
+	public String showMyPage(@RequestParam(value="userId") String userId, Model model, HttpSession session) {
+		try {
+			String loginUserId = (String) session.getAttribute("userId");
+			User user = null;
+			if (userId != "" && userId != null) {
+				user = userService.selectUserOneById(userId);
+				if (user != null) {
+					// 팔로워, 팔로잉 수 & 리스트
+					int followersCount = userService.selectFollowersCount(userId);
+					int followingsCount = userService.selectFollowingCount(userId);
+
+					List<User> followersList = userService.selectFollowersListById(userId);
+					List<User> followingsList = userService.selectFollowingsListById(userId);
+					for (User follower : followersList) {
+						boolean checkFollow = isFollowingUser(followingsList, loginUserId, follower.getUserId());
+						System.out.println("팔로우 체크 : " + checkFollow);
+						follower.setCheckFollow(checkFollow);
+	                }
+
+					
+					// 지꾸 모꾸 게시글 수 조회
+					int jiqooCount = userService.selectMyJiqooCount(userId);
+					int moqooCount = userService.selectMyMoqooCount(userId);
+
+					// 댓글 수 조회
+					int comtCount = userService.selectMyCommentCount(userId);
+					
+					user.setFollowers(followersCount);
+					user.setFollowings(followingsCount);
+					user.setJiqooCount(jiqooCount);
+					user.setMoqooCount(moqooCount);
+					user.setComtCount(comtCount);
+					model.addAttribute("user", user);
+					model.addAttribute("followersList", followersList);
+					model.addAttribute("followingsList", followingsList);
+					return "user/profile";
+				} else {
+					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
+					model.addAttribute("url", "/");
+					return "common/message";
+				}
+			} else {
+				model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");
+				model.addAttribute("url", "/");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", "[서비스실패] 관리자 문의바랍니다.");
+			model.addAttribute("url", "/");
+			return "common/message";
+		}
+	
+	}
+	// 유저가 팔로우 중인지 체크하는 함수
+	private boolean isFollowingUser(List<User> followingsList, String loginUserId, String targetUserId) {
+	    for (User following : followingsList) {
+	        if (following.getUserId().equals(targetUserId)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
 	
 	// 마이페이지 접속
 	@GetMapping("/myPage")
@@ -636,22 +781,20 @@ public class UserController {
 
 					
 					// 지꾸 모꾸 게시글 수 조회
-					int myJiqooCount = userService.selectMyJiqooCount(userId);
-					int myMoqooCount = userService.selectMyMoqooCount(userId);
-					int myTotalArticleCount = myJiqooCount + myMoqooCount;
+					int jiqooCount = userService.selectMyJiqooCount(userId);
+					int moqooCount = userService.selectMyMoqooCount(userId);
 
 					// 댓글 수 조회
-					int myComtCount = userService.selectMyCommentCount(userId);
-					//List<Comment> commentList = userService.selectMyCommentList(userId);
+					int comtCount = userService.selectMyCommentCount(userId);
 					
 					user.setFollowers(followersCount);
 					user.setFollowings(followingsCount);
-					user.setMyTotalArticleCount(myTotalArticleCount);
-					user.setMyComtCount(myComtCount);
+					user.setJiqooCount(jiqooCount);
+					user.setMoqooCount(moqooCount);
+					user.setComtCount(comtCount);
 					model.addAttribute("user", user);
 					model.addAttribute("followersList", followersList);
 					model.addAttribute("followingsList", followingsList);
-					//model.addAttribute("commentList", commentList);
 					return "user/myPage";
 				} else {
 					model.addAttribute("msg", "회원정보를 불러올 수 없습니다.");

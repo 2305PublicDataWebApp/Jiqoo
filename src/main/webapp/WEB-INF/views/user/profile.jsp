@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="keywords" content="">
-        <title>지꾸 마이페이지</title>
+        <title>지꾸 : No.1 지도 다이어리</title>
         
         <!-- Favicons -->
         <link href="../resources/assets/img/earth-globe.png" rel="icon">
@@ -72,11 +72,6 @@
                 	<c:if test="${user.userPhotoRename ne null}">
 	                	<img alt="프로필사진" class="profile-img img-border-light" src="${user.userPhotoPath }">
                 	</c:if>
-                	<c:if test="${user.userId eq sessionScope.userId}">
-                	<div class="icon-relative">
-	                	<img alt="프로필사진변경" id="openChangePhotoModal" class="change-profile-icon" src="../resources/assets/img/user/pencil.png">
-                	</div>
-                	</c:if>
                     <h2 class="zero-margin">${user.userNickname }</h2>
                     <c:if test="${user.platformType eq 'normal'}">
                     	<p class="zero-margin fontGray">${user.userId }</p><br>
@@ -100,15 +95,7 @@
                         </div>
                     </div>
                     <div class="profile-button">
-                    <c:if test="${user.userId ne sessionScope.userId}">
-                    	<button class="btn btn-sm profile-btn">Follow</button>
-                    </c:if>
-                    <c:if test="${user.platformType eq 'normal'}">
-                    	<a href="/user/modify" class="btn btn-sm profile-btn" >Edit</a>
-                    </c:if>
-                    <c:if test="${user.platformType ne 'normal'}">
-                    	<a href="/user/modifySns" class="btn btn-sm profile-btn" >Edit</a>
-                    </c:if>
+                    <button class="btn btn-sm profile-btn">Follow</button>
                     <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
                     </div>
                 </div>
@@ -166,6 +153,7 @@
                     </c:if>
                     <c:if test="${user.followers ne 0}">
 	                    <c:forEach items="${followersList}" var="follower">
+	                    	<a href="/user/profile?userId=${follower.userId }">
 	                        <div class="row">
 		                        <div class="col-3 modal-padding">
 		                        	<c:if test="${follower.userPhotoRename eq null}">
@@ -184,14 +172,17 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-					                <c:if test="${follower.checkFollow}">
-					                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
-					                </c:if>
-					                <c:if test="${not follower.checkFollow}">
-					                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+	                            	<c:if test="${sessionScope.userId ne null }">
+						                <c:if test="${follower.checkFollow}">
+						                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+						                </c:if>
+						                <c:if test="${not follower.checkFollow}">
+						                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+						                </c:if>
 					                </c:if>
 	                            </div>
 	                        </div>
+		                    </a>
 	                    </c:forEach>
                     </c:if>
                     </div>
@@ -214,6 +205,7 @@
                     </c:if>
                     <c:if test="${user.followings ne 0}">
 	                    <c:forEach items="${followingsList }" var="following">
+	                    <a href="/user/profile?userId=${following.userId }">
 	                        <div class="row">
 	                            <div class="col-3 modal-padding">
 	                                <c:if test="${following.userPhotoRename eq null}">
@@ -232,9 +224,17 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-	                                <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
+	                            	<c:if test="${sessionScope.userId ne null }">
+						                <c:if test="${follower.checkFollow}">
+						                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+						                </c:if>
+						                <c:if test="${not follower.checkFollow}">
+						                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+						                </c:if>
+					                </c:if>
 	                            </div>
 	                        </div>
+                        </a>
 	                    </c:forEach>
                     </c:if>
                     </div>

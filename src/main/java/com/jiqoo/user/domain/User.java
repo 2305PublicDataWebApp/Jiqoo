@@ -30,8 +30,9 @@ public class User {
 	private int followings; //내가 팔로우한 사람들
 	private boolean checkFollow;
 	
-	private int myTotalArticleCount;
-	private int myComtCount;
+	private int comtCount;
+	private int jiqooCount;
+	private int moqooCount;
 
 
 	public User() {
@@ -199,20 +200,28 @@ public class User {
 		this.ageGroup = ageGroup;
 	}
 
-	public int getMyTotalArticleCount() {
-		return myTotalArticleCount;
+	public int getComtCount() {
+		return comtCount;
 	}
 
-	public void setMyTotalArticleCount(int myTotalArticleCount) {
-		this.myTotalArticleCount = myTotalArticleCount;
+	public void setComtCount(int comtCount) {
+		this.comtCount = comtCount;
 	}
 
-	public int getMyComtCount() {
-		return myComtCount;
+	public int getJiqooCount() {
+		return jiqooCount;
 	}
 
-	public void setMyComtCount(int myComtCount) {
-		this.myComtCount = myComtCount;
+	public void setJiqooCount(int jiqooCount) {
+		this.jiqooCount = jiqooCount;
+	}
+
+	public int getMoqooCount() {
+		return moqooCount;
+	}
+
+	public void setMoqooCount(int moqooCount) {
+		this.moqooCount = moqooCount;
 	}
 
 	@Override

@@ -16,6 +16,8 @@ public class UserComment {
 	private User user;
 	
 	private String postTitle;
+	private int rnum;
+	private String userPhotoPath;
 	
 	public User getUser() {
 		return user;
@@ -85,6 +87,20 @@ public class UserComment {
 		this.postTitle = postTitle;
 	}
 	
+	public int getRnum() {
+		return rnum;
+	}
+	public void setRnum(int rnum) {
+		this.rnum = rnum;
+	}
+	
+	
+	public String getUserPhotoPath() {
+		return userPhotoPath;
+	}
+	public void setUserPhotoPath(String userPhotoPath) {
+		this.userPhotoPath = userPhotoPath;
+	}
 	@Override
 	public String toString() {
 		return "댓글 [댓글번호=" + comtNo + ", 댓글내용=" + comtContent + ", 작성자=" + comtWriter

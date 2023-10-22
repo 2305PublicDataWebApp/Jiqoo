@@ -129,6 +129,7 @@ main {
 	width: 70px;
 	height: 70px;
 	border-radius: 50%;
+	object-fit: cover;
 }
 .modal-profile-border {
 	border: 3px solid #8BC34A;
@@ -450,13 +451,19 @@ main {
 	font-weight: 600;
 }
 
-.myReply {
-	margin-top: 15px;
+.listContent {
+	margin-top: 25px;
+	border: 1px solid #ddd;
+	padding: 10px;
+	border-radius: 10px;
+	margin-bottom:50px;
+}
+.comtListContent {
+	margin-top: 25px;
 	border: 1px solid #ddd;
 	padding: 10px;
 	border-radius: 10px;
 }
-
 .myReplyProfile p {
 	margin-top: 5px;
 }
@@ -506,4 +513,169 @@ main {
     border-radius: 10px;
     padding: 5px;
     margin-right: 10px;
+}
+
+
+/**************** 지꾸 css ****************/
+.post-catagory {
+	font-size: 20px;
+    background: #388E3C;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+.post-header {
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.jiqooProfile {
+	display:inline-block;
+}
+.jiqooProfile img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: 3px solid #8BC34A;
+}
+/* 카테고리 이미지 스타일 */
+.category {
+	--margin-right: 10px;
+}
+
+.category-img {
+	width: 40px;
+}
+
+.location-text {
+	box-shadow: inset 0 -15px 0 #ffed7c;
+	font-size: 23px;
+	font-weight: 600;
+}
+        /* 게시물 스타일 */
+        #post {
+          border: 1px solid #C2D1D9;
+          border-radius: 25px;
+          background-color: #FBFBFB;
+          padding: 20px;
+          margin-bottom: 30px;
+          position: relative;
+      }
+
+
+
+    /* --- */
+    
+    #post-category-img {
+    	width: 50px;
+    }
+	
+	#post-category-img-container, .location {
+		display: inline-block;
+		vertical-align: middle;
+	}
+	
+ 	.location {
+        font-size: 28px;
+        width: 246px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+        align-items: center;
+/*         margin-bottom: 10px; */
+/*         margin-bottom: 0; */
+      }
+      
+      #location-text {
+      	box-shadow: inset 0 -21px 0 #ffed7c;
+      }
+      
+      #title {
+          font-size: 24px;
+          font-weight: bold;
+          margin-bottom: 10px;
+      }
+
+      #writer-info {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+      }
+
+/*       #profile-img { */
+/*           width: 70px; */
+/*           height: 70px; */
+/*           border-radius: 50%; */
+/*           background-color: #8BC34A; */
+/*           margin-right: 15px; */
+/*           overflow: hidden; */
+/*       } */
+
+/*       #profile-img img { */
+/*           max-width: 100%; */
+/*           height: auto; */
+/*       } */
+
+      #writer-name {
+          font-weight: bold;
+          font-size: 18px;
+      }
+
+      #write-info {
+          display: flex;
+          margin-top: 5px;
+      }
+
+      .write-info {
+          margin-right: 10px;
+          color: #777;
+          font-size: 14px;
+      }
+
+
+      /* 제목 및 작성자 스타일 */
+.title {
+  font-weight: bold;
+  margin-top: 15px;
+  padding-top: 15px;
+  margin-bottom: 10px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.content {
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.author {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.author-type {
+  margin-right: 15px;
+  border-radius: 10px;
+  border: 1px solid #ff0019;
+  font-size: 7px;
+  font-weight: bold;
+  padding: 4px;
+  color: #ff0019;
+}
+
+.jiqoo-writer-info {
+	margin-top:15px;
+	display: flex; 
+    flex-direction: row; 
+    align-items: center;
+}
+.jiqoo-writer {
+	display: flex;
+	margin-left:10px;
+	flex-direction: column;
+}
+.jiqoo-writer p {
+	margin:0;
 }

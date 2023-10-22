@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.jiqoo.common.domain.Comment;
+import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
+import com.jiqoo.user.domain.UserJiqooDto;
+import com.jiqoo.user.domain.UserLikeDto;
+import com.jiqoo.user.domain.UserMoqooDto;
 
 public interface UserService {
 
@@ -159,10 +163,10 @@ public interface UserService {
 
 	/**
 	 * 마이페이지 댓글 리스트 조회 service
-	 * @param userId
+	 * @param comtMap
 	 * @return
 	 */
-	List<UserComment> selectMyCommentList(String userId);
+	List<UserComment> selectMyCommentList(Map<String, Object> comtMap);
 
 	/**
 	 * sns 회원 정보 수정 service
@@ -170,6 +174,27 @@ public interface UserService {
 	 * @return
 	 */
 	int updateSnsUser(User user);
+
+	/**
+	 * 마이페이지 지꾸 리스트 조회 service
+	 * @param jiqooMap
+	 * @return
+	 */
+	List<UserJiqooDto> selectMyJiqooList(Map<String, Object> jiqooMap);
+
+	/**
+	 * 마이페이지 모꾸 리스트 조회 service
+	 * @param moqooMap
+	 * @return
+	 */
+	List<UserMoqooDto> selectMyMoqooList(Map<String, Object> moqooMap);
+
+	/**
+	 * 마이페이지 좋아요 리스트 조회 service
+	 * @param likeMap
+	 * @return
+	 */
+	List<UserLikeDto> selectMyLikedPostList(Map<String, Object> likeMap);
 
 
 
