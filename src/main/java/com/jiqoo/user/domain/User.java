@@ -261,8 +261,21 @@ public class User {
 				+ userGender + ", 생년월일=" + userBirth + ", 전화번호=" + userTel + ", 자기소개=" + userInfo
 				+ ", 프로필사진이름=" + userPhotoName + ", 프로필사진리네임=" + userPhotoRename + ", 프로필사진경로="
 				+ userPhotoPath + ", 가입일=" + uCreateDate + ", 탈퇴일=" + uDeleteDate + ", 회원여부="
-				+ userStatus + ", 관리자여부=" + adminYn + "]";
+				+ userStatus + ", 관리자여부=" + adminYn + ", count=" + count + ", ageGroup=" + ageGroup + ", reportList="
+				+ reportList + ", comtList=" + comtList + ", uReportCount=" + uReportCount + ", 팔로워수=" + followers
+				+ ", 팔로잉수=" + followings + ", 팔로우여부=" + checkFollow + ", 댓글수=" + comtCount
+				+ ", 지꾸게시물수=" + jiqooCount + ", 모꾸게시물수=" + moqooCount + "]";
 	}
+
+//	@Override
+//	public String toString() {
+//		return "회원 [아이디=" + userId + ", 비밀번호=" + userPw + ", 이름=" + userName + ", 닉네임="
+//				+ userNickname + ", 이메일=" + userEmail + ", 가입유형=" + platformType + ", 성별="
+//				+ userGender + ", 생년월일=" + userBirth + ", 전화번호=" + userTel + ", 자기소개=" + userInfo
+//				+ ", 프로필사진이름=" + userPhotoName + ", 프로필사진리네임=" + userPhotoRename + ", 프로필사진경로="
+//				+ userPhotoPath + ", 가입일=" + uCreateDate + ", 탈퇴일=" + uDeleteDate + ", 회원여부="
+//				+ userStatus + ", 관리자여부=" + adminYn + "]";
+//	}
 
 	
 	

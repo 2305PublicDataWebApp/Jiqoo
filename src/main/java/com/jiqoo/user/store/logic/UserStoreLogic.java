@@ -186,5 +186,11 @@ public class UserStoreLogic implements UserStore{
 		return likedList;
 	}
 
+	@Override
+	public List<UserJiqooDto> selectMyJiqooSearchList(SqlSession sqlSession, Map<String, Object> jiqooMap) {
+		List<UserJiqooDto> jiqooSearchList = sqlSession.selectList("UserMapper.selectMyJiqooSearchList", jiqooMap);
+		return jiqooSearchList;
+	}
+
 
 }

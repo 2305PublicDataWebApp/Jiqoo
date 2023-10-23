@@ -62,6 +62,7 @@
         </section>
         <!-- main -->
         <main>
+        	<input type="hidden" id="profileUserId" value="${user.userId }">
             <!-- 프로필 -->
             <div>
                 <div class="profile-header bg"></div>
@@ -101,7 +102,7 @@
                 </div>
             </div>
             
-            <input type="hidden" id="dateInput" name="dateInput" value="">
+            <input type="hidden" id="inputDate" name="inputDate" value="">
             <div class="container">
                 <div class="row justify-content-center">
                     <!-- 캘린더 -->
@@ -113,16 +114,16 @@
                         <div id="myPageNav">
                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <a href="#jiqoo" id="jiqoo" class="nav-link active" data-toggle="pill" role="tab" aria-controls="jiqoo" aria-selected="true">지꾸</a>
+                                    <a href="javascript:void(0)" id="jiqoo" class="nav-link active" data-toggle="pill" role="tab" aria-controls="jiqoo" aria-selected="true">지꾸</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#moqoo" id="moqoo"class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
+                                    <a href="javascript:void(0)" id="moqoo"class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#comment" id="myComment" class="nav-link" data-toggle="pill" role="tab" aria-controls="myComment" aria-selected="false">댓글</a>
+                                    <a href="javascript:void(0)" id="myComment" class="nav-link" data-toggle="pill" role="tab" aria-controls="myComment" aria-selected="false">댓글</a>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <a href="#like" id="like" class="nav-link" data-toggle="pill" role="tab" aria-controls="like">좋아요</a>
+                                    <a href="javascript:void(0)" id="like" class="nav-link" data-toggle="pill" role="tab" aria-controls="like">좋아요</a>
                                 </li>
                             </ul>
                         </div>
@@ -153,15 +154,16 @@
                     </c:if>
                     <c:if test="${user.followers ne 0}">
 	                    <c:forEach items="${followersList}" var="follower">
-	                    	<a href="/user/profile?userId=${follower.userId }">
 	                        <div class="row">
 		                        <div class="col-3 modal-padding">
+		                    	<a href="/user/profile?userId=${follower.userId }">
 		                        	<c:if test="${follower.userPhotoRename eq null}">
 			                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
 		                			</c:if>
 		                			<c:if test="${follower.userPhotoRename ne null}">
 		                                <img class="modal-profile-img modal-profile-border" src="${follower.userPhotoPath }" alt="프로필사진" >
 		                            </c:if>
+			                    </a>
 		                        </div>
 	                            <div class="col-6 list-sort">
 	                                <div class="row">
@@ -172,7 +174,7 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-	                            	<c:if test="${sessionScope.userId ne null }">
+	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
 						                <c:if test="${follower.checkFollow}">
 						                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
 						                </c:if>
@@ -182,7 +184,6 @@
 					                </c:if>
 	                            </div>
 	                        </div>
-		                    </a>
 	                    </c:forEach>
                     </c:if>
                     </div>
@@ -205,15 +206,16 @@
                     </c:if>
                     <c:if test="${user.followings ne 0}">
 	                    <c:forEach items="${followingsList }" var="following">
-	                    <a href="/user/profile?userId=${following.userId }">
 	                        <div class="row">
 	                            <div class="col-3 modal-padding">
+			                    <a href="/user/profile?userId=${following.userId }">
 	                                <c:if test="${following.userPhotoRename eq null}">
 			                			<img class="modal-profile-img" src="../resources/assets/img/no-profile.png" alt="프로필사진" >
 		                			</c:if>
 		                			<c:if test="${following.userPhotoRename ne null}">
 		                                <img class="modal-profile-img modal-profile-border" src="${following.userPhotoPath }" alt="프로필사진" >
 		                            </c:if>
+		                        </a>
 	                            </div>
 	                            <div class="col-6 list-sort">
 	                                <div class="row">
@@ -224,17 +226,16 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-	                            	<c:if test="${sessionScope.userId ne null }">
-						                <c:if test="${follower.checkFollow}">
-						                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
+						                <c:if test="${following.checkFollow}">
+						                    <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
 						                </c:if>
-						                <c:if test="${not follower.checkFollow}">
-						                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+						                <c:if test="${not following.checkFollow}">
+						                    <button class="btn btn-sm follow-btn" data-user-id="${following.userId}">Follow</button>
 						                </c:if>
 					                </c:if>
 	                            </div>
 	                        </div>
-                        </a>
 	                    </c:forEach>
                     </c:if>
                     </div>
@@ -282,31 +283,40 @@
         <script>
 			// 공통설정
 			var currentPage = 1;
-			var perPage = 10;
-	        var tabCount = $("#tabCount");
-	        var tabContainer = $("#tabContainer");
-	        var isLoading = false; // 현재 페이지가 로딩중인지 여부
-	        var hasMoreData = true; // 더 불러올 데이터가 있는지 여부
-	        var dataType = null;
+			var perPage = 3;
+			var tabCount = $("#tabCount");
+			var tabContainer = $("#tabContainer");
+			var isLoading = false; // 현재 페이지가 로딩중인지 여부
+			var hasMoreData = true; // 더 불러올 데이터가 있는지 여부
+			var dataType = null;
+			var loadMoreType = null;
 	        
-	        // 각 카테고리별 버튼 클릭 이벤트
-	        $("#jiqoo").on("click", function() {
+	     	// 각 카테고리별 버튼 클릭 이벤트
+	        $("#jiqoo").on("click", function(e) {
+	        	e.preventDefault();
 	        	console.log("지꾸클릭")
+	        	loadMoreType = "jiqoo";
 	            loadTabContent("jiqoo");
 	        });
 
-	        $("#moqoo").on("click", function() {
+	        $("#moqoo").on("click", function(e) {
+	        	e.preventDefault();
 	        	console.log("모꾸클릭")
+	        	loadMoreType = "moqoo";
 	            loadTabContent("moqoo");
 	        });
 
-	        $("#myComment").on("click", function() {
+	        $("#myComment").on("click", function(e) {
+	        	e.preventDefault();
 	        	console.log("댓글클릭")
+	        	loadMoreType = "myComment";
 	            loadTabContent("comment");
 	        });
 	        
-	        $("#like").on("click", function() {
+	        $("#like").on("click", function(e) {
+	        	e.preventDefault();
 	        	console.log("좋아요클릭")
+	        	loadMoreType = "like";
     	 		loadTabContent("like");
     	 	});
 	        
@@ -318,18 +328,18 @@
 	        // 버튼 클릭하면 실행될 함수-> container비우고 페이징세팅
 	        function loadTabContent(dataType) {
 	        	console.log("dataType : "+dataType)
-	            if (isLoading || !hasMoreData) {
-	                return;
-	            }
+// 	            if (isLoading || !hasMoreData) {
+// 	                return;
+// 	            }
 	            tabContainer.empty();
 	            currentPage = 1;
-	            perPage = 10;
+	            perPage = 3;
 	            console.log("loadTabContent()->loadTabData() 호출");
 	            loadTabData(dataType); // 각 카테고리별 list를 호출하도록 필터 역할 함 
 	        }
 	        
 	     	// 페이지 로드 시 초기 탭 데이터 로딩
-	        //loadTabContent("jiqoo");
+	        loadTabContent("jiqoo");
 	        
 // 	        $("#jiqoo").on("click", function(){
 // // 	        	alert("hi");
@@ -374,28 +384,26 @@
   
 				if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
 					console.log('스크롤이벤트실행중');
-					isLoading = true;
-					loadTabData(dataType);
+					var result = 0;
+					if(!loadMoreType || loadMoreType === "jiqoo") {
+// 						isLoading = true;
+						loadJiqooList(currentPage, perPage);
+					}else if(loadMoreType === "moqoo") {
+						loadMoqooList(currentPage, perPage);
+					}else if(loadMoreType === "myComment") {
+						loadComments(currentPage, perPage);
+					}else if(loadMoreType === "like") {
+						loadLikedPosts(currentPage, perPage);
+					}
 				}
 	        });
-	        
-// 	        $(window).scroll(function() {
-// 				if (isLoading || !hasMoreData) {
-// 				    return;
-// 				}
-  
-// 				if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
-// 					console.log('스크롤이벤트실행중');
-// 					isLoading = true;
-// //				   	loadComments(currentPage, perPage);
-// 				   	loadData();
-// 				}
-// 	        });
+
 	        
 	        function loadTabData(dataType) {
             	console.log("loadTabData함수 : " + dataType);
+            	var count = 0;
 	            if (dataType === 'jiqoo') { // dataType이 'jiqoo'이면 지꾸 데이터 로드
-	                loadJiqooList(currentPage, perPage);
+	            	count = loadJiqooList(currentPage, perPage);
 	            	console.log("loadJiqooList실행")
 	            } else if (dataType === 'moqoo') { // dataType이 'moqoo'이면 지꾸 데이터 로드
 	            	loadMoqooList(currentPage, perPage);
@@ -411,46 +419,29 @@
 	        
 			//////////////////////////////////////////////// 지꾸 ////////////////////////////////////////////////
 
-	        
-// 	        $("myJiqoo").on("click", function(){
-// 	        	tabContainer.empty();
-// 	        	currentPage = 1;
-// 				perPage = 10;
-// 	        	//loadJiqooList(currentPage, perPage);
-// 				loadData('myJiqoo');
-// 	        })
-			
-// 			$(window).scroll(function(){
-// 				if(jiqooIsLoading || !hasMoreJiqoo) {
-// 					return;
-// 				}
-// 				if ($(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
-// 					console.log('스크롤이벤트실행중');
-// 					jiqooIsLoading = true;
-// 					loadJiqooList(jiqooCurrentPage, jiqooPerPage);
-// 				}
-// 			})
 			
 			function loadJiqooList(page, perPage) {
-	        	if(!hasMoreData) {
-	        		return;
-	        	}
+// 	        	if(!hasMoreData) {
+// 	        		return;
+// 	        	}
+	        	var userId = $("#profileUserId").val();
+	        	console.log(userId);
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
-// 	        	var startNo = (jiqooCurrentPage * jiqooPerPage) - (jiqooPerPage - 1);
-// 	        	var endNo = jiqooCurrentPage * jiqooPerPage;
-	        	
+ 		        var searchDate = $("#inputDate").val();
+				var requestData = {
+					startNo : startNo, 
+        			endNo : endNo,
+        			searchDate : searchDate
+				}
+				var result = 0;
 	        	$.ajax({
 	        		url: "/user/myJiqooList",
-	        		type: "GET",
-	        		data: {
-	        			startNo : startNo, 
-	        			endNo : endNo
-	        		},
+	        		type: "POST",
+	        		data: requestData,
 	        		success: function(data){
-// 	        			var jiqooCount = $("#jiqooCount");
-// 	        			var jiqooContainer = $("#jiqooContainer");
-	        			isLoading = false;
+	        			result = data.length;
+// 	        			isLoading = false;
 	        			if(data === null || data.length === 0) {
 	        				if(page === 1) {
 	        					tabCount.empty();
@@ -464,7 +455,7 @@
 			                        "</div>";
 		                        tabContainer.append(noDataHtml);
 	        				}
-	        				hasMoreData = false;
+	        				//hasMoreData = false;
 	        			} else {
 	        				for(var i = 0; i < data.length; i++) {
 	        					var myJiqooList = data[i];
@@ -491,7 +482,7 @@
 					                           	"		<div class='jiqoo-writer'>"+
 					                           	"			<div class='author text-start'>"+myJiqooList.jiqooWriter+"</div>"+
 							                	"          	<div>"+
-							                   	"				<span>23/10/20 21:20</span>"+
+							                   	"				<span>"+myJiqooList.jiqooDate+"</span>"+
 							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
 							                   	"				<span>"+myJiqooList.jViewCount+"</span>"+
 						                   		"			</div>"+
@@ -505,10 +496,11 @@
 	        				}
 	        			}
 		                //$("#jiqooCount").text(data.length);
-		                isLoading = false;
+// 		                isLoading = false;
 		                currentPage++;
 	        		},
 		            error: function(error) {
+		            	console.log(error);
 		            	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
                     	location.reload();
 		            }
@@ -518,21 +510,22 @@
 			
 			//////////////////////////////////////////////// 모꾸 ////////////////////////////////////////////////
 			function loadMoqooList(page, perPage) {
-	        	if(!hasMoreData) {
-	        		return;
-	        	}
+// 	        	if(!hasMoreData) {
+// 	        		return;
+// 	        	}
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
-	        	
+ 		        var searchDate = $("#inputDate").val();
 	        	$.ajax({
-	        		url: "/user/myMoqooList",
+	        		url: "/user/myoqooList",
 	        		type: "GET",
 	        		data: {
 	        			startNo : startNo, 
-	        			endNo : endNo
+	        			endNo : endNo,
+	        			searchDate : searchDate
 	        		},
 	        		success: function(data){
-	        			isLoading = false;
+// 	        			isLoading = false;
 	        			if(data === null || data.length === 0) {
 	        				if(page === 1) {
 	        					tabCount.empty();
@@ -546,7 +539,7 @@
 			                        "</div>";
 		                        tabContainer.append(noDataHtml);
 	        				}
-	        				hasMoreData = false;
+// 	        				hasMoreData = false;
 	        			} else {
 	        				for(var i = 0; i < data.length; i++) {
 	        					var myMoqooList = data[i];
@@ -573,7 +566,7 @@
 					                           	"		<div class='jiqoo-writer'>"+
 					                           	"			<div class='author text-start'>"+myMoqooList.moqooWriter+"</div>"+
 							                	"          	<div>"+
-							                   	"				<span>23/10/20 21:20</span>"+
+							                   	"				<span>"+myMoqooList.moqooDay+"</span>"+
 							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
 							                   	"				<span>"+myMoqooList.mViewCount+"</span>"+
 						                   		"			</div>"+
@@ -587,7 +580,7 @@
 	        				}
 	        			}
 		                //$("#jiqooCount").text(data.length);
-		                isLoading = false;
+// 		                isLoading = false;
 		                currentPage++;
 	        		},
 		            error: function(error) {
@@ -610,21 +603,21 @@
         	
 			// 댓글 조회
 			function loadComments(page, perPage) {
-			    if (!hasMoreData) {
-			        return; //댓글 없으면 스크롤 이벤트 중지
-			    }
+// 			    if (!hasMoreData) {
+// 			        return; //댓글 없으면 스크롤 이벤트 중지
+// 			    }
 			    
-// 		        var startNo = (currentPage * perPage) - (perPage - 1);
-// 		        var endNo =  currentPage * perPage;
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
+ 		        var searchDate = $("#inputDate").val();
 		        
 		        $.ajax({
-		            url: "/user/myComtList",
+		            url: "/user/comtList",
 		            type: "GET",
 		            data: {
 		            	startNo: startNo,
-		            	endNo: endNo
+		            	endNo: endNo,
+		            	searchDate : searchDate
 		            },
 		            success: function(data) {
 		                isLoading = false;
@@ -641,7 +634,7 @@
 			                        "</div>";
 		                        tabContainer.append(noDataHtml);
 		                	}
-		                	hasMoreData = false;
+// 		                	hasMoreData = false;
 		                } else {
 			                for (var i = 0; i < data.length; i++) {
 			                	var myComtList = data[i];
@@ -656,12 +649,7 @@
 			                		boardType = "지꾸";
 			                		detailUrl = "/jiqoo/detail?jiqooNo=";
 			                	}
-			                	//var photoPath = myComtList.user ? myComtList.user.userPhotoPath : null;
-// 			                	var photoPath = myComtList.user.userPhotoPath;
-
-// 			                	if (photoPath === null || photoPath === 'null') {
-// 			                	    photoPath = "../resources/assets/img/no-profile.png";
-// 			                	} else {}
+			                	
 								var commentHtml = "<div class='comtListContent row'>"
 													+"<div class='comtTitleArea'>"
 														+"<span class='comtListTitle'>"+boardType+"</span>"
@@ -693,7 +681,7 @@
 		                }
 						
 		                $("#commentCount").text(data.length);
-		                isLoading = false;
+// 		                isLoading = false;
 			            currentPage++;
 		            },
 		            error: function(error) {
@@ -710,19 +698,21 @@
 			// 좋아요 조회
 			function loadLikedPosts(page, perPage) {
 				console.log("like리스트 불러오기")
-			    if (!hasMoreData) {
-			        return; //댓글 없으면 스크롤 이벤트 중지
-			    }
+// 			    if (!hasMoreData) {
+// 			        return; //댓글 없으면 스크롤 이벤트 중지
+// 			    }
 
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
-		        
+ 		        var searchDate = $("#inputDate").val();
+ 		        
 		        $.ajax({
 		            url: "/user/likedList",
 		            type: "GET",
 		            data: {
 		            	startNo: startNo,
-		            	endNo: endNo
+		            	endNo: endNo,
+		            	searchDate : searchDate
 		            },
 		            success: function(data) {
 		                isLoading = false;
@@ -739,7 +729,7 @@
 			                        "</div>";
 		                        tabContainer.append(noDataHtml);
 		                	}
-		                	hasMoreData = false;
+// 		                	hasMoreData = false;
 		                } else {
 		                	
 			                for (var i = 0; i < data.length; i++) {
@@ -781,7 +771,7 @@
 					                           	"		<div class='jiqoo-writer'>"+
 					                           	"			<div class='author text-start'>"+likedList.postWriter+"</div>"+
 							                	"          	<div>"+
-							                   	"				<span>23/10/20 21:20</span>"+
+							                   	"				<span>"+likedList.postDate+"</span>"+
 							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
 							                   	"				<span>"+likedList.viewCount+"</span>"+
 						                   		"			</div>"+
@@ -795,7 +785,7 @@
 			                }
 		                }
 
-		                isLoading = false;
+// 		                isLoading = false;
 			            currentPage++;
 		            },
 		            error: function(error) {
@@ -808,12 +798,12 @@
 			//////////////////////////////////////////////// follow ////////////////////////////////////////////////        
         	// unfollow 버튼
         	$(".unfollow-btn").on("click", function(){
-        		const userId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
+        		const toUserId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
         		const button = $(this);
         		$.ajax({
                     type: 'POST',
                     url: '/user/unfollow',
-                    data: { userId: userId },
+                    data: { toUserId: toUserId },
                     success: function(result) {
                         if (result === "success") {
                         	button.removeClass("unfollow-btn").addClass("follow-btn");
@@ -827,6 +817,7 @@
                         }
                     },
                     error: function(error) {
+                    	console.log(error)
                     	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
                     	location.reload();
                     }
@@ -863,56 +854,7 @@
 			    });
 			});
 			//-----------------------------------------------------------------------------------------------------
-			
-			////////////////////////////////////////////// 프사변경 /////////////////////////////////////////////// 			
-        	//모달 닫기버튼 누르면 리로드
-            $(".closeModalButton").on("click", function() {
-                $("this").modal("hide");
-                location.reload();
-            });
-        	
-        	// 사진변경모달오픈
-			$("#openChangePhotoModal").on("click", function(){
-				$("#changePhotoModal").modal("show");
-			})
-        
-        	// 사진변경
-			$("#photoChange").on("click", function(){
-			    let uploadFile = $("#modalUploadFile")[0].files[0];
-			
-			    if (uploadFile) {
-			        let formData = new FormData();
-			        formData.append("uploadFile", uploadFile);
-			
-			        $.ajax({
-			            url: "/user/updatePhoto",
-			            type: "POST",
-			            data: formData,
-			            processData: false,
-			            contentType: false,
-			            success: function(response) {
-			                if (response.success === "success") {
-			                    alert("프로필 사진 변경 성공");
-			                    $(".modal").modal("hide");
-			                    location.reload();
-			                } else if (response.checkLogin === "checkLogin") {
-			                    alert("로그인 후 이용바랍니다.");
-			                    window.location.href = "/user/login";   
-			                } else {
-			                    alert("프로필 사진이 변경되지 않았습니다. 다시 시도해주세요.");
-			                }
-			            },
-			            error: function(error) {
-			            	console.log(error);
-			                alert("[서버오류] 관리자에게 문의바랍니다.");
-			            }
-			        });
-			    } else {
-			        alert("프로필 사진을 선택해주세요.");
-			        return;
-			    }
-			});
-			//-----------------------------------------------------------------------------------------------------
+
 			
 	        // $.datepicker.setDefaults({
 	        //     prevText: "이전달",
@@ -947,8 +889,10 @@
 	            dateFormat: "yy-mm-dd", // 날짜 형식을 설정
 	            onSelect: function(dateText) {
 	                // 선택한 날짜를 #dateInput의 값으로 설정
-	                var selectedDate = dateText;
-	                //loadDataByDate(selectedDate);
+	            	$('#inputDate').val(dateText);
+	                loadTabContent("jiqoo");
+	                $("#jiqoo").tab("show");
+	                loadMoreType = "jiqoo";
 	            }
 	        })
 	

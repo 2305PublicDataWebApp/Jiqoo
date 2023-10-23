@@ -179,5 +179,11 @@ public class UserServiceImpl implements UserService{
 		return likedList;
 	}
 
+	@Override
+	public List<UserJiqooDto> selectMyJiqooSearchList(Map<String, Object> jiqooMap) {
+		List<UserJiqooDto> myJiqooSearchList = userStore.selectMyJiqooSearchList(sqlSession, jiqooMap);
+		return myJiqooSearchList;
+	}
+
 
 }
