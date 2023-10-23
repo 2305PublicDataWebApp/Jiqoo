@@ -75,7 +75,7 @@
         </form>
       </div>
 
-    <div id="container" data-aos=fade-in>
+    <div id="container" data-aos=fade-in></div>
 
     <!-- 결과 목록 아이템 -->
     <div class="row result-item">

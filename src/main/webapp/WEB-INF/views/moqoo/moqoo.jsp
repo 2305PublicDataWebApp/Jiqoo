@@ -204,10 +204,10 @@
 		</div>
 
 		<!-- ======= Search Section ======= -->
-		<div class="search-container">
-			<form action="" method="" class="search-form">
-				<input type="text" placeholder="search">
-				<button type="submit" id="search-btn">
+		<div class="search-container" style="display:none;">
+			<form class="search-form">
+				<input type="text" placeholder="search" id="search-input">
+				<button type="button" id="search-btn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
               			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
             		</svg>
@@ -228,7 +228,7 @@
 
 
 		<!-- ======= List Section ======= -->
-		<div id="container" data-aos=fade-in>
+		<div id="container" data-aos=fade-in></div>
 
 <!-- 			<!-- 결과 목록 아이템 -->
 <%-- 			<c:forEach var="moqooList" items="${moqooList }"> --%>
@@ -468,6 +468,32 @@
     // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
     var map = new kakao.maps.Map(mapContainer, mapOption); 
     
+ 	// HTML5의 geolocation으로 사용할 수 있는지 확인합니다
+    if (navigator.geolocation) {
+        
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+            
+            var lat = position.coords.latitude, // 위도
+                lon = position.coords.longitude; // 경도
+                
+            var locPosition = new kakao.maps.LatLng(lat, lon) // 현재 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                
+            displayMarker(locPosition);
+        });
+        
+    } else { // HTML5의 GeoLocation을 사용할 수 없을때 위치를 설정합니다
+        
+        var locPosition = new kakao.maps.LatLng(33.450701, 126.570667)
+            
+        displayMarker(locPosition);
+    }
+ 	
+    function displayMarker(locPosition) {
+    	map.setCenter(locPosition);
+    }
+
+
     
     function showAllMap() {
     	  // 커스텀 오버레이 배열을 선언합니다
@@ -544,7 +570,8 @@
     	      }
   	    }
   	  });
-      }
+    }
+    showAllMap();
     
     
 	
@@ -563,17 +590,21 @@
 	const btnListDiv = document.querySelector('#btn-list');
 	const btnMapDiv = document.querySelector('#btn-map');
 	const btnModal = document.querySelector('.insert-jiqoo-btn');
+	const searchDiv = document.querySelector('.search-container');
 
 	btnListDiv.addEventListener('click', () => {
 		container.style.display = 'block';
 		mapDiv.style.display = 'none';
-    btnModal.style.display='none';
+    	btnModal.style.display='none';
+    	searchDiv.style.display='flex';
+    	
 	});
 
 	btnMapDiv.addEventListener('click', () => {
 	  mapDiv.style.display = 'block';
 	  container.style.display = 'none';
 	  btnModal.style.display='block';
+	  searchDiv.style.display='none';
 	  showAllMap();
 	});
 	
@@ -588,7 +619,8 @@
 	var btnList = $("#btn-list");
 	var btnMap = $("#btn-map");
 	
-	$("#search-btn").on('click', function() {
+	$("#search-btn").on('click', function(e) {
+		e.preventDefault();
 		loadInitialMoqooSearchList();
 	})
   
@@ -791,7 +823,7 @@
 	                listContainer.empty();
 	                
 	                listContainer.html(`<div id="empty-container">
-		                    <img id="logo-img" src="../resources/assets/img/moqooLogo.png">
+		                    <img id="logo-img" src="../resources/assets/img/jiqooLogo.png">
 		                    <span id="empty-text"><br>
 		                    검색결과가 없습니다.</span></div>`);
 	            }
@@ -854,7 +886,7 @@
     // 버튼 클릭 시 팝업 창 열기
     document.getElementById("open-map-btn").onclick = function() {
 		// 팝업 창을 열기 위한 윈도우.open 함수 사용
-		window.open("popupMap", "Popup", "width=1200,height=800,resizable=no");
+		window.open("popup_map", "Popup", "width=1200,height=800,resizable=no");
     };
 	</script>
 
