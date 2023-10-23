@@ -1,6 +1,10 @@
 package com.jiqoo.user.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
+
+import com.jiqoo.common.domain.Comment;
+import com.jiqoo.report.domain.Report;
 
 public class User {
 	
@@ -24,7 +28,9 @@ public class User {
 	
 	private int count;
 	private String ageGroup;
-	
+	private List<Report> reportList;
+	private List<Comment> comtList;
+	private int uReportCount;
 
 	private int followers; //나를 팔로우한 사람들
 	private int followings; //내가 팔로우한 사람들
@@ -222,6 +228,30 @@ public class User {
 
 	public void setMoqooCount(int moqooCount) {
 		this.moqooCount = moqooCount;
+	}
+
+	public List<Report> getReportList() {
+		return reportList;
+	}
+
+	public void setReportList(List<Report> reportList) {
+		this.reportList = reportList;
+	}
+
+	public List<Comment> getComtList() {
+		return comtList;
+	}
+
+	public void setComtList(List<Comment> comtList) {
+		this.comtList = comtList;
+	}
+
+	public int getuReportCount() {
+		return uReportCount;
+	}
+
+	public void setuReportCount(int uReportCount) {
+		this.uReportCount = uReportCount;
 	}
 
 	@Override
