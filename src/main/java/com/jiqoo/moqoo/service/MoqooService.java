@@ -1,11 +1,14 @@
 package com.jiqoo.moqoo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
+import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface MoqooService {
@@ -58,11 +61,32 @@ public interface MoqooService {
 	Category selectCategoryByNo(String moqooCName);
 
 	/**
+	 * 좋아요 클릭
+	 * @param like
+	 * @return
+	 */
+	int insertLike(Like like);
+
+	/**
+	 * 좋아요 취소
+	 * @param like
+	 * @return
+	 */
+	int deleteLike(Like like);
+
+	/**
 	 * 모꾸 게시물 좋아요 수
 	 * @param moqoo
 	 * @return
 	 */
 	int selectLikeCountByNo(int moqooNo);
+
+	/**
+	 * 좋아요 여부 판단
+	 * @param like
+	 * @return
+	 */
+	int selectLikeOrNot(Like like);
 
 	/**
 	 * 참여자 보내기
@@ -106,33 +130,14 @@ public interface MoqooService {
 	 */
 	int selectOneByMoqooJoin(int moqooNo);
 
-	/**
-	 * 좋아요 클릭했을 때 정보넘기기
-	 * @param like
-	 * @return
-	 */
-	int clickHeart(Like like);
+//	/**
+//	 * 좋아요 카운트
+//	 * @param refPostNo
+//	 * @return
+//	 */
+//	int moqooLikeCount(int refPostNo);
 
-	/**
-	 * 좋아요 카운트
-	 * @param refPostNo
-	 * @return
-	 */
-	int moqooLikeCount(int refPostNo);
 
-	/**
-	 * 좋아요 정보 조회
-	 * @param like
-	 * @return
-	 */
-	Like selectLikeOne(Like like);
-
-	/**
-	 * 좋아요 두번 클릭시 삭제
-	 * @param like
-	 * @return
-	 */
-	int deleteHeart(Like like);
 
 	/**
 	 * 모꾸 전체리스트 조회
@@ -146,4 +151,32 @@ public interface MoqooService {
 	 */
 	int updateMoqooCount(int moqooNo);
 
+	/**
+	 * 모꾸 검색리스트
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> selectMoqooSearchList(Map<String, Object> params);
+
+
+	/**
+	 * 모꾸 초기 전체 리스트 조회
+	 * @return
+	 */
+	List<Moqoo> loadInitialMoqooAllList();
+
+	/**
+	 * 모꾸 전체리스트 무한 스크롤
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> loadMoreMoqooAllList(Map<String, Object> params);
+
+	
+	/**
+	 * 게시글 신고하기
+	 * @param report
+	 * @return
+	 */
+	int insertReport(Report report);
 }

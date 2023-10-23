@@ -1,6 +1,7 @@
 package com.jiqoo.moqoo.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.Session;
 
@@ -14,6 +15,7 @@ import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooService;
 import com.jiqoo.moqoo.store.MoqooStore;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Service
@@ -55,6 +57,7 @@ public class MoqooServiceImpl implements MoqooService {
 		return category;
 	}
 
+	// 좋아요 카운트
 	@Override
 	public int selectLikeCountByNo(int moqooNo) {
 		int result = moqooStore.selectLikeCountByNo(sqlSession, moqooNo);
@@ -108,29 +111,11 @@ public class MoqooServiceImpl implements MoqooService {
 		return moqooParticipants;
 	}
 
-	@Override
-	public int clickHeart(Like like) {
-		int result = moqooStore.clickHeart(sqlSession, like);
-		return result;
-	}
-
-	@Override
-	public int moqooLikeCount(int refPostNo) {
-		int result = moqooStore.moqooLikeCount(sqlSession, refPostNo);
-		return result;
-	}
-
-	@Override
-	public Like selectLikeOne(Like like) {
-		Like likeOne = moqooStore.selectLikeOne(sqlSession, like);
-		return likeOne;
-	}
-
-	@Override
-	public int deleteHeart(Like like) {
-		int result = moqooStore.deleteHeart(sqlSession, like);
-		return result;
-	}
+//	@Override
+//	public int moqooLikeCount(int refPostNo) {
+//		int result = moqooStore.moqooLikeCount(sqlSession, refPostNo);
+//		return result;
+//	}
 
 	@Override
 	public List<Moqoo> selectMoqooAllList() {
@@ -142,5 +127,47 @@ public class MoqooServiceImpl implements MoqooService {
 	public int updateMoqooCount(int moqooNo) {
 		return moqooStore.updateMoqooCount(sqlSession, moqooNo);
 		
+	}
+
+	@Override
+	public int insertLike(Like like) {
+		int result = moqooStore.insertLike(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int deleteLike(Like like) {
+		int result = moqooStore.deleteLike(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public int selectLikeOrNot(Like like) {
+		int result = moqooStore.selectLikeOrNot(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public List<Moqoo> selectMoqooSearchList(Map<String, Object> params) {
+		List<Moqoo> moqooSearchList = moqooStore.selectmoqooSearchList(sqlSession, params);
+		return moqooSearchList;
+	}
+
+	@Override
+	public List<Moqoo> loadInitialMoqooAllList() {
+		List<Moqoo> list = moqooStore.loadInitialMoqooAllList(sqlSession);
+		return list;
+	}
+
+	@Override
+	public List<Moqoo> loadMoreMoqooAllList(Map<String, Object> params) {
+		List<Moqoo> list = moqooStore.loadMoreMoqooAllList(sqlSession, params);
+		return list;
+	}
+
+	@Override
+	public int insertReport(Report report) {
+		int result = moqooStore.insertReport(sqlSession, report);
+		return result;
 	}
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooComtService;
 import com.jiqoo.moqoo.service.MoqooService;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Controller
@@ -139,8 +141,11 @@ public class MoqooController {
 	
 	// 모꾸 게시글 상세페이지
 	@GetMapping("/moqoo/detail")
-	public String showMoqooDetail(@RequestParam("moqooNo") Integer moqooNo, Model model) {
+	public String showMoqooDetail(@RequestParam("moqooNo") Integer moqooNo, Model model, HttpSession session) {
 		try {
+			String lUserId = (String) session.getAttribute("userId");
+			// 좋아요
+			Like like = new Like(moqooNo, lUserId);
 			// 조회수
 			moqooService.updateMoqooCount(moqooNo);
 			// 게시글 내용 가져오면서 댓글도 같이 가져오기
@@ -149,14 +154,16 @@ public class MoqooController {
 			Category category = moqooService.selectCategoryByNo(moqooCName);
 			List<Category> categoryList = moqooService.selectCategoryList();
 			int likeCount = moqooService.selectLikeCountByNo(moqooNo);
+			int likeOrNot = moqooService.selectLikeOrNot(like);
 			int moqooJoinCount = moqooService.selectJoinCount(moqooNo);
 			if(moqoo != null) {
-				// 게시글 번호에 맞는 댓글들 가져오기
-				List<Comment> comtList = moqooComtService.selectComtList(moqooNo);
+//				// 게시글 번호에 맞는 댓글들 가져오기
+//				List<Comment> comtList = moqooComtService.initialComments(moqooNo);
+				// 모임 참여신청자들
 				List<MoqooUser> moqooUserList  = moqooService.selectMoqooUserList(moqooNo);
-				if(comtList.size() > 0) {
-					model.addAttribute("comtList", comtList);
-				}
+//				if(comtList.size() > 0) {
+//					model.addAttribute("comtList", comtList);
+//				}
 				if(moqooUserList.size() > 0) {
 					model.addAttribute("moqooList", moqooUserList);
 				}
@@ -165,6 +172,7 @@ public class MoqooController {
 				model.addAttribute("categoryList", categoryList);
 				model.addAttribute("likeCount", likeCount);
 				model.addAttribute("joinCount", moqooJoinCount);
+				model.addAttribute("likeOrNot", likeOrNot);
 				return "moqoo/post_moqoo";
 			}
 			else {
@@ -179,6 +187,20 @@ public class MoqooController {
 			return "common/message";
 		}
 	}
+	
+	@ResponseBody
+	@GetMapping(value =  "/moqoo/searchList", produces = "application/json;charset=UTF-8;")
+	public String showSearchList(@RequestParam("searchValue") String searchValue, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		Map<String, Object> params = new HashMap<>();
+		params.put("searchValue", searchValue);
+		params.put("userId", userId);
+
+		List<Moqoo> moqooSearchList = moqooService.selectMoqooSearchList(params);
+		Gson gson = new Gson();
+		return gson.toJson(moqooSearchList);
+	}
+	
 	
 	@ResponseBody
 	@PostMapping("/moqoo/post")
@@ -200,6 +222,61 @@ public class MoqooController {
 			return "false";
 		}
 	}
+	
+//	@GetMapping("/moqoo/report")
+//	public String insertReport(@ModelAttribute Report report, @RequestParam("reportContent") String reportContent, @RequestParam("moqooNo") int moqooNo, Model model, HttpSession session) {
+//		try {
+//			String userId = (String) session.getAttribute("userId");
+//			if(userId != null && !userId.equals("")) {
+//				report.setReportWriter(userId);
+//				report.setReportContent(reportContent);
+//				report.setReportPostNo(moqooNo);
+//				int result = moqooService.insertReport(report);
+//				if(result > 0) {
+//					return "redirect:/moqoo/moqoo";
+//				}
+//				else {
+//					model.addAttribute("msg", "신고접수가 완료되지 않았습니다.");
+//					model.addAttribute("url", "/moqoo/moqoo");
+//					return "common/message";
+//				}
+//			}
+//			else {
+//				model.addAttribute("msg", "회원정보가 없습니다. 로그인 후 이용해 주셍.");
+//				model.addAttribute("url", "/moqoo/moqoo");
+//				return "common/message";
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			model.addAttribute("msg", e.getMessage());
+//			model.addAttribute("url", "/moqoo/moqoo");
+//			return "common/message";
+//		}
+//	}
+	
+	// 좋아요
+		@ResponseBody
+		@GetMapping("/moqoo/like")
+		public String like(@RequestParam("refPostNo") int refPostNo, HttpSession session) {
+			String lUserId = (String)session.getAttribute("userId");
+			Like like = new Like(refPostNo, lUserId);
+			int result = moqooService.selectLikeOrNot(like);
+			if(result == 0) {
+				int insertLike = moqooService.insertLike(like);
+				if(insertLike > 0) {
+					return "insert";
+				}else {
+					return "fail";
+				}
+			}else {
+				int deleteLike = moqooService.deleteLike(like);
+				if(deleteLike > 0) {
+					return "delete";
+				}else {
+					return "fail";
+				}
+			}
+		}
 	
 	@PostMapping("moqoo/update")
 	public String updateMoqoo(@ModelAttribute Moqoo moqoo,@RequestParam(value = "uploadFile", required=false) MultipartFile uploadFile, Model model, HttpServletRequest request) {
@@ -229,7 +306,7 @@ public class MoqooController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "/moqoo/moqoo");
+			model.addAttribute("url", "/moqoo/detail?moqooNo=" + moqoo.getMoqooNo());
 			return "common/message";
 		}
 	}
@@ -280,6 +357,26 @@ public class MoqooController {
 		return gson.toJson(moqooAllList);
 	}
 	
+	// 초기 모꾸 전체 리스트
+	@ResponseBody
+	@GetMapping("/moqoo/loadInitialMoqooAllList")
+    public List<Moqoo> loadInitialMoqooAllList() {
+        List<Moqoo> InitialMoqooAllList = moqooService.loadInitialMoqooAllList();
+        return InitialMoqooAllList;
+    }
+	
+	// 모꾸 전체 리스트 스크롤 이벤트
+	@ResponseBody
+	@GetMapping("/moqoo/loadMoreMoqooAllList")
+	public ResponseEntity<List<Moqoo>> loadMoreMoqooAllList(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+		List<Moqoo> newList = moqooService.loadMoreMoqooAllList(params);
+        return ResponseEntity.ok(newList);
+	}
+	
+	// 참여신청자 승인하기
 	@PostMapping("/moqoo/attendY")
     @ResponseBody
     public String approveUser(
@@ -298,6 +395,8 @@ public class MoqooController {
         // 승인 처리 후 메시지 반환
     }
 
+	
+	// 참여신청자 거절하기
     @PostMapping("/moqoo/sorry")
     @ResponseBody
     public String rejectUser() {
@@ -307,41 +406,41 @@ public class MoqooController {
     }
 	
 	
-    @PostMapping("/moqoo/heart")
-    @ResponseBody
-    public String clickHeart(@RequestParam("refPostNo") int refPostNo, @RequestParam("userId") String lUserId, @RequestParam("refBoardType") String refBoardType ) {
-    	
-    	Like like = new Like(refPostNo, refBoardType, lUserId);
-    	Like likeOne = moqooService.selectLikeOne(like);
-    	if(likeOne == null) {
-    		int result = moqooService.clickHeart(like);
-    		if(result > 0) {
-            	return "true";
-    		}
-    		else {
-    			return "false";
-            }
-    	}
-    	else {
-    		// 좋아요 테이블에서 삭제 (두번 클릭시 좋아요 취소)
-    		int result = moqooService.deleteHeart(like);
-    		if(result > 0) {
-    			return "true";
-    		}
-    		else {
-    			return "false";
-    		}
-    	}
-       
-        
-    }
+//    @PostMapping("/moqoo/heart")
+//    @ResponseBody
+//    public String clickHeart(@RequestParam("refPostNo") int refPostNo, @RequestParam("userId") String lUserId, @RequestParam("refBoardType") String refBoardType ) {
+//    	
+//    	Like like = new Like(refPostNo, refBoardType, lUserId);
+//    	Like likeOne = moqooService.selectLikeOne(like);
+//    	if(likeOne == null) {
+//    		int result = moqooService.clickHeart(like);
+//    		if(result > 0) {
+//            	return "true";
+//    		}
+//    		else {
+//    			return "false";
+//            }
+//    	}
+//    	else {
+//    		// 좋아요 테이블에서 삭제 (두번 클릭시 좋아요 취소)
+//    		int result = moqooService.deleteLike(like);
+//    		if(result > 0) {
+//    			return "true";
+//    		}
+//    		else {
+//    			return "false";
+//    		}
+//    	}
+//       
+//        
+//    }
     
-    @PostMapping("/moqoo/likeCount")
-    @ResponseBody
-    public String moqooLikeCount(@RequestParam("refPostNo") int refPostNo ) {
-       int result = moqooService.moqooLikeCount(refPostNo);
-    	return result + "";
-    }
+//    @PostMapping("/moqoo/likeCount")
+//    @ResponseBody
+//    public String moqooLikeCount(@RequestParam("refPostNo") int refPostNo ) {
+//       int result = moqooService.moqooLikeCount(refPostNo);
+//    	return result + "";
+//    }
 	
 
 	// 섬머노트 사진 저장하기

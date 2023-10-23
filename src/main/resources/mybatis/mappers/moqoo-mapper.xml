@@ -64,6 +64,10 @@
 		INSERT INTO MOQOO_TBL VALUES(#{moqooNo }, #{moqooW3W }, #{moqooDay }, #{category }, #{moqooTitle }, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, #{moqooContent }, #{moqooJoin }, #{moqooWriter }, DEFAULT, DEFAULT, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT )
 	</insert>
 	
+	<insert id="insertReport"> 
+		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, NULL, #{reportPostNo }, NULL, 'M') 
+	</insert>
+	
 	<update id="updateMoqoo">
 		UPDATE MOQOO_TBL SET MOQOO_W3W = #{moqooW3W }, MOQOO_DAY = #{moqooDay }, MOQOO_TAGS = #{category }, MOQOO_TITLE = #{moqooTitle }, MOQOO_THUM_NAME = #{moqooThumName }, MOQOO_THUM_RENAME = #{moqooThumRename }, MOQOO_THUM_PATH = #{moqooThumPath }, MOQOO_CONTENT = #{moqooContent }, MOQOO_JOIN = #{moqooJoin }, M_UPDATE_DATE = DEFAULT, M_VIEW_COUNT = DEFAULT, MOQOO_LAT = #{moqooLat }, MOQOO_LNG = #{moqooLng }, MOQOO_STATUS = DEFAULT WHERE MOQOO_NO = #{moqooNo}
 	</update>
@@ -101,21 +105,21 @@
 		SELECT MOQOO_JOIN FROM MOQOO_TBL WHERE MOQOO_NO = #{moqooNo }
 	</select>
 	
-	<insert id="clickHeart">
-		INSERT INTO LIKE_TBL VALUES(#{refPostNo },#{refBoardType }, #{lUserId }) 
+	<insert id="insertLike">
+		INSERT INTO LIKE_TBL VALUES(#{refPostNo }, 'M', #{lUserId }) 
 	</insert>
+
+	<delete id="deleteLike">
+		DELETE FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId }
+	</delete>
+	
+	<select id="selectLikeOrNot" resultType="_int">
+		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId } AND REF_BOARD_TYPE = 'M'
+	</select>
 	
 	<select id="moqooLikeCount" resultType="_int">
 		SELECT COUNT(*) FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo }
 	</select>
-	
-	<select id="selectLikeOne" resultType="Like">
-		SELECT * FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND REF_BOARD_TYPE = #{refBoardType } AND L_USER_ID = #{lUserId }
-	</select>
-	
-	<delete id="deleteHeart">
-		DELETE LIKE_TBL WHERE REF_POST_NO = #{refPostNo } and REF_BOARD_TYPE = #{refBoardType } and L_USER_ID = #{lUserId };
-	</delete>
 	
 	<select id="selectMoqooAllList" resultMap="MoqooResultMap">
 		SELECT * FROM MOQOO_TBL
@@ -123,6 +127,48 @@
 		MOQOO_WRITER = USER_ID
 		JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
 		WHERE MOQOO_STATUS = 'Y'
-		ORDER BY MOQOO_DATE DESC
+		ORDER BY MOQOO_DAY DESC
+	</select>
+	
+	<select id="selectMoqooSearchList" resultMap="MoqooResultMap">
+        SELECT * FROM MOQOO_TBL
+        JOIN USER_TBL ON USER_ID = MOQOO_WRITER
+        JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
+        WHERE (MOQOO_TITLE LIKE '%' || #{searchValue } || '%' OR REGEXP_REPLACE(MOQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue } || '%')
+        AND USER_ID = #{userId }
+        ORDER BY MOQOO_DAY DESC
+	</select>
+	
+	<select id="loadInitialMoqooAllList" resultMap="MoqooResultMap">
+		SELECT * FROM (
+			SELECT A.*, ROWNUM AS rnum
+			FROM (
+			    SELECT M.*, USER_NICKNAME, C_IMG_PATH
+			    FROM MOQOO_TBL M
+			    JOIN USER_TBL ON M.MOQOO_WRITER = USER_ID
+			    JOIN CATEGORY_TBL C ON M.MOQOO_TAGS = C_NAME
+			    WHERE MOQOO_STATUS = 'Y'
+			    ORDER BY MOQOO_DAY DESC
+			) A
+			WHERE ROWNUM &lt;= 10
+		)
+		WHERE rnum &gt;= 1
+	</select>
+	
+	<select id="loadMoreMoqooAllList" resultMap="MoqooResultMap">
+		SELECT * 
+		FROM (
+			SELECT A.*, ROWNUM AS rnum
+			FROM (
+			    SELECT M.*, U.USER_NICKNAME, C.C_IMG_PATH
+			    FROM MOQOO_TBL M
+			    JOIN USER_TBL U ON M.MOQOO_WRITER = U.USER_ID
+			    JOIN CATEGORY_TBL C ON M.MOQOO_TAGS = C.C_NAME
+			    WHERE M.MOQOO_STATUS = 'Y'
+			    ORDER BY M.MOQOO_DAY DESC
+			)A
+		WHERE ROWNUM &lt;= (#{offset} + #{limit})
+		)
+		WHERE rnum &gt; #{offset}
 	</select>
 </mapper>
