@@ -190,6 +190,7 @@
 
 						<!-- 테이블 -->
 						<table id="jiqoo-table">
+						
 							<colgroup>
 								<col scope="col" width="6%">
 								<!-- # -->
@@ -240,7 +241,7 @@
 <%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${jiqooList.jCreateDate}"/></td> 작성일--%>
 										<td>${jiqooList.jOpenStatus}</td>
 										<td>${jiqooList.jiqooStatus}</td>
-										<td>10</td>
+										<td>${jiqooList.jReportCount}</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
 												data-bs-toggle="modal" data-bs-target="#detailJiqooModal${i.count }">조회</button>

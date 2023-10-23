@@ -159,13 +159,14 @@
 	                  </td>
 	                  <td >${search.moqooJoin}</td>
 	                  <td >${search.moqooStatus}</td>
-	                  <td >10</td>
+	                  <td >${search.mReportCount}</td>
 	                  <td >
 	                    <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailMoqooModal${i.count }">조회</button>
 	                  </td>
 	                </tr>
-	                
-	                <!--===== 모꾸 상세보기 Modal =====-->
+				
+				
+				 <!--===== 모꾸 상세보기 Modal =====-->
 			        <div class="modal fade" id="detailMoqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			          <div class="modal-dialog modal-lg">
 						<div class="modal-content">
@@ -173,9 +174,9 @@
 								<div class="modal-title fs-5" id="exampleModalLabel" >
 									<h3><i class="bi bi-bookmark-heart"></i> ${search.moqooNo} 번째 모꾸</h3>
 									<span><i class="bi bi-file-earmark-x"></i> 
-<%-- 										<c:if test="${search.moqooStatus eq 'Y'}">삭제전</c:if> --%>
-<%-- 										<c:if test="${search.moqooStatus eq 'N'}">삭제됨</c:if> --%>
-<%-- 										<c:if test="${search.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if> --%>
+										<c:if test="${search.moqooStatus eq 'Y'}">삭제전</c:if>
+										<c:if test="${search.moqooStatus eq 'N'}">삭제됨</c:if>
+										<c:if test="${search.moqooStatus eq 'A'}">관리자에 의해 삭제</c:if>
 									</span> <!-- 삭제여부 (Y:삭제안됨 / N,A:삭제됨) -->
 								</div>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -186,7 +187,8 @@
 								<span><i class="bi bi-calendar-week"></i> 
 									<fmt:parseDate value='${search.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate'/>
 									<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
-								</span>
+								</span>&nbsp;
+								<span><i class="bi bi-eye"></i>${moqooList.mViewCount} </span>
 								<br>
 								<h5 style="display:inline"><i class="bi bi-tag"></i> ${search.category}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
 								<h5 style="display:inline"><i class="bi bi-globe"></i> ${search.moqooW3W}</h5>&nbsp; <!-- W3W -->
@@ -199,7 +201,11 @@
 								</div>
 								<div id="report-reason">
 									<div id="r-title">신고사유()</div>
-									<div></div>
+									<c:forEach var="moqooReport" items="${search.reportList}" varStatus="i">
+										<div id="r-reason">
+											${ moqooReport.reportContent}
+										</div>
+									</c:forEach>
 								</div>
 								<div id="report-btn">
 									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${search.moqooNo}');">삭제</button>
@@ -208,9 +214,11 @@
 						</div>
 					</div>
 		        </div>
+		        </c:forEach>
 		        <!-- End 모꾸 상세보기 Modal -->
 			        
 			        <!-- 카카오맵api -->
+			        <c:forEach var="search" items="${searchMoqooList}" varStatus="i">
 					<script>
 						$("#detailMoqooModal${i.count}").on('shown.bs.modal', function(){
 							var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
@@ -245,7 +253,8 @@
 							
 						});
 					</script>
-				</c:forEach>
+					</c:forEach>
+				
                 	
               </tbody>
             </table>

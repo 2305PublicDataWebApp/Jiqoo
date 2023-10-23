@@ -3,12 +3,13 @@ package com.jiqoo.admin.service;
 import java.util.List;
 import java.util.Map;
 
-
+import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface AdminService {
@@ -166,14 +167,7 @@ public interface AdminService {
 	 */
 	public Integer deleteComtByAdmin(Integer comtNo);
 
-	public Jiqoo selectOneJiqoo(Jiqoo jiqoo);
 
-	/**
-	 * 
-	 * @param user
-	 * @return
-	 */
-	public User selectOneUser(User user);
 
 	/**
 	 * 유지중인 지꾸 총 개수
@@ -254,13 +248,8 @@ public interface AdminService {
 	 */
 	public Integer getChatRoomListCount();
 
-	/**
-	 * 총 채팅방 리스트
-	 * @param pInfo
-	 * @return
-	 */
-	public List<ChatRoom> selectAllChatRoom(PageInfo pInfo);
 
+	
 	/**
 	 * 당일 가입한 회원 리스트
 	 * @param pInfoUser
@@ -305,7 +294,6 @@ public interface AdminService {
 	 */
 	public List<Map<String, Object>> dayCountList(Map<String,Object>statsMap);
 
-	public List<Map<String, Object>> selectAllChatRoom(PageInfo pInfo, Map<String, Object> chatMap);
 
 	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo);
 
@@ -345,6 +333,14 @@ public interface AdminService {
 	 */
 	public Integer lastWeekJoinUserCount();
 
+
+	/**
+	 * 강제삭제 지꾸 복원
+	 * @param jiqooNo
+	 * @return
+	 */
+	public Integer reviveJiqooByAdmin(String jiqooNo);
+	
 	/**
 	 * 강제삭제 모꾸 복원
 	 * @param moqooNo
@@ -353,11 +349,40 @@ public interface AdminService {
 	public Integer reviveMoqooByAdmin(String moqooNo);
 
 	/**
-	 * 강제삭제 지꾸 복원
-	 * @param jiqooNo
+	 * 강제삭제 댓글복원 
+	 * @param comtNo
 	 * @return
 	 */
-	public Integer reviveJiqooByAdmin(String jiqooNo);
+	public Integer reviveCommentByAdmin(String comtNo);
+
+	/**
+	 * 챗방 강제삭제
+	 * @param chatNo
+	 * @return
+	 */
+	public Integer deleteChatByAdmin(Integer chatNo);
+
+	/**
+	 * 마지막 채팅시간있는 챗방리스트
+	 * @return
+	 */
+//	public List<ChatMessage> selectlastMsgByChatNo();
+
+	/**
+	 * 채팅방리스트
+	 * @return
+	 */
+//	public List<ChatRoom> selectChatRoomList();
+
+	/**
+	 * 다있는 채팅방 리스트
+	 * @param pInfo
+	 * @param chatMap
+	 * @return
+	 */
+//	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap);
+
+
 
 
 

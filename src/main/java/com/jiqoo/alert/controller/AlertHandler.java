@@ -15,14 +15,11 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.jiqoo.user.domain.User;
-//https://kimfk567.tistory.com/74
-//https://mag1c.tistory.com/222
-
 @Component
 public class AlertHandler extends TextWebSocketHandler{
 	private static final Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
-	
+	// 여기에서 WebSocket 메시지 처리
+
 	//로그인 한 인원 전체
 	private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
 	// 1:1로 할 경우 (로그인중인 개별 유저) 
@@ -31,88 +28,127 @@ public class AlertHandler extends TextWebSocketHandler{
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		//소켓이 연결됐을 때, 사용되는 메서드
-		//클라이언트가 웹 소켓 생성 
 		//클라이언트와 서버가 연결됨 
-		logger.info("Socket 연결");
+		
+		System.out.println("Socket 연결");
 		sessions.add(session);
 		
-		logger.info(currentUserId(session));//현재 접속한 사람
-		String senderId = currentUserId(session);
-		userSessionsMap.put(senderId,session);
+		String senderId = currentUserId(session); //현재 접속한 사람의 http세션을 조회하여 id를 얻는 함수
+		System.out.println(senderId);
+		
+		if(senderId != null) {	// 로그인 값이 있는 경우만
+			userSessionsMap.put(senderId, session);   // 로그인중 개별유저 저장
+		}
 	}
 	
+	
+	// 클라이언트가 Data 전송 시 (소켓에 메세지 보냈을 때 )
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		// 소켓에 메세지 보냈을 때 
 		//JS에서 메세지 받을 때.
 		// 클라이언트에서 온 메시지를 받는 메서드
-		logger.info("ssesion"+currentUserId(session));
-		String msg = message.getPayload();//자바스크립트에서 넘어온 Msg
-		logger.info("msg="+msg);
+		System.out.println("ssesion"+currentUserId(session));
 		
-		if (!StringUtils.hasText(msg)) {
-			logger.info("if문 들어옴?");
+		String senderId = currentUserId(session);
+		
+		String msg = message.getPayload();//자바스크립트에서 넘어온 Msg //웹소켓 세션으로 전달 된 메시지를 받을 수 있다.
+		System.out.println("msg="+msg);
+		
+		if (StringUtils.hasText(msg)) {  //메세지 내용이 있으면 
 			String[] strs = msg.split(",");
-			if(strs != null && strs.length == 10) {
+			System.out.println(strs.toString());
+			
+			if(strs != null && strs.length == 6) {
 				
 				String cmd = strs[0]; //댓글, 스크랩등의 기능을 구분, 전달 될 메시지를 바꿀때 사용
-				String jiqooWriter = strs[1]; //지꾸 글작성자 
-				String moqooWriter = strs[2];  //모꾸 글작성자
-				String comtWriter = strs[3];  //댓글쓴이
-				String jiqooNo = strs[4];  //지꾸 글번호
-				String moqooNo = strs[5];  //모꾸 글번호
-				String comtNo = strs[6];  //댓글 글번호
-				String pComtNo = strs[7];  //부모댓글번호
-				String jiqooTitle = strs[8];  //지꾸 글제목
-				String moqooTitle = strs[9];  //모꾸 글제목
+				String replyWriter = strs[1]; //댓글작성자 (알람보내는사람)
+				String boardWriter = strs[2];  //글작성자(알람받는사람)
+				String boardNo = strs[3];  //게시글번호, 알림을 누르면 해당 게시글로 이동
+				String replyNo = strs[4];  //댓글번호, 알림을 누르면 해당 게시글로 이동
+				String title = strs[5];  //게시글제목(내용),알림을 누르면 해당 게시글로 이동
 				
-				logger.info("length 성공?"+cmd);
+				System.out.println("length 성공?"+cmd);
 				
 				//웹소켓으로 전달 될 메시지는 전달받을 사용자가 접속되어 있을 때만 전송
-				WebSocketSession comtWriterSession = userSessionsMap.get(comtWriter); //대댓 달린 경우 댓글 쓴 작성자에게 알림전송
-				WebSocketSession jiqooWriterSession = userSessionsMap.get(jiqooWriter); //댓글 달린 경우 지꾸 쓴 작성자에게 알림전송 
-				WebSocketSession moqooWriterSession = userSessionsMap.get(moqooWriter);
-				logger.info("jiqooWriterSession="+userSessionsMap.get(jiqooWriter));
-				logger.info("moqooWriterSession="+userSessionsMap.get(moqooWriter));
-				logger.info("jiqooWriterSession"+jiqooWriterSession);
-				logger.info("moqooWriterSession"+moqooWriterSession);
+				//작성자가 로그인 해서 있다면 (실시간 접속시)
+				WebSocketSession replyWriterSession = userSessionsMap.get(replyWriter); //메세지 받을 세션 조회 //대댓달린경우 댓글 달린 작성자에게 알림전송
+				WebSocketSession boardWriterSession = userSessionsMap.get(boardWriter); //댓글 달린 경우 글 쓴 작성자에게 알림전송 
 				
-				//지꾸 내 글에 댓글달림 
-				if ("comment".equals(cmd) && jiqooWriterSession != null) {
-					logger.info("onmessage되나?");
-					TextMessage tmpMsg = new TextMessage(comtWriter + "님이 "
-							+ "<a href='/jiqoo/detail?jiqooNo="+ jiqooNo +"'  style=\"color: black\">"
-							+ jiqooTitle+" 에 댓글을 달았습니다!</a>");
-					jiqooWriterSession.sendMessage(tmpMsg); //글작성자에게 메세지 보냄 
-				}
+				System.out.println("boardWriterSession="+userSessionsMap.get(boardWriter));
+				System.out.println("boardWriterSession"+boardWriterSession);
 				
-				//지꾸 내 글에 좋아요
-				else if("like".equals(cmd) && jiqooWriterSession != null) {
-					//replyWriter = 좋아요누른사람 , boardWriter = 게시글작성자
-					TextMessage tmpMsg = new TextMessage(comtWriter + "님이 "
-							+ "<a href='/jiqoo/detail?jiqooNo=" + jiqooNo + "'  style=\"color: black\"><strong>"
-							+ jiqooTitle+"</strong> 에 작성한 글을 좋아요했습니다!</a>");
-
-					jiqooWriterSession.sendMessage(tmpMsg);
+					//내 글에 댓글달림 && 글쓴이가 로그인해있음
+					if ("reply".equals(cmd) && boardWriterSession != null) {
+						
+						System.out.println("onmessage되나?");
+						
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + "<a href='/board/detail.kh?boardNo="+ boardNo +"'  style=\"color: black\">"
+								+ title+"</a> 에 댓글을 달았습니다!");
+						boardWriterSession.sendMessage(tmpMsg); //글작성자에게 메세지 보냄 
+					}
 					
-				}
+					//내 댓글에 대댓글달림 && 글쓴이가 로그인해있음 
+					else if ("rereply".equals(cmd) && replyWriterSession != null) {
+						//replyWriter = 대댓단사람 , boardWriter = 댓글단사람
+						
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 "+ "<a href='/board/detail.kh?replyNo="+ replyNo 
+										+ "&refBoardNo="+ boardNo + "'  style=\"color: black\">"
+										+ title+"</a> 에 댓글을 달았습니다!");
+						replyWriterSession.sendMessage(tmpMsg); //댓글작성자에게 메세지 보냄 
+					}
+					
+					//내 글에 좋아요 && 글쓴이가 로그인해있음
+					else if("like".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 좋아요누른사람 , boardWriter = 게시글작성자
+						
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 "
+								+ "<a href='/board/readView?boardNo=" + boardNo + "'  style=\"color: black\"><strong>"
+								+ title+"</strong> 에 작성한 글을 좋아요했습니다!</a>");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
+					
+					//팔로우  && 상대방이 로그인해있음
+					else if("follow".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 팔로우한사람 , boardWriter = 팔로우받은사람
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + boardWriter + "님을 팔로우 했습니다.");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
+					
+					//채팅왔을때
+					else if("chat".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 채팅건사람 , boardWriter = 채팅받은사람
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + boardWriter + "님께 채팅을 보냈습니다.");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
 				
-				//지꾸 내 댓글에 대댓글달림 
-				if ("comment".equals(cmd) && comtWriterSession != null) {
-					logger.info("onmessage되나?");
-					TextMessage tmpMsg = new TextMessage(comtWriter + "님이 "
-							+ "<a href='/jiqoo/listComt?comtNo="+ comtNo + "&refPostNo="+ jiqooNo + "'  style=\"color: black\">"
-							+ jiqooTitle+" 에 댓글을 달았습니다!</a>");
-					comtWriterSession.sendMessage(tmpMsg); //댓글작성자에게 메세지 보냄 
-				}
+					//모임 요청 승인시  
+					else if("moqoook".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 모임주최자 , boardWriter = 모임신청한사람
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + boardWriter + "님의 모임신청을 승인했습니다.");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
+					
+					//모임 요청 거절시  
+					else if("moqoono".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 모임주최자 , boardWriter = 모임신청한사람
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + boardWriter + "님의 모임신청을 거절했습니다.");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
 				
-				// 채팅왔을때 
-				
-				//모임 요청 승인/거절시  
-				
-				//팔로우 받았을 시 
-				
-				//모임 요청 받았을 시 
+					//모임 요청 받았을 시 
+					else if("moqooreque".equals(cmd) && boardWriterSession != null) {
+						//replyWriter = 모임신청자 , boardWriter = 모임주최자
+						TextMessage tmpMsg = new TextMessage
+								(replyWriter + "님이 " + boardWriter + "님께 모임을 신청했습니다.");
+						boardWriterSession.sendMessage(tmpMsg);
+					}
 			}
 			
 		}
@@ -123,25 +159,42 @@ public class AlertHandler extends TextWebSocketHandler{
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		//소켓 접속 끊길때 사용 
 		//연결 해제
-		logger.info("Socket 끊음");
-		sessions.remove(session);
-		userSessionsMap.remove(currentUserId(session),session);
+		String senderId = currentUserId(session);
+		if(senderId!=null) {	// 로그인 값이 있는 경우만
+			System.out.println("Socket 끊음");
+			
+			sessions.remove(session);
+			userSessionsMap.remove(senderId, session);
+		}
 	}
 	
+	
+	// 에러 발생시
+	@Override
+	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+		System.out.println(session.getId() + " 익셉션 발생: " + exception.getMessage());
+
+	}
+		
+	
+	// 웹소켓에 id 가져오기
+    // 접속한 유저의 http세션을 조회하여 id를 얻는 함수
 	//사용자가 로그인하지 않은 경우에는 세션의 고유 ID를 사용하고, 로그인한 경우에는 사용자의 실제 ID를 반환
 	private String currentUserId(WebSocketSession session) {
-		Map<String, Object> httpSession = session.getAttributes();
-		User loginUser = (User)httpSession.get("login");
+		Map<String, Object> httpSession = session.getAttributes();  //로그인시 사용자가 소켓에 연결됨 
+//		Member loginUser = (Member)httpSession.get("member");
+		String loginUser = (String) httpSession.get("memberId"); 
 		
-		if(loginUser == null) {
-			//로그인 하지 않은 경우 
-			String userId = session.getId();  
-			return userId;
-		}
-		String userId = loginUser.getUserId();
-		return userId;
+//		if(loginUser == null) {
+//			//로그인 하지 않은 경우 
+//			String memberId = session.getId();  
+//			return memberId;
+//		}
+//		String memberId = loginUser.getMemberId();
+//		return memberId;
+		return loginUser == null ? null : loginUser; //loginUser가 null이면 (로그인안했으면)null반환, 로그인 했으면 loginUser 반환 
 		
-	}		
+	}	
 			
 
 }

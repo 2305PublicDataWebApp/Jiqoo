@@ -4,21 +4,87 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="AdminMapper">
+	<resultMap type="Report" id="ReportResultMap">
+		<id property="reportNo" column="REPORT_NO"/>
+		<result property="reportWrite" column="REPORT_WRITER" />
+		<result property="reportContent" column="REPORT_CONTENT" />
+		<result property="reportDate" column="REPORT_DATE" />
+		<result property="reportUserId" column="REPORT_USER_ID" />
+		<result property="reportPostNo" column="REPORT_POST_NO" />
+		<result property="reportComtNo" column="REPORT_COMT_NO" />
+		<result property="reportType" column="REPORT_TYPE" />
+	</resultMap>
+	
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="count" column="U_REPORT_COUNT"/>
+		<collection property="reportList" column="USER_ID" javaType="List" ofType="Report" select="userReportByIdList"></collection>
+	</resultMap>
+	
+	<resultMap type="Jiqoo" id="JiqooResultMap">
+		<id property="jiqooNo" column="JIQOO_NO"/>
+		<result property="jReportCount" column="J_REPORT_COUNT" />
+		<collection property="reportList" column="JIQOO_NO" javaType="List" ofType="Report" select="jiqooReportByJNoList"></collection>
+	</resultMap>
+	
 	<resultMap type="Moqoo" id="MoqooResultMap">
+		<id property="moqooNo" column="MOQOO_NO"/>
 		<result property="category" column="MOQOO_TAGS"/>
+		<result property="mReportCount" column="M_REPORT_COUNT"/>
+		<collection property="reportList" column="MOQOO_NO" javaType="List" ofType="Report" select="moqooReportByMNoList"></collection>
 	</resultMap>
 
+	<resultMap type="Comment" id="ComtResultMap">
+		<id property="comtNo" column="COMT_NO"/>
+		<result property="cReportCount" column="C_REPORT_COUNT"/>
+		<collection property="reportList" column="COMT_NO" javaType="List" ofType="Report" select="comtReportByNoList"></collection>
+	</resultMap>
 	
 
+	
 	<!-- 회원관리페이지 총회원수 (= 총게시물수) -->
 	<select id="getUserListCount" resultType="_int">
 		SELECT COUNT (*) FROM USER_TBL WHERE ADMIN_YN = 'N'
 	</select>
 	
-	<!-- 회원정보 리스트 -->
-	<select id="selectAllUser" resultType="User">
-		SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' ORDER BY U_CREATE_DATE DESC
+	<!-- 회원정보 회원리스트(+신고수) -->
+	<select id="selectAllUser" resultType="User" resultMap="UserResultMap">
+<!-- 		SELECT * FROM USER_TBL WHERE ADMIN_YN = 'N' ORDER BY U_CREATE_DATE DESC -->
+		SELECT U.*, NVL(R.U_REPORT_COUNT, 0) AS U_REPORT_COUNT
+		FROM USER_TBL U
+		LEFT JOIN (
+		  SELECT REPORT_USER_ID, COUNT(*) AS U_REPORT_COUNT
+		  FROM REPORT_TBL
+		  GROUP BY REPORT_USER_ID
+		) R ON U.USER_ID = R.REPORT_USER_ID
+		WHERE ADMIN_YN = 'N'
+		ORDER BY U.U_CREATE_DATE DESC
 	</select>
+	
+	<!-- 회원정보 상세조회 -->
+	<select id="selectUserByUserId" resultType="User" resultMap="UserResultMap">
+<!-- 		SELECT * FROM USER_TBL WHERE USER_ID = #{userId} -->
+
+		SELECT U.*, NVL(R.U_REPORT_COUNT, 0) AS U_REPORT_COUNT
+		FROM USER_TBL U 
+		LEFT JOIN (
+		  SELECT REPORT_USER_ID, COUNT(*) AS U_REPORT_COUNT
+		  FROM REPORT_TBL 
+		  GROUP BY REPORT_USER_ID
+		) R ON U.USER_ID = R.REPORT_USER_ID
+		WHERE USER_ID = #{userId} 
+	</select>
+	
+	<!-- 회원 신고사유 리스트  by 회원아이디 -->
+	<select id="userReportByIdList" resultType="Report" >
+<!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_USER_ID = #{reportUserId} ORDER BY REPORT_DATE DESC -->
+		SELECT REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
+		FROM REPORT_TBL
+		WHERE REPORT_USER_ID = #{reportUserId}
+		GROUP BY REPORT_CONTENT
+	
+	</select>
+	
 	
 	<!-- 회원검색 총회원수 (= 총게시물수) -->
 	<select id="getUserSearchListCount" resultType="_int">
@@ -40,35 +106,51 @@
 		</if>
 	</select>
 	
+
+	
 	<!-- 회원검색  -->
-	<select id="searchUserByKeyword" resultType="User">
-		SELECT * FROM USER_TBL
+	<select id="searchUserByKeyword" resultType="User" resultMap="UserResultMap">
+		SELECT U.*, NVL(R.U_REPORT_COUNT, 0) AS U_REPORT_COUNT
+		FROM USER_TBL U
+		LEFT JOIN (
+		  SELECT REPORT_USER_ID, COUNT(*) AS U_REPORT_COUNT
+		  FROM REPORT_TBL
+		  GROUP BY REPORT_USER_ID
+		) R ON U.USER_ID = R.REPORT_USER_ID
+		
 		<if test="searchCondition == 'userId'"> 
 			WHERE USER_ID LIKE '%'||#{searchKeyword}||'%' 
+			AND ADMIN_YN = 'N' 
 			ORDER BY USER_ID DESC 
 		</if>
 		<if test="searchCondition == 'userName'">
 			WHERE USER_NAME LIKE '%'||#{searchKeyword}||'%'
+			AND ADMIN_YN = 'N'
 			ORDER BY USER_ID DESC 
 		</if>
 		<if test="searchCondition == 'userEmail'">
 			WHERE USER_EMAIL LIKE '%'||#{searchKeyword}||'%'
+			AND ADMIN_YN = 'N'
 			ORDER BY USER_ID DESC 
 		</if>
 		<if test="searchCondition == 'userNickname'">
 			WHERE USER_NICKNAME LIKE '%'||#{searchKeyword}||'%'
+			AND ADMIN_YN = 'N'
 			ORDER BY USER_ID DESC 
 		</if>
 		<if test="searchCondition == 'userTel'">
 			WHERE USER_TEL LIKE '%'||#{searchKeyword}||'%'
+			AND ADMIN_YN = 'N'
 			ORDER BY USER_ID DESC 
 		</if>
 	</select>
 
-	<!-- 회원정보 상세조회 -->
-	<select id="selectUserByUserId" resultType="User">
-		SELECT * FROM USER_TBL WHERE USER_ID = #{userId}
-	</select>
+
+
+	
+	
+	
+	
 	
 	<!-- 회원강제 탈퇴 -->
 	<update id="deleteUserByAdmin">
@@ -85,9 +167,20 @@
 		SELECT COUNT (*) FROM JIQOO_TBL WHERE JIQOO_WRITER = #{jiqooWriter}
 	</select>
 
-	<!-- 회원별 지꾸 리스트  -->
-	<select id="showUserJiqooList" resultType="Jiqoo">
-		SELECT * FROM JIQOO_TBL WHERE JIQOO_WRITER = #{jiqooWriter} ORDER BY JIQOO_NO DESC
+	<!-- 회원별 지꾸 리스트(+신고수)  -->
+	<select id="showUserJiqooList" resultType="Jiqoo" resultMap="JiqooResultMap">
+<!-- 		SELECT * FROM JIQOO_TBL WHERE JIQOO_WRITER = #{jiqooWriter} ORDER BY JIQOO_NO DESC -->
+
+		SELECT J.*, NVL(R.J_REPORT_COUNT, 0) AS J_REPORT_COUNT
+		FROM JIQOO_TBL J
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS J_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'J'
+		  GROUP BY REPORT_POST_NO
+		) R ON J.JIQOO_NO = R.REPORT_POST_NO
+		WHERE JIQOO_WRITER = #{jiqooWriter}
+		ORDER BY J.JIQOO_NO DESC
 	</select>
 	
 	<!-- 회원별 총 모꾸수 (= 총게시물수) -->
@@ -95,9 +188,20 @@
 		SELECT COUNT (*) FROM MOQOO_TBL WHERE MOQOO_WRITER = #{moqooWriter}
 	</select>
 
-	<!-- 회원별 모꾸 리스트  -->
-	<select id="showUserMoqooList" resultType="Moqoo">
-		SELECT * FROM MOQOO_TBL WHERE MOQOO_WRITER = #{moqooWriter} ORDER BY MOQOO_NO DESC
+	<!-- 회원별 모꾸 리스트(+신고수)  -->
+	<select id="showUserMoqooList" resultType="Moqoo" resultMap="MoqooResultMap">
+<!-- 		SELECT * FROM MOQOO_TBL WHERE MOQOO_WRITER = #{moqooWriter} ORDER BY MOQOO_NO DESC -->
+		
+		SELECT M.*, NVL(R.M_REPORT_COUNT, 0) AS M_REPORT_COUNT
+		FROM MOQOO_TBL M
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS M_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'M'
+		  GROUP BY REPORT_POST_NO
+		) R ON M.MOQOO_NO = R.REPORT_POST_NO
+		WHERE MOQOO_WRITER = #{moqooWriter}
+		ORDER BY M.MOQOO_NO DESC
 	</select>
 	
 	<!-- 회원별 댓글 수  -->
@@ -106,20 +210,47 @@
 	</select>
 	
 	<!-- 회원별 댓글 리스트  -->
-	<select id="showUserComtList" resultType="Comment">
-		SELECT * FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter} ORDER BY COMT_NO DESC
+	<select id="showUserComtList" resultType="Comment" resultMap="ComtResultMap">
+<!-- 		SELECT * FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter} ORDER BY COMT_NO DESC -->
+
+		SELECT C.*, NVL(R.C_REPORT_COUNT, 0) AS C_REPORT_COUNT
+		FROM COMT_TBL C
+		LEFT JOIN (
+		  SELECT REPORT_COMT_NO, COUNT(*) AS C_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'C'
+		  GROUP BY REPORT_COMT_NO
+		) R ON C.COMT_NO = R.REPORT_COMT_NO
+		WHERE COMT_WRITER = #{comtWriter}
+		ORDER BY C.COMT_NO DESC
 	</select>
 	
 	
+	<!-- 댓글 신고사유 리스트  by 회원아이디 -->
+	<select id="comtReportByNoList" resultType="Report" >
+		SELECT * FROM REPORT_TBL WHERE REPORT_COMT_NO = #{reportComtNo} ORDER BY REPORT_DATE DESC
+	</select>
 	
+<!-- ============================지꾸============================ -->	
+
 	<!-- 지꾸관리페이지 총 지꾸수 (= 총게시물수) -->
 	<select id="getJiqooListCount" resultType="_int">
 		SELECT COUNT (*) FROM JIQOO_TBL 
 	</select>
 
-	<!-- 총 지꾸 리스트 -->
-	<select id="selectAllJiqoo" resultType="Jiqoo">
-		SELECT * FROM JIQOO_TBL ORDER BY JIQOO_NO DESC
+	<!-- 총 지꾸 리스트(+신고수) -->
+	<select id="selectAllJiqoo" resultType="Jiqoo" resultMap="JiqooResultMap">
+<!-- 		SELECT * FROM JIQOO_TBL ORDER BY JIQOO_NO DESC -->
+
+		SELECT J.*, NVL(R.J_REPORT_COUNT, 0) AS J_REPORT_COUNT
+		FROM JIQOO_TBL J
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS J_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'J'
+		  GROUP BY REPORT_POST_NO
+		) R ON J.JIQOO_NO = R.REPORT_POST_NO
+		ORDER BY J.JIQOO_NO DESC		
 	</select>
 	
 	<!-- 지꾸검색 총 지꾸수 (= 총게시물수) -->
@@ -145,9 +276,16 @@
 		</if>
 	</select>
 	
-	<!-- 지꾸검색 리스트  -->
-	<select id="searchJiqooByKeyword" resultType="Jiqoo">
-		SELECT * FROM JIQOO_TBL
+	<!-- 지꾸검색 리스트(+신고수)  -->
+	<select id="searchJiqooByKeyword" resultType="Jiqoo" resultMap="JiqooResultMap">
+		SELECT J.*, NVL(R.J_REPORT_COUNT, 0) AS J_REPORT_COUNT
+		FROM JIQOO_TBL J
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS J_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'J'
+		  GROUP BY REPORT_POST_NO
+		) R ON J.JIQOO_NO = R.REPORT_POST_NO
 		<if test="searchCondition == 'jiqooWriter'"> 
 			WHERE JIQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
 			ORDER BY JIQOO_NO DESC 
@@ -174,6 +312,28 @@
 		</if>
 	</select>
 	
+	<!-- 지꾸 강제삭제 -->
+	<update id="deleteJiqooByAdmin">
+		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = #{jiqooNo}
+	</update>
+	
+	<!-- 강제삭제 지꾸 복원-->
+	<update id="reviveJiqooByAdmin">
+		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'Y', JIQOO_STATUS = 'Y' WHERE JIQOO_NO = #{jiqooNo}
+	</update>
+	
+	<!-- 지꾸 글신고사유 리스트  by 지꾸번호 -->
+	<select id="jiqooReportByJNoList" resultType="Report" >
+<!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_POST_NO = #{reportPostNo} AND REPORT_TYPE = 'J' ORDER BY REPORT_DATE DESC -->
+		SELECT REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
+		FROM REPORT_TBL
+		WHERE REPORT_POST_NO = #{reportPostNo} AND REPORT_TYPE = 'J'
+		GROUP BY REPORT_CONTENT
+	
+	</select>
+
+<!-- ============================모꾸============================ -->	
+
 	<!-- 모꾸관리페이지 총 모꾸수 (= 총게시물수) -->
 	<select id="getMoqooListCount" resultType="_int">
 		SELECT COUNT (*) FROM MOQOO_TBL 
@@ -181,7 +341,16 @@
 
 	<!-- 모꾸관리페이지 총 모꾸 리스트 -->
 	<select id="selectAllMoqoo" resultType="moqoo" resultMap="MoqooResultMap">
-		SELECT * FROM MOQOO_TBL ORDER BY MOQOO_NO DESC
+<!-- 		SELECT * FROM MOQOO_TBL ORDER BY MOQOO_NO DESC -->
+		SELECT M.*, NVL(R.M_REPORT_COUNT, 0) AS M_REPORT_COUNT
+		FROM MOQOO_TBL M
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS M_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'M'
+		  GROUP BY REPORT_POST_NO
+		) R ON M.MOQOO_NO = R.REPORT_POST_NO
+		ORDER BY M.MOQOO_NO DESC	
 	</select>
 	
 	
@@ -208,9 +377,16 @@
 		</if>
 	</select>
 	
-	<!-- 모꾸검색 리스트  -->
-	<select id="searchMoqooByKeyword" resultType="Moqoo">
-		SELECT * FROM MOQOO_TBL
+	<!-- 모꾸검색 리스트(+신고수)  -->
+	<select id="searchMoqooByKeyword" resultType="Moqoo" resultMap="MoqooResultMap">
+		SELECT M.*, NVL(R.M_REPORT_COUNT, 0) AS M_REPORT_COUNT
+		FROM MOQOO_TBL M
+		LEFT JOIN (
+		  SELECT REPORT_POST_NO, COUNT(*) AS M_REPORT_COUNT
+		  FROM REPORT_TBL
+		  WHERE REPORT_TYPE = 'M'
+		  GROUP BY REPORT_POST_NO
+		) R ON M.MOQOO_NO = R.REPORT_POST_NO
 		<if test="searchCondition == 'moqooWriter'"> 
 			WHERE MOQOO_WRITER LIKE '%'||#{searchKeyword}||'%' 
 			ORDER BY MOQOO_NO DESC 
@@ -237,17 +413,6 @@
 		</if>
 	</select>
 	
-	
-	<!-- 지꾸 강제삭제 -->
-	<update id="deleteJiqooByAdmin">
-		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'N', JIQOO_STATUS ='A'  WHERE JIQOO_NO = #{jiqooNo}
-	</update>
-	
-	<!-- 강제삭제 지꾸 복원-->
-	<update id="reviveJiqooByAdmin">
-		UPDATE JIQOO_TBL SET J_OPEN_STATUS = 'Y', JIQOO_STATUS = 'Y' WHERE JIQOO_NO = #{jiqooNo}
-	</update>
-	
 	<!-- 모꾸 강제삭제 -->
 	<update id="deleteMoqooByAdmin">
 		UPDATE MOQOO_TBL SET MOQOO_STATUS ='A'  WHERE MOQOO_NO = #{moqooNo}
@@ -258,13 +423,29 @@
 		UPDATE MOQOO_TBL SET MOQOO_STATUS = 'Y' WHERE MOQOO_NO = #{moqooNo}
 	</update>
 	
+	<!-- 모꾸 글신고사유 리스트  by 모꾸번호 -->
+	<select id="moqooReportByMNoList" resultType="Report" >
+<!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_POST_NO = #{reportPostNo} AND REPORT_TYPE = 'M' ORDER BY REPORT_DATE DESC -->
+		SELECT REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
+		FROM REPORT_TBL
+		WHERE REPORT_POST_NO = #{reportPostNo} AND REPORT_TYPE = 'M'
+		GROUP BY REPORT_CONTENT
+	
+	</select>
+	
+	
 	<!-- 회원상세_ 댓글 강제삭제 -->
 	<update id="deleteComtByAdmin">
 		UPDATE COMT_TBL SET COMT_STATUS ='A'  WHERE COMT_NO = #{comtNo} 
 	</update>
 	
+	<!-- 강제삭제 댓글 복원-->
+	<update id="reviveCommentByAdmin">
+		UPDATE COMT_TBL SET COMT_STATUS = 'Y' WHERE COMT_NO = #{comtNo}
+	</update>
 	
-
+	
+<!-- ============================메인차트============================ -->	
 	
 	<!--===== 지꾸 증감 카드 =====-->
 	<!-- 당일 등록된 지꾸 수  -->
@@ -439,18 +620,68 @@
 		ORDER BY age_group
 	</select>
 	
-		
-	<!-- 채팅방관리_ 총 채팅방 수 (= 총게시물수) -->
-	<select id="getChatRoomListCount" resultType="_int">
-		SELECT COUNT (*) FROM CHAT_ROOM_TBL 
-	</select>
+<!-- ============================채팅============================ -->
 	
-<!-- 	채팅방관리_ 총 채팅방 리스트 -->
-	<select id="selectAllChatRoom" resultType="ChatRoom">
-		SELECT * FROM CHAT_ROOM_TBL 
-<!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
-		ORDER BY C_CREATE_DATE DESC
-	</select>
+	<!-- 채팅방관리_ 총 채팅방 수 (= 총게시물수) -->
+<!-- 	<select id="getChatRoomListCount" resultType="_int"> -->
+<!-- 		SELECT COUNT (*) FROM CHAT_ROOM_TBL  -->
+<!-- 	</select> -->
+	
+	<!-- 채팅방관리_ 채팅방 리스트 -->
+<!-- 	<select id="selectAllChatRoom" > -->
+<!-- 		SELECT * FROM CHAT_ROOM_TBL ORDER BY C_CREATE_DATE DESC -->
+<!-- 	</select> -->
+	
+	<!-- 마지막 채팅시간있는 챗방리스트 -->
+<!-- 	<select id="selectlastMsgByChatNo" resultType="ChatMessage"> -->
+<!-- 		SELECT REF_CHAT_NO, -->
+<!-- 	       MSG_SENDER_ID, -->
+<!-- 	       MAX(MSG_SEND_DATE) AS LAST_MSG_SEND_DATE -->
+<!-- 		FROM CHAT_MSG_TBL -->
+<!-- 		GROUP BY REF_CHAT_NO, MSG_SENDER_ID -->
+<!-- 		ORDER BY REF_CHAT_NO; -->
+<!-- 	</select> -->
+	
+	<!-- 다있는 채팅방 리스트 -->
+<!-- 	<select id="selectChatRoomAllList" resultType="map" parameterType="Map">	 -->
+<!-- 		SELECT CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE, -->
+<!--        LISTAGG(USR.USER_ID, ', ') WITHIN GROUP (ORDER BY USR.USER_ID) AS PARTICIPANTS, -->
+<!--        COUNT(USR.USER_ID) AS PARTICIPANT_COUNT -->
+<!-- 		FROM CHAT_ROOM_TBL CRT -->
+<!-- 		JOIN ( -->
+<!-- 		    SELECT REF_CHAT_NO, MAX(MSG_SEND_DATE) AS MAX_SEND_DATE -->
+<!-- 		    FROM CHAT_MSG_TBL -->
+<!-- 		    GROUP BY REF_CHAT_NO -->
+<!-- 		) MAX_MSG ON CRT.CHAT_NO = MAX_MSG.REF_CHAT_NO -->
+<!-- 		JOIN CHAT_MSG_TBL MSG ON CRT.CHAT_NO = MSG.REF_CHAT_NO AND MAX_MSG.MAX_SEND_DATE = MSG.MSG_SEND_DATE -->
+<!-- 		LEFT JOIN CHAT_USER_TBL USR ON CRT.CHAT_NO = USR.REF_CHAT_NO -->
+<!-- 		GROUP BY CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE -->
+<!-- 		ORDER BY CRT.C_CREATE_DATE DESC; -->
+<!-- 	</select> -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 채팅방 강제 삭제 -->
+	<delete id="deleteChatByAdmin">
+		DELETE CHAT_ROOM_TBL WHERE CHAT_NO = #{chatNo}
+	</delete>
+	
+	
+
+	
 	
 	
 	<!-- 회원 날짜별 가입수 리스트  -->
@@ -500,13 +731,6 @@
 		JOIN UserCounts ON JiqooCounts.TheDate = UserCounts.TheDate
 		ORDER BY JiqooCounts.TheDate
 	</select>
-
-<!-- 	<select id="selectAllChatRoom" resultType="map" parameterType="Map">	 -->
-<!-- 		SELECT * FROM CHAT_ROOM_TBL  -->
-<!-- 		JOIN CHAT_USER_TBL ON CHAT_NO = REF_CHAT_NO -->
-<!-- 		JOIN CHAT_MSG_TBL ON CHAT_NO = REF_CHAT_NO -->
-<!-- 		ORDER BY C_CREATE_DATE DESC -->
-<!-- 	</select> -->
 
 
 	

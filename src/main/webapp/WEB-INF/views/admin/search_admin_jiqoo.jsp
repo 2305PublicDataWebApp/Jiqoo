@@ -178,7 +178,7 @@
 <%-- 										<td><fmt:formatDate pattern="yy-MM-dd" value="${search.jCreateDate}"/></td> 작성일--%>
 										<td>${search.jOpenStatus}</td>
 										<td>${search.jiqooStatus}</td>
-										<td>10</td>
+										<td>${search.jReportCount}</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
 												data-bs-toggle="modal" data-bs-target="#detailJiqooModal${i.count }">조회</button>
@@ -221,8 +221,12 @@
 													<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
 													
 													<div id="report-reason">
-														<div id="r-title">신고사유()</div>
-														<div></div>
+														<div id="r-title">신고사유(${search.jReportCount})</div>
+																<c:forEach var="searchJiqooReport" items="${search.reportList}" varStatus="i">
+																	<div id="r-reason">
+																		${ searchJiqooReport.reportContent}
+																	</div>
+																</c:forEach>
 													</div>
 													<div id="report-btn">
 														<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${search.jiqooNo}');">삭제</button>
@@ -231,9 +235,11 @@
 											</div>
 										</div>
 									</div>
+									</c:forEach>
 									<!-- End Modal -->
 									
 									<!-- 카카오맵api -->
+									<c:forEach var="search" items="${searchJiqooList}" varStatus="i">
 									<script>
 										$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
 											var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 

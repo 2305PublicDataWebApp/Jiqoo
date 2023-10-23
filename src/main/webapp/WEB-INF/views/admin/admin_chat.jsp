@@ -76,18 +76,20 @@
 
       <section class="section">
         <div class="row">
-          <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 400px;  margin: 15px auto;">
-            <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">유지중인 채팅방</button>
-            <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">삭제된 채팅방</button>
-          </div>
+<!--           <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 400px;  margin: 15px auto;"> -->
+<!--             <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">유지중인 채팅방</button> -->
+<!--             <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">삭제된 채팅방</button> -->
+<!--           </div> -->
+
 
           <!--=====단체채팅방=====-->
-          <div class="col-lg-12 group-chat">
+          <div class="col-lg-10 group-chat" style="margin:0 auto">
+          	<h5 class="card-title" style="color:#222;">채팅방 목록</h5>
             
             <!-- <h4 class="card-title" style="margin:20px auto">단체채팅방</h4> -->
             <!-- <div id="group-part"> -->
               <!--서치바-->
-              <div id="search-bar" >
+              <div id="search-bar" class="col-lg-10" >
                 <form action="" method="">
                   <div id="search-wrap" class="d-flex justify-content-center align-items-center">
                     <select>
@@ -131,22 +133,24 @@
                 </thead>
                 
                 <tbody>
-	                <c:forEach var="chatList" items="${chatRoomList}" varStatus="i">
+	                <c:forEach var="chatRoomAllList" items="${chatRoomAllList}" varStatus="i">
 	                  <tr>
 	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
-	                    <td>${chatList.chatName }</td>  <!-- 채팅방이름 -->
+	                    <td>${chatRoomList.chatName }</td>  <!-- 채팅방이름 -->
 	                    <td>
-	                      <img src="../assets/img/no-profile.png" style="width:50px"> <!-- 프로필 -->
+	                      <img src="..resources/assets/img/no-profile.png" style="width:50px"> <!-- 프로필 -->
 	                    </td>
-	                    <td title="">참여자목록</td> <!-- 참여자목록 -->
-	                    <td>총인원</td>
-	                    <td>마지막채팅전송일자</td>
+	                    <td title="">${chatRoomList.participants }</td> <!-- 참여자목록 -->
+	                    <td>${chatRoomList.count }</td>
+	                    <td>${chatRoomList.chatMessage.msgSendDate }</td>
+<%-- 	                    <td>${chatList.msgSendDate }</td> --%>
 	                    <td>신고수</td>
 	                    <td>
-	                      <button type="button" class="button show-detail-btn" >조회</button>
+	                       <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailChatModal${i.count }">조회</button>
 	                    </td>
 	                  </tr>
 					</c:forEach>
+					<jsp:include page="/WEB-INF/views/admin/modal_adminChat.jsp"></jsp:include>
                 </tbody>
               </table>
               
@@ -154,7 +158,7 @@
 			  <c:if test="${pInfo.totalCount > 0}">
 				<div id="pageNavi">
 					<c:if test="${pInfo.startNavi != 1}">
-						<c:url var="prevUrl" value="/admin/chat">
+						<c:url var="prevUrl" value="/admin/chatlist">
 							<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
 						</c:url>
 						<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
@@ -162,7 +166,7 @@
 					
 					<c:forEach begin="${pInfo.startNavi}" end="${pInfo.endNavi}"
 						var="p">
-						<c:url var="pageUrl" value="/admin/chat">
+						<c:url var="pageUrl" value="/admin/chatlist">
 							<c:param name="page" value="${p}"></c:param>
 						</c:url>
 						<c:choose>
@@ -180,7 +184,7 @@
 					</c:forEach>
 					
 					<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
-						<c:url var="nextUrl" value="/admin/chat">
+						<c:url var="nextUrl" value="/admin/chatlist">
 							<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
 						</c:url>
 						<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
@@ -259,67 +263,67 @@
           </div>
 
 <!--=====********************************개인채팅방********************************=====-->
-          <div class="col-lg-12 personal-chat" style="display:none">
+<!--           <div class="col-lg-12 personal-chat" style="display:none"> -->
             
-            <!-- <h5 class="card-title" style="margin:20px auto">개인채팅방</h5> -->
-            <!-- <div id="group-part"> -->
-              <!--서치바-->
-              <div id="search-bar" >
-                <form action="" method="">
-                  <div id="search-wrap" class="d-flex justify-content-center align-items-center">
-                    <select>
-                      <option>아이디</option>
-                      <option>이름</option>
-                      <option>닉네임</option>
-                      <option>이메일</option>
-                      <option>연락처</option>
-                    </select>
-                    <input type="text" name="search-content" id="search-content">
-                    <button type="button" id="search-button"><i class="bi bi-search"></i></button>
-                  </div>
-                </form>
-              </div>
+<!--             <h5 class="card-title" style="margin:20px auto">개인채팅방</h5> -->
+<!--             <div id="group-part"> -->
+<!--               서치바 -->
+<!--               <div id="search-bar" > -->
+<!--                 <form action="" method=""> -->
+<!--                   <div id="search-wrap" class="d-flex justify-content-center align-items-center"> -->
+<!--                     <select> -->
+<!--                       <option>아이디</option> -->
+<!--                       <option>이름</option> -->
+<!--                       <option>닉네임</option> -->
+<!--                       <option>이메일</option> -->
+<!--                       <option>연락처</option> -->
+<!--                     </select> -->
+<!--                     <input type="text" name="search-content" id="search-content"> -->
+<!--                     <button type="button" id="search-button"><i class="bi bi-search"></i></button> -->
+<!--                   </div> -->
+<!--                 </form> -->
+<!--               </div> -->
 
-              <div class="card" >
-              <!-- 개인챗방테이블 -->
-              <table id="personal-chat">
-                <colgroup>
-                  <col scope="col" width ="10%" > <!--챗방No.-->
-                  <col scope="col" width ="10%" > <!--프로필사진-->
-                  <col scope="col" width ="35%" > <!--참여자목록-->
-                  <col scope="col" width ="10%" > <!--신고수-->
-                  <col scope="col" width ="15%" > <!--삭제버튼-->
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th scope="col" onclick="sortTable(0)">No.</th>
-                    <th scope="col" class="hover">프로필</th>
-                    <th scope="col" onclick="sortTable(1)" class="hover">참여자목록</th>
-                    <th scope="col" onclick="sortTable(3)">신고</th>
-                    <th scope="col" >상세</th>
-                  </tr>
-                </thead>
+<!--               <div class="card" > -->
+<!--               개인챗방테이블 -->
+<!--               <table id="personal-chat"> -->
+<%--                 <colgroup> --%>
+<%--                   <col scope="col" width ="10%" > <!--챗방No.--> --%>
+<%--                   <col scope="col" width ="10%" > <!--프로필사진--> --%>
+<%--                   <col scope="col" width ="35%" > <!--참여자목록--> --%>
+<%--                   <col scope="col" width ="10%" > <!--신고수--> --%>
+<%--                   <col scope="col" width ="15%" > <!--삭제버튼--> --%>
+<%--                 </colgroup> --%>
+<!--                 <thead> -->
+<!--                   <tr> -->
+<!--                     <th scope="col" onclick="sortTable(0)">No.</th> -->
+<!--                     <th scope="col" class="hover">프로필</th> -->
+<!--                     <th scope="col" onclick="sortTable(1)" class="hover">참여자목록</th> -->
+<!--                     <th scope="col" onclick="sortTable(3)">신고</th> -->
+<!--                     <th scope="col" >상세</th> -->
+<!--                   </tr> -->
+<!--                 </thead> -->
                 
-                <tbody>
-                  <tr>
-                    <td class="list-no" scope="row" >99</td>
-                    <td class="img-container">
-                      <div class="img-wrap">
-                        <img src="../assets/img/no-profile.png" style="width:50px">
-                      </div>
-                    </td>
-                    <td class="col1">khuser00, khuser02</td>
-                    <td>10</td>
-                    <td>
-                      <button type="button" class="button show-detail-btn" >조회</button>
-                    </td>
-                  </tr>
+<!--                 <tbody> -->
+<!--                   <tr> -->
+<!--                     <td class="list-no" scope="row" >99</td> -->
+<!--                     <td class="img-container"> -->
+<!--                       <div class="img-wrap"> -->
+<!--                         <img src="../assets/img/no-profile.png" style="width:50px"> -->
+<!--                       </div> -->
+<!--                     </td> -->
+<!--                     <td class="col1">khuser00, khuser02</td> -->
+<!--                     <td>10</td> -->
+<!--                     <td> -->
+<!--                       <button type="button" class="button show-detail-btn" >조회</button> -->
+<!--                     </td> -->
+<!--                   </tr> -->
 
-                </tbody>
-              </table>
-              <div id="pageNavi"> 1 2 3 4 5</div>
-            </div>
-          <!-- </div> -->
+<!--                 </tbody> -->
+<!--               </table> -->
+<!--               <div id="pageNavi"> 1 2 3 4 5</div> -->
+<!--             </div> -->
+<!--           </div> -->
               <script>
                 function sortTable(n) {
                   var table, rows, switching, o, x, y, shouldSwitch, dir, switchCount = 0;
@@ -387,40 +391,40 @@
               </script>
 
               <script>
-                const groupListBtn = document.querySelector('#group-list');
-                const personalListBtn = document.querySelector('#personal-list'); 
+//                 const groupListBtn = document.querySelector('#group-list');
+//                 const personalListBtn = document.querySelector('#personal-list'); 
 
-                const groupChatTable = document.querySelector('.group-chat');
-                const personalChatTable = document.querySelector('.personal-chat');
+//                 const groupChatTable = document.querySelector('.group-chat');
+//                 const personalChatTable = document.querySelector('.personal-chat');
 
-                personalListBtn.addEventListener('click', () => {
-                  personalChatTable.style.display = 'block';
-                  groupChatTable.style.display = 'none';
+//                 personalListBtn.addEventListener('click', () => {
+//                   personalChatTable.style.display = 'block';
+//                   groupChatTable.style.display = 'none';
 
-                  groupListBtn.style.backgroundColor = '#fff';
-                  groupListBtn.style.color = '#8BC34A';
+//                   groupListBtn.style.backgroundColor = '#fff';
+//                   groupListBtn.style.color = '#8BC34A';
 
-                });
+//                 });
 
-                groupListBtn.addEventListener('click', () => {
-                  groupChatTable.style.display = 'block';
-                  personalChatTable.style.display = 'none';
+//                 groupListBtn.addEventListener('click', () => {
+//                   groupChatTable.style.display = 'block';
+//                   personalChatTable.style.display = 'none';
                 
-                  groupListBtn.style.backgroundColor = '#8BC34A';
-                  groupListBtn.style.color = '#fff';
-                });
+//                   groupListBtn.style.backgroundColor = '#8BC34A';
+//                   groupListBtn.style.color = '#fff';
+//                 });
 
-                // 버튼 클릭 이벤트 처리
-                function toggleButton(buttonNumber) {
-                  var buttons = document.querySelectorAll('.btn-get-started');
-                  for (var i = 0; i < buttons.length; i++) {
-                      if (i === buttonNumber - 1) {
-                          buttons[i].classList.add('active');
-                      } else {
-                          buttons[i].classList.remove('active');
-                      }
-                  }
-              }
+//                 // 버튼 클릭 이벤트 처리
+//                 function toggleButton(buttonNumber) {
+//                   var buttons = document.querySelectorAll('.btn-get-started');
+//                   for (var i = 0; i < buttons.length; i++) {
+//                       if (i === buttonNumber - 1) {
+//                           buttons[i].classList.add('active');
+//                       } else {
+//                           buttons[i].classList.remove('active');
+//                       }
+//                   }
+//               }
             </script>
               
               
@@ -457,9 +461,16 @@
   
   <script>
   	//회원상세보기로 이동
-  	function goToMyClassList(){
-		const userId = '${userId}';
-		location.href = "/admin/userDetail.do?userId="+userId;
+//   	function goToMyClassList(){
+// 		const userId = '${userId}';
+// 		location.href = "/admin/userDetail.do?userId="+userId;
+// 	}
+  	
+	//채팅방 강제삭제 
+	function deleteChatRoomByA(chatNo){
+		if(confirm ("정말 삭제하시겠습니까? 삭제 후엔 복구할 수 없습니다.")){
+			location.href = "/admin/deletechatroom?chatNo=" + chatNo;
+		}
 	}
   </script>
 

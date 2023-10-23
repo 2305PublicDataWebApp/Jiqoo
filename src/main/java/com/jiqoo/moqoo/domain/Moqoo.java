@@ -2,8 +2,10 @@ package com.jiqoo.moqoo.domain;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public class Moqoo {
@@ -28,7 +30,23 @@ public class Moqoo {
 	private User user;  // user컬럼 목록
 	private MoqooUser moqooUser;  // 참여자목록 테이블
 	private Category ctgr; 
+	private List<Report> reportList;
+	private int mReportCount;
 	
+	
+	
+	public List<Report> getReportList() {
+		return reportList;
+	}
+	public void setReportList(List<Report> reportList) {
+		this.reportList = reportList;
+	}
+	public int getmReportCount() {
+		return mReportCount;
+	}
+	public void setmReportCount(int mReportCount) {
+		this.mReportCount = mReportCount;
+	}
 	public int getMoqooNo() {
 		return moqooNo;
 	}

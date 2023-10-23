@@ -1,7 +1,9 @@
 package com.jiqoo.common.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public class Comment {
@@ -18,6 +20,21 @@ public class Comment {
 	
 	private User user;
 	
+	private List<Report> reportList;
+	private int cReportCount;
+	
+	public int getcReportCount() {
+		return cReportCount;
+	}
+	public void setcReportCount(int cReportCount) {
+		this.cReportCount = cReportCount;
+	}
+	public List<Report> getReportList() {
+		return reportList;
+	}
+	public void setReportList(List<Report> reportList) {
+		this.reportList = reportList;
+	}
 	public User getUser() {
 		return user;
 	}

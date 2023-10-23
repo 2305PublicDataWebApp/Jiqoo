@@ -160,16 +160,18 @@
 											<td>${userList.userId }</td>
 											<td class="col1">${userList.userName }</td>
 											<td class="col1">${userList.userEmail }</td>
-											<td class="col1"><c:if
-													test="${userList.userGender eq ''}"> - </c:if> <c:if
-													test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
+											<td class="col1">
+<%-- 												<c:if test="${userList.userGender eq ''}"> - </c:if>  --%>
+												<c:if test="${userList.userGender eq null}"> - </c:if>
+												<c:if test="${userList.userGender ne null}"> ${userList.userGender} </c:if>
 											</td>
 											<td class="col1">
 												<c:if test="${userList.platformType eq 'normal'}"> 홈페이지 </c:if>
 												<c:if test="${userList.platformType eq 'kakao'}"> 카카오 </c:if>
+												<c:if test="${userList.platformType eq 'naver'}"> 네이버 </c:if>
 											</td>
 											<td>${userList.userStatus }</td>
-											<td>10</td>
+											<td>${userList.count }</td>
 											<td>
 												<button type="button" class="button show-detail-btn"
 													onclick="showUserDetail('${userList.userId}');">조회</button>

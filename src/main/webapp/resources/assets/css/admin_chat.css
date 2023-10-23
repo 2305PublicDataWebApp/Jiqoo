@@ -1750,7 +1750,7 @@ main {
 --------------------------------------------------------------*/
 #search-bar {
   margin: 0px auto;
-  width: 90%;
+  width: 95%;
   --background-color: #DCE775;
   --border : 1px solid #ccc;
   border-radius: 20px;
