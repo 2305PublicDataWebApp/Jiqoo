@@ -1315,11 +1315,12 @@ border-radius: 0 0 15px 15px !important;
 }
 .attach_btn{
   border-radius: 15px 0 0 15px !important;
-  background-color: #fff !important;
+  background-color: var(--color-default) !important;
   border:0 !important;
   color: black !important;
   cursor: pointer;
   padding : 18px;
+  font-size : 18px;
 }
 .send_btn{
 border-radius: 0 15px 15px 0 !important;
@@ -1328,6 +1329,7 @@ background-color: var(--color-default) !important;
   color: black !important;
   cursor: pointer;
   padding : 18px;
+  font-size: 18px;
 }
 .search_btn{
   border-radius: 0 15px 15px 0 !important;

@@ -45,6 +45,14 @@ public interface ChatService {
 	int insertChatUserByChatNo(int chatNo, String userId);
 
 	/**
+	 * 모꾸 생성시 채팅방 개설 Service
+	 * 
+	 * @param chatRoom
+	 * @return int
+	 */
+	int insertNewChatRoomByMoqoo(ChatRoom chatRoom);
+
+	/**
 	 * 채팅방 연결 해제시 마지막 접속시간 업데이트 Service
 	 * 
 	 * @param chatUser
@@ -152,5 +160,22 @@ public interface ChatService {
 	 * @param chatNo 
 	 */
 	void updateChatName(String str, int chatNo);
+
+	/**
+	 * 채팅방 번호로 조회 Service
+	 * 
+	 * @param chatNo
+	 * @return ChatRoom
+	 */
+	ChatRoom selectChatRoomByNo(int chatNo);
+
+	/**
+	 * 모꾸 번호로 채팅방 조회 Service
+	 * 
+	 * @param moqooNo
+	 * @return ChatRoom
+	 */
+	ChatRoom selectChatRoomByMoqoo(int moqooNo);
+
 
 }

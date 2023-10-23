@@ -235,8 +235,9 @@
 								<div id="chat_body" class="card-body msg_card_body"></div>
 								<div class="card-footer">
 									<div class="input-group">
+										<input type="file" id="fileInput" style="display: none;">
 										<div class="input-group-append">
-											<span class="input-group-text attach_btn"><i
+											<span class="input-group-text attach_btn" id="fileInputButton"><i
 												class="bi bi-paperclip"></i></span>
 										</div>
 
@@ -439,7 +440,6 @@
 				$('.action_menu').toggle();
 			});
 			chatListReload();
-
 		});
 		$(window).on('beforeunload', function() {
 		    disconnectWebSocket();
@@ -538,7 +538,17 @@
 		}
 		function scrollToBottom() {
 		    var chatBody = $("#chat_body");
-		    chatBody.scrollTop(chatBody[0].scrollHeight);
+		    var chatMessages = chatBody.find(".msg_cotainer img"); // 이미지 엘리먼트를 찾습니다.
+
+		    // 모든 이미지가 로드될 때까지 대기
+		    if(chatMessages.length > 0) {
+			    chatMessages.on("load", function() {
+			        // 모든 이미지가 로드된 후에 스크롤 위치를 조절합니다.
+			        chatBody.scrollTop(chatBody[0].scrollHeight);
+			    });		    	
+		    }else {
+		    	chatBody.scrollTop(chatBody[0].scrollHeight);
+		    }
 		}
 		function formatTimestamp(timestamp) {
 			var date = new Date(timestamp); // SQL timestamp를 JavaScript Date 객체로 변환
@@ -556,63 +566,91 @@
 		    } */
 		}
 		
+		// 메시지 로드하는 함수
 		function addMessage(isSent, senderNickname, senderPhotoPath, message, time) {
 		    var chatBody = $("#chat_body");
 		    var messageContainer = $("<div>").addClass("d-flex justify-content-" + (isSent ? "end" : "start align-items-center") + " mb-4");
-
+		
 		    var imgContainer = $("<div>").addClass("img_cont_msg");
 		    userPhotoPath = userPhotoPath != "" ? userPhotoPath : "../resources/assets/img/no-profile.png";
 		    senderPhotoPath = senderPhotoPath != null ? senderPhotoPath : "../resources/assets/img/no-profile.png";
 		    var img = $("<img>").attr("src", isSent ? userPhotoPath : senderPhotoPath).addClass("rounded-circle user_img_msg");
-		    
+		
 		    imgContainer.append(img);
-
+		
 		    var messageDiv;
 		    if (isSent) {
 		        messageDiv = $("<div>").addClass("msg_cotainer_send");
 		    } else {
 		        messageDiv = $("<div>").addClass("msg_cotainer");
 		    }
-
+		
 		    var messageSender = $("<span>").text(senderNickname);
-		    var messageText = $("<p>").text(message);
+		    var messageText = $("<p>").html(message); // <p> 태그로 변경
+		 	// 이미지가 있는지 여부를 검사
+		    var hasImage = messageText.find("img").length > 0;
 		    var messageTime = $("<span>").addClass("msg_time_send").text(time);
-		    
-		    messageSender.css({
-		        marginLeft: '10px',         // 텍스트 색상
-		        fontSize: '12px',      // 글꼴 크기
-		        color: '#388e3c'     // 글꼴 굵기
+		    var downloadButton = null;
+		    if (hasImage) {
+		        // 이미지가 있는 경우 다운로드 버튼을 추가
+		        downloadButton = $("<button>")
+		            .addClass("download-button btn")
+		            .append($("<i>").addClass("bi bi-download"))
+		            .on("click", function() {
+		            	// 이미지 URL을 가져옴
+		                var imageUrl = messageText.find("img").attr("src");
+		            	var downloadLink = document.createElement('a');
+		                downloadLink.href = imageUrl;
+		                downloadLink.download = 'image.jpg'; // 다운로드될 파일명 설정
+		                document.body.appendChild(downloadLink);
+		                downloadLink.click();
+		                document.body.removeChild(downloadLink);
+		            });
+		    }
+		    var buttonDiv = $("<div>");
+		    messageText.find("img").css ({
+		    	maxWidth : '300px',
+		    	maxHeight : '300px'
 		    });
-			if(senderPhotoPath == "out" || message.includes("채팅방을 나갔습니다.")) {
-				messageText = $("<span>").text(senderNickname + "님이 채팅방을 나갔습니다.");
-				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
-				alertDiv.append(messageText);
-				chatBody.append(alertDiv);
-			}else if(message.includes("님이 초대되었습니다.")){
-				messageText = $("<span>").text(senderNickname + "님이 초대되었습니다.");
-				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
-				alertDiv.append(messageText);
-				chatBody.append(alertDiv);
-			}else if(message.includes("님이 채팅에 참여합니다.")){
-				messageText = $("<span>").text(message);
-				var alertDiv = $("<div>").addClass("d-flex justify-content-center");
-				alertDiv.append(messageText);
-				chatBody.append(alertDiv);
-			}else {
-			    if (isSent) {
-			    	messageDiv.append(messageText);
-				    messageDiv.append(messageTime);
-			        messageContainer.append(messageDiv);
-			        messageContainer.append(imgContainer);
-			    } else {
-			    	messageDiv.append(messageSender);
-			    	messageDiv.append(messageText);
-				    messageDiv.append(messageTime);
-			        messageContainer.append(imgContainer);
-			        messageContainer.append(messageDiv);
-			    }
-			    chatBody.append(messageContainer);
-			}
+		    messageSender.css({
+		        marginLeft: '10px',
+		        fontSize: '12px',
+		        color: '#388e3c'
+		    });
+		
+		    if (senderPhotoPath == "out" || message.includes("채팅방을 나갔습니다.")) {
+		        messageText = $("<p>").text(senderNickname + "님이 채팅방을 나갔습니다.");
+		        var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+		        alertDiv.append(messageText);
+		        chatBody.append(alertDiv);
+		    } else if (message.includes("님이 초대되었습니다.")) {
+		        messageText = $("<p>").text(senderNickname + "님이 초대되었습니다.");
+		        var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+		        alertDiv.append(messageText);
+		        chatBody.append(alertDiv);
+		    } else if (message.includes("님이 채팅에 참여합니다.")) {
+		        messageText = $("<p>").text(message);
+		        var alertDiv = $("<div>").addClass("d-flex justify-content-center");
+		        alertDiv.append(messageText);
+		        chatBody.append(alertDiv);
+		    } else {
+		        if (isSent) {
+		            messageDiv.append(messageText);
+		            messageDiv.append(messageTime);
+		            messageContainer.append(downloadButton);
+		            messageContainer.append(messageDiv);
+		            messageContainer.append(imgContainer);
+		        } else {
+		            messageDiv.append(messageSender);
+		            messageDiv.append(messageText);
+		            messageDiv.append(messageTime);
+		            buttonDiv.append(downloadButton);
+		            messageContainer.append(imgContainer);
+		            messageContainer.append(messageDiv);
+		            messageContainer.append(buttonDiv);
+		        }
+		        chatBody.append(messageContainer);
+		    }
 		}
 		 // 웹소켓 연결 초기화
 	    function connect(chatRoomId) {
@@ -884,6 +922,17 @@
 			        	} */
 			        	location.reload(true);
 			        	chatListReload();
+			        	$.ajax({
+			        		url : "/chat/room-info",
+			        		data : {
+			        			chatNo : chatNo
+			        		},
+			        		type : "GET",
+			        		success : function(data) {
+			        			$("#chatName").text(data.chatName);
+			        			$("#chat-users").text("참여자 : " + data.chatName);
+			        		}
+			        	})
 			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
 			            /* scrollToBottom(); */
 			        }
@@ -944,7 +993,7 @@
 			        	}
 			        	chatNameBefore += data;
 			        	$("#chatName").text(chatNameBefore);
-			        	$("#chat-users").text(before);
+			        	$("#chat-users").text("참여자 : " + chatNameBefore);
 			            // 생성한 메시지를 chat_body에 추가
 						chatListReload();
 			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
@@ -1065,6 +1114,10 @@
 		            listItem += '</div>';
 		            listItem += '<div class="user_info">';
 		            listItem += '<div class="col d-flex justify-content-between">';
+		            var maxLength = 18;
+		            if(chatName.length >= maxLength) {
+		            	chatName = chatName.substring(0, maxLength) + "...";
+		            }
 		            listItem += '<span>' + chatName + '</span><br>';
 		            
 		            // 날짜와 시간에 대한 조건 검사
@@ -1080,6 +1133,9 @@
 		                if (minutes < 10) {
 		                    minutes = "0" + minutes;
 		                }
+		                if(hours < 10) {
+		                	hours = "0" + hours;
+		                }
 	
 		                var formattedTime = hours + ":" + minutes;
 		                listItem += '<p class="user_info_time" style="font-size: 16px; color: #5f5f5f;">' + formattedTime + '</p>';
@@ -1091,7 +1147,12 @@
 	
 		            listItem += '</div>';
 		            listItem += '<div class="col d-flex justify-content-between">';
-		            listItem += '<p>' + chatRoom.chatRoom.chatMessage.msgContent + '</p>';
+		            var chatContent = chatRoom.chatRoom.chatMessage.msgContent;
+		            if(chatContent.includes("<img src")) {
+		            	chatContent = "이미지";
+		            }
+		       
+		            listItem += '<p>' + chatContent + '</p>';
 		            var unread = chatRoom.unreadMsgCount;
 		            if(chatRoom.chatRoom.chatMessage.msgSenderId == userId) {
 		            	unread = 0;
@@ -1208,6 +1269,52 @@
 	        });
 
 	    }
+	 // 파일 열기 버튼을 클릭하면 input 요소를 클릭
+        $('#fileInputButton').click(function () {
+            $('#fileInput').click();
+        });
+
+        // 파일을 선택했을 때의 처리를 추가
+        $('#fileInput').change(function () {
+		    var selectedFile = this.files[0];
+		    if (selectedFile) {
+		        var formData = new FormData();
+		        formData.append('file', selectedFile);
+		
+		        $.ajax({
+		            url: '/upload-image', // 서버 업로드 엔드포인트 URL
+		            type: 'POST',
+		            data: formData,
+		            contentType: false,
+		            processData: false,
+		            success: function (imageUrl) {
+		                // 이미지 업로드가 성공하면 서버에서 반환된 이미지 URL을 받음
+		                console.log('이미지 업로드 성공, 이미지 URL: ' + imageUrl);
+						var message = "<img src='"+ imageUrl +"'>";
+		             // 메시지를 서버로 전송
+		                stompClient.send('/app/chat/chatRoom-'+chatRoomId, {}, JSON.stringify({
+		                	refChatNo : chatRoomId,
+		                	msgSenderId: userId,
+		                	msgContent: message,
+		                	msgSenderNickname : userNickname,
+		                	msgSenderPhotoPath : userPhotoPath
+		                }));
+		                var currentTime = getCurrentTime();
+		                addMessage(true, userNickname, userPhotoPath, message, currentTime);
+		                chatListReload();
+		                scrollToBottom();
+		            },
+		            error: function (error) {
+		                console.error('이미지 업로드 실패: ' + error);
+		            }
+		        });
+		    }
+		});
+
+
+
+
+
 	</script>
 </body>
 

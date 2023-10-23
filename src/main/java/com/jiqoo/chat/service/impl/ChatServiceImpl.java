@@ -2,8 +2,6 @@ package com.jiqoo.chat.service.impl;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +31,12 @@ public class ChatServiceImpl implements ChatService {
 	public int insertChatUserByChatNo(int chatNo, String userId) {
 		int result = chatStore.insertChatUserByChatNo(sqlSession, chatNo, userId);
 		return result;
+	}
+
+	@Override
+	public int insertNewChatRoomByMoqoo(ChatRoom chatRoom) {
+		int moqooChatNo = chatStore.insertNewChatRoomByMoqoo(sqlSession, chatRoom);
+		return moqooChatNo;
 	}
 
 	@Override
@@ -122,6 +126,18 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void updateChatName(String str, int chatNo) {
 		chatStore.updateChatName(sqlSession, str, chatNo);
+	}
+
+	@Override
+	public ChatRoom selectChatRoomByNo(int chatNo) {
+		ChatRoom chatRoom = chatStore.selectChatRoomByNo(sqlSession, chatNo);
+		return chatRoom;
+	}
+
+	@Override
+	public ChatRoom selectChatRoomByMoqoo(int moqooNo) {
+		ChatRoom chatRoom = chatStore.selectChatRoomByMoqoo(sqlSession, moqooNo);
+		return chatRoom;
 	}
 
 }

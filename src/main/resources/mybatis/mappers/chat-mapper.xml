@@ -57,6 +57,13 @@
 	    INSERT INTO CHAT_USER_TBL (REF_CHAT_NO, USER_ID, CHAT_LAST_DATE)
 	    VALUES (#{chatRoomNo}, #{userId}, DEFAULT)
 	</insert>
+	<insert id="insertNewChatRoomByMoqoo" useGeneratedKeys="true" keyProperty="moqooChatNo">
+		<selectKey keyProperty="moqooChatNo" resultType="int" order="BEFORE">
+			SELECT SEQ_CHAT_NO.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO CHAT_ROOM_TBL (CHAT_NO, CHAT_NAME, REF_MOQOO_NO, C_CREATE_DATE, C_IMAGE_PATH)
+		VALUES (#{moqooChatNo}, #{chatName}, #{refMoqooNo}, DEFAULT, #{cImagePath)
+	</insert>
 	<update id="updateChatLastDate">
 		UPDATE CHAT_USER_TBL SET CHAT_LAST_DATE = DEFAULT
 		WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId}
@@ -143,5 +150,11 @@
 	<select id="getUserPhotoPath" resultType="java.lang.String">
 		SELECT USER_PHOTO_PATH
 		FROM USER_TBL WHERE USER_ID = #{userId}
+	</select>
+	<select id="selectChatRoomByNo" resultType="ChatRoom">
+		SELECT * FROM CHAT_ROOM_TBL WHERE CHAT_NO = #{chatNo}
+	</select>
+	<select id="selectChatRoomByMoqoo" resultType="ChatRoom">
+		SELECT * FROM CHAT_ROOM_TBL WHERE REF_MOQOO_NO = #{moqooNo}
 	</select>
 </mapper>

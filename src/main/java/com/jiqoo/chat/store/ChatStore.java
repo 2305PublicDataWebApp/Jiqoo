@@ -169,4 +169,31 @@ public interface ChatStore {
 	 */
 	void updateChatName(SqlSession sqlSession, String str, int chatNo);
 
+	/**
+	 * 채팅방 번호로 조회 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatNo
+	 * @return ChatRoom
+	 */
+	ChatRoom selectChatRoomByNo(SqlSession sqlSession, int chatNo);
+
+	/**
+	 * 모꾸 생성시 채팅방 개설 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatRoom
+	 * @return int
+	 */
+	int insertNewChatRoomByMoqoo(SqlSession sqlSession, ChatRoom chatRoom);
+
+	/**
+	 * 모꾸 번호로 채팅방 조회 Store
+	 * 
+	 * @param sqlSession
+	 * @param moqooNo
+	 * @return ChatRoom
+	 */
+	ChatRoom selectChatRoomByMoqoo(SqlSession sqlSession, int moqooNo);
+
 }
