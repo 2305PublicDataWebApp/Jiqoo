@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ReportMapper">
+
+	<resultMap type="Report" id="ReportResultMap">
+		<id property="reportNo" column="REPORT_NO"/>
+		<result property="reportWrite" column="REPORT_WRITER" />
+		<result property="reportContent" column="REPORT_CONTENT" />
+		<result property="reportDate" column="REPORT_DATE" />
+		<result property="reportUserId" column="REPORT_USER_ID" />
+		<result property="reportPostNo" column="REPORT_POST_NO" />
+		<result property="reportComtNo" column="REPORT_COMT_NO" />
+		<result property="reportType" column="REPORT_TYPE" />
+	</resultMap>
+	
+	<resultMap type="Jiqoo" id="JiqooResultMap">
+		<id property="jiqooNo" column="JIQOO_NO"/>
+		<result property="jiqooW3W" column="JIQOO_W3W" />
+		<result property="jiqooDate" column="JIQOO_DATE" />
+		<result property="jiqooCtgr" column="JIQOO_CTGR" />
+		<result property="jiqooTitle" column="JIQOO_TITLE" />
+		<result property="jiqooContent" column="JIQOO_CONTENT" />
+		<result property="jiqooWriter" column="JIQOO_WRITER" />
+		<result property="jOpenStatus" column="J_ALLOW_COMT" />
+		<result property="jAllowComt" column="J_OPEN_STATUS" />
+		<result property="jCreateDate" column="J_CREATE_DATE" />
+		<result property="jUpdateDate" column="J_UPDATE_DATE" />
+		<result property="jViewCount" column="J_VIEW_COUNT" />
+		<result property="jiqooLat" column="JIQOO_LAT" />
+		<result property="jiqooLng" column="JIQOO_LNG" />
+		<result property="jiqooStatus" column="JIQOO_STATUS" />
+		<result property="jReportCount" column="J_REPORT_COUNT" />
+		<collection property="user" resultMap="UserResultMap"/>
+		<collection property="category" resultMap="CategoryResultMap"/>
+		<collection property="report" resultMap="ReportResultMap"/>
+	</resultMap>
+
+
+	<!-- 모꾸 신고 리셋 -->
+	<update id="resetReportMByAdmin">
+		UPDATE REPORT_TBL SET REPORT_CONTENT = null WHERE REPORT_USER_ID = #{reportUserId} AND REPORT_POST_NO = #{reportPostNo} AND REPORT_TYPE = 'M' 
+	</update>
+
+
+
+
+</mapper>

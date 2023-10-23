@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.admin.store.AdminStore;
+import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Service
@@ -179,18 +181,23 @@ public class AdminServiceImpl implements AdminService {
 		return searchJiqooList;
 	}
 
+	/**
+	 * 모꾸관리페이지 총 모꾸수
+	 */
 	@Override
 	public Integer getMoqooListCount() {
 		Integer result = adminStore.getMoqooListCount(sqlSession);
 		return result;
 	}
 
+	/**
+	 * 모꾸관리페이지 총 모꾸 리스트
+	 */
 	@Override
 	public List<Moqoo> selectAllMoqoo(PageInfo pInfo) {
 		List<Moqoo> moqooList = adminStore.selectAllMoqoo(sqlSession, pInfo);
 		return moqooList;
 	}
-
 
 	/**
 	 * 지꾸 강제 삭제
@@ -201,24 +208,18 @@ public class AdminServiceImpl implements AdminService {
 		return result;
 	}
 
-	@Override
-	public Jiqoo selectOneJiqoo(Jiqoo jiqoo) {
-		Jiqoo jiqooOne = adminStore.selectOneJiqoo(sqlSession, jiqoo);
-		return jiqooOne;
-	}
-
-	@Override
-	public User selectOneUser(User user) {
-		User userOne = adminStore.selectOneUser(sqlSession, user);
-		return userOne;
-	}
-
+	/**
+	 * 유지중인 지꾸 총 개수  
+	 */
 	@Override
 	public Integer usingJiqooCount(Jiqoo jiqoo) {
 		Integer jiqooResult = adminStore.usingJiqooCount(sqlSession, jiqoo);
 		return jiqooResult;
 	}
 
+	/**
+	 * 유지중인 모꾸 총 개수
+	 */
 	@Override
 	public Integer usingMoqooCount(Moqoo moqoo) {
 		Integer moqooResult = adminStore.usingMoqooCount(sqlSession, moqoo);
@@ -364,13 +365,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 
-
-	@Override
-	public List<ChatRoom> selectAllChatRoom(PageInfo pInfo) {
-		List<ChatRoom> chatRoomList = adminStore.selectAllChatRoom(sqlSession, pInfo);
-		return chatRoomList;
-	}
-
+	/**
+	 * 댓글 강제삭제 
+	 */
 	@Override
 	public Integer deleteComtByAdmin(Integer comtNo) {
 		Integer result = adminStore.deleteComtByAdmin(sqlSession, comtNo);
@@ -387,11 +384,6 @@ public class AdminServiceImpl implements AdminService {
 		return todayComtList;
 	}
 
-	@Override
-	public List<Map<String, Object>> userCountList(User user) {
-		List<Map<String, Object>> userCountList = adminStore.userCountList(sqlSession, user);
-		return userCountList;
-	}
 
 	/**
 	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
@@ -402,12 +394,9 @@ public class AdminServiceImpl implements AdminService {
 		return dayCountList;
 	}
 
-	@Override
-	public List<Map<String, Object>> selectAllChatRoom(PageInfo pInfo, Map<String, Object> chatMap) {
-		List<Map<String, Object>> chatRoomList = adminStore.selectAllChatRoom(sqlSession, chatMap);
-		return chatRoomList;
-	}
-
+	/**
+	 * 지꾸 페이지 차트
+	 */
 	@Override
 	public List<Map<String, Object>> jiqooChartList(Jiqoo jiqoo) {
 		List<Map<String, Object>> jiqooChartList = adminStore.jiqooChartList(sqlSession, jiqoo);
@@ -469,6 +458,15 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	/**
+	 * 강제삭제 지꾸 복원
+	 */
+	@Override
+	public Integer reviveJiqooByAdmin(String jiqooNo) {
+		Integer result = adminStore.reviveJiqooByAdmin(sqlSession, jiqooNo);
+		return result;
+	}
+	
+	/**
 	 * 강제삭제 모꾸 복원
 	 */
 	@Override
@@ -477,23 +475,70 @@ public class AdminServiceImpl implements AdminService {
 		return result;
 	}
 
+
+
 	/**
-	 * 강제삭제 지꾸 복원
+	 * 강제삭제 댓글 복원
 	 */
 	@Override
-	public Integer reviveJiqooByAdmin(String jiqooNo) {
-		Integer result = adminStore.reviveJiqooByAdmin(sqlSession, jiqooNo);
+	public Integer reviveCommentByAdmin(String comtNo) {
+		Integer result = adminStore.reviveCommentByAdmin(sqlSession, comtNo);
 		return result;
 	}
 
+	/**
+	 * 챗방 강제삭제
+	 */
+	@Override
+	public Integer deleteChatByAdmin(Integer chatNo) {
+		Integer result = adminStore.deleteChatByAdmin(sqlSession, chatNo);
+		return result;
+	}
+
+
+
+	/**
+	 * 마지막 채팅시간있는 챗방리스트
+	 */
+//	@Override
+//	public List<ChatMessage> selectlastMsgByChatNo() {
+//		List<ChatMessage> sendMsgList = adminStore.selectlastMsgByChatNo(sqlSession);
+//		return sendMsgList;
+//	}
+
+	/**
+	 * 채팅방리스트
+	 */
+//	@Override
+//	public List<ChatRoom> selectChatRoomList() {
+//		List<ChatRoom> chatRoomList = adminStore.selectChatRoomList(sqlSession);
+//		return chatRoomList;
+//	}
+
+	/**
+	 * 다있는 채팅방 리스트
+	 */
+//	@Override
+//	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap) {
+//		List<Map<String, Object>> chatRoomAllList = adminStore.selectChatRoomAllList(sqlSession, pInfo, chatMap);
+//		return chatRoomAllList;
+//	}
+
+
+
+
+
+
+
 	
-
-
-
-
-
-
-	
+	/**
+	 * 회원 날짜별 가입수 리스트
+	 */
+	@Override
+	public List<Map<String, Object>> userCountList(User user) {
+		List<Map<String, Object>> userCountList = adminStore.userCountList(sqlSession, user);
+		return userCountList;
+	}
 
 
 

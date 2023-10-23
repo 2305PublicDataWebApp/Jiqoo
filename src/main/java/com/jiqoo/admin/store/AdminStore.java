@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.PageInfo;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface AdminStore {
@@ -67,6 +69,12 @@ public interface AdminStore {
 	 */
 	public Integer deleteUserByAdmin(SqlSession sqlSession, String userId);
 
+	/**
+	 * 강제탈퇴 회원 복원 
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
 	public Integer reviveUserByAdmin(SqlSession sqlSession, String userId);
 
 	/**
@@ -153,20 +161,43 @@ public interface AdminStore {
 	 */
 	public List<Jiqoo> searchJiqooByKeyword(SqlSession sqlSession, PageInfo pInfo, Map<String, String> searchJiqooMap);
 
+	/**
+	 * 모꾸관리페이지 총 모꾸수
+	 * @param sqlSession
+	 * @return
+	 */
 	public Integer getMoqooListCount(SqlSession sqlSession);
 
+	/**
+	 * 모꾸관리페이지 총 모꾸 리스트
+	 * @param sqlSession
+	 * @param pInfo
+	 * @return
+	 */
 	public List<Moqoo> selectAllMoqoo(SqlSession sqlSession, PageInfo pInfo);
 
-
-
+	/**
+	 * 지꾸 강제삭제 
+	 * @param sqlSession
+	 * @param jiqooNo
+	 * @return
+	 */
 	public Integer deleteJiqooByAdmin(SqlSession sqlSession, Integer jiqooNo);
 
-	public Jiqoo selectOneJiqoo(SqlSession sqlSession, Jiqoo jiqoo);
-
-	public User selectOneUser(SqlSession sqlSession, User user);
-
+	/**
+	 * 유지중인 지꾸 총 개수 
+	 * @param sqlSession
+	 * @param jiqoo
+	 * @return
+	 */
 	public Integer usingJiqooCount(SqlSession sqlSession, Jiqoo jiqoo);
 
+	/**
+	 * 유지중인 모꾸 총 개수 
+	 * @param sqlSession
+	 * @param moqoo
+	 * @return
+	 */
 	public Integer usingMoqooCount(SqlSession sqlSession, Moqoo moqoo);
 
 	/**
@@ -250,12 +281,29 @@ public interface AdminStore {
 	 */
 	public Integer getChatRoomListCount(SqlSession sqlSession);
 
-	public List<ChatRoom> selectAllChatRoom(SqlSession sqlSession, PageInfo pInfo);
 
+	/**
+	 * 당일 가입한 회원 리스트
+	 * @param sqlSession
+	 * @param pInfoUser
+	 * @return
+	 */
 	public List<User> todayUserList(SqlSession sqlSession, PageInfo pInfoUser);
 
+	/**
+	 * 당일 등록된 지꾸 리스트 
+	 * @param sqlSession
+	 * @param pInfoJiqoo
+	 * @return
+	 */
 	public List<Jiqoo> todayJiqooList(SqlSession sqlSession, PageInfo pInfoJiqoo);
 
+	/**
+	 * 당일 등록된 모꾸 리스트 
+	 * @param sqlSession
+	 * @param pInfoJiqoo
+	 * @return
+	 */
 	public List<Moqoo> todayMoqooList(SqlSession sqlSession, PageInfo pInfoJiqoo);
 
 	/**
@@ -265,6 +313,12 @@ public interface AdminStore {
 	 */
 	public List<User> userAgeList (SqlSession sqlSession);
 
+	/**
+	 * 댓글 강제삭제 
+	 * @param sqlSession
+	 * @param comtNo
+	 * @return
+	 */
 	public Integer deleteComtByAdmin(SqlSession sqlSession, Integer comtNo);
 
 	/**
@@ -275,7 +329,7 @@ public interface AdminStore {
 	 */
 	public List<Comment> todayComtList(SqlSession sqlSession, PageInfo pInfoJiqoo);
 
-	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
+	
 
 	/**
 	 * 통합차트_날짜별 지꾸모꾸회원 등록수 리스트
@@ -285,8 +339,12 @@ public interface AdminStore {
 	 */
 	public List<Map<String, Object>> dayCountList(SqlSession sqlSession, Map<String,Object>statsMap);
 
-	public List<Map<String, Object>> selectAllChatRoom(SqlSession sqlSession, Map<String, Object> chatMap);
-
+	/**
+	 * 지꾸페이지 차트 
+	 * @param sqlSession
+	 * @param jiqoo
+	 * @return
+	 */
 	public List<Map<String, Object>> jiqooChartList(SqlSession sqlSession, Jiqoo jiqoo);
 
 	/**
@@ -332,6 +390,14 @@ public interface AdminStore {
 	public Integer lastWeekJoinUserCount(SqlSession sqlSession);
 
 	/**
+	 * 강제삭제 지꾸 복원
+	 * @param sqlSession
+	 * @param jiqooNo
+	 * @return
+	 */
+	public Integer reviveJiqooByAdmin(SqlSession sqlSession, String jiqooNo);
+	
+	/**
 	 * 강제삭제 모꾸 복원
 	 * @param sqlSession
 	 * @param moqooNo
@@ -340,14 +406,51 @@ public interface AdminStore {
 	public Integer reviveMoqooByAdmin(SqlSession sqlSession, String moqooNo);
 
 	/**
-	 * 강제삭제 지꾸 복원
+	 * 강제삭제 댓글 복원
 	 * @param sqlSession
-	 * @param jiqooNo
+	 * @param comtNo
 	 * @return
 	 */
-	public Integer reviveJiqooByAdmin(SqlSession sqlSession, String jiqooNo);
+	public Integer reviveCommentByAdmin(SqlSession sqlSession, String comtNo);
 
+	/**
+	 * 챗방 강제삭제
+	 * @param sqlSession
+	 * @param chatNo
+	 * @return
+	 */
+	public Integer deleteChatByAdmin(SqlSession sqlSession, Integer chatNo);
 
+	/**
+	 * 마지막 채팅시간있는 챗방리스트
+	 * @param sqlSession
+	 * @return
+	 */
+//	public List<ChatMessage> selectlastMsgByChatNo(SqlSession sqlSession);
+//
+	/**
+	 * 채팅방리스트
+	 * @param sqlSession
+	 * @return
+	 */
+//	public List<ChatRoom> selectChatRoomList(SqlSession sqlSession);
+
+	/**
+	 * 다있는 채팅방 리스트
+	 * @param sqlSession
+	 * @param pInfo
+	 * @param chatMap
+	 * @return
+	 */
+//	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap);
+
+	/**
+	 * 회원 날짜별 가입수 리스트
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
 
 
 

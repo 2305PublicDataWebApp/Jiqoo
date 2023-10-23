@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>     
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
@@ -39,11 +39,23 @@
 					 <i class="bi bi-arrow-return-right"></i> ${comtList.comtContent}
 				</div>
 				<div id="report-reason">
-					<div id="r-title">신고사유()</div>
-					<div></div>
+					<div id="r-title">신고사유(${comtList.cReportCount})</div>
+					<c:forEach var="comtReport" items="${comtList.reportList}" varStatus="i">
+						<div id="r-reason">
+							${ comtReport.reportContent}
+						</div>
+					</c:forEach>
 				</div>
 				<div id="report-btn">
-					<button type="button" class="button delete-btn" onclick="deleteComtByA(${comtList.comtNo}, '${comtList.comtWriter}');">삭제</button>
+					
+					<c:set var="comtStatus" value="${comtList.comtStatus}"></c:set>
+					<c:if test="${fn:contains(comtStatus, 'Y')}">
+						<button type="button" class="button delete-btn" onclick="deleteComtByA(${comtList.comtNo}, '${comtList.comtWriter}');">삭제</button>
+					</c:if>
+					<c:if test="${fn:contains(comtStatus, 'A')}">
+						<button type="button" class="button revival-btn" onclick="reviveComtByA('${comtList.comtNo }', '${comtList.comtWriter}');">복원</button>
+					</c:if>	
+					
 				</div>
 			</div>
 		</div>

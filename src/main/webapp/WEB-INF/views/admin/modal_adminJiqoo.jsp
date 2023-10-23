@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<!-- admin_jiqoo.jsp -->
 
 <!--===== 지꾸 상세보기 Modal =====-->
 <c:forEach var="jiqooList" items="${jiqooList}" varStatus="i">
@@ -42,16 +43,51 @@
 				<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
 				
 				<div id="report-reason">
-					<div id="r-title">신고사유()</div>
-					<div></div>
+					<div id="r-title">신고사유(${jiqooList.jReportCount})</div>
+					
+					<div id="r-reason">
+						<c:forEach var="jiqooReport" items="${jiqooList.reportList}" varStatus="i">
+							
+	<%-- 							${ jiqooReport.reportContent} --%>
+							<script>
+								var reportContent = "${moqooReport.reportContent}";
+								var reportCount = "${moqooReport.reportCount}";
+								var replacedText = "";
+													
+								switch (reportContent) {
+									case "abusive": replacedText = "욕설사용";
+										 break;
+									case "advertising": replacedText = "광고글";
+										 break;
+									case "noSubject": replacedText = "주제와 맞지 않는 글";
+										break;
+									case "violent":replacedText = "폭력적인 내용";
+										break;
+									case "discrimination": replacedText = "차별적인 내용";
+										break;
+									case "pornography": replacedText = "음란물";
+										break;  
+									case "personal": replacedText = "민감한 개인정보 노출";
+										break;
+									case "etc": replacedText = "기타 (직접 작성)";
+										break;
+									default: replacedText = reportContent;
+										break;
+									} 
+								
+								document.write(replacedText+"("+reportCount+")");
+							</script>
+						</c:forEach>
+					</div>
+					
 				</div>
 				<div id="report-btn">
-					<c:set var="moqooStatus" value="${moqooList.moqooStatus}"></c:set>
-					<c:if test="${moqooStatus eq 'Y'}">
-						<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${jiqooList.jiqooNo}');">삭제</button>
+					<c:set var="jiqooStatus" value="${jiqooList.jiqooStatus}"></c:set>
+					<c:if test="${jiqooStatus eq 'Y'}">
+						<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${jiqooList.jiqooNo}', '${jiqooList.jiqooWriter}');">삭제</button>
 					</c:if>
-					<c:if test="${moqooStatus eq 'A'}">	
-						<button type="button" class="button revival-btn" onclick="reviveJiqooByA('${jiqooList.jiqooNo }');">복원</button>
+					<c:if test="${jiqooStatus eq 'A'}">	
+						<button type="button" class="button revival-btn" onclick="reviveJiqooByA('${jiqooList.jiqooNo }', '${jiqooList.jiqooWriter}');">복원</button>
 					</c:if>	
 					
 				</div>
@@ -59,42 +95,43 @@
 		</div>
 	</div>
 </div>
-
+</c:forEach>
 <!-- End Modal -->
 
 <!-- 카카오맵api -->
+<c:forEach var="jiqooList" items="${jiqooList}" varStatus="i">
 <script>
-	$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
-		var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
-	    mapOption = { 
-	        center: new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}), // 지도의 중심좌표
-	        level: 3 // 지도의 확대 레벨
-	    };
-
-		var map = new kakao.maps.Map(mapContainer, mapOption);
-		// 마커가 표시될 위치입니다 
-		var markerPosition  = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); 
-
-		// 마커를 생성합니다
-		var marker = new kakao.maps.Marker({
-		    position: markerPosition
+// 	$(function() {  //html이 다 로드된 다음에 동작하도록 함, window.onload와 같음 
+		$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
+			var mapContainer = document.getElementById('map${i.count }'), // 지도를 표시할 div 
+		    mapOption = { 
+		        center: new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}), // 지도의 중심좌표
+		        level: 3 // 지도의 확대 레벨
+		    };
+	
+			var map = new kakao.maps.Map(mapContainer, mapOption);
+			// 마커가 표시될 위치입니다 
+			var markerPosition  = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); 
+	
+			// 마커를 생성합니다
+			var marker = new kakao.maps.Marker({
+			    position: markerPosition
+			});
+	
+			// 마커가 지도 위에 표시되도록 설정합니다
+			marker.setMap(map);
+	
+			var iwPosition = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); //인포윈도우 표시 위치입니다
+	
+			// 인포윈도우를 생성합니다
+			var infowindow = new kakao.maps.InfoWindow({
+			    position : iwPosition,
+			    content : '<div class="info-window" >${jiqooList.jiqooContent}</div>'
+			    
+			});
+			// 마커 위에 인포윈도우를 표시합니다. 
+			infowindow.open(map, marker); 
 		});
-
-		// 마커가 지도 위에 표시되도록 설정합니다
-		marker.setMap(map);
-
-		var iwPosition = new kakao.maps.LatLng(${jiqooList.jiqooLat}, ${jiqooList.jiqooLng}); //인포윈도우 표시 위치입니다
-
-		// 인포윈도우를 생성합니다
-		var infowindow = new kakao.maps.InfoWindow({
-		    position : iwPosition,
-		    content : '<div class="info-window" >${jiqooList.jiqooContent}</div>'
-		    
-		});
-		  
-		// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-		infowindow.open(map, marker); 
-		
-	});
-	</script>
+// 	});
+</script>
 </c:forEach>

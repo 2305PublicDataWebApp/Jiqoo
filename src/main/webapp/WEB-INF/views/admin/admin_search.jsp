@@ -174,7 +174,7 @@
 											<c:if test="${search.platformType eq 'kakao'}"> 카카오 </c:if>
 										</td>
 										<td>${search.userStatus }</td>
-										<td>10</td>
+										<td>${search.count }</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
 												onclick="showUserDetail('${search.userId}');">조회</button>

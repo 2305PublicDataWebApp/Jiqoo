@@ -135,14 +135,14 @@
 						
 						<div class="introduce">
 							<div class="title">자기소개</div>
-							<div class="text">
+							<div class="text intro">
 								<c:if test="${user.userInfo eq null}"> - </c:if>
 								<c:if test="${user.userInfo ne null}"> ${user.userInfo} </c:if>
 							</div>
 						</div>
 						
 					</div>
-
+					
 					<div class="content col-xs-12 col-sm-12 col-md-6">
 						<div class="d-flex ">
 							<div class="title">이름</div>
@@ -168,7 +168,10 @@
 							<div class="title">생년월일</div>
 							<div class="text">
 								<c:if test="${user.userBirth eq null}"> - </c:if>
-								<c:if test="${user.userBirth ne null}"> ${user.userBirth} </c:if>
+								<c:if test="${user.userBirth ne null}"> 
+									<c:set var="userBirth" value="${user.userBirth}"/>
+									${fn:substring(userBirth,0,10) }
+								</c:if>
 							</div>
 						</div>
 						<div class="d-flex">
@@ -186,7 +189,7 @@
 							<div class="title">신고누적</div>
 							<div class="report-count">
 								<a class="modal-link modal-link-jq" data-bs-toggle="modal"
-									href="#user-report-Modal" style="color: #388E3C"> 10회 </a>
+									href="#user-report-Modal" style="color: #388E3C"> ${user.count }회 </a>
 							</div>
 						</div>
 						<div class="btn-wrap">
@@ -246,7 +249,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:if test="${uJiqooList eq null}">
+								<c:if test="${jiqooList eq null}">
 									<tr>
 										<td colspan="7">${noJiqooMsg}</td>
 									</tr>
@@ -267,7 +270,7 @@
 										</td>
 										<td>${jiqooList.jOpenStatus}</td>
 										<td>${jiqooList.jiqooStatus}</td>
-										<td>0</td>
+										<td>${jiqooList.jReportCount}</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
 												data-bs-toggle="modal" data-bs-target="#detailJiqooModal${i.count }">
@@ -310,11 +313,18 @@
 													<div id="jiqooMap${i.count }" class="map" style="width:100%; height:350px;">${jiqooContent }</div>
 													
 													<div id="report-reason">
-														<div id="r-title">신고사유()</div>
+														<div id="r-title">신고사유(${jiqooList.jReportCount})</div>
 														<div></div>
 													</div>
 													<div id="report-btn">
-														<button type="button" class="button delete-btn" onclick="deleteJiqooByA(${jiqooList.jiqooNo}, '${jiqooList.jiqooWriter}');">삭제</button> <!-- 숫자에는 '' 붙이지 않음  -->
+														<c:set var="jiqooStatus" value="${jiqooList.jiqooStatus}"></c:set>
+														<c:if test="${jiqooStatus eq 'Y'}">
+															<button type="button" class="button delete-btn" onclick="deleteJiqooByA(${jiqooList.jiqooNo}, '${jiqooList.jiqooWriter}');">삭제</button>
+														</c:if>
+														<c:if test="${jiqooStatus eq 'A'}">	
+															<button type="button" class="button revival-btn" onclick="reviveJiqooByA(${jiqooList.jiqooNo }, '${jiqooList.jiqooWriter}');">복원</button>
+														</c:if>	
+														<!-- 숫자에는 '' 붙이지 않음  -->
 													</div>
 												</div>
 											</div>
@@ -405,12 +415,12 @@
 
 					<!--=====***** 모꾸테이블 *****=====-->
 					<div id="moqoo-table" style="display: none">
-						<table>
+						<table id="m-table">
 							<colgroup>
 								<col scope="col" class="col1" width="15%">
 								<col scope="col" class="col2" width="10%">
-								<col scope="col" width="30%">
-								<col scope="col" class="col2" width="10%">
+								<col scope="col" width="40%">
+<%-- 								<col scope="col" class="col2" width="10%"> --%>
 								<col scope="col" class="col2" width="10%">
 								<col scope="col" class="col2" width="10%">
 								<col scope="col" class="col1" width="15%">
@@ -420,7 +430,7 @@
 									<th scope="col" class="col1">#</th>
 									<th scope="col"><i class="bi bi-paperclip"></i></th>
 									<th scope="col">내용</th>
-									<th scope="col" class="col2">공개</th>
+<!-- 									<th scope="col" class="col2">모임날짜</th> -->
 									<th scope="col" class="col2">상태</th>
 									<th scope="col" class="col2">신고</th>
 									<th scope="col" class="col1">상세</th>
@@ -445,9 +455,9 @@
 										<td>
 											<c:out value='${moqooList.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
 										</td>
-										<td></td>
+<!-- 										<td></td> -->
 										<td>${moqooList.moqooStatus}</td>
-										<td>0</td>
+										<td>${moqooList.mReportCount}</td>
 										<td>
 											<button type="button" class="button show-detail-btn"
 												data-bs-toggle="modal" data-bs-target="#detailMoqooModal${i.count }">
@@ -457,18 +467,26 @@
 									
 								</c:forEach>
 								
-								<jsp:include page="/WEB-INF/views/admin/modal_adminMoqoo.jsp"></jsp:include>
+								<!-- 모꾸 상세보기 모달 + 카카오맵 -->
+								<jsp:include page="/WEB-INF/views/admin/modal_adminMoqoo.jsp"></jsp:include> 
+								
 							</tbody>
 						</table>
 						
 						<!-- 모꾸 페이지 네비 -->
+						<script>
+							
 						
 						
+						
+						</script>
 					</div>
+									
+					
 					
 					<!--=====***** 댓글테이블 *****=====-->
 					<div id="cmt-table" style="display: none">
-						<table>
+						<table id="c-table">
 							<colgroup>
 								<col scope="col" class="col1" width="15%">
 								<col scope="col" width="40%">
@@ -487,75 +505,72 @@
 									<th scope="col" class="col1">상세</th>
 								</tr>
 							</thead>
-							<tbody>
-								<c:if test="${comtList eq null}">
-									<tr>
-										<td colspan="7">${noComtMsg}</td>
-									</tr>
-								</c:if>
-								
-								<c:forEach var="comtList" items="${comtList}" varStatus="i">
-									<tr>
-										<td class="list-no" scope="row">${(pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 ) }</td>
-										<td>${comtList.comtContent}</td>
-										<td>${comtList.cBoardType}</td>
-										<td>${comtList.comtStatus}</td>
-										<td>0</td>
-										<td>
-											<button type="button" class="button show-detail-btn"
-												data-bs-toggle="modal" data-bs-target="#cmtModal${i.count }">
-												조회</button>
-										</td>
-									</tr>
-								</c:forEach>
-								<jsp:include page="/WEB-INF/views/admin/modal_adminComt.jsp"></jsp:include>
-								
-							</tbody>
+							<tbody> </tbody>
+							<!-- 댓글 상세보기 모달 -->
 						</table>
-						
-						<!-- 댓글 페이지네비 -->
-						<c:if test="${pInfoComt.totalCount > 0}"> 
-							<div id="pageNavi">
-								<c:if test="${pInfoComt.startNavi != 1}">
-									<c:url var="prevUrl" value="/admin/userdetail">
-										<c:param name="userId" value="${user.userId}"></c:param>
-										<c:param name="comtPage" value="${pInfoComt.startNavi -1 }"></c:param>
-									</c:url>
-									<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
-								</c:if>
-								
-								<c:forEach begin="${pInfoComt.startNavi}" end="${pInfoComt.endNavi}"
-									var="p">
-									<c:url var="pageUrl" value="/admin/userdetail">
-										<c:param name="userId" value="${user.userId}"></c:param>
-										<c:param name="comtPage" value="${p}"></c:param>
-									</c:url>
-									<c:choose>
-										<c:when test="${p == pInfoComt.currentPage}">
-											<p>
-												<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
-											</p>
-										</c:when>
-										<c:otherwise>
-											<p>
-												<a href="${pageUrl}"> ${p}</a>
-											</p>
-										</c:otherwise>
-									</c:choose>
-								</c:forEach>
-								
-								<c:if test="${pInfoComt.endNavi != pInfoComt.naviTotalCount}">
-									<c:url var="nextUrl" value="/admin/userdetail">
-										<c:param name="userId" value="${user.userId}"></c:param>
-										<c:param name="comtPage" value="${pInfoComt.endNavi + 1}"></c:param>
-									</c:url>
-									<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
-								</c:if>
-							</div>
-						</c:if>
-						<!-- End 댓글페이지네비 -->
 					</div>
-					<!--  -->
+						<jsp:include page="/WEB-INF/views/admin/modal_adminComt.jsp"></jsp:include>
+					
+					<!-- 댓글리스트 가져오는 ajax -->
+					<script>
+					$("#cmt-list").on("click", function(){
+						const userId = "${user.userId}";
+						$.ajax({
+							url : "/admin/u_detail_comtlist",
+							data : { userId : userId },
+							type : "GET",
+							
+							success : function(data){
+								const tableBody = $("#c-table tbody");
+								tableBody.children().remove(); // 댓글버튼 클릭할때마다 누적되는거 방지 
+								
+								let tr;
+								let listNo;
+								let comtContent;
+								let cBoardType;
+								let comtStatus;
+								let cReportCount;
+								let btnArea;
+								let noList
+								
+								if(data.length > 0) { //가져온 데이터가 있으면 for문 돌림
+									for(let i in data){
+										tr = $("<tr>"); // <tr></tr> 만들어줌
+										// (pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 )
+										listNo = $("<td class='list-no' scope='row'>").text(parseInt(i)+1); 
+										comtContent = $("<td >").text(data[i].comtContent); 
+										cBoardType = $("<td >").text(data[i].cBoardType); 
+										comtStatus = $("<td >").text(data[i].comtStatus);
+										cReportCount = $("<td >").text(data[i].cReportCount);
+// 										btnArea = $("<td >").append("<button type='button' class='button show-detail-btn' data-bs-toggle='modal' data-bs-target='#cmtModal"+(i+1)+"'>조회</button>")
+										btnArea = $("<td >").append("<button type='button' class='button show-detail-btn' data-bs-toggle='modal' data-bs-target='#cmtModal"+(parseInt(i)+1)+"'>조회</button>")
+										
+										tr.append(listNo); 
+										tr.append(comtContent);
+										tr.append(cBoardType);
+										tr.append(comtStatus);
+										tr.append(cReportCount);
+										tr.append(btnArea);
+										tableBody.append(tr); 
+									}
+								
+								}else {
+									tr = $("<tr>");
+									noList = $("<td colspan='7'>").text("작성한 댓글이 없습니다"); 
+									
+									tr.append(noList);
+									tableBody.append(tr);
+								}
+							},
+							error : function(){ 
+								alert("ajax 오류");
+							}
+						});
+					});
+					</script>
+					
+					
+					
 
 					<script>
 		              const jiqooListBtn = document.querySelector('#jiqoo-list');
@@ -609,37 +624,9 @@
 				</div>
 			</div>
 
-			<!-- ======= Modal =======  -->
+
 			<!-- 회원신고수Modal -->
-			<div class="modal fade" id="user-report-Modal" tabindex="-1"
-				aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h1 class="modal-title fs-5" id="exampleModalLabel">${user.userId}</h1>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							<h5></h5>
-							<span><i class="bi bi-journal-richtext"></i></i> ${usersTotalJiqooCount }</span> 
-							<span><i
-								class="bi bi-file-earmark-x"></i> ${usersTotalMoqooCount }</span> 
-								<span><i
-								class="bi bi-file-earmark-x"></i> ${usersTotalComtCount }</span>
-							<div id="report-reason">
-								<div id="r-title">신고사유()</div>
-								<div></div>
-							</div>
-							<div id="report-btn">
-								<button type="button" class="btn btn-secondary"
-									data-bs-dismiss="modal">닫기</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- End 회원신고 Modal -->
+			<jsp:include page="/WEB-INF/views/admin/modal_adminUser.jsp"></jsp:include>
 			
 
 
@@ -686,25 +673,80 @@
 			}
 		}
 		
+		
 		//회원별 지꾸 강제삭제
 		function deleteJiqooByA(jiqooNo, userId){
 			if(confirm ("정말 삭제하시겠습니까?")){
-				location.href = "/admin/deletejiqoo?jiqooNo=" + jiqooNo +"&userId=" + userId;
+				location.href = "/admin/deletejiqoo?jiqooNo=" + jiqooNo + "&userId=" + userId;
 			}
 		}
+		
+		//회원별 강제삭제 지꾸 복원 
+		function reviveJiqooByA(jiqooNo,userId){
+			if(confirm ("정말 복원시키겠습니까?")){
+				location.href = "/admin/jiqoorevival?jiqooNo=" + jiqooNo + "&userId=" + userId;;
+			}
+		}
+		
+		
 		//회원별 모꾸 강제삭제
 		function deleteMoqooByA(moqooNo,userId){
 			if(confirm ("정말 삭제하시겠습니까?")){
 				location.href = "/admin/deletemoqoo?moqooNo=" + moqooNo +"&userId=" + userId;
 			}
 		}
+		
+		//회원별 강제삭제 모꾸 복원 
+		function reviveMoqooByA(moqooNo,userId){
+			if(confirm ("정말 복원시키겠습니까?")){
+				location.href = "/admin/moqoorevival?moqooNo=" + moqooNo+"&userId=" + userId;;
+			}
+		}
+		
+		
 		//회원별 댓글 강제삭제
 		function deleteComtByA(comtNo, userId){
 			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deletecomt?comtNo=" + comtNo + "&userId=" + userId;
+			}
+		}
+		
+		
+		//회원별 강제삭제 댓글 복원 
+		function reviveComtByA(comtNo,userId){
+			if(confirm ("정말 복원시키겠습니까?")){
+				location.href = "/admin/comtrevival?comtNo=" + comtNo + "&userId=" + userId;
+			}
+		}
+		
+		
+		
+		//신고 리셋
+		function resetReportByA(userId, moqooNo){
+			if(confirm ("정말 리셋하시겠습니까?")){
 				location.href = "/admin/deleteComt?comtNo=" + comtNo +"&userId=" + userId;
 			}
 		}
+// 		var userReport = document.querySelector("#r-reason").innerHTML;						
+// 		var compressedResult = compressString(userReport);
+// 		function compressString(userReport) {
+// 			let compressedString = '';
+// 			let count = 1;
 
+// 			for (let i = 0; i < userReport.length; i++) {
+// 				if (userReport[i] === userReport[i + 1] || (userReport[i] === '\n' && userReport[i + 1] === '\n')) {
+// 					count++;
+// 				} else {
+// 					compressedString += userReport[i];
+// 					if (count > 1) {
+// 						compressedString += `(${count})`;
+// 					}
+// 					count = 1;
+// 				}
+// 			}
+// 			return compressedString;
+// 		}
+		
 		
 	</script>
 </body>

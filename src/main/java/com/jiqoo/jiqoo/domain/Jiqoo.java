@@ -2,8 +2,10 @@ package com.jiqoo.jiqoo.domain;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.jiqoo.common.domain.Category;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public class Jiqoo {
@@ -24,7 +26,22 @@ public class Jiqoo {
 	private String jiqooStatus;
 	private User user;
 	private Category category;
-
+	
+	private List<Report> reportList;
+	private int jReportCount;
+	
+	public int getjReportCount() {
+		return jReportCount;
+	}
+	public void setjReportCount(int jReportCount) {
+		this.jReportCount = jReportCount;
+	}
+	public List<Report> getReportList() {
+		return reportList;
+	}
+	public void setReportList(List<Report> reportList) {
+		this.reportList = reportList;
+	}
 	public Category getCategory() {
 		return category;
 	}

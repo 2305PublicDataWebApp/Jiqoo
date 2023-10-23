@@ -757,48 +757,44 @@
 
       <!-- 표 섹션 -->
       <section >
-          <div class="row  box-margin">
-            <div class="col-lg-12">
-            <h1 style="margin:0 15px; color:#012970;">일자별 요약</h1>
-            <div class="summary ">
-              <table class="table">
-                <colgroup>
-                  <col scope="col"  width ="20%" >
-                  <col scope="col"  width ="20%" >
-                  <col scope="col"  width ="20%" >
-                  <col scope="col"  width ="20%" >
-                  <col scope="col"  width ="20%" >
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th>날짜</th>
-                    <th>지꾸</th>
-                    <th>모꾸</th>
-                    <th>가입자</th>
-                    <th>신고</th>
-                  </tr>
-                </thead>
-                <tbody>
-      <%--                   <c:forEach var="" items="${dayCountList}" varStatus="i"> --%>
-                  	<c:forEach var="dayCountList" items="${dayCountList}" varStatus="i">
-	                  <tr>
-	                    <td>
-							${dayCountList.thedate }
-						</td>
-	                    <td>${dayCountList.jiqoocount }</td>
-	                    <td>${dayCountList.moqoocount }</td>
-	                    <td>${dayCountList.usercount }</td>
-	                    <td>0</td>
-	                  </tr>
-	                  </c:forEach>
-                  
+<!--           <div class="row  box-margin"> -->
+<!--             <div class="col-lg-12"> -->
+<!--             <h1 style="margin:0 15px; color:#012970;">일자별 요약</h1> -->
+<!--             <div class="summary "> -->
+<!--               <table class="table"> -->
+<%--                 <colgroup> --%>
+<%--                   <col scope="col"  width ="20%" > --%>
+<%--                   <col scope="col"  width ="20%" > --%>
+<%--                   <col scope="col"  width ="20%" > --%>
+<%--                   <col scope="col"  width ="20%" > --%>
+<%--                   <col scope="col"  width ="20%" > --%>
+<%--                 </colgroup> --%>
+<!--                 <thead> -->
+<!--                   <tr> -->
+<!--                     <th>날짜</th> -->
+<!--                     <th>지꾸</th> -->
+<!--                     <th>모꾸</th> -->
+<!--                     <th>가입자</th> -->
+<!--                     <th>신고</th> -->
+<!--                   </tr> -->
+<!--                 </thead> -->
+<!--                 <tbody> -->
+<%--                 	<c:forEach var="dayCountList" items="${dayCountList}" varStatus="i"> --%>
+<!-- 	                  <tr> -->
+<!-- 	                    <td> -->
+<%-- 							${dayCountList.thedate } --%>
+<!-- 						</td> -->
+<%-- 	                    <td>${dayCountList.jiqoocount }</td> --%>
+<%-- 	                    <td>${dayCountList.moqoocount }</td> --%>
+<%-- 	                    <td>${dayCountList.usercount }</td> --%>
+<!-- 	                    <td>0</td> -->
+<!-- 	                  </tr> -->
 <%--                   </c:forEach> --%>
-                  
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+<!--                 </tbody> -->
+<!--               </table> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
 
           <div class="row box-margin ">
 
@@ -1075,9 +1071,9 @@
                     <option value="advertising">광고글</option>
                     <option value="noSubject">주제와 맞지 않는 글</option>
                     <option value="violent">폭력적인 내용</option>
-                    <option value="Discrimination">차별적인 내용</option>
+                    <option value="discrimination">차별적인 내용</option>
                     <option value="pornography">음란물</option>
-                    <option value="Personal">민감한 개인정보 노출</option>
+                    <option value="personal">민감한 개인정보 노출</option>
                     <option value="etc">기타 (직접 작성)</option>
                   </select>
                   <textarea id="customReason" style="display:none" spellcheck="false"></textarea>
