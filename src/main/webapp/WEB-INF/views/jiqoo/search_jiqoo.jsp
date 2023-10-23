@@ -76,8 +76,9 @@
 		<button id="btn-myList" class="btn-get-started scrollto" onclick="loadInitialJiqooMyList();">내꾸만 보기</button>
 		<button id="btn-allList" class="btn-get-started scrollto qoo" onclick="loadInitialJiqooAllList();">남꾸도 보기</button>
 	</div>
-    <div id="container" data-aos=fade-in>
-	    <div id="list-container">
+	<a href="/jiqoo/mapList"><i class="bi bi-map"></i></a>
+    <div id="container">
+	    <div id="list-container"  data-aos="fade-up">
 		</div>
 	</div>
       
@@ -156,6 +157,7 @@
 		            loadingMessage.remove();
 		            if (result.length > 0) {
 		                var listContainer = $("#list-container");
+		                listContainer.empty();
 		                
 		                for (var i = 0; i < result.length; i++) {
 		                    var jiqooAllList = result[i];
@@ -173,6 +175,8 @@
 		        }
 		    });
 		}
+		
+		
 
 		// 지꾸 전체 리스트 스크롤 이벤트 핸들러 
 		$(window).scroll(function () {
@@ -208,7 +212,6 @@
 			            		loadingAll = false;	
 			            	}
 	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-	                    alert("전체지롱" + loadingAll + ", " + loadingMy);
 	                    loadingInProgress = false;
 	                },
 	                error: function () {
@@ -257,7 +260,6 @@
 			                    loadingMy = false;
 			            	}
 		                loadingInProgress = false;
-	                    alert("내꾸지롱" + loadingAll + ", " + loadingMy);
 	                },
 	                error: function () {
 	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
@@ -308,7 +310,6 @@
 			            		 // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
 			                    loadingSearch = false;
 			            	}
-			            alert("서치지롱" + loadingAll + ", " + loadingMy + ", " + loadingSearch);
 		                loadingInProgress = false;
 	                },
 	                error: function () {
@@ -365,6 +366,15 @@
 		                currentOffsetMy += 10;
 		             	loadingMy = true;
 		        		
+		            }else{
+		                // result가 비어있는 경우 표시할 내용
+		                listContainer.empty();
+		                
+		                listContainer.html(`<div id="empty-container">
+			                    <img id="logo-img" src="../resources/assets/img/jiqooLogo.png">
+			                    <span id="empty-text"><br>
+			                    +버튼을 눌러 게시물을 작성해보세요!</span></div>
+			                `);
 		            }
 		        },
 		        error: function () {
@@ -443,38 +453,86 @@
 		    });
 		}
 		
-	function createResultItem(jiqooAllList) {
-	    var listItem = $('<div class="row result-item">');
-	    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo);
-	    
-	    var postHeader = $('<div class="post-header">');
-	    var category = $('<div class="category">');
-	    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', jiqooAllList.category.cImgPath);
-	    var location = $('<div class="location"><span class="location-text">' + jiqooAllList.jiqooW3W + '</span></div');
-	    
-	    var profileImg = $('<div id="profile-img" class="col-sm-12">');
-	    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', jiqooAllList.user.userPhotoPath);
-	    
-	    var colMd10 = $('<div class="col-md-10">');
-	    var title = $('<div class="title">' + jiqooAllList.jiqooTitle + '</div>');
-	    var content = $('<div class="content">' + jiqooAllList.jiqooContent + '</div>');
-	    var author = $('<div class="author col-md-12">' + jiqooAllList.user.userNickname + '</div>');
-	    var info = $('<div class="info col-lg-6 col-sm-12">' + formatDate(jiqooAllList.jCreateDate) + '</div>');
-	    
-	    var heartContainer = $('<div class="heart-container">');
-	    var heartImage = $('<img class="heart" alt="" src="../resources/assets/img/heart(full).png">');
-	    
-	    category.append(categoryImg);
-	    postHeader.append(category, location);
-	    profileImg.append(profileImage);
-	    colMd10.append(title, content, author, info, heartContainer);
-	    heartContainer.append(heartImage);
-	    
-	    postLink.append(postHeader, profileImg, colMd10);
-	    listItem.append(postLink);
-	    
-	    return listItem;
-	}
+		function createResultItem(jiqooAllList) {
+		    var listItem = $('<div class="row result-item">');
+		    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo);
+
+		    var postHeader = $('<div class="post-header">');
+		    var category = $('<div class="category">');
+		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', jiqooAllList.category.cImgPath);
+		    var location = $('<div class="location"><span class="location-text">' + jiqooAllList.jiqooW3W + '</span></div');
+		    var userInfoContainer = $('<div class="user-info-container row">');
+		    var userInfo = $('<div class="user-info col-sm-12">');
+		    var profileImg = $('<div class="profile-img col-4" class="col-sm-12">');
+		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', jiqooAllList.user.userPhotoPath);
+			
+		    var userNickname = $('<div class="user-nickname">' + jiqooAllList.user.userNickname + '</div>');
+		 	// jCreateDate 값을 나타내기 위한 업데이트
+		    var postDate = $('<div class="info col-lg-6 col-sm-12">' + formatDate(jiqooAllList.jCreateDate) + '</div>');
+
+		    
+		    var postMain = $('<div class="post-main row">');
+		    var postInfo = $('<div class="post-info col">');
+		    
+		    var title = $('<div class="title">' + jiqooAllList.jiqooTitle + '</div>');
+
+		    // <p>와 <img> 요소를 추출하는 함수
+		    function parseContent(content) {
+		        var parser = new DOMParser();
+		        var doc = parser.parseFromString(content, 'text/html');
+
+		        // <p> 요소를 추출
+		        var pElements = doc.querySelectorAll('p');
+		        var pContent = '';
+		        for (var i = 0; i < pElements.length; i++) {
+		            pContent += pElements[i].innerHTML;
+		        }
+
+		        // <img> 요소를 추출
+		        var imgElement = doc.querySelector('img'); // 첫 번째 이미지 요소만 가져옴
+		        var imgSource = imgElement ? imgElement.getAttribute('src') : ''; // 이미지가 없을 경우 빈 문자열 반환
+
+		        return {
+		            pContent: pContent,
+		            imgSource: imgSource
+		        };
+		    }
+
+		    // jiqooAllList.jiqooContent에서 HTML 요소 추출
+		    var content = jiqooAllList.jiqooContent;
+		    var parsedContent = parseContent(content);
+
+		    // 부모 <div>를 추가
+		    var contentContainer = $('<div class="content-container row">');
+		    
+		    // <p> 내용과 썸네일 이미지를 각각의 <div>에 추가
+		    var pContentDiv = $('<div class="p-content-div col-md-6 col-sm-12">').append(parsedContent.pContent);
+		    var thumbnailDiv = $('<div class="thumbnail-div col-md-6 col-sm-12">');
+		    if (parsedContent.imgSource) {
+		        var thumbnailImage = $('<img class="thumbnail-image" alt="썸네일" src="' + parsedContent.imgSource + '">');
+		        thumbnailDiv.append(thumbnailImage);
+		    }
+
+		    
+		    category.append(categoryImg);
+		    postHeader.append(category, location);
+		    profileImg.append(profileImage);
+
+		    // 각 요소를 부모 <div>에 추가
+		    postMain.append(postInfo, thumbnailDiv);
+		    postInfo.append(userInfoContainer, title, pContentDiv);
+		    userInfoContainer.append(profileImg, userInfo);
+		    userInfo.append(userNickname, postDate);
+
+		    postLink.append(postHeader, postMain);
+		    listItem.append(postLink, postMain);
+
+		    return listItem;
+		}
+		
+		
+
+
 	
 	function formatDate(date) {
 	    var d = new Date(date);

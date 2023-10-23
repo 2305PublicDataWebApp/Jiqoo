@@ -114,6 +114,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 		</div>
 
 		<!-- ======= Tab Section ======= -->
+		<!-- ======= 목록으로 이동 ======= -->
 		<div id="tab">
 			<button id="btn-myMap" class="btn-get-started scrollto">내꾸만 보기</button>
 			<button id="btn-allMap" class="btn-get-started scrollto qoo">남꾸도 보기</button>
@@ -122,6 +123,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 		<div class="modal-body"></div>
 		<!-- ======= Map Section ======= -->
 		<!-- 지도를 표시할 div 입니다 -->
+		<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
 		<div id="map"></div>
 
 		<button type="button" class="btn insert-jiqoo-btn"
@@ -361,6 +363,8 @@ function showMyMap(){
 	  	          image: markerImage,
 	  	          clickable: true
 	  	        });
+	  	        
+	  	        
 
 	  	        // 커스텀 오버레이에 표시될 내용을 생성합니다
 	  	        var overlayContent =  '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
@@ -450,10 +454,11 @@ function showAllMap() {
 	        });
 
 	        // 커스텀 오버레이에 표시될 내용을 생성합니다
-	        var overlayContent = '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
-	          '<div class="info-header">' + data[i].jiqooW3W + '</div>' +
-	          '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
-	          '</div';
+	         var overlayContent =  '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
+	  	        '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+	  	        data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
+	  	        '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
+	  	        '</div>'; 
 
 	        // 커스텀 오버레이를 생성합니다
 	        var customOverlay = new kakao.maps.CustomOverlay({

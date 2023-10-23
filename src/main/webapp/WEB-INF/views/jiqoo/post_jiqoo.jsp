@@ -99,18 +99,46 @@
 			<div id="post" class="col-md-12 col-xxl-10 mx-auto">
 				<div class="post-header">
 					<c:if test="${sessionScope.userId ne jiqoo.user.userId }">
-						<span id="action_menu_btn"><i
-							class="bi bi-three-dots-vertical"></i></span>
-						<div class="action_menu">
-							<ul>
-								<li><a href="#"><i class="bi bi-person-vcard"></i> 프로필
-										보기</a></li>
-								<li><a href="#" data-bs-toggle="modal"
-									data-bs-target="#reportModal"><i
-										class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
-							</ul>
-						</div>
+						<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
+		                <div class="action_menu">
+		                  <ul>
+		                    <li><a href="/user/myPage"><i class="bi bi-person-vcard"></i> 프로필 보기</a></li>
+		                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+		                  </ul>
+		                </div>
 					</c:if>
+					<!-- 신고 Modal -->
+			          <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			            <div class="modal-dialog">
+			              <div class="modal-content">
+			                <div class="modal-header">
+			                  <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
+			                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			                </div>
+			                <div class="modal-body">
+			                  <select name="report" id="reportSelect">
+			                    <option value="abusive">욕설사용</option>
+			                    <option value="advertising">광고글</option>
+			                    <option value="noSubject">주제와 맞지 않는 글</option>
+			                    <option value="violent">폭력적인 내용</option>
+			                    <option value="Discrimination">차별적인 내용</option>
+			                    <option value="pornography">음란물</option>
+			                    <option value="Personal">민감한 개인정보 노출</option>
+			                    <option value="etc">기타 (직접 작성)</option>
+			                  </select>
+			                  <textarea id="customReason" style="display:none" spellcheck="false"></textarea>
+			                  <div>
+			                    <small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>
+			                  </div>
+			                </div>
+			                <div class="modal-footer">
+			                  <button type="button" class="btn send-report">보내기</button>
+			                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+			                </div>
+			              </div>
+			            </div>
+			          </div>
+								
 					<div style="text-align: center;">
 						<div id="post-category-img-container">
 							<img id="post-category-img" alt="" src="${category.cImgPath}">
@@ -641,7 +669,7 @@
 	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 
 	    // 액션 메뉴 추가
-	    var actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	    var actionMenuBtn = $("<span>").attr("class", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
 	    var actionMenu = $("<div>").addClass("action_menu");
 	    var actionMenuList = $("<ul>");
 
@@ -665,6 +693,7 @@
 	        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo).on("click", function() {removeComment(comment.comtNo);});
 	        userInfo.append(modifyLink);
 	        userInfo.append(removeLink);
+	        actionMenuBtn.hide();
 	    }
 
 	    // 답글쓰기 링크 (pComtNo가 0이 아닌 경우에 표시)
@@ -754,8 +783,22 @@
 	    var newLikeCount = currentLikeCount + change;
 	    likeCountElement.textContent = newLikeCount;
 	}
+	
+	// 게시물신고버튼 토글
+	$('#action_menu_btn').click(function () {
+        $('.action_menu').toggle();
+      });
 
-	</script>
+       var selectElement = document.getElementById("reportSelect");
+       var textareaElement = document.getElementById("customReason");
+       selectElement.addEventListener("change", function() {
+       if (selectElement.value === "etc") {
+           textareaElement.style.display = "block";
+       } else {
+           textareaElement.style.display = "none";
+       }
+     });
+     </script>
 
 </body>
 

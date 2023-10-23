@@ -88,8 +88,15 @@ p {
 /*--------------------------------------------------------------
 # map
 --------------------------------------------------------------*/
+.bi-list {
+	margin-top: 30px;
+	margin-left: 10%;
+    font-size: 30px;
+}
+
 #map {
-  margin: 30px auto 80px;
+  margin: 0 auto;
+  margin-bottom: 80px;
   border-radius: 10px;
   width:80%;
   height:800px;
@@ -116,7 +123,6 @@ html, body {
 /* 인포윈도우 스타일 */
 .infoWindow {
     width: 250px;
-    height: 150px;
     background-color: #ffffffd4;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -125,6 +131,21 @@ html, body {
     position: absolute;
     left: -125px;
     bottom: 73px;
+    transition: 0.5s;
+}
+
+.infoWindow img{
+	max-width: 100%; /* 이미지의 최대 너비를 부모 요소(게시물 내의 <p>)의 너비에 맞게 조절 */
+    height: auto; /* 이미지의 높이를 자동으로 조절하여 비율 유지 */
+}
+
+.infoWindow a {
+	color: #444444;
+}
+
+.infoWindow a:hover {
+	transition: 0.3s;
+	color: var(--color-primary);
 }
 
 .info-header {
@@ -141,6 +162,10 @@ html, body {
    color: #555; /* 내용 텍스트 색상 변경 */
    margin-top: 10px;
    text-align: center;
+}
+
+.bi-arrow-right-circle-fill {
+	width: 10px;
 }
 
 /*--------------------------------------------------------------

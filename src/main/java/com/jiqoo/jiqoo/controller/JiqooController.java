@@ -211,6 +211,13 @@ public class JiqooController {
 	@PostMapping("/jiqoo/update")
 	public String updateJiqoo(@ModelAttribute Jiqoo jiqoo, Model model) {
 		try {
+			String allowComt = jiqoo.getjAllowComt();
+			String openStatus = jiqoo.getjOpenStatus();
+
+			allowComt = allowComt != null ? "Y" : "N";
+			openStatus = openStatus != null ? "Y" : "N";
+			jiqoo.setjAllowComt(allowComt);
+			jiqoo.setjOpenStatus(openStatus);
 			int result = jiqooService.updateJiqoo(jiqoo);
 			if (result > 0) {
 				model.addAttribute("msg", "게시물이 수정되었습니다.");
