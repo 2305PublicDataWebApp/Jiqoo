@@ -1,6 +1,10 @@
 package com.jiqoo.user.domain;
 
 import java.sql.Timestamp;
+import java.util.List;
+
+import com.jiqoo.common.domain.Comment;
+import com.jiqoo.report.domain.Report;
 
 public class User {
 	
@@ -24,14 +28,17 @@ public class User {
 	
 	private int count;
 	private String ageGroup;
-	
+	private List<Report> reportList;
+	private List<Comment> comtList;
+	private int uReportCount;
 
 	private int followers; //나를 팔로우한 사람들
 	private int followings; //내가 팔로우한 사람들
 	private boolean checkFollow;
 	
-	private int myTotalArticleCount;
-
+	private int comtCount;
+	private int jiqooCount;
+	private int moqooCount;
 
 
 	public User() {
@@ -183,8 +190,6 @@ public class User {
 		this.checkFollow = checkFollow;
 	}
 
-
-
 	public int getCount() {
 		return count;
 	}
@@ -201,12 +206,52 @@ public class User {
 		this.ageGroup = ageGroup;
 	}
 
-	public int getMyTotalArticleCount() {
-		return myTotalArticleCount;
+	public int getComtCount() {
+		return comtCount;
 	}
 
-	public void setMyTotalArticleCount(int myTotalArticleCount) {
-		this.myTotalArticleCount = myTotalArticleCount;
+	public void setComtCount(int comtCount) {
+		this.comtCount = comtCount;
+	}
+
+	public int getJiqooCount() {
+		return jiqooCount;
+	}
+
+	public void setJiqooCount(int jiqooCount) {
+		this.jiqooCount = jiqooCount;
+	}
+
+	public int getMoqooCount() {
+		return moqooCount;
+	}
+
+	public void setMoqooCount(int moqooCount) {
+		this.moqooCount = moqooCount;
+	}
+
+	public List<Report> getReportList() {
+		return reportList;
+	}
+
+	public void setReportList(List<Report> reportList) {
+		this.reportList = reportList;
+	}
+
+	public List<Comment> getComtList() {
+		return comtList;
+	}
+
+	public void setComtList(List<Comment> comtList) {
+		this.comtList = comtList;
+	}
+
+	public int getuReportCount() {
+		return uReportCount;
+	}
+
+	public void setuReportCount(int uReportCount) {
+		this.uReportCount = uReportCount;
 	}
 
 	@Override

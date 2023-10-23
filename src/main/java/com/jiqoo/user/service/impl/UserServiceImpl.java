@@ -7,8 +7,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
+import com.jiqoo.user.domain.UserJiqooDto;
+import com.jiqoo.user.domain.UserLikeDto;
+import com.jiqoo.user.domain.UserMoqooDto;
 import com.jiqoo.user.service.UserService;
 import com.jiqoo.user.store.UserStore;
 
@@ -138,6 +141,42 @@ public class UserServiceImpl implements UserService{
 	public int selectMyMoqooCount(String userId) {
 		int myMiqooCount = userStore.selectMyMoqooCount(sqlSession, userId);
 		return myMiqooCount;
+	}
+
+	@Override
+	public int selectMyCommentCount(String userId) {
+		int myCommentCount = userStore.selectMyCommentCount(sqlSession, userId);
+		return myCommentCount;
+	}
+
+	@Override
+	public List<UserComment> selectMyCommentList(Map<String, Object> comtMap) {
+		List<UserComment> myCommentList = userStore.selectMyCommentList(sqlSession, comtMap);
+		return myCommentList;
+	}
+
+	@Override
+	public int updateSnsUser(User user) {
+		int result = userStore.updateSnsUser(sqlSession, user);
+		return result;
+	}
+
+	@Override
+	public List<UserJiqooDto> selectMyJiqooList(Map<String, Object> jiqooMap) {
+		List<UserJiqooDto> myJiqooList = userStore.selectMyJiqooList(sqlSession, jiqooMap);
+		return myJiqooList;
+	}
+
+	@Override
+	public List<UserMoqooDto> selectMyMoqooList(Map<String, Object> moqooMap) {
+		List<UserMoqooDto> myMoqooList = userStore.selectMyMoqooList(sqlSession, moqooMap);
+		return myMoqooList;
+	}
+
+	@Override
+	public List<UserLikeDto> selectMyLikedPostList(Map<String, Object> likeMap) {
+		List<UserLikeDto> likedList = userStore.selectMyLikedPostList(sqlSession, likeMap);
+		return likedList;
 	}
 
 

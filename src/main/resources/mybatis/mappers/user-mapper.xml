@@ -4,7 +4,85 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="UserMapper">
+	<resultMap type="User" id="UserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userNickname" column="USER_NICKNAME"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+		<result property="userGender" column="USER_GENDER"/>
+		<result property="userBirth" column="USER_BIRTH"/>
+		<result property="userTel" column="USER_TEL"/>
+		<result property="userInfo" column="USER_INFO"/>
+		<result property="userPhotoName" column="USER_PHOTO_NAME"/>
+		<result property="userPhotoRename" column="USER_PHOTO_RENAME"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH"/>
+		<result property="uCreateDate" column="U_CREATE_DATE"/>
+		<result property="uDeleteDate" column="U_DELETE_DATE"/>
+		<result property="userStatus" column="USER_STATUS"/>
+		<result property="adminYn" column="ADMIN_YN"/>
+	</resultMap>
+	
+	<resultMap type="UserComment" id="UserCommentResultMap">
+		<id property="comtNo" column="COMT_NO"/>
+		<result property="comtContent" column="COMT_CONTENT"/>
+		<result property="comtWriter" column="COMT_WRITER"/>
+		<result property="comtDate" column="COMT_DATE"/>
+		<result property="cUpdateDate" column="C_UPDATE_DATE"/>
+		<result property="refPostNo" column="REF_POST_NO"/>
+		<result property="pComtNo" column="P_COMT_NO"/>
+		<result property="comtStatus" column="COMT_STATUS"/>
+		<result property="cBoardType" column="C_BOARD_TYPE"/>
+		<result property="postTitle" column="POST_TITLE"/>
+		<result property="rnum" column="RNUM"/>
+		<collection property="user" resultMap="UserResultMap"/>
+	</resultMap>
 
+	<resultMap type="UserJiqooDto" id="UserJiqooDtoResultMap">
+		<id property="jiqooNo" column="JIQOO_NO"/>
+		<result property="jiqooW3W" column="JIQOO_W3W" />
+		<result property="jiqooDate" column="JIQOO_DATE" />
+		<result property="jiqooCtgr" column="JIQOO_CTGR" />
+		<result property="jiqooTitle" column="JIQOO_TITLE" />
+		<result property="jiqooContent" column="JIQOO_CONTENT" />
+		<result property="jiqooWriter" column="JIQOO_WRITER" />
+		<result property="jOpenStatus" column="J_ALLOW_COMT" />
+		<result property="jAllowComt" column="J_OPEN_STATUS" />
+		<result property="jCreateDate" column="J_CREATE_DATE" />
+		<result property="jUpdateDate" column="J_UPDATE_DATE" />
+		<result property="jViewCount" column="J_VIEW_COUNT" />
+		<result property="jiqooLat" column="JIQOO_LAT" />
+		<result property="jiqooLng" column="JIQOO_LNG" />
+		<result property="jiqooStatus" column="JIQOO_STATUS" />
+		<result property="userPhotoPath" column="USER_PHOTO_PATH" />
+		<result property="cImgPath" column="C_IMG_PATH" />
+		<result property="rnum" column="RNUM" />
+	</resultMap>
+	
+	<resultMap type="UserMoqooDto" id="UserMoqooDtoResultMap">
+		<id property="moqooNo" column="MOQOO_NO"/>
+		<result property="moqooW3W" column="MOQOO_W3W"/>
+		<result property="moqooDay" column="MOQOO_DAY"/>
+		<result property="category" column="MOQOO_TAGS"/>
+		<result property="moqooTitle" column="MOQOO_TITLE"/>
+		<result property="moqooThumName" column="MOQOO_THUM_NAME"/>
+		<result property="moqooThumRename" column="MOQOO_THUM_RENAME"/>
+		<result property="moqooThumPath" column="MOQOO_THUM_PATH"/>
+		<result property="moqooContent" column="MOQOO_CONTENT"/>
+		<result property="moqooJoin" column="MOQOO_JOIN"/>
+		<result property="moqooWriter" column="MOQOO_WRITER"/>
+		<result property="moqooDate" column="MOQOO_DATE"/>
+		<result property="mUpdateDate" column="M_UPDATE_DATE"/>
+		<result property="mViewCount" column="M_VIEW_COUNT"/>
+		<result property="moqooLat" column="MOQOO_LAT"/>
+		<result property="moqooLng" column="MOQOO_LNG"/>
+		<result property="moqooStatus" column="MOQOO_STATUS"/>
+		<result property="userPhotoPath" column="USER_PHOTO_PATH" />
+		<result property="cImgPath" column="C_IMG_PATH" />
+		<result property="rnum" column="RNUM" />
+	</resultMap>
+	
 	<insert id="insertUser">
 		INSERT INTO USER_TBL
 		VALUES (#{userId}, #{userPw}, #{userName}, #{userNickname}, #{userEmail}, 'normal', #{userGender}, #{userBirth}, #{userTel}, #{userInfo}, #{userPhotoName}, #{userPhotoRename}, #{userPhotoPath}, DEFAULT, NULL, DEFAULT, DEFAULT) 
@@ -23,6 +101,12 @@
 	<update id="updateUser">
 		UPDATE USER_TBL
 		SET USER_NICKNAME = #{userNickname}, USER_EMAIL = #{userEmail}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="updateSnsUser">
+		UPDATE USER_TBL
+		SET USER_NAME = #{userName}, USER_NICKNAME = #{userNickname}, USER_GENDER = #{userGender}, USER_BIRTH = #{userBirth}, USER_TEL = #{userTel}, USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}, USER_INFO = #{userInfo}
 		WHERE USER_ID = #{userId}
 	</update>
 	
@@ -92,12 +176,14 @@
 	</select>
 	
 	<select id="selectFollowersListById" resultType="User">
-		SELECT * FROM USER_TBL
+		SELECT * 
+		FROM USER_TBL
 		WHERE USER_ID IN (SELECT FROM_USER_ID FROM FOLLOW_TBL WHERE TO_USER_ID = #{userId})
 	</select>
 	
 	<select id="selectFollowingsListById" resultType="User">
-		SELECT * FROM USER_TBL
+		SELECT * 
+		FROM USER_TBL
 		WHERE USER_ID IN (SELECT TO_USER_ID FROM FOLLOW_TBL WHERE FROM_USER_ID = #{userId})
 	</select>
 	
@@ -109,5 +195,131 @@
 	<select id="selectMyMoqooCount" resultType="_int">
 		SELECT COUNT(*)
 		FROM MOQOO_TBL WHERE MOQOO_WRITER = #{userId} AND MOQOO_STATUS NOT LIKE 'N'
+	</select>
+	
+	<select id="selectMyCommentCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM COMT_TBL WHERE COMT_WRITER = #{userId} AND COMT_STATUS NOT LIKE 'N'
+	</select>
+	
+<!--  	<select id="selectMyCommentList" resultMap="UserCommentResultMap"> -->
+ 	<select id="selectMyCommentList" resultType="UserComment">
+<!--  		SELECT * -->
+<!--       	FROM ( -->
+<!-- 	          SELECT ROW_NUMBER() OVER(ORDER BY COMT_DATE DESC) AS RNUM, C.COMT_NO, C.COMT_CONTENT, C.COMT_WRITER, C.COMT_DATE, C.REF_POST_NO, C.COMT_STATUS, C.C_BOARD_TYPE,  -->
+<!-- 	              CASE  -->
+<!-- 	                  WHEN C.C_BOARD_TYPE = 'J' THEN J.JIQOO_TITLE -->
+<!-- 	                  WHEN C.C_BOARD_TYPE = 'M' THEN M.MOQOO_TITLE -->
+<!-- 	                  ELSE NULL -->
+<!-- 	              END AS POST_TITLE, -->
+<!-- 	              U.USER_PHOTO_PATH -->
+<!-- 	          FROM COMT_TBL C -->
+<!-- 	          LEFT JOIN JIQOO_TBL J ON C.C_BOARD_TYPE = 'J' AND C.REF_POST_NO = J.JIQOO_NO -->
+<!-- 	          LEFT JOIN MOQOO_TBL M ON C.C_BOARD_TYPE = 'M' AND C.REF_POST_NO = M.MOQOO_NO -->
+<!-- 	          LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID -->
+<!-- 	          WHERE C.COMT_WRITER = #{userId}  -->
+<!-- 	          AND C.COMT_STATUS NOT LIKE 'N'  -->
+<!-- 	          AND (J.JIQOO_STATUS NOT LIKE 'N' OR M.MOQOO_STATUS NOT LIKE 'N') -->
+<!-- 	          AND (#{selectedDate} IS NULL OR DATE(C.COMT_DATE) = #{selectedDate}) -->
+<!--       		) -->
+<!--       	WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo} -->
+<!--       	ORDER BY COMT_DATE DESC -->
+		SELECT *
+      	FROM (
+	          SELECT ROW_NUMBER() OVER(ORDER BY COMT_DATE DESC) AS RNUM, C.COMT_NO, C.COMT_CONTENT, C.COMT_WRITER, C.COMT_DATE, C.REF_POST_NO, C.COMT_STATUS, C.C_BOARD_TYPE, 
+	              CASE 
+	                  WHEN C.C_BOARD_TYPE = 'J' THEN J.JIQOO_TITLE
+	                  WHEN C.C_BOARD_TYPE = 'M' THEN M.MOQOO_TITLE
+	                  ELSE NULL
+	              END AS POST_TITLE,
+	              U.USER_PHOTO_PATH
+	          FROM COMT_TBL C
+	          LEFT JOIN JIQOO_TBL J ON C.C_BOARD_TYPE = 'J' AND C.REF_POST_NO = J.JIQOO_NO
+	          LEFT JOIN MOQOO_TBL M ON C.C_BOARD_TYPE = 'M' AND C.REF_POST_NO = M.MOQOO_NO
+	          LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
+	          WHERE C.COMT_WRITER = #{userId} 
+	          AND C.COMT_STATUS NOT LIKE 'N' AND (J.JIQOO_STATUS NOT LIKE 'N' OR M.MOQOO_STATUS NOT LIKE 'N')
+      		)
+      	WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
+      	ORDER BY COMT_DATE DESC
+	</select>
+	
+	<select id="selectMyJiqooList" resultMap="UserJiqooDtoResultMap">
+		SELECT *
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY JIQOO_DATE DESC) AS RNUM, JIQOO_NO, JIQOO_W3W, JIQOO_DATE, JIQOO_CTGR, C_IMG_PATH, JIQOO_TITLE, JIQOO_CONTENT, JIQOO_WRITER, USER_PHOTO_PATH, J_VIEW_COUNT 
+			FROM JIQOO_TBL
+			JOIN CATEGORY_TBL ON JIQOO_CTGR = C_NAME
+			JOIN USER_TBL ON USER_ID = JIQOO_WRITER
+			WHERE JIQOO_WRITER = #{userId} AND JIQOO_STATUS NOT LIKE 'N'
+			)
+		WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
+		ORDER BY JIQOO_DATE DESC	
+	</select>
+	
+	<select id="selectMyMoqooList" resultMap="UserMoqooDtoResultMap">
+		SELECT *
+		FROM (
+		    SELECT ROW_NUMBER() OVER(ORDER BY MOQOO_DAY DESC) AS RNUM, MOQOO_NO, MOQOO_W3W, MOQOO_DAY, MOQOO_TAGS, C_IMG_PATH, MOQOO_TITLE, MOQOO_CONTENT, MOQOO_WRITER, USER_PHOTO_PATH, M_VIEW_COUNT 
+		    FROM MOQOO_TBL
+		    JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
+		    JOIN USER_TBL ON USER_ID = MOQOO_WRITER
+		    WHERE MOQOO_WRITER = #{userId} AND MOQOO_STATUS NOT LIKE 'N'
+			)
+		WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
+		ORDER BY MOQOO_DAY DESC	
+	</select>
+	
+	<select id="selectMyLikedPostList" resultType="UserLikeDto">
+		SELECT *
+		FROM (
+		    SELECT
+		        ROW_NUMBER() OVER (ORDER BY POST_DATE DESC) AS RNUM, BOARD_TYPE, POST_NO, L_USER_ID, POST_WRITER, WRITER_PHOTO_PATH, POST_DATE, POST_W3W, POST_TITLE, C.C_IMG_PATH, VIEW_COUNT, POST_STATUS
+		    FROM (
+		        SELECT
+		            L.REF_BOARD_TYPE AS BOARD_TYPE, L.REF_POST_NO AS POST_NO, L.L_USER_ID AS L_USER_ID,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_WRITER
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_WRITER
+		            END AS POST_WRITER,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN U_J.USER_PHOTO_PATH
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN U_M.USER_PHOTO_PATH
+		            END AS WRITER_PHOTO_PATH,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_DATE
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_DAY
+		            END AS POST_DATE, <!-- ROW_NUMBER()함수쓰려면 먼저 POST_DATE 컬럼이 존재하고 있어야 함->이후 RNUM 부여됨 -->
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_W3W
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_W3W
+		            END AS POST_W3W,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_TITLE
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_TITLE
+		            END AS POST_TITLE,
+		            CASE
+                        WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_CTGR
+                        WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_TAGS
+                    END AS POST_CATEGORY,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.J_VIEW_COUNT
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.M_VIEW_COUNT
+		            END AS VIEW_COUNT,
+		            CASE
+		                WHEN L.REF_BOARD_TYPE = 'J' THEN J.JIQOO_STATUS
+		                WHEN L.REF_BOARD_TYPE = 'M' THEN M.MOQOO_STATUS
+		            END AS POST_STATUS
+		        FROM LIKE_TBL L
+		        LEFT JOIN JIQOO_TBL J ON L.REF_BOARD_TYPE = 'J' AND L.REF_POST_NO = J.JIQOO_NO
+		        LEFT JOIN MOQOO_TBL M ON L.REF_BOARD_TYPE = 'M' AND L.REF_POST_NO = M.MOQOO_NO
+		        LEFT JOIN USER_TBL U_J ON J.JIQOO_WRITER = U_J.USER_ID
+		        LEFT JOIN USER_TBL U_M ON M.MOQOO_WRITER = U_M.USER_ID
+		        WHERE L.L_USER_ID = #{userId}
+		    )
+		    LEFT JOIN CATEGORY_TBL C ON POST_CATEGORY = C.C_NAME
+		)
+		WHERE (POST_STATUS NOT LIKE 'N') AND (RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo})
+		ORDER BY POST_DATE DESC
 	</select>
 </mapper>

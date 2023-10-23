@@ -5,8 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.common.domain.Comment;
+import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
+import com.jiqoo.user.domain.UserComment;
+import com.jiqoo.user.domain.UserJiqooDto;
+import com.jiqoo.user.domain.UserLikeDto;
+import com.jiqoo.user.domain.UserMoqooDto;
 
 public interface UserStore {
 
@@ -185,5 +191,53 @@ public interface UserStore {
 	 * @return
 	 */
 	int selectMyMoqooCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 댓글 수 조회 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int selectMyCommentCount(SqlSession sqlSession, String userId);
+
+	/**
+	 * 마이페이지 댓글 리스트 조회 Store
+	 * @param sqlSession
+	 * @param comtMap
+	 * @return
+	 */
+	List<UserComment> selectMyCommentList(SqlSession sqlSession, Map<String, Object> comtMap);
+
+	/**
+	 * sns 회원 정보 수정 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int updateSnsUser(SqlSession sqlSession, User user);
+
+	/**
+	 * 마이페이지 지꾸 리스트 조회 Store
+	 * @param sqlSession
+	 * @param jiqooMap
+	 * @return
+	 */
+	List<UserJiqooDto> selectMyJiqooList(SqlSession sqlSession, Map<String, Object> jiqooMap);
+
+	/**
+	 * 마이페이지 모꾸 리스트 조회 Store
+	 * @param sqlSession
+	 * @param moqooMap
+	 * @return
+	 */
+	List<UserMoqooDto> selectMyMoqooList(SqlSession sqlSession, Map<String, Object> moqooMap);
+
+	/**
+	 * 마이페이지 좋아요 리스트 조회 Store
+	 * @param sqlSession
+	 * @param likeMap
+	 * @return
+	 */
+	List<UserLikeDto> selectMyLikedPostList(SqlSession sqlSession, Map<String, Object> likeMap);
 
 }
