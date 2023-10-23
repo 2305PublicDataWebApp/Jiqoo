@@ -12,6 +12,7 @@ import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.service.JiqooService;
 import com.jiqoo.jiqoo.store.JiqooStore;
+import com.jiqoo.report.domain.Report;
 
 @Service
 public class JiqooServiceImpl implements JiqooService{
@@ -140,6 +141,18 @@ public class JiqooServiceImpl implements JiqooService{
 	public List<Jiqoo> loadMoreJiqooSearchList(Map<String, Object> params) {
 		List<Jiqoo> list = jiqooStore.loadMoreJiqooSearchList(sqlSession, params);
 		return list;
+	}
+
+	@Override
+	public int insertJiqooReport(Report report) {
+		int result = jiqooStore.insertJiqooReport(sqlSession, report);
+		return result;
+	}
+
+	@Override
+	public int insertJiqooComtReport(Report report) {
+		int result = jiqooStore.insertJiqooComtReport(sqlSession, report);
+		return result;
 	}
 
 

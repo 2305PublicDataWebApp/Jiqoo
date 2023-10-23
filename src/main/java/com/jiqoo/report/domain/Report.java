@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class Report {
 	private int reportNo;
-	private String reportWrite;
+	private String reportWriter;
 	private String reportContent;
 	private Timestamp reportDate;
 	private String reportUserId;
@@ -27,11 +27,11 @@ public class Report {
 	public void setReportNo(int reportNo) {
 		this.reportNo = reportNo;
 	}
-	public String getReportWrite() {
-		return reportWrite;
+	public String getReportWriter() {
+		return reportWriter;
 	}
-	public void setReportWrite(String reportWrite) {
-		this.reportWrite = reportWrite;
+	public void setReportWriter(String reportWriter) {
+		this.reportWriter = reportWriter;
 	}
 	public String getReportContent() {
 		return reportContent;
@@ -71,7 +71,7 @@ public class Report {
 	}
 	@Override
 	public String toString() {
-		return "신고 [신고번호=" + reportNo + ", 신고자=" + reportWrite + ", 신고사유=" + reportContent
+		return "신고 [신고번호=" + reportNo + ", 신고자=" + reportWriter + ", 신고사유=" + reportContent
 				+ ", 신고날짜=" + reportDate + ", 신고당한회원=" + reportUserId + ", 신고당한글번호=" + reportPostNo
 				+ ", 신고당한댓글번호=" + reportComtNo + ", 신고당한게시판타입=" + reportType + "]";
 	}

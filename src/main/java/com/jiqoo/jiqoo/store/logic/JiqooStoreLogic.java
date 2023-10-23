@@ -10,6 +10,7 @@ import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.store.JiqooStore;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Repository
@@ -132,6 +133,18 @@ public class JiqooStoreLogic implements JiqooStore {
 	public List<Jiqoo> loadMoreJiqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
 		List<Jiqoo> list = sqlSession.selectList("JiqooMapper.loadMoreJiqooSearchList", params);
 		return list;
+	}
+
+	@Override
+	public int insertJiqooReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("JiqooMapper.insertJiqooReport", report);
+		return result;
+	}
+
+	@Override
+	public int insertJiqooComtReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("JiqooMapper.insertJiqooComtReport", report);
+		return result;
 	}
 
 }

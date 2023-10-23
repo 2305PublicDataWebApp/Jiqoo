@@ -159,7 +159,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 									<div class="category-list">
 										<c:forEach var="categoryList" items="${categoryList }">
 											<div class="form-check category"> 
-												<input class="form-check-input" type="radio" name="jiqooCtgr"
+												<input class="form-check-input" type="radio" id="${categoryList.cName }" name="jiqooCtgr"
 													 value="${categoryList.cName }" required> <label
 													class="form-check-label" for="${categoryList.cName }"> <img
 													class="tag-img" src="${categoryList.cImgPath }"

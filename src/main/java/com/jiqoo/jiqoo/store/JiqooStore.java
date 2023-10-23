@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface JiqooStore {
@@ -168,5 +169,21 @@ public interface JiqooStore {
 	 * @return
 	 */
 	List<Jiqoo> loadMoreJiqooSearchList(SqlSession sqlSession, Map<String, Object> params);
+
+	/**
+	 * 지꾸 게시물 신고 Store
+	 * @param sqlSession
+	 * @param report
+	 * @return
+	 */
+	int insertJiqooReport(SqlSession sqlSession, Report report);
+
+	/**
+	 * 지꾸 댓글 신고 Store
+	 * @param sqlSession
+	 * @param report
+	 * @return
+	 */
+	int insertJiqooComtReport(SqlSession sqlSession, Report report);
 
 }

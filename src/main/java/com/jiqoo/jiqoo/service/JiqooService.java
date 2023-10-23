@@ -6,6 +6,7 @@ import java.util.Map;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.report.domain.Report;
 
 public interface JiqooService {
 
@@ -146,5 +147,19 @@ public interface JiqooService {
 	 * @return
 	 */
 	List<Jiqoo> loadMoreJiqooSearchList(Map<String, Object> params);
+
+	/**
+	 * 지꾸 게시물 신고 Service
+	 * @param report
+	 * @return
+	 */
+	int insertJiqooReport(Report report);
+
+	/**
+	 * 지꾸 댓글 신고 Service
+	 * @param report
+	 * @return
+	 */
+	int insertJiqooComtReport(Report report);
 
 }

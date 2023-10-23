@@ -69,7 +69,7 @@ p {
     border-radius: 25px;
     background-color: #FBFBFB;
     padding: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     margin-top: 90px;
     position: relative;
 }
@@ -251,6 +251,31 @@ p {
           align-items: center;
           justify-content: center;
       }
+      
+      #backbtn-container {
+      	display: flex;
+	    justify-content: flex-start;
+	    margin-left: 80px;
+	    margin-bottom: 50px;
+      }
+      
+      .backbtn {
+		    width: 65px;
+		    height: 30px;
+		    background-color: #7d7f7b;
+		    padding: 5px 10px;
+		    margin-left: 10px;
+		    color: white;
+		    border: none;
+		    border-radius: 5px;
+		    cursor: pointer;
+		    transition: 0.3s;
+		    font-size: 12px;
+      }
+      .backbtn:hover {
+      	background-color:#2b2c29; 
+      	color: #fff;
+     }
 
       .postbtn:first-child {
           margin-left: 0;
@@ -520,7 +545,7 @@ p {
 
 
 /* 신고 */
-#action_menu_btn{
+#post_action_menu_btn, .comt_action_menu_btn{
 position: absolute;
 right: 10px;
 top: 10px;
@@ -535,8 +560,8 @@ padding: 15px 0;
 background-color: rgba(0,0,0,0.5);
 color: white;
 border-radius: 15px;
-top: 30px;
-right: 15px;
+top: 45px;
+right: 20px;
 display: none;
 }
 .action_menu ul{
@@ -656,7 +681,7 @@ background-color: rgba(0,0,0,0.2);
 }
 
 .category-container {
-  width: 280px;
+  width: 345px;
   height: ato;
   background-color: white;
   position: absolute;

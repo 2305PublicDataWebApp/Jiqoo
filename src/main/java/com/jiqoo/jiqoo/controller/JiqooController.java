@@ -32,6 +32,7 @@ import com.jiqoo.common.domain.Like;
 import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.jiqoo.service.JiqooComtService;
 import com.jiqoo.jiqoo.service.JiqooService;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Controller
@@ -213,7 +214,7 @@ public class JiqooController {
 		try {
 			String allowComt = jiqoo.getjAllowComt();
 			String openStatus = jiqoo.getjOpenStatus();
-
+			System.out.println(jiqoo.getJiqooCtgr());
 			allowComt = allowComt != null ? "Y" : "N";
 			openStatus = openStatus != null ? "Y" : "N";
 			jiqoo.setjAllowComt(allowComt);
@@ -233,6 +234,26 @@ public class JiqooController {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "/jiqoo/detail?jiqooNo=" + jiqoo.getJiqooNo());
 			return "common/message";
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/jiqoo/report")
+	public String reportJiqoo(@ModelAttribute Report report) {
+		if(report.getReportType() == "J") {
+			int result = jiqooService.insertJiqooReport(report);
+			if(result > 0) {
+				return "jiqooReport";
+			}else {
+				return "fail";
+			}
+		}else{
+			int result = jiqooService.insertJiqooComtReport(report);
+			if(result > 0) {
+				return "jiqooComtReport";
+			}else {
+				return "fail";
+			}
 		}
 	}
 

@@ -57,6 +57,14 @@
 		INSERT INTO LIKE_TBL VALUES(#{refPostNo }, 'J', #{lUserId })
 	</insert>
 	
+	<insert id="insertJiqooReport">
+		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, #{reportUserId }, #{reportPostNo }, NULL, #{reportType })
+	</insert>
+	
+	<insert id="insertJiqooComtReport">
+		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, #{reportUserId }, NULL, #{reportComtNo }, #{reportType })
+	</insert>
+	
 	<delete id="deleteLike">
 		DELETE FROM LIKE_TBL WHERE REF_POST_NO = #{refPostNo } AND L_USER_ID = #{lUserId }
 	</delete>

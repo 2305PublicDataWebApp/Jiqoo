@@ -99,20 +99,20 @@
 			<div id="post" class="col-md-12 col-xxl-10 mx-auto">
 				<div class="post-header">
 					<c:if test="${sessionScope.userId ne jiqoo.user.userId }">
-						<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
-		                <div class="action_menu">
+						<span id="post_action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
+		                <div class="action_menu post_action_menu">
 		                  <ul>
-		                    <li><a href="/user/myPage"><i class="bi bi-person-vcard"></i> 프로필 보기</a></li>
-		                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+		                    <li><a href="/user/profile?userId="><i class="bi bi-person-vcard"></i> 프로필 보기</a></li>
+		                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#postReportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
 		                  </ul>
 		                </div>
 					</c:if>
-					<!-- 신고 Modal -->
-			          <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<!-- 게시글 신고 Modal -->
+			          <div class="modal fade" id="postReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			            <div class="modal-dialog">
 			              <div class="modal-content">
 			                <div class="modal-header">
-			                  <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
+			                  <h1 class="modal-title fs-5" id="exampleModalLabel">지꾸 신고하기</h1>
 			                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			                </div>
 			                <div class="modal-body">
@@ -132,12 +132,13 @@
 			                  </div>
 			                </div>
 			                <div class="modal-footer">
-			                  <button type="button" class="btn send-report">보내기</button>
+			                  <button type="button" id="send-jiqoo-report" class="btn send-report">보내기</button>
 			                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
 			                </div>
 			              </div>
 			            </div>
 			          </div>
+
 								
 					<div style="text-align: center;">
 						<div id="post-category-img-container">
@@ -185,32 +186,36 @@
 						test="${not empty sessionScope.userId && sessionScope.userId eq jiqoo.user.userId}">
 						<div class="button-container">
 							<button class="btn postbtn" id="modify-btn"
-								data-bs-toggle="modal" data-bs-target=".modal">수정</button>
+								data-bs-toggle="modal" data-bs-target="#update-modal">수정</button>
 							<button class="btn postbtn" id="delete-btn"
 								onclick="deleteJiqoo()">삭제</button>
 						</div>
 					</c:if>
 				</div>
 			</div>
+			<div id="backbtn-container">
+				<button class="btn backbtn" onclick="goBack()">뒤로가기</button>
+			</div>
 			<!-- ======= Modal ======= -->
-			<div class="modal" tabindex="-1" id="insert-modal">
+			<div class="modal" tabindex="-1" id="update-modal">
 				<div class="modal-dialog modal-lg">
 					<div class="modal-content"
 						style="background-color: #6DBE45; color: #fff;">
 						<div class="modal-header">
-							<h5 class="modal-title">게시물 입력</h5>
+							<h5 class="modal-title">게시물 수정</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal"
 								aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
-							<!-- 게시물 입력 폼 -->
-							<form action="/jiqoo/insert" method="POST">
+							<!-- 게시물 수정 폼 -->
+							<form action="/jiqoo/update" method="POST">
+								<input type="hidden" value="${jiqoo.jiqooNo }" name="jiqooNo">
 								<div class="mb-3 col-lg-5 mx-auto location-container">
 									<input type="text" class="form-control" id="location"
 										name="jiqooW3W" value="${jiqoo.jiqooW3W }" readonly>
 									<button id="open-map-btn">+</button>
 								</div>
-								<div class="mb-3 row date-tag-container">
+								<div class="mb-3 date-tag-container">
 									<div class="date-container col-md-3">
 										<input type="date" class="form-control" id="date"
 											name="jiqooDate" value="${jiqoo.jiqooDate }" required>
@@ -223,14 +228,10 @@
 										<div class="category-list">
 											<c:forEach var="categoryList" items="${categoryList }">
 												<div class="form-check category">
-													<input class="form-check-input" type="radio"
-														name="jiqooCtgr"
-														<c:if test="${jiqoo.jiqooCtgr eq categoryList.cName }">checked</c:if>
-														required> <label class="form-check-label"
-														for="${categoryList.cName }"> <img class="tag-img"
-														src="${categoryList.cImgPath }"
-														alt="${categoryList.cName }">
-													</label>
+													<input class="form-check-input" type="radio" id="${categoryList.cName }"
+														name="jiqooCtgr" value="${categoryList.cName }"
+														<c:if test="${jiqoo.jiqooCtgr eq categoryList.cName }">checked</c:if> required> <label class="form-check-label" for="${categoryList.cName }"> <img class="tag-img"
+														src="${categoryList.cImgPath }" alt="${categoryList.cName }"></label>
 												</div>
 											</c:forEach>
 										</div>
@@ -271,19 +272,21 @@
 					</div>
 				</div>
 			</div>
+			<div id="reportPopup" class="popup">
+				<h2>댓글 신고하기</h2>
+				<textarea id="reportReason" placeholder="신고 이유를 입력하세요"></textarea>
+				<button onclick="reportComment()">신고</button>
+				<button onclick="closeReportPopup()">닫기</button>
+			</div>
 			<!-- 댓글 -->
 			<div class="comment-section col-md-12 col-xxl-10 mx-auto">
-				<div class="comment-form col-md-12 col-xxl-10 mx-auto">
-					<textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
-					<button class="btn" id="c-submit">등록</button>
-				</div>
+				<c:if test="${jiqoo.jAllowComt eq 'Y' }">
+					<div class="comment-form col-md-12 col-xxl-10 mx-auto">
+						<textarea id="comtContent" placeholder="댓글을 입력하세요"></textarea>
+						<button class="btn" id="c-submit">등록</button>
+					</div>
+				</c:if>
 				<div id="comment-container"></div>
-				<div id="reportPopup" class="popup">
-					<h2>댓글 신고하기</h2>
-					<textarea id="reportReason" placeholder="신고 이유를 입력하세요"></textarea>
-					<button onclick="reportComment()">신고</button>
-					<button onclick="closeReportPopup()">닫기</button>
-				</div>
 			</div>
 			<div class="comment-page-container">
 			</div>
@@ -369,6 +372,8 @@
     	// 페이지가 로드될 때 초기 댓글을 로드
     	loadInitialComments();
     });
+    
+    
 
     function toggleReportDiv() {
         const reportDiv = document.getElementById("report-div");
@@ -468,7 +473,78 @@
 	        $(obj).closest('.comment').append(formDiv);
 	    }
 	};
+	$("#send-jiqoo-report").on("click", function() {
+		var jiqooWriter = "${jiqoo.jiqooWriter}";
+		var jiqooReportContent = $("#reportSelect").val();
+		 if($("#reportSelect").val() === "etc") {
+			 jiqooReportContent = $("#customReason").val();
+		 }
+		$.ajax({
+			url : "/jiqoo/report",
+			data : {
+				reportWriter : currentUserId,
+				reportContent : jiqooReportContent,
+				reportPostNo : jiqooNo,
+				reportUserId : jiqooWriter,
+				reportType : 'J'
+			},
+			type : "get",
+			success : function(data){
+				if(data == "jiqooReport") {
+					$('#jiqooReportModal').modal('hide');
+					alert("게시물 신고가 완료되었습니다.");
+				}
+			}
+		})
+	})
+// 	$("#send-comt-report").on("click", function() {
+// 	 	var commentNo = $('#comtReportModal').data('commentNo'); // 모달 내의 데이터 읽기
+// 	    var commentWriter = $('#comtReportModal').data('commentWriter'); // 모달 내의 데이터 읽기
+// 	    var jiqooReportContent = $("#reportSelect").val();
+// 		console.log(commentNo, commentWriter); 
+// 	    if($("#reportSelect").val() === "etc") {
+// 			 jiqooReportContent = $("#customReason").val();
+// 		 }
+// 		$.ajax({
+// 			url : "/jiqoo/report",
+// 			data : {
+// 				reportWriter : currentUserId,
+// 				reportContent : jiqooReportContent,
+// 				reportComtNo : commentNo,
+// 				reportUserId : commentWriter,
+// 				reportType : 'JC'
+// 			},
+// 			type : "get",
+// 			success : function(data){
+// 				if(data == "jiqooComtReport") {
+// 					$('#comtReportModal').modal('hide');
+// 					alert("게시물 신고가 완료되었습니다.");
+// 				}
+// 			}
+// 		})
+// 	})
+	
+	
+// 	$(document).on('click', 'a[data-commentNo][data-commentWriter]', function(event) {
+// 	  event.preventDefault();
+// 	  var commentNo = $(this).data('commentNo');
+// 	  var commentWriter = $(this).data('commentWriter');
+// 	  // 모달 열 때 데이터를 설정
+// 	  $('#comtReportModal').data('commentNo', commentNo);
+// 	  $('#comtReportModal').data('commentWriter', commentWriter);
+	  
+// // 	  var hiddenComtNo = $('<input>').attr({
+// // 		  type : 'hidden',
+// // 		  value : comment
+// // 	  })
+// // 	  $('#comtReportModal').append(hiddenComtNo);
+// 	  // 나머지 모달 열기 및 필드 업데이트 코드 추가
+// 	  $('#comtReportModal').modal('show');
+// 	  // 나머지 필드 업데이트 코드도 추가
+// 	});
 
+	
+	
 
 	// 댓글 수정
 	const modifyComment = (obj, refPostNo, comtNo, newContent) => {
@@ -669,12 +745,12 @@
 	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 
 	    // 액션 메뉴 추가
-	    var actionMenuBtn = $("<span>").attr("class", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
-	    var actionMenu = $("<div>").addClass("action_menu");
+	    var actionMenuBtn = $("<span>").attr("class", "comt_action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	    var actionMenu = $("<div>").addClass("action_menu comt_action_menu");
 	    var actionMenuList = $("<ul>");
 
 	    // 프로필 보기 메뉴
-	    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기");
+	    var profileMenuItem = $("<li>").html("<a href='/user/profile?userId=" + comment.user.userId + "'><i class='bi bi-person-vcard'></i> 프로필 보기");
 
 	    actionMenuList.append(profileMenuItem);
 
@@ -709,7 +785,9 @@
 	    // 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var showReportLink = !isCurrentUser;
 	    if (showReportLink) {
-	        var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	    	var reportMenuItem = $("<li>").html(`<a href='#' onclick='createComtReportModal(${comment.commentNo}, ${comment.comtWriter});' data-bs-toggle='modal' data-bs-target='#comtReportModal' data-commentNo="${comment.comtNo}" data-commentWriter="${comment.comtWriter}"><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	        reportMenuItem.data("comtNo", comment.comtNo);
+	        reportMenuItem.data("comtWriter", comment.comtWriter);
 	        actionMenuList.append(reportMenuItem);
 	    }
 
@@ -726,9 +804,11 @@
 	    if (comment.pComtNo !== 0) {
 	        commentItem.addClass("has-parent-comment");
 	    }
-
+	    
 	    return commentItem;
+
 	}
+	
 	
 	function formatDate(date) {
 	    var d = new Date(date);
@@ -785,9 +865,18 @@
 	}
 	
 	// 게시물신고버튼 토글
-	$('#action_menu_btn').click(function () {
-        $('.action_menu').toggle();
+	$('#post_action_menu_btn').click(function () {
+        $('.post_action_menu').toggle();
       });
+	
+	$(document).on("click", ".comt_action_menu_btn", function () {
+		if($('.comt_action_menu').show()){
+			$('.comt_action_menu').hide();
+		}
+        $(this).parent().find('.comt_action_menu').toggle();
+      });
+
+
 
        var selectElement = document.getElementById("reportSelect");
        var textareaElement = document.getElementById("customReason");
@@ -798,6 +887,103 @@
            textareaElement.style.display = "none";
        }
      });
+       
+      function goBack() {
+   	   window.history.back(); // 뒤로가기
+   	 }
+      
+      
+   // 모달을 생성할 때 사용할 함수
+      function createComtReportModal(comtNo, comtWriter) {
+          var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">');
+          var modalDialog = $('<div class="modal-dialog">');
+          var modalContent = $('<div class="modal-content">');
+
+          // 모달 헤더
+          var modalHeader = $('<div class="modal-header">');
+          var modalTitle = $('<h1 class="modal-title fs-5" id="exampleModalLabel">').text("댓글 신고하기");
+          var closeButton = $('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">');
+
+          // 모달 바디
+          var modalBody = $('<div class="modal-body">');
+          var selectLabel = $('<label for="reportSelect">신고 사유:</label>');
+          var select = $('<select name="report" id="reportSelect">')
+              .append($('<option value="abusive">욕설사용</option>'))
+              .append($('<option value="advertising">광고글</option>'))
+              .append($('<option value="noSubject">주제와 맞지 않는 글</option>'))
+              .append($('<option value="violent">폭력적인 내용</option>'))
+              .append($('<option value="Discrimination">차별적인 내용</option>'))
+              .append($('<option value="pornography">음란물</option>'))
+              .append($('<option value="Personal">민감한 개인정보 노출</option>'))
+              .append($('<option value="etc">기타 (직접 작성)</option>'));
+          var customReasonTextArea = $('<textarea id="customReason" style="display:none" spellcheck="false"></textarea');
+          var smallNote = $('<small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>');
+
+          modalBody.append(selectLabel, select, customReasonTextArea, smallNote);
+
+          // 모달 푸터
+          var modalFooter = $('<div class="modal-footer">');
+          var sendButton = $('<button type="button" id="send-comt-report" class="btn send-report">').text("보내기");
+          var cancelButton = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">').text("취소");
+
+          modalHeader.append(modalTitle, closeButton);
+          modalFooter.append(sendButton, cancelButton);
+          modalContent.append(modalHeader, modalBody, modalFooter);
+          modalDialog.append(modalContent);
+          modal.append(modalDialog);
+
+          $('body').append(modal);
+
+          var myModal = new bootstrap.Modal(modal[0], {
+              backdrop: 'static',
+              keyboard: false
+          });
+
+          var commentNo, commentWriter;
+          sendButton.on('click', function() {
+              var commentNo = $('#comtReportModal').data('commentNo');
+              var commentWriter = $('#comtReportModal').data('commentWriter');
+              var jiqooReportContent = $("#reportSelect").val();
+              if (jiqooReportContent === "etc") {
+                  jiqooReportContent = $("#customReason").val();
+              }
+              $.ajax({
+                  url: "/jiqoo/report",
+                  data: {
+                      reportWriter: currentUserId,
+                      reportContent: jiqooReportContent,
+                      reportComtNo: commentNo,
+                      reportUserId: commentWriter,
+                      reportType: 'JC'
+                  },
+                  type: "get",
+                  success: function(data) {
+                      if (data == "jiqooComtReport") {
+                          $('#comtReportModal').modal('hide');
+                          alert("게시물 신고가 완료되었습니다.");
+                      }
+                  }
+              });
+          });
+
+          return function(comtNo, comtWriter) {
+              $('#reportSelect').val('abusive');
+              $('#customReason').val('');
+              commentNo = comtNo;
+              commentWriter = comtWriter;
+              myModal.show();
+              modal.data('commentNo', commentNo);
+              modal.data('commentWriter', commentWriter);
+          };
+      }
+
+      var openComtReportModal = createComtReportModal();
+
+      $('.report-comment-button').on('click', function() {
+          var commentNo = $(this).data('comment-no');
+          var commentWriter = $(this).data('comment-writer');
+          openComtReportModal(commentNo, commentWriter);
+      });
      </script>
 
 </body>

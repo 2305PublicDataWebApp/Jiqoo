@@ -76,7 +76,9 @@
 		<button id="btn-myList" class="btn-get-started scrollto" onclick="loadInitialJiqooMyList();">내꾸만 보기</button>
 		<button id="btn-allList" class="btn-get-started scrollto qoo" onclick="loadInitialJiqooAllList();">남꾸도 보기</button>
 	</div>
-	<a href="/jiqoo/mapList"><i class="bi bi-map"></i></a>
+	<div id="map-icon">
+		<a href="/jiqoo/mapList"><i class="bi bi-map"></i></a>
+	</div>
     <div id="container">
 	    <div id="list-container"  data-aos="fade-up">
 		</div>
