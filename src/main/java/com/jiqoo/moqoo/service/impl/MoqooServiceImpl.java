@@ -1,6 +1,7 @@
 package com.jiqoo.moqoo.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.Session;
 
@@ -14,6 +15,7 @@ import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooService;
 import com.jiqoo.moqoo.store.MoqooStore;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Service
@@ -142,6 +144,30 @@ public class MoqooServiceImpl implements MoqooService {
 	@Override
 	public int selectLikeOrNot(Like like) {
 		int result = moqooStore.selectLikeOrNot(sqlSession, like);
+		return result;
+	}
+
+	@Override
+	public List<Moqoo> selectMoqooSearchList(Map<String, Object> params) {
+		List<Moqoo> moqooSearchList = moqooStore.selectmoqooSearchList(sqlSession, params);
+		return moqooSearchList;
+	}
+
+	@Override
+	public List<Moqoo> loadInitialMoqooAllList() {
+		List<Moqoo> list = moqooStore.loadInitialMoqooAllList(sqlSession);
+		return list;
+	}
+
+	@Override
+	public List<Moqoo> loadMoreMoqooAllList(Map<String, Object> params) {
+		List<Moqoo> list = moqooStore.loadMoreMoqooAllList(sqlSession, params);
+		return list;
+	}
+
+	@Override
+	public int insertReport(Report report) {
+		int result = moqooStore.insertReport(sqlSession, report);
 		return result;
 	}
 }

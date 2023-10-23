@@ -183,9 +183,9 @@ p {
 /* 값을 보여주는 요소 스타일 */
 
 
-.location:hover {
-  background-color: #45a049; /* 마우스 호버 시 배경색 변경 */
-}
+/* .location:hover { */
+/*   background-color: #45a049; 마우스 호버 시 배경색 변경 */
+/* } */
 
 
 /* -----------------------------
@@ -608,7 +608,7 @@ p {
 
   .location {  /* w3w디자인 */
 	font-size: 28px;
-	width: 246px;
+/* 	width: 246px; */
 	font-weight: bold;
 	color: black;
 	text-align: center;

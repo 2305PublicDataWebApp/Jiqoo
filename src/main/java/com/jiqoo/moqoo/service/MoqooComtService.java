@@ -29,18 +29,18 @@ public interface MoqooComtService {
 	int deleteComt(Comment comt);
 
 	/**
-	 * 답글 등록
-	 * @param comt
-	 * @return
-	 */
-	int insertReComt(Comment comt);
-
-	/**
 	 * 댓글 수정
 	 * @param comment
 	 * @return
 	 */
 	int updateComment(Comment comment);
+
+	/**
+	 * 답글 등록
+	 * @param comt
+	 * @return
+	 */
+	int insertReComt(Comment comt);
 
 	/**
 	 * 초기 댓글 리스트
@@ -55,5 +55,19 @@ public interface MoqooComtService {
 	 * @return
 	 */
 	List<Comment> loadMoreComments(Map<String, Object> params);
+
+	/**
+	 * 답글 여부 확인
+	 * @param comt
+	 * @return
+	 */
+	int countChildComment(Comment comt);
+
+	/**
+	 * 삭제되었습니다로 변경
+	 * @param comt
+	 * @return
+	 */
+	int updateDelComment(Comment comt);
 
 }

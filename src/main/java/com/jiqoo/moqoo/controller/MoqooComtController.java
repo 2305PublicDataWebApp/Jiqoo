@@ -30,18 +30,12 @@ public class MoqooComtController {
 	// 댓글 작성
 	@ResponseBody
 	@PostMapping("/comt/insert")
-	public String insertComt(@RequestParam("comtContent") String comtContent
-			, @RequestParam("refMoqooNo") int refMoqooNo
-			, HttpSession session) {
+	public String insertComt(@ModelAttribute Comment comt, HttpSession session) {
 		String comtWriter = (String)session.getAttribute("userId");
-		Comment comt = new Comment();
-		comt.setRefPostNo(refMoqooNo);
-		comt.setComtContent(comtContent);
-		int result = 0;
-		if(comtWriter != null && !comtWriter.equals("")) {
-			comt.setComtWriter(comtWriter);
-			result = moqooComtService.insertComt(comt);
-		}
+//		if(comtWriter != null && !comtWriter.equals("")) {
+		comt.setComtWriter(comtWriter);
+//		}
+		int result = moqooComtService.insertComt(comt);
 		if(result > 0) {
 			return "success";
 		}
@@ -55,12 +49,21 @@ public class MoqooComtController {
 	@ResponseBody
 	@GetMapping("/moqoo/delComt")
 	public String deleteComt(@ModelAttribute Comment comt) {
-		int result = moqooComtService.deleteComt(comt);
-		if(result > 0) {
-			return "success";
-		}
-		else {
-			return "fail";
+		int countChildComt = moqooComtService.countChildComment(comt);
+		if(countChildComt > 0) {
+			int updateDelComment = moqooComtService.updateDelComment(comt);
+			if(updateDelComment > 0) {
+				return "success";
+			}else {
+				return "fail";
+			}
+		}else {
+		   int result = moqooComtService.deleteComt(comt);
+		   if(result > 0) {
+			   return "success";
+		   }else {
+			   return "fail";
+		   }
 		}
 	}
 	

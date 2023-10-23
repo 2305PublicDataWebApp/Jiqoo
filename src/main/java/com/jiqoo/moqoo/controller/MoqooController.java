@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.service.MoqooComtService;
 import com.jiqoo.moqoo.service.MoqooService;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Controller
@@ -187,6 +189,20 @@ public class MoqooController {
 	}
 	
 	@ResponseBody
+	@GetMapping(value =  "/moqoo/searchList", produces = "application/json;charset=UTF-8;")
+	public String showSearchList(@RequestParam("searchValue") String searchValue, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		Map<String, Object> params = new HashMap<>();
+		params.put("searchValue", searchValue);
+		params.put("userId", userId);
+
+		List<Moqoo> moqooSearchList = moqooService.selectMoqooSearchList(params);
+		Gson gson = new Gson();
+		return gson.toJson(moqooSearchList);
+	}
+	
+	
+	@ResponseBody
 	@PostMapping("/moqoo/post")
 	public String insertMoqooPost(
 			 @RequestParam("refMoqooNo") int refMoqooNo
@@ -206,6 +222,37 @@ public class MoqooController {
 			return "false";
 		}
 	}
+	
+//	@GetMapping("/moqoo/report")
+//	public String insertReport(@ModelAttribute Report report, @RequestParam("reportContent") String reportContent, @RequestParam("moqooNo") int moqooNo, Model model, HttpSession session) {
+//		try {
+//			String userId = (String) session.getAttribute("userId");
+//			if(userId != null && !userId.equals("")) {
+//				report.setReportWriter(userId);
+//				report.setReportContent(reportContent);
+//				report.setReportPostNo(moqooNo);
+//				int result = moqooService.insertReport(report);
+//				if(result > 0) {
+//					return "redirect:/moqoo/moqoo";
+//				}
+//				else {
+//					model.addAttribute("msg", "신고접수가 완료되지 않았습니다.");
+//					model.addAttribute("url", "/moqoo/moqoo");
+//					return "common/message";
+//				}
+//			}
+//			else {
+//				model.addAttribute("msg", "회원정보가 없습니다. 로그인 후 이용해 주셍.");
+//				model.addAttribute("url", "/moqoo/moqoo");
+//				return "common/message";
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			model.addAttribute("msg", e.getMessage());
+//			model.addAttribute("url", "/moqoo/moqoo");
+//			return "common/message";
+//		}
+//	}
 	
 	// 좋아요
 		@ResponseBody
@@ -259,7 +306,7 @@ public class MoqooController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "/moqoo/moqoo");
+			model.addAttribute("url", "/moqoo/detail?moqooNo=" + moqoo.getMoqooNo());
 			return "common/message";
 		}
 	}
@@ -310,6 +357,26 @@ public class MoqooController {
 		return gson.toJson(moqooAllList);
 	}
 	
+	// 초기 모꾸 전체 리스트
+	@ResponseBody
+	@GetMapping("/moqoo/loadInitialMoqooAllList")
+    public List<Moqoo> loadInitialMoqooAllList() {
+        List<Moqoo> InitialMoqooAllList = moqooService.loadInitialMoqooAllList();
+        return InitialMoqooAllList;
+    }
+	
+	// 모꾸 전체 리스트 스크롤 이벤트
+	@ResponseBody
+	@GetMapping("/moqoo/loadMoreMoqooAllList")
+	public ResponseEntity<List<Moqoo>> loadMoreMoqooAllList(@RequestParam("offset") int offset, @RequestParam("limit") int limit) {
+		Map<String, Object> params = new HashMap<>();
+        params.put("offset", offset);
+        params.put("limit", limit);
+		List<Moqoo> newList = moqooService.loadMoreMoqooAllList(params);
+        return ResponseEntity.ok(newList);
+	}
+	
+	// 참여신청자 승인하기
 	@PostMapping("/moqoo/attendY")
     @ResponseBody
     public String approveUser(
@@ -328,6 +395,8 @@ public class MoqooController {
         // 승인 처리 후 메시지 반환
     }
 
+	
+	// 참여신청자 거절하기
     @PostMapping("/moqoo/sorry")
     @ResponseBody
     public String rejectUser() {

@@ -65,4 +65,20 @@ public interface MoqooComtStore {
 	 */
 	List<Comment> loadMoreComments(SqlSession sqlSession, Map<String, Object> params);
 
+	/**
+	 * 답글 여부 확인
+	 * @param sqlSession
+	 * @param comt
+	 * @return
+	 */
+	int countChildComment(SqlSession sqlSession, Comment comt);
+
+	/**
+	 * 삭제되었습니다로 변경
+	 * @param sqlSession
+	 * @param comt
+	 * @return
+	 */
+	int updateDelComment(SqlSession sqlSession, Comment comt);
+
 }

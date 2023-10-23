@@ -64,4 +64,16 @@ public class MoqooComtServiceImpl implements MoqooComtService{
 		return comts;
 	}
 
+	@Override
+	public int countChildComment(Comment comt) {
+		int result = moqooComtStore.countChildComment(sqlSession, comt);
+		return result;
+	}
+
+	@Override
+	public int updateDelComment(Comment comt) {
+		int result = moqooComtStore.updateDelComment(sqlSession, comt);
+		return result;
+	}
+
 }

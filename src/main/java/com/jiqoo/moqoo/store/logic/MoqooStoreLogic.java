@@ -1,6 +1,7 @@
 package com.jiqoo.moqoo.store.logic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import com.jiqoo.common.domain.Like;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
 import com.jiqoo.moqoo.store.MoqooStore;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 @Repository
@@ -132,6 +134,31 @@ public class MoqooStoreLogic implements MoqooStore{
 	@Override
 	public int selectLikeOrNot(SqlSession sqlSession, Like like) {
 		int result = sqlSession.insert("MoqooMapper.selectLikeOrNot", like);
+		return result;
+	}
+
+	@Override
+	public List<Moqoo> selectmoqooSearchList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Moqoo> moqooSearchList = sqlSession.selectList("MoqooMapper.selectMoqooSearchList", params);
+		return moqooSearchList;
+	}
+
+	@Override
+	public List<Moqoo> loadInitialMoqooAllList(SqlSession sqlSession) {
+		List<Moqoo> list = sqlSession.selectList("MoqooMapper.loadInitialMoqooAllList");
+		return list;
+	}
+
+	@Override
+	public List<Moqoo> loadMoreMoqooAllList(SqlSession sqlSession, Map<String, Object> params) {
+		List<Moqoo> list = sqlSession.selectList("MoqooMapper.loadMoreMoqooAllList", params);
+		return list;
+	}
+	
+	// 게시글 신고하기
+	@Override
+	public int insertReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("MoqooMapper.insertReport", report);
 		return result;
 	}
 

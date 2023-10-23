@@ -1,6 +1,7 @@
 package com.jiqoo.moqoo.store;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -8,6 +9,7 @@ import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface MoqooStore {
@@ -170,4 +172,35 @@ public interface MoqooStore {
 	 */
 	int updateMoqooCount(SqlSession sqlSession, int moqooNo);
 
+	/**
+	 * 모꾸 검색리스트
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> selectmoqooSearchList(SqlSession sqlSession, Map<String, Object> params);
+
+	/** 
+	 * 모꾸 초기 전체 리스트
+	 * @param sqlSession
+	 * @return
+	 */
+	List<Moqoo> loadInitialMoqooAllList(SqlSession sqlSession);
+
+	/**
+	 * 모꾸 전체 리스트 무한스크롤
+	 * @param sqlSession
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> loadMoreMoqooAllList(SqlSession sqlSession, Map<String, Object> params);
+
+	
+	/**
+	 * 게시글 신고하기
+	 * @param sqlSession
+	 * @param report
+	 * @return
+	 */
+	int insertReport(SqlSession sqlSession, Report report);
 }

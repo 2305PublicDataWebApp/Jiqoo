@@ -56,5 +56,17 @@ public class MoqooComtStoreLogic implements MoqooComtStore{
 		return comts;
 	}
 
+	@Override
+	public int countChildComment(SqlSession sqlSession, Comment comt) {
+		int result = sqlSession.selectOne("MoqooComtMapper.countChildComment", comt);
+		return result;
+	}
+
+	@Override
+	public int updateDelComment(SqlSession sqlSession, Comment comt) {
+		int result = sqlSession.selectOne("MoqooComtMapper.updateDelComment", comt);
+		return result;
+	}
+
 
 }

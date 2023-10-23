@@ -12,7 +12,9 @@
 <title>지꾸 : No.1 지도 다이어리</title>
 
 <style>
-.wrap {
+.infoWindow {
+	border: 1px solid #00000042;
+    border-radius: 10px;
 	position: absolute;
 	left: 0;
 	bottom: 70px;
@@ -24,58 +26,69 @@
 	font-size: 12px;
 	font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
 	line-height: 1.5;
+	background: #e8ffdded; 
 }
 
-.wrap * {
+.infoWindow * {
 	padding: 0;
 	margin: 0;
 }
 
-.wrap .info {
-	width: 286px;
-	height: 120px;
-	border-radius: 5px;
-	border-bottom: 2px solid #ccc;
-	border-right: 1px solid #ccc;
-	overflow: hidden;
-	background: #fff;
-}
+.infoWindow .w3w { 
+	text-align: center;
+ 	padding: 5px 0;
+	border-bottom: 1px solid #ddd; 
+ 	font-size: 18px; 
+ 	font-weight: bold; 
+ } 
 
-.wrap .info:nth-child(1) {
-	border: 0;
-	box-shadow: 0px 1px 2px #888;
-}
-
-.info .title {
-	padding: 5px 0 0 10px;
-	height: 30px;
-	background: #eee;
-	border-bottom: 1px solid #ddd;
-	font-size: 18px;
-	font-weight: bold;
-}
-
-.info .close {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	color: #888;
-	width: 17px;
-	height: 17px;
-	background:
-		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
-}
-
-.info .close:hover {
-	cursor: pointer;
-}
-
-.info .body {
+.body {
+	margin : 0 7px;
 	position: relative;
 	overflow: hidden;
 }
 
-.info .desc {
+.moqooTitle{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+}
+
+.moqooContent{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    height: 23px;
+}
+.moqooContent > p{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+}
+
+.infoImg{
+	width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.moqooProfile{
+	font-size: 13px;
+ 	margin: 8px 0;
+}
+
+.detail-link{
+	position: absolute;
+    top: 60px;
+    right: 10px;
+    font-size: 13px;
+}
+
+.infoWindow .desc {
 	position: relative;
 	margin: 13px 0 0 90px;
 	height: 75px;
@@ -93,32 +106,6 @@
 	margin-top: -2px;
 }
 
-.info .img {
-	position: absolute;
-	top: 6px;
-	left: 5px;
-	width: 73px;
-	height: 71px;
-	border: 1px solid #ddd;
-	color: #888;
-	overflow: hidden;
-}
-
-.info:after {
-	content: '';
-	position: absolute;
-	margin-left: -12px;
-	left: 50%;
-	bottom: 0;
-	width: 22px;
-	height: 12px;
-	background:
-		url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')
-}
-
-.info .link {
-	color: #5085BB;
-}
 </style>
 
 
@@ -219,7 +206,7 @@
 		<!-- ======= Search Section ======= -->
 		<div class="search-container">
 			<form action="" method="" class="search-form">
-				<input type="text" placeholder="search" />
+				<input type="text" placeholder="search">
 				<button type="submit" id="search-btn">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
               			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
@@ -243,47 +230,47 @@
 		<!-- ======= List Section ======= -->
 		<div id="container" data-aos=fade-in>
 
-			<!-- 결과 목록 아이템 -->
-			<c:forEach var="moqooList" items="${moqooList }">
-				<c:url var="post_moqooUrl" value="/moqoo/detail">
-					<c:param name="moqooNo" value="${moqooList.moqooNo }"></c:param>
-				</c:url>
-				<div class="row result-item">
-					<div class="post-header">
-						<div class="list-location">${moqooList.moqooW3W }</div>
-						<div class="report-button">
-							<img id="dots" src="../resources/assets/img/dots.png" alt="" onclick="toggleReportDiv()">
-						</div>
-						<div id="report-div" style="display: none;">
-							<div id="report-text" onclick="reportUser()">신고하기</div>
-							<i class="bi bi-exclamation-circle"></i>
-						</div>
-					</div>
-					<div id="profile-img" class="col-sm-12">
-					  <c:if test="${moqooList.moqooThumPath eq null }">
-						<img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" class="profile-image">
-					  </c:if>
-					  <c:if test="${moqooList.moqooThumPath ne null }">
-						<img src="${moqooList.moqooThumPath }" alt="프로필 이미지" class="profile-image">
-					  </c:if>
-					</div>
-					<a href="${post_moqooUrl }" class="post-a">
-						<div class="col-md-10">
-							<div class="title">${moqooList.moqooTitle }</div>
-							<div class="content">${moqooList.moqooContent }</div>
-							<div class="row">
-								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickname }</div>
-								<div class="info col-lg-6 col-md-12"><fmt:formatDate pattern="yyyy-MM-dd" value="${moqooList.moqooDate }"/></div>
-								<div class="heart-container col-lg-3 col-md-12">
-									<img class="heart"
-										src="../resources/assets/img/heart(full).png" alt="">
-								</div>
-							</div>
-						</div>
-					</a>
-				</div>
-			</c:forEach>
-		</div>
+<!-- 			<!-- 결과 목록 아이템 -->
+<%-- 			<c:forEach var="moqooList" items="${moqooList }"> --%>
+<%-- 				<c:url var="post_moqooUrl" value="/moqoo/detail"> --%>
+<%-- 					<c:param name="moqooNo" value="${moqooList.moqooNo }"></c:param> --%>
+<%-- 				</c:url> --%>
+<!-- 				<div class="row result-item"> -->
+<!-- 					<div class="post-header"> -->
+<%-- 						<div class="list-location">${moqooList.moqooW3W }</div> --%>
+<!-- 						<div class="report-button"> -->
+<!-- 							<img id="dots" src="../resources/assets/img/dots.png" alt="" onclick="toggleReportDiv()"> -->
+<!-- 						</div> -->
+<!-- 						<div id="report-div" style="display: none;"> -->
+<!-- 							<div id="report-text" onclick="reportUser()">신고하기</div> -->
+<!-- 							<i class="bi bi-exclamation-circle"></i> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 					<div id="profile-img" class="col-sm-12"> -->
+<%-- 					  <c:if test="${moqooList.moqooThumPath eq null }"> --%>
+<!-- 						<img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" class="profile-image"> -->
+<%-- 					  </c:if> --%>
+<%-- 					  <c:if test="${moqooList.moqooThumPath ne null }"> --%>
+<%-- 						<img src="${moqooList.moqooThumPath }" alt="프로필 이미지" class="profile-image"> --%>
+<%-- 					  </c:if> --%>
+<!-- 					</div> -->
+<%-- 					<a href="${post_moqooUrl }" class="post-a"> --%>
+<!-- 						<div class="col-md-10"> -->
+<%-- 							<div class="title">${moqooList.moqooTitle }</div> --%>
+<%-- 							<div class="content">${moqooList.moqooContent }</div> --%>
+<!-- 							<div class="row"> -->
+<%-- 								<div class="author col-lg-3 col-md-12">${moqooList.user.userNickname }</div> --%>
+<%-- 								<div class="info col-lg-6 col-md-12"><fmt:formatDate pattern="yyyy-MM-dd" value="${moqooList.moqooDate }"/></div> --%>
+<!-- 								<div class="heart-container col-lg-3 col-md-12"> -->
+<!-- 									<img class="heart" -->
+<!-- 										src="../resources/assets/img/heart(full).png" alt=""> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</a> -->
+<!-- 				</div> -->
+<%-- 			</c:forEach> --%>
+<!-- 		</div> -->
 
 
 		<!-- ======= Modal ======= -->
@@ -293,12 +280,11 @@
 					style="background-color: #6DBE45; color: #fff;">
 					<div class="modal-header">
 						<h5 class="modal-title">게시물 입력</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<div class="modal-body">
-						<!-- 게시물 입력 폼 -->
-						<form action="/moqoo/insert" method="post" enctype="multipart/form-data">
+					<form action="/moqoo/insert" method="post" enctype="multipart/form-data">
+						<div class="modal-body">
+							<!-- 게시물 입력 폼 -->
 							<div class="mb-3 col-lg-5 mx-auto location-container">
 								<input type="text" class="form-control" id="location"
 									name="moqooW3W" value="" readonly>
@@ -309,8 +295,7 @@
 									<input type="date" class="form-control" id="date" name="moqooDay" required>
 								</div>
 								<div class="col-md-2 c-btn">
-									<span>카테고리</span> <i class="bi bi-caret-down-fill"
-										onclick="toggleCC()"></i>
+									<span>카테고리</span><i class="bi bi-caret-down-fill" onclick="toggleCC()"></i>
 								</div>
 								<div class="category-container" style="display: none;">
 									<div class="category-list">
@@ -318,11 +303,9 @@
 											<div class="form-check category">
 												<input class="form-check-input" type="radio" name="category"
 													id="${categoryList.cName }" value="${categoryList.cName }" required> 
-													<label class="form-check-label"
-													for="${categoryList.cName }"> <img class="tag-img"
-													src="${categoryList.cImgPath }"
-													alt="${categoryList.cName }">
-												</label>
+													<label class="form-check-label" for="${categoryList.cName }">
+														<img class="tag-img" src="${categoryList.cImgPath }" alt="${categoryList.cName }">
+													</label>
 											</div>
 										</c:forEach>
 									</div>
@@ -336,9 +319,8 @@
 							</div>
 							<div class="mb-3" style="display: flex;">
 								<div>
-									<input type="file" class="custom-file-input" id="thum"
-										name="uploadFile" placeholder="썸네일" required> <label
-										for="thum" class="custom-button">파일 선택</label>
+									<label for="thum" class="custom-button">파일 선택</label>
+									<input type="file" class="custom-file-input" id="thum" name="uploadFile" placeholder="썸네일" required> 
 								</div>
 								<!-- 파일 정보 표시 영역 -->
 								<div id="fileInfo"></div>
@@ -347,15 +329,14 @@
 								<textarea id="summernote" name="moqooContent" required></textarea>
 							</div>
 							<div class="mb-3">
-								<input type="number" min="2" max="8" class="form-control"
-									id="people" name="moqooJoin" placeholder="참여인원" required>
+								<input type="number" min="2" max="8" class="form-control" id="people" name="moqooJoin" placeholder="참여인원" required>
 							</div>
-							<div class="modal-footer">
-								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
-								<button type="submit" class="btn insert">등록</button>
-							</div>
-						</form>
-					</div>
+						</div>
+						<div class="modal-footer">
+							<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+							<button type="submit" class="btn insert">등록</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -417,10 +398,10 @@
 	<!-- Template Main JS File -->
 	<script src="../resources/assets/js/main.js"></script>
 
-<script>
-<!-- 썸머노트 -->
-$(document).ready(function() {
-    //여기 아래 부분
+	<script>
+	<!-- 썸머노트 -->
+	$(document).ready(function() {
+	    //여기 아래 부분
         $('#summernote').summernote({
             height: 300,                 // 에디터 높이
             minHeight: null,             // 최소 높이
@@ -439,40 +420,40 @@ $(document).ready(function() {
                     ['height', ['height']],
                     ['insert',['picture','link','video']],
                     ['view', ['fullscreen', 'help']]
-                ],
-                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
-                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-                callbacks:{ 
-                    onImageUpload : function(files){ 
-                       muploadSummernoteImageFile(files[0],this); 
-                   } 
-                } 
+                    ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+            fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+            callbacks:{ 
+                onImageUpload : function(files){ 
+                   muploadSummernoteImageFile(files[0],this); 
+               } 
+            } 
         });
         function muploadSummernoteImageFile(file,editor){ 
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
-        data:data, 
-        type:"POST", 
-        url:"/muploadSummernoteImageFile", 
-        /* dataType:"JSON", */ 
-        enctype:'multipart/form-data',
-        contentType:false, 
-        processData:false
+		        data:data, 
+		        type:"POST", 
+		        url:"/muploadSummernoteImageFile", 
+		        /* dataType:"JSON", */ 
+		        enctype:'multipart/form-data',
+		        contentType:false, 
+		        processData:false
         
-    }).done(function(data) {
-    	console.log(data)
-    	var imgNode = $("<img>");
-    	imgNode.attr("src", data);
-    	$(".note-editable").append(imgNode);
-    }).fail(function(a,b,c){
-    	console.log(a);
-    	console.log(b);
-    	console.log(c);
-    });
+    		}).done(function(data) {
+    			console.log(data)
+    			var imgNode = $("<img>");
+    			imgNode.attr("src", data);
+    			$(".note-editable").append(imgNode);
+   			}).fail(function(a,b,c){
+		    	console.log(a);
+		    	console.log(b);
+		    	console.log(c);
+   			});
         }
     });
-  </script>
+	</script>
 
 	<!-- 카카오맵 -->
 	<script type="text/javascript"
@@ -489,160 +470,451 @@ $(document).ready(function() {
     
     
     function showAllMap() {
-  	  // 커스텀 오버레이 배열을 선언합니다
-  	  var customOverlays = [];
-		
-  	  $.ajax({
-  	    url: "/moqoo/showAllMap",
-  	    type: "GET",
-  	    dataType: 'json',
-  	    success: function (data) {
-  	      for (var i = 0; i < data.length; i++) {
-  	        // 마커 이미지의 이미지 크기 입니다
-  	        var imageSize = new kakao.maps.Size(70, 70);
+    	  // 커스텀 오버레이 배열을 선언합니다
+    	  var customOverlays = [];
+  		
+    	  $.ajax({
+    	    url: "/moqoo/showAllMap",
+    	    type: "GET",
+    	    dataType: 'json',
+    	    success: function (data) {
+    	      for (var i = 0; i < data.length; i++) {
+    	        // 마커 이미지의 이미지 크기 입니다
+    	        var imageSize = new kakao.maps.Size(70, 70);
 
-  	        // 마커 이미지를 생성합니다    
-  	        var markerImage = new kakao.maps.MarkerImage(data[i].ctgr.cImgPath, imageSize);
+    	        // 마커 이미지를 생성합니다    
+    	        var markerImage = new kakao.maps.MarkerImage(data[i].ctgr.cImgPath, imageSize);
 
-  	        // 마커를 생성합니다
-  	        var marker = new kakao.maps.Marker({
-  	          map: map, // 마커를 표시할 지도
-  	          position: new kakao.maps.LatLng(data[i].moqooLat, data[i].moqooLng),
-  	          image: markerImage,
-  	          clickable: true
-  	        });
+    	        // 마커를 생성합니다
+    	        var marker = new kakao.maps.Marker({
+    	          map: map, // 마커를 표시할 지도
+    	          position: new kakao.maps.LatLng(data[i].moqooLat, data[i].moqooLng),
+    	          image: markerImage,
+    	          clickable: true
+    	        });
 
-  	        // 커스텀 오버레이에 표시될 내용을 생성합니다
-  	        var overlayContent = '<div class="wrap">' + 
-            '    <div class="info">' + 
-            '        <div class="title">' + data[i].moqooW3W +
-            '	 	 </div>' + 
-            '        <div class="body">' + data[i].moqooContent +
-//             '            <div class="img">' +
-//             '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">' +
-//             '           </div>' + 
-            '            <div class="desc">' + 
-//             '                <div class="ellipsis">제주특별자치도 제주시 첨단로 242</div>' + 
-//             '                <div class="jibun ellipsis">(우) 63309 (지번) 영평동 2181</div>' + 
-            '                <div><a href="/moqoo/detail?moqooNo='+data[i].moqooNo +'" class="link">상세보기</a></div>' + 
-            '            </div>' + 
-            '        </div>' + 
-            '    </div>' +    
-            '</div>';
-  	        	
-  	        // 커스텀 오버레이를 생성합니다
-  	        var customOverlay = new kakao.maps.CustomOverlay({
-  	          content: overlayContent,
-  	          position: marker.getPosition(),
-  	          clickable: true
-  	        });
+    	        // 커스텀 오버레이에 표시될 내용을 생성합니다
+    	        var overlayContent = '<div class="infoWindow">' + 
+              '        <div class="w3w">' + data[i].moqooW3W + '</div>' + 
+              '        <div class="body">' + 
+              '			   <div class ="moqooTitle">' + data[i].moqooTitle + '</div>' +
+              '			   <div class ="moqooContent">' + data[i].moqooContent + '</div>' +
+              '			   <div class ="moqooProfile">' + '<img class="infoImg" src="' + data[i].user.userPhotoPath + '" >' + data[i].user.userNickname + '</div>' +
+              '            <div class="detail-link"><a href="/moqoo/detail?moqooNo='+data[i].moqooNo +'" class="link">상세보기</a></div>' + 
+              '        </div>' + 
+              '</div>';
+    	        	
+    	        // 커스텀 오버레이를 생성합니다
+    	        var customOverlay = new kakao.maps.CustomOverlay({
+    	          content: overlayContent,
+    	          position: marker.getPosition(),
+    	          clickable: true
+    	        });
 
-  	        // 커스텀 오버레이를 배열에 추가합니다
-  	        customOverlays.push(customOverlay);
-  	   		
-  	        // 마커에 클릭 이벤트를 등록합니다
-  	        (function (customOverlay) {
-  	          kakao.maps.event.addListener(marker, 'click', function () {
-  	        	// 클릭된 마커의 커스텀 오버레이만 엽니다
-  	            if (customOverlay.getMap()) {
-  	                customOverlay.setMap(null);
-  	            } else {
-  	        	  
-	  	        	// 모든 커스텀 오버레이를 닫습니다
-	  	            for (var j = 0; j < customOverlays.length; j++) {
-	  	              customOverlays[j].setMap(null);
-	  	            }	
-	  	            // 클릭된 마커의 커스텀 오버레이만 엽니다
-	  	            customOverlay.setMap(map);
-  	            }
-  	          });
-  	        })(customOverlay);
-  		    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
-  	        function closeOverlay(clickedOverlay) {
-  	          var customOverlay = customOverlays.find(function(overlay) {
-  	              return overlay.getContent() === clickedOverlay.parentElement;
-  	          });
+    	        // 커스텀 오버레이를 배열에 추가합니다
+    	        customOverlays.push(customOverlay);
+    	   		
+    	        // 마커에 클릭 이벤트를 등록합니다
+    	        (function (customOverlay) {
+    	          kakao.maps.event.addListener(marker, 'click', function () {
+    	        	// 클릭된 마커의 커스텀 오버레이만 엽니다
+    	            if (customOverlay.getMap()) {
+    	                customOverlay.setMap(null);
+    	            } else {
+    	        	  
+  	  	        	// 모든 커스텀 오버레이를 닫습니다
+  	  	            for (var j = 0; j < customOverlays.length; j++) {
+  	  	              customOverlays[j].setMap(null);
+  	  	            }	
+  	  	            // 클릭된 마커의 커스텀 오버레이만 엽니다
+  	  	            customOverlay.setMap(map);
+    	            }
+    	          });
+    	        })(customOverlay);
+    		    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+    	        function closeOverlay(clickedOverlay) {
+    	          var customOverlay = customOverlays.find(function(overlay) {
+    	              return overlay.getContent() === clickedOverlay.parentElement;
+    	          });
 
-  	          if (customOverlay) {
-  	              customOverlay.setMap(null);
-  	          }
-  	        }
-  	      }
-	    }
-	  });
-    }
-   //btn-allMap 버튼 클릭 이벤트 처리
-   $("#btn-map").click(function() {
-       showAllMap(); // showAllMap 함수 호출
-   });
+    	          if (customOverlay) {
+    	              customOverlay.setMap(null);
+    	          }
+    	        }
+    	      }
+  	    }
+  	  });
+      }
+    
+    
 	
+//      //btn-allMap 버튼 클릭 이벤트 처리
+//      $("#btn-map").click(function() {
+//          showAllMap(); // showAllMap 함수 호출
+//      });
+     
   </script>
+  
+  
+	<script>
+	// 버튼 클릭 시 div 숨기기
+	const mapDiv = document.querySelector('#map');
+	const container = document.querySelector('#container');
+	const btnListDiv = document.querySelector('#btn-list');
+	const btnMapDiv = document.querySelector('#btn-map');
+	const btnModal = document.querySelector('.insert-jiqoo-btn');
+
+	btnListDiv.addEventListener('click', () => {
+		container.style.display = 'block';
+		mapDiv.style.display = 'none';
+    btnModal.style.display='none';
+	});
+
+	btnMapDiv.addEventListener('click', () => {
+	  mapDiv.style.display = 'block';
+	  container.style.display = 'none';
+	  btnModal.style.display='block';
+	  showAllMap();
+	});
+	
+	
+  	var currentOffsetList = 0; // 현재 offset 값 for List
+	var currentOffsetSearch = 0; // 현재 offset 값 for search
+	var loadingList = false; // 중복 로드 방지용 플래그 for List
+	var loadingSearch = false; // 중복 로드 방지용 플래그 for search
+	var loadingInProgress = false;
+  	var searchValue = $("#search-input").val();
+
+	var btnList = $("#btn-list");
+	var btnMap = $("#btn-map");
+	
+	$("#search-btn").on('click', function() {
+		loadInitialMoqooSearchList();
+	})
+  
+	//초기 모꾸 전체 리스트 로드하는 함수
+	function loadInitialMoqooAllList() {
+		
+		loadingSearch = false;
+		currentOffsetList = 0;
+		
+		var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+		
+		// 버튼 클릭시 색상 변경
+		if(btnMap.hasClass("qoo")) {
+      	 // "qoo" 클래스를 삭제합니다
+		    btnMap.removeClass("qoo");
+		    // "qoo" 클래스를 추가합니다
+		    btnList.addClass("qoo");
+		}
+	    
+	    $.ajax({
+	        url: "/moqoo/loadInitialMoqooAllList",
+	        type: "GET",
+	        success: function (result) {
+			    
+				// 로딩 메시지를 제거
+	            loadingMessage.remove();
+	            if (result.length > 0) {
+	                var listContainer = $("#container");
+	                
+	                for (var i = 0; i < result.length; i++) {
+	                    var moqooAllList = result[i];
+	                    var listItem = createResultItem(moqooAllList);
+	                    listContainer.append(listItem);
+	                }
+	                
+	             	// 현재 offset 값을 업데이트
+	                currentOffsetList += 10;
+	             	loadingList = true;
+	            }
+	        },
+	        error: function () {
+	            alert("모꾸를 불러오는 중 오류가 발생했습니다.");
+	        }
+	    });
+	}
+
+	// 모꾸 전체 리스트 스크롤 이벤트 핸들러 
+	$(window).scroll(function () {
+		if (!loadingInProgress && $(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+      		// 스크롤이 아래로 내려갈 때 댓글 로드 시작
+      		if (loadingList && !loadingSearch) {
+      			loadingInProgress = true;
+          		// 서버로 데이터를 요청합니다.
+				$.ajax({
+				    url: "/moqoo/loadMoreMoqooAllList", // 서버로 요청 보낼 URL
+				    type: "get", // GET 요청
+				    data: {
+				        offset: currentOffsetList, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+				        limit: 10 // 페이지당 표시할 댓글 수
+				    },
+				    success: function (result) {
+				        // 서버에서 성공적으로 데이터를 받아온 경우
+				        // data에는 서버에서 반환한 데이터가 들어 있습니다.
+					    if (result.length > 0) {
+					        var listContainer = $("#container");
+					        
+					        for (var i = 0; i < result.length; i++) {
+					            var moqooAllList = result[i];
+					            var listItem = createResultItem(moqooAllList);
+					            listContainer.append(listItem);
+					        }
+					        
+					     	// 현재 offset 값을 업데이트
+					        currentOffsetList += 10;
+				    	}else if(result.length < 10) {
+				    		loadingList = false;	
+				    	}else {
+				    		loadingList = false;	
+				    	}
+				        // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+				        alert("전체지롱" + loadingList);
+				        loadingInProgress = false;
+					},
+				    error: function () {
+				        // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+				        const errorContainer = $("#error-container");
+				        errorContainer.text("모꾸 리스트를 불러오는 중 오류가 발생했습니다.");
+				        // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+				        loadingList = false;
+				    }
+				});
+			}
+      		
+      		// 스크롤이 아래로 내려갈 때 댓글 로드 시작
+      		if (!loadingList && loadingSearch) {
+	        	searchValue = $("#search-input").val();
+	        	loadingInProgress = true;
+	        	console.log(searchValue);
+	            // 서버로 데이터를 요청합니다.
+	            $.ajax({
+	                url: "/moqoo/loadMoreMoqooSearchList", // 서버로 요청 보낼 URL
+	                type: "get", // GET 요청
+	                data: {
+			        	searchValue: searchValue,
+	                    offset: currentOffsetSearch, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+	                    limit: 10 // 페이지당 표시할 댓글 수
+	                },
+	                success: function (result) {
+	                    // 서버에서 성공적으로 데이터를 받아온 경우
+	                    // data에는 서버에서 반환한 데이터가 들어 있습니다.
+			            if (result.length > 0) {
+			                var listContainer = $("#container");
+			                
+			                for (var i = 0; i < result.length; i++) {
+			                    var moqooSearchList = result[i];
+			                    var listItem = createResultItem(moqooSearchList);
+			                    listContainer.append(listItem);
+			                }
+			                
+			             	// 현재 offset 값을 업데이트
+			                currentOffsetSearch += 10;
+			             	
+		            	}else if(result.length < 10){
+		            		
+		                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+		                    loadingSearch = false;
+		            		
+		            	}else {
+		            		 // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+		                    loadingSearch = false;
+		            	}
+			            alert("서치지롱" + loadingList + ", " + loadingSearch);
+		                loadingInProgress = false;
+	                },
+	                error: function () {
+	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시
+	                    const errorContainer = $("#error-container");
+	                    errorContainer.text("검색결과를 불러오는 중 오류가 발생했습니다.");
+	                    // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
+	                    loadingSearch = false;
+	                }
+           		});
+    		}
+       	}
+	});
+	
+	$(document).ready(function () {
+		loadInitialMoqooAllList();
+	});
+	
+	
+	// 초기 모꾸 검색 리스트 로드하는 함수
+	function loadInitialMoqooSearchList() {
+	    // 검색어를 가져옴
+	    var searchValue = $("#search-input").val();
+	    
+		if(!btnList.hasClass("qoo")){
+			
+		    btnList.addClass("qoo");
+		    btnMap.removeClass("qoo");
+		}
+		
+		currentOffsetSearch = 0;
+		loadingList = false;
+		console.log(searchValue);
+		
+		var loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
+//     	 // "qoo" 클래스를 삭제합니다
+//		    btnMyList.classList.remove("qoo");
+	    
+//		    // "qoo" 클래스를 추가합니다
+//		    btnAllList.classList.add("qoo");
+	    $.ajax({
+	        url: "/moqoo/loadInitialMoqooSearchList",
+	        type: "GET",
+	        data: {
+	        	searchValue: searchValue,
+                offset: currentOffsetSearch, // 현재 페이지에서 마지막으로 로드한 댓글의 인덱스
+                limit: 10 // 페이지당 표시할 댓글 수
+            },
+	        success: function (result) {
+			    
+				// 로딩 메시지를 제거
+	            loadingMessage.remove();
+                var listContainer = $("#container");
+	            if (result.length > 0) {
+		            listContainer.empty();
+	                
+	                for (var i = 0; i < result.length; i++) {
+	                    var moqooSearchList = result[i];
+	                    var listItem = createResultItem(moqooSearchList);
+	                    listContainer.append(listItem);
+	                }
+	                
+	             	// 현재 offset 값을 업데이트
+	                currentOffsetSearch += 10;
+	             	loadingSearch = true;
+	            } else{
+	                // result가 비어있는 경우 표시할 내용
+	                listContainer.empty();
+	                
+	                listContainer.html(`<div id="empty-container">
+		                    <img id="logo-img" src="../resources/assets/img/moqooLogo.png">
+		                    <span id="empty-text"><br>
+		                    검색결과가 없습니다.</span></div>`);
+	            }
+	        },
+	        error: function () {
+	            alert("검색결과를 불러오는 중 오류가 발생했습니다.");
+	        }
+	    });
+	}
+	
+	
+	function createResultItem(moqooList) {
+	    var listItem = $('<div class="row result-item">');
+	    var postLink = $('<a>').attr('href', '/moqoo/detail?moqooNo=' + moqooList.moqooNo);
+	    
+	    var postHeader = $('<div class="post-header">');
+	    var category = $('<div class="category">');
+	    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', moqooList.ctgr.cImgPath);
+	    var location = $('<div class="location"><span class="location-text">' + moqooList.moqooW3W + '</span></div');
+	    
+	    var profileImg = $('<div id="profile-img" class="col-sm-12">');
+	    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', moqooList.user.userPhotoPath);
+	    
+	    var colMd10 = $('<div class="col-md-10">');
+	    var title = $('<div class="title">' + moqooList.moqooTitle + '</div>');
+	    var content = $('<div class="content">' + moqooList.moqooContent + '</div>');
+	    var author = $('<div class="author col-md-12">' + moqooList.user.userNickname + '</div>');
+	    var info = $('<div class="info col-lg-6 col-sm-12">' + formatDate(moqooList.moqooDate) + '</div>');
+	    
+	    var heartContainer = $('<div class="heart-container">');
+	    var heartImage = $('<img class="heart" alt="" src="../resources/assets/img/heart(full).png">');
+	    
+	    category.append(categoryImg);
+	    postHeader.append(category, location);
+	    profileImg.append(profileImage);
+	    colMd10.append(title, content, author, info, heartContainer);
+	    heartContainer.append(heartImage);
+	    
+	    postLink.append(postHeader, profileImg, colMd10);
+	    listItem.append(postLink);
+	    
+	    return listItem;
+	}
+	
+	
+	function formatDate(date) {
+	    var d = new Date(date);
+	    var year = d.getFullYear().toString().slice(-2);
+	    var month = ('0' + (d.getMonth() + 1)).slice(-2);
+	    var day = ('0' + d.getDate()).slice(-2);
+	    var hours = ('0' + d.getHours()).slice(-2);
+	    var minutes = ('0' + d.getMinutes()).slice(-2);
+	    var formattedDate = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes;
+	    return formattedDate;
+	}
+	
+	</script>
 
 	<script>
     // 버튼 클릭 시 팝업 창 열기
     document.getElementById("open-map-btn").onclick = function() {
-      // 팝업 창을 열기 위한 윈도우.open 함수 사용
-      window.open("popup_map", "Popup", "width=1200,height=800,resizable=no");
+		// 팝업 창을 열기 위한 윈도우.open 함수 사용
+		window.open("popupMap", "Popup", "width=1200,height=800,resizable=no");
     };
-  </script>
+	</script>
 
-<script>
-   function toggleCC() {
-     const categoryContainer = document.querySelector(".category-container");
-     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
-   }
+	<script>
+	function toggleCC() {
+		const categoryContainer = document.querySelector(".category-container");
+		categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
+	}
 
-  // JavaScript 코드를 추가합니다.
-  const radioButtons = document.querySelectorAll('.form-check-input');
-  const imageLabels = document.querySelectorAll('.form-check-label');
+	// JavaScript 코드를 추가합니다.
+	const radioButtons = document.querySelectorAll('.form-check-input');
+	const imageLabels = document.querySelectorAll('.form-check-label');
 
-  imageLabels.forEach((label, index) => {
-      label.addEventListener('click', () => {
-          radioButtons[index].checked = true;
-      });
-  });
+	imageLabels.forEach((label, index) => {
+	    label.addEventListener('click', () => {
+	        radioButtons[index].checked = true;
+	    });
+	});
 
-  // 버튼 클릭 시 div 숨기기
-  const mapDiv = document.querySelector('#map');
-  const container = document.querySelector('#container');
-  const btnList = document.querySelector('#btn-list');
-  const btnMap = document.querySelector('#btn-map');
-  const btnModal = document.querySelector('.insert-jiqoo-btn');
+// 	// 버튼 클릭 시 div 숨기기
+// 	const mapDiv = document.querySelector('#map');
+// 	const container = document.querySelector('#container');
+// 	const btnList1 = document.querySelector('#btn-list');
+// 	const btnMap = document.querySelector('#btn-map');
+// 	const btnModal = document.querySelector('.insert-jiqoo-btn');
 
-  btnList.addEventListener('click', () => {
-    container.style.display = 'block';
-    mapDiv.style.display = 'none';
+// 	btnList1.addEventListener('click', () => {
+// 		container.style.display = 'block';
+// 		mapDiv.style.display = 'none';
 //     btnModal.style.display='none';
-  });
+// 	});
 
-  btnMap.addEventListener('click', () => {
-    mapDiv.style.display = 'block';
-    container.style.display = 'none';
-    btnModal.style.display='block';
-    showAllMap();
-  });
+// 	btnMap.addEventListener('click', () => {
+// 	  mapDiv.style.display = 'block';
+// 	  container.style.display = 'none';
+// 	  btnModal.style.display='block';
+// 	  showAllMap();
+// 	});
 
-  // JavaScript로 버튼 클릭 이벤트 처리
-  // 이전에 클릭된 버튼을 추적하기 위한 변수
-  let previousButton = null;
+	// JavaScript로 버튼 클릭 이벤트 처리
+	// 이전에 클릭된 버튼을 추적하기 위한 변수
+	let previousButton = null;
 
-  // 버튼 클릭 이벤트 처리
-  const buttons = document.querySelectorAll(".btn-get-started");
+	// 버튼 클릭 이벤트 처리
+	const buttons = document.querySelectorAll(".btn-get-started");
 
-  buttons.forEach(button => {
-      button.addEventListener("click", function() {
-          // 이전에 클릭된 버튼이 있으면 스타일 초기화
-          if (previousButton !== null && previousButton !== this) {
-              previousButton.classList.remove("clicked");
-          }
-
-          // 클릭된 버튼에 clicked 클래스 토글
-          this.classList.toggle("clicked");
-
-          // 이전에 클릭된 버튼 업데이트
-          previousButton = this;
-      });
-  });
+	buttons.forEach(button => {
+	    button.addEventListener("click", function() {
+	        // 이전에 클릭된 버튼이 있으면 스타일 초기화
+	        if (previousButton !== null && previousButton !== this) {
+	            previousButton.classList.remove("clicked");
+	        }
+	
+	        // 클릭된 버튼에 clicked 클래스 토글
+	        this.classList.toggle("clicked");
+	
+	        // 이전에 클릭된 버튼 업데이트
+	        previousButton = this;
+	    });
+	});
  
 	    
 // 	  // ■■■■■■■■■■■■ input date에서 오늘 기준으로 이전날짜는 선택할 수 없게 하는 방법 ■■■■■■■■■■■■■■■■■
@@ -659,22 +931,22 @@ $(document).ready(function() {
 // 	  document.getElementById('minDate').min = getTodayDate();   // 아 왜 안돼;;
 	
 	
-	  // ■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
-	  // 파일 선택 이벤트 리스너 추가
-	  document.getElementById('thum').addEventListener('change', function () {
-	    // 선택된 파일 가져오기
-	    const selectedFile = this.files[0];
+	// ■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
+	// 파일 선택 이벤트 리스너 추가
+	document.getElementById('thum').addEventListener('change', function () {
+	  // 선택된 파일 가져오기
+	  const selectedFile = this.files[0];
 	
-	    // 파일 정보 표시
-	    if (selectedFile) {
-	        document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
-	    } else {
-	        document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
-	    }
-	  });
+	  // 파일 정보 표시
+	  if (selectedFile) {
+	      document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
+	  } else {
+	      document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
+	  }
+	});
 
   
-</script>
+	</script>
 
 
 

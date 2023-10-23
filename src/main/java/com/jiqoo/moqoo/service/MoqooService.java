@@ -1,11 +1,14 @@
 package com.jiqoo.moqoo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Like;
+import com.jiqoo.jiqoo.domain.Jiqoo;
 import com.jiqoo.moqoo.domain.Moqoo;
 import com.jiqoo.moqoo.domain.MoqooUser;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 
 public interface MoqooService {
@@ -148,4 +151,32 @@ public interface MoqooService {
 	 */
 	int updateMoqooCount(int moqooNo);
 
+	/**
+	 * 모꾸 검색리스트
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> selectMoqooSearchList(Map<String, Object> params);
+
+
+	/**
+	 * 모꾸 초기 전체 리스트 조회
+	 * @return
+	 */
+	List<Moqoo> loadInitialMoqooAllList();
+
+	/**
+	 * 모꾸 전체리스트 무한 스크롤
+	 * @param params
+	 * @return
+	 */
+	List<Moqoo> loadMoreMoqooAllList(Map<String, Object> params);
+
+	
+	/**
+	 * 게시글 신고하기
+	 * @param report
+	 * @return
+	 */
+	int insertReport(Report report);
 }
