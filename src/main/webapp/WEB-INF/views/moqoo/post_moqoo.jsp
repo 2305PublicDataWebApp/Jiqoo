@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" 		prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" 		prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -201,10 +202,17 @@
 		  </c:if>
 	    </div>
 	    <div id="participate">
-	    <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
-	      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
-	    </c:if>  
-	      <button class="btn post-btn" id="participate-btn">참여하기</button>
+<!-- 		    <div> -->
+			    <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
+			      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
+			    </c:if>
+		    
+<!-- 		    </div> -->
+<!-- 		    <div> -->
+	<%-- 	    <c:if test="${moqoo.moqooWriter ne sessionScope.userId }"> --%>
+		      <button class="btn post-btn" id="participate-btn">참여하기</button>
+	<%-- 	    </c:if>   --%>
+<!-- 		    </div> -->
 	    </div>
 	  
 	  <!-- 참여현황 모달 -->
@@ -217,6 +225,7 @@
               </div>
               <div class="modal-body">
                 <table>
+                <c:if test="${fn:length(moqooList) > 0 }">
               	  <c:forEach var="moqooUserList" items="${moqooList }">
               	  	<tr>
               	  	<c:if test="${moqooUserList.user.userPhotoPath eq null }">
@@ -234,11 +243,23 @@
    				      	<input type="hidden" value="${moqooUserList.refMoqooNo }">
    				      	<c:if test="${moqooUserList.attendStatus eq 'N' }">
 	   				        <button id="ok" class="table-btn">승인</button>
-	   				        <button id="sorry" class="table-btn" onclick="sorry();">거절</button>
+	   				        <button id="sorry" class="table-btn">거절</button>
+   				        </c:if>
+   				        <c:if test="${moqooUserList.attendStatus eq 'Y' }">
+	   				        <span>승인 완료</span>
+   				        </c:if>
+   				        <c:if test="${moqooUserList.attendStatus eq 'X' }">
+	   				        <span>승인 거절</span>
    				        </c:if>
    				      </td>
 	       		    </tr>
 	              </c:forEach>
+	            </c:if>
+	            <c:if test="${fn:length(moqooList) == 0 }">
+	            	<tr>
+	            		<td colspan="5">참여한 사람이 없습니다.</td>
+	            	</tr>
+	            </c:if>
                 </table>
               </div>
               <div class="modal-footer">
@@ -830,13 +851,28 @@
 	        data : {refMoqooNo : refMoqooNo, refUserId : refUserId, attendStatus : attendStatus },
 	        success: function(response) {
 	        	if(response == "true"){
-					alert("승인 되었습니다.");
-					if(socket){
-	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
-	        			console.log(socketMsg);
-	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					if(socket){
+// 	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+// 	        			console.log(socketMsg);
+// 	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					}
+					$.ajax({
+						url : "/chat/invite-users-moqoo",
+						data : {
+							moqooNo : refMoqooNo,
+							userId : refUserId
+						},
+						type : "GET",
+						success : function(data) {
+							if(data == "success") {
+								alert("참여 승인 및 모꾸 채팅방에 초대하였습니다.");
+							}else {
+								alert("오류~");
+							}
+						}
+					
+						})
 					}
-				}
 				else if(response == "false"){
 					alert("승인이 처리가 완료되지 않았습니다.");
 				}
@@ -852,25 +888,25 @@
 	    });
 	    
 	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
-		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
-			const comtNo = 0;
-			const title = "${moqoo.moqooTitle}";
+// 		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+// 			const comtNo = 0;
+// 			const title = "${moqoo.moqooTitle}";
 		
-		 $.ajax({
-		        url : '/alert/insertalarm',
-		        type : 'POST',
-		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
-		        dataType : "json", 
-		     	// ↑보내는거
-				// ↓받는거
-		        success : function(result){
-//		           		if(sessionUserId  != boardWriter){
+// 		 $.ajax({
+// 		        url : '/alert/insertalarm',
+// 		        type : 'POST',
+// 		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
+// 		        dataType : "json", 
+// 		     	// ↑보내는거
+// 				// ↓받는거
+// 		        success : function(result){
+// //		           		if(sessionUserId  != boardWriter){
 		           		
-//			        	}
-		        }
+// //			        	}
+// 		        }
 		    
-		    });
-		}
+// 		    });
+// 		}
 		//알람끝
 	});
 	
@@ -879,9 +915,9 @@
 	// 거절 버튼 클릭 이벤트 핸들러
 	$('#sorry').click(function() {
 		console.log(this);
-		var refMoqooNo = $(this).prev().val();
-		var refUserId = $(this).prev().prev().val();
-		var attendStatus = $(this).prev().prev().prev().val();
+		var attendStatus = $(this).siblings("input").eq(0).val();
+		var refUserId 	 = $(this).siblings("input").eq(1).val();
+		var refMoqooNo 	 = $(this).siblings("input").eq(2).val();
 	    $.ajax({
 	        type: 'POST',
 	        url: '/moqoo/attendN', // 백엔드에서 승인 로직이 구현된 엔드포인트
@@ -889,11 +925,11 @@
 	        success: function(response) {
 	        	if(response == "true"){
 					alert("거절 되었습니다.");
-					if(socket){
-	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
-	        			console.log(socketMsg);
-	        			socket.send(socketMsg); //값을 서버로 보냄
-					}
+// 					if(socket){
+// 	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+// 	        			console.log(socketMsg);
+// 	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					}
 				}
 				else if(response == "false"){
 					alert("거절 처리가 완료되지 않았습니다.");
@@ -910,25 +946,25 @@
 	    });
 	    
 	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
-		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
-			const comtNo = 0;
-			const title = null;
+// 		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+// 			const comtNo = 0;
+// 			const title = null;
 		
-		 $.ajax({
-		        url : '/alert/insertalarm',
-		        type : 'POST',
-		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': " moqoono"},
-		        dataType : "json", 
-		     	// ↑보내는거
-				// ↓받는거
-		        success : function(result){
-//		           		if(sessionUserId  != boardWriter){
+// 		 $.ajax({
+// 		        url : '/alert/insertalarm',
+// 		        type : 'POST',
+// 		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': " moqoono"},
+// 		        dataType : "json", 
+// 		     	// ↑보내는거
+// 				// ↓받는거
+// 		        success : function(result){
+// //		           		if(sessionUserId  != boardWriter){
 		           		
-//			        	}
-		        }
+// //			        	}
+// 		        }
 		    
-		    });
-		}
+// 		    });
+// 		}
 		//알람끝
 	});
 	

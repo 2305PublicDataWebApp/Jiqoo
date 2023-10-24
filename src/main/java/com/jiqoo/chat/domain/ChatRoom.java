@@ -10,6 +10,7 @@ public class ChatRoom {
 	private Timestamp cCreateDate;
 	private String cImagePath;
 	private ChatMessage chatMessage;
+	private int moqooChatNo;
 
 	public int getChatNo() {
 		return chatNo;
@@ -57,6 +58,14 @@ public class ChatRoom {
 
 	public void setChatMessage(ChatMessage chatMessage) {
 		this.chatMessage = chatMessage;
+	}
+	
+	public int getMoqooChatNo() {
+		return moqooChatNo;
+	}
+
+	public void setMoqooChatNo(int moqooChatNo) {
+		this.moqooChatNo = moqooChatNo;
 	}
 
 	@Override

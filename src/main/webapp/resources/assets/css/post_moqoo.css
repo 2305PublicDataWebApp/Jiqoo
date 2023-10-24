@@ -18,7 +18,8 @@
   --color-default : #FFF59D;
 }
 body {
-	font-family: 'Nanum Gothic', sans-serif;
+/* 	font-family: 'Nanum Gothic', sans-serif; */
+	font-family: 'IBMPlexSansKR-Regular';
 /*   font-family: "Open Sans", sans-serif; */
   color: #444444;
 }
@@ -678,11 +679,9 @@ ul { margin-bottom: 0 !important;}
     border-radius: 15px;
   }
 
-  /* .participate {
-    display: flex;
-    justify-content: center;
-    margin: 40px 0;
-  } */
+/*   #participate { */
+/*     width: 40px; */
+/*   } */
 
   .post-footer {
     display: flex;

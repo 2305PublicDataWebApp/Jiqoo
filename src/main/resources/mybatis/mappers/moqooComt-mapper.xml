@@ -51,6 +51,10 @@
 		UPDATE COMT_TBL SET COMT_CONTENT = #{comtContent }, C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
 	</update>
 	
+	<update id="updateDelComment">
+		UPDATE COMT_TBL SET COMT_CONTENT = '삭제된 댓글입니다.', C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo }
+	</update>
+	
 	
 <!-- 	<select id="selectComtList" resultMap="CommentResultMap"> -->
 <!-- 		SELECT * FROM COMT_TBL JOIN USER_TBL ON COMT_WRITER = USER_ID WHERE COMT_STATUS = 'Y'AND C_BOARD_TYPE = 'M' ORDER BY COMT_DATE ASC -->
@@ -90,6 +94,10 @@
 		    WHERE ROWNUM &lt;= (#{offset} + #{limit})
 		) 
 		WHERE rnum &gt; #{offset}
+	</select>
+	
+	<select id="countChildComment" resultType="_int">
+		SELECT COUNT(*) FROM COMT_TBL WHERE P_COMT_NO = #{comtNo }
 	</select>
 	
 <!-- 	<select id="selectReComtList"> -->
