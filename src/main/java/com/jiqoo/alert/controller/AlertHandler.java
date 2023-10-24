@@ -101,7 +101,7 @@ public class AlertHandler extends TextWebSocketHandler{
 						//comtWriter = 대댓단사람 , boardWriter = 댓글단사람
 						
 						TextMessage tmpMsg = new TextMessage
-								(comtWriter + "님이 "+ title+" 에 대댓글을 달았습니다!");
+								(boardWriter + "님이 "+ title+" 에 대댓글을 달았습니다!");
 						comtWriterSession.sendMessage(tmpMsg); //댓글작성자에게 메세지 보냄 
 					}
 					

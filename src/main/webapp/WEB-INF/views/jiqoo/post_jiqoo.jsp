@@ -389,6 +389,9 @@
 	// 전역변수
 	var jiqooNo = "${jiqoo.jiqooNo}";
 	var currentUserId = "${sessionScope.userId}"
+    var refPostNo = "${jiqoo.jiqooNo}";
+    var boardWriter = "${jiqoo.jiqooWriter}";
+    var title = "${jiqoo.jiqooTitle}";
 	
   function toggleCC() {
     const categoryContainer = document.querySelector(".category-container");
@@ -398,8 +401,8 @@
 //댓글 등록
   $("#c-submit").on("click", function() {
       const comtContent = $("#comtContent").val();
-      const refPostNo = "${jiqoo.jiqooNo}";
-      const sessionUserId = "${sessionScope.userId }";
+      const comtNo = 0;
+	  const alertType = "";
       if (currentUserId == "") {
 	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
 	            // 사용자가 확인을 누르면 로그인 페이지로 이동
@@ -409,7 +412,7 @@
 	    }else {
 			$.ajax({
 			    url: "/jiqoo/insertComt",
-			    data: { comtContent: comtContent, refPostNo: refPostNo },
+			    data: { comtContent: comtContent, refPostNo: refPostNo, fromUserId : currentUserId, toUserId : boardWriter, comtNo : comtNo, title : title },
 			    type: "GET",
 			    success: function(result) {
 			        if (result === "success") {
@@ -417,6 +420,12 @@
 			            loadInitialComments();
 			            console.log(loading);
 			            $("#comtContent").val("");
+			            
+			            if(socket){
+		        			let socketMsg = "jcomment,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
+		        			console.log(socketMsg);
+		        			socket.send(socketMsg); //값을 서버로 보냄
+		           		}
 			        } else {
 			            alert("댓글이 등록되지 않았습니다.");
 			        }
@@ -424,6 +433,24 @@
 			    error: function() {}
 			});
 	    }
+   		//댓글알람등록(댓글등록버튼 누를때 보냄)
+		if(currentUserId != boardWriter){ //댓단사람 != 모꾸쓴이
+		 $.ajax({
+		        url : '/alert/insertalarm',
+		        type : 'POST',
+		        data : {'fromUserId': currentUserId , 'toUserId': boardWriter , 'boardNo':refPostNo, 'comtNo': comtNo, 'title':title, 'alertType': "jcomment"},
+		        dataType : "json", 
+		     	// ↑보내는거
+				// ↓받는거
+		        success : function(result){
+//		           		if(sessionUserId  != boardWriter){
+		           		
+//			        	}
+		        }
+		    
+		    });
+		}
+		//알람끝
   });
 
   
@@ -586,6 +613,8 @@
 	            return; // 이동 후 함수를 종료
 	        }
 	    }else {
+	    	var commentWriter = $(obj).parent().find('.userId').val();
+	    	console.log(commentWriter);
 		    const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
 		    // 'comment-text' 클래스를 가진 요소 뒤에 replyForm 추가
 		    const replyForm = $("<div>").addClass("reply-form");
@@ -609,13 +638,20 @@
 			    	    data: {
 			    	    	refPostNo : jiqooNo,
 			    	        pComtNo: pComtNo,
-			    	        comtContent: comtContent
+			    	        comtContent: comtContent,
+			    	        fromUserId : currentUserId,
+			    	        toUserId : commentWriter
 			    	    },
 			    	    success: function(data) {
 			    	        if (data === "success") {
 								alert("답글등록에 성공하였습니다.");
 			    	            replyForm.remove(); // 답글 작성 폼 제거
 			    	            loadInitialComments();
+			    	            if(socket){
+				        			let socketMsg = "jcocomment,"+commentWriter+","+currentUserId+","+refPostNo+","+pComtNo+","+title;
+				        			console.log(socketMsg);
+				        			socket.send(socketMsg); //값을 서버로 보냄
+			    	            }
 			    	        } else {
 			    	            // 서버에서 success가 false인 경우, errorMessage를 표시
 			    	            alert("서버에서 오류가 발생했습니다: " + data.errorMessage);
@@ -629,7 +665,26 @@
 			    	    }
 			    	});
 			    }
+			  //대댓글알람등록(댓글등록버튼 누를때 보냄)
+				if(currentUserId != commentWriter){ //댓단사람 != 모꾸쓴이
+				 $.ajax({
+				        url : '/alert/insertalarm',
+				        type : 'POST',
+				        data : {'fromUserId': currentUserId , 'toUserId': commentWriter , 'boardNo':refPostNo, 'comtNo': pComtNo, 'title':title, 'alertType': "jcocomment"},
+				        dataType : "json", 
+				     	// ↑보내는거
+						// ↓받는거
+				        success : function(result){
+//				           		if(sessionUserId  != boardWriter){
+				           		
+//					        	}
+				        }
+				    
+				    });
+				}
+				//알람끝
 			});
+			
 	    }
 	}
 	
@@ -730,7 +785,6 @@
 
 	function createCommentItem(comment) {
 		var currentUserId = "${sessionScope.userId}";
-		console.log(currentUserId);
 	    var commentItem = $("<li>").addClass("comment");
 	    var commentText = $("<p>").addClass("comment-text").text(comment.comtContent);
 	    if(commentText.text().includes('삭제된 댓글입니다.')){
@@ -742,6 +796,7 @@
 	    var userInfo = $("<div>").addClass("user-info");
 	    var userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
 	    var username = $("<span>").addClass("username").text(comment.user.userNickname);
+	    var userId = $("<input>").addClass("userId").attr("type", "hidden").val(comment.user.userId);
 	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 
 	    // 액션 메뉴 추가
@@ -757,13 +812,13 @@
 
 	    actionMenu.append(actionMenuList);
 
+	    userInfo.append(userId);
 	    userInfo.append(userImage);
 	    userInfo.append(username);
 	    userInfo.append(date);
 
 	    // 수정 및 삭제 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var isCurrentUser = comment.user.userId === currentUserId;
-	    console.log(isCurrentUser);
 	    if (isCurrentUser) {
 	        var modifyLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-pencil"></i>').data("comtNo", comment.comtNo).data("comtContent", comment.comtContent).on("click", function() { modifyView(this, comment.comtContent, comment.comtNo);});
 	        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo).on("click", function() {removeComment(comment.comtNo);});
@@ -785,7 +840,7 @@
 	    // 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var showReportLink = !isCurrentUser;
 	    if (showReportLink) {
-	    	var reportMenuItem = $("<li>").html(`<a href='#' onclick='createComtReportModal(${comment.commentNo}, ${comment.comtWriter});' data-bs-toggle='modal' data-bs-target='#comtReportModal' data-commentNo="${comment.comtNo}" data-commentWriter="${comment.comtWriter}"><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	    	var reportMenuItem = $("<li>").html("<a href='#' onclick='createComtReportModal("+comment.comtNo+", \""+comment.comtWriter+"\");' data-bs-toggle='modal' data-bs-target='#comtReportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기");
 	        reportMenuItem.data("comtNo", comment.comtNo);
 	        reportMenuItem.data("comtWriter", comment.comtWriter);
 	        actionMenuList.append(reportMenuItem);
@@ -825,6 +880,7 @@
 	function like() {
 		var jiqooNo = ${jiqoo.jiqooNo };
 		var likeCount = ${likeCount };
+		const comtNo = 0;
 		if (currentUserId == "") {
 	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
 	            // 사용자가 확인을 누르면 로그인 페이지로 이동
@@ -843,6 +899,11 @@
 	                    $("#likeButton i").removeClass("bi-heart").addClass("bi-heart-fill");
 	                    updateLikeCount(1); // 좋아요 숫자를 1 증가
 	                    alert("좋아요를 등록하였습니다.");
+	                    if(socket){
+		        			let socketMsg = "jlike,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
+		        			console.log(socketMsg);
+		        			socket.send(socketMsg); //값을 서버로 보냄
+		           		}
 	                } else if (data === "delete") {
 	                    $("#likeButton i").removeClass("bi-heart-fill").addClass("bi-heart");
 	                    updateLikeCount(-1); // 좋아요 숫자를 1 감소
@@ -854,6 +915,24 @@
 		            alert("관리자에게 문의해주세요");
 		        }
 	    	});
+	    	//알람등록(좋아요등록버튼 누를때 보냄)
+			if(currentUserId != boardWriter){ //댓단사람 != 모꾸쓴이
+			 $.ajax({
+			        url : '/alert/insertalarm',
+			        type : 'POST',
+			        data : {'fromUserId': currentUserId , 'toUserId': boardWriter , 'boardNo':refPostNo, 'comtNo': comtNo, 'title':title, 'alertType': "jlike"},
+			        dataType : "json", 
+			     	// ↑보내는거
+					// ↓받는거
+			        success : function(result){
+//			           		if(sessionUserId  != boardWriter){
+			           		
+//				        	}
+			        }
+			    
+			    });
+			}
+			//알람끝
 	    }
 	}
 	
@@ -895,7 +974,7 @@
       
    // 모달을 생성할 때 사용할 함수
       function createComtReportModal(comtNo, comtWriter) {
-          var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">');
+          var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-commentno='+comtNo+' data-commentwriter='+comtWriter+'>');
           var modalDialog = $('<div class="modal-dialog">');
           var modalContent = $('<div class="modal-content">');
 
@@ -941,8 +1020,9 @@
 
           var commentNo, commentWriter;
           sendButton.on('click', function() {
-              var commentNo = $('#comtReportModal').data('commentNo');
-              var commentWriter = $('#comtReportModal').data('commentWriter');
+        	  debugger;
+              var commentNo = $('#comtReportModal').data('commentno');
+              var commentWriter = $('#comtReportModal').data('commentwriter');
               var jiqooReportContent = $("#reportSelect").val();
               if (jiqooReportContent === "etc") {
                   jiqooReportContent = $("#customReason").val();
@@ -969,21 +1049,19 @@
           return function(comtNo, comtWriter) {
               $('#reportSelect').val('abusive');
               $('#customReason').val('');
-              commentNo = comtNo;
-              commentWriter = comtWriter;
               myModal.show();
-              modal.data('commentNo', commentNo);
-              modal.data('commentWriter', commentWriter);
+              modal.data('commentNo', comtNo);
+              modal.data('commentWriter', comtWriter);
           };
       }
 
-      var openComtReportModal = createComtReportModal();
+//       var openComtReportModal = createComtReportModal();
 
-      $('.report-comment-button').on('click', function() {
-          var commentNo = $(this).data('comment-no');
-          var commentWriter = $(this).data('comment-writer');
-          openComtReportModal(commentNo, commentWriter);
-      });
+//       $('.report-comment-button').on('click', function() {
+//           var commentNo = $(this).data('comment-no');
+//           var commentWriter = $(this).data('comment-writer');
+//           openComtReportModal(commentNo, commentWriter);
+//       });
      </script>
 
 </body>

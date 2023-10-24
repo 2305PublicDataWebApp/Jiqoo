@@ -10,7 +10,7 @@
         </script>  
         
         <!-- jQuery cdn -->
-		<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+<!-- 		<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script> -->
 		
 		<!-- 소켓js cdn -->
 		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -215,16 +215,16 @@
 		         		
 		         		alarmContentLi = '<li class="notification-item[i]">';
 		         		alarmContentDiv = '<div class="alarm-list" style="padding:5px;">';
-						if(alertType == "comment"){  //지꾸 댓글달림
+						if(alertType == "jcomment"){  //지꾸 댓글달림
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 댓글을 달았습니다</a></span>';
 // 							alarm += '<div class="small text-gray-500" style="text-align:right;">'+value.alertCreateDate+'</div>';
 							alarm += '<hr class="dropdown-divider">'
 						}
-						else if(alertType == "cocomment"){  //지꾸 대댓글달림
+						else if(alertType == "jcocomment"){  //지꾸 대댓글달림
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 대댓글을 달았습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
-						else if(alertType == "like"){ //지꾸좋아요
+						else if(alertType == "jlike"){ //지꾸좋아요
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
