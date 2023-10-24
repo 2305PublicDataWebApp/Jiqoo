@@ -95,8 +95,9 @@ public class UserController {
 	// 팔로우
 	@ResponseBody
 	@PostMapping("/follow")
-	public String insertFollow(@RequestParam(value = "toUserId") String toUserId, HttpSession session) {
+	public String insertFollow(@RequestParam(value = "toFollowUserId") String toUserId, HttpSession session) {
 		try {
+			System.out.println("팔로우받는 유저 : " + toUserId);
 			String fromUserId = (String) session.getAttribute("userId");
 			if (fromUserId != "" && fromUserId != null) {
 				Follow follow = new Follow(fromUserId, toUserId);
@@ -255,8 +256,9 @@ public class UserController {
 	// 언팔로우
 	@ResponseBody
 	@PostMapping("/unfollow")
-	public String deleteFollow(@RequestParam(value = "toUserId") String toUserId, HttpSession session) {
+	public String deleteFollow(@RequestParam(value = "toFollowUserId") String toUserId, HttpSession session) {
 		try {
+			System.out.println("언팔로우받는 유저 : " + toUserId);
 			String fromUserId = (String) session.getAttribute("userId");
 			if (fromUserId != "" && fromUserId != null) {
 				Follow follow = new Follow(fromUserId, toUserId);
@@ -599,23 +601,24 @@ public class UserController {
 		return mv;
 	}
 	
-	// 프로필 지꾸 리스트 조회
+	// 프로필페이지 지꾸 리스트 조회
 	@ResponseBody
 	@PostMapping("/jiqooList")
 	public List<UserJiqooDto> showUserJiqooList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
-			, @RequestParam("userId") int userId) {
+			, @RequestParam("userId") String userId
+			, @RequestParam("searchDate") String searchDate) {
 		Map<String, Object> jiqooMap = new HashMap<>();
 		jiqooMap.put("userId", userId);
 		jiqooMap.put("startNo", startNo);
 		jiqooMap.put("endNo", endNo);
-		System.out.println("프로필유저 : " + userId);
+		jiqooMap.put("searchDate", searchDate);
 		List<UserJiqooDto> jiqooList = userService.selectMyJiqooList(jiqooMap);
 		return jiqooList;
 	}
 	
-	// 지꾸 리스트 조회
+	// 마이페이지 지꾸 리스트 조회
 	@ResponseBody
 	@PostMapping("/myJiqooList")
 	public List<UserJiqooDto> showMyJiqooList(
@@ -630,28 +633,28 @@ public class UserController {
 		jiqooMap.put("endNo", endNo);
 		jiqooMap.put("searchDate", searchDate);
 
-		List<UserJiqooDto> jiqooList = userService.selectMyJiqooList(jiqooMap);
+		List<UserJiqooDto> myjiqooList = userService.selectMyJiqooList(jiqooMap);
+		return myjiqooList;
+	}
+	
+	// 프로필페이지 모꾸 리스트 조회
+	@ResponseBody
+	@GetMapping("/moqooList")
+	public List<UserMoqooDto> showMoqooList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, @RequestParam("userId") String userId
+			, @RequestParam("searchDate") String searchDate) {
+		Map<String, Object> moqooMap = new HashMap<>();
+		moqooMap.put("userId", userId);
+		moqooMap.put("startNo", startNo);
+		moqooMap.put("endNo", endNo);
+		moqooMap.put("searchDate", searchDate);
+		List<UserMoqooDto> jiqooList = userService.selectMyMoqooList(moqooMap);
 		return jiqooList;
 	}
 	
-//	@ResponseBody
-//	@GetMapping("/myJiqooSearchList")
-//	public List<UserJiqooDto> showMyJiqooSearchList(
-//			@RequestParam("startNo") int startNo
-//			, @RequestParam("endNo") int endNo
-//			, @RequestParam("selectedDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date selectedDate
-//			, HttpSession session) {
-//		String userId = (String)session.getAttribute("userId");
-//		Map<String, Object> jiqooMap = new HashMap<>();
-//		jiqooMap.put("userId", userId);
-//		jiqooMap.put("startNo", startNo);
-//		jiqooMap.put("endNo", endNo);
-//		jiqooMap.put("selectedDate", selectedDate);
-//		List<UserJiqooDto> jiqooSearchList = userService.selectMyJiqooSearchList(jiqooMap);
-//		return jiqooSearchList;
-//	}
-	
-	// 모꾸 리스트 조회
+	// 마이페이지 모꾸 리스트 조회
 	@ResponseBody
 	@GetMapping("/myMoqooList")
 	public List<UserMoqooDto> showMoqooList(
@@ -669,30 +672,26 @@ public class UserController {
 		return jiqooList;
 	}
 	
-	// 댓글 리스트 조회
-//	@ResponseBody
-//	@GetMapping("/myComtList")
-//	public List<UserComment> showMyComtList(
-//			@RequestParam("startNo") int startNo
-//			, @RequestParam("endNo") int endNo
-//			, @RequestParam(value = "selectedDate", required = false) String selectedDate
-//			, HttpSession session) {
-//		String userId = (String)session.getAttribute("userId");
-//		Map<String, Object> comtMap = new HashMap<>();
-//		comtMap.put("userId", userId);
-//		comtMap.put("startNo", startNo);
-//		comtMap.put("endNo", endNo);
-//		
-//	    if (selectedDate != null && !selectedDate.isEmpty()) {
-//	        // 만약 선택한 날짜가 존재한다면, 해당 날짜를 사용하여 데이터 필터링
-//	    	comtMap.put("selectedDate", selectedDate);
-//	    }
-//	    
-//		List<UserComment> commentList = userService.selectMyCommentList(comtMap);
-//
-//		return commentList;
-//	}
+	// 프로필페이지 댓글 리스트 조회
+	@ResponseBody
+	@GetMapping("/comtList")
+	public List<UserComment> showComtList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, @RequestParam("userId") String userId
+			, @RequestParam("searchDate") String searchDate) {
+		Map<String, Object> comtMap = new HashMap<>();
+		comtMap.put("userId", userId);
+		comtMap.put("startNo", startNo);
+		comtMap.put("endNo", endNo);
+		comtMap.put("searchDate", searchDate);
+	    
+		List<UserComment> commentList = userService.selectMyCommentList(comtMap);
+
+		return commentList;
+	}
 	
+	// 마이페이지 댓글 리스트 조회
 	@ResponseBody
 	@GetMapping("/myComtList")
 	public List<UserComment> showMyComtList(
@@ -711,10 +710,27 @@ public class UserController {
 		return commentList;
 	}
 	
-	// 좋아요 리스트 조회
+	// 프로필페이지 좋아요 리스트 조회
 	@ResponseBody
 	@GetMapping("/likedList")
 	public List<UserLikeDto> showLikedList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, @RequestParam("userId") String userId
+			, @RequestParam("searchDate") String searchDate) {
+		Map<String, Object> likeMap = new HashMap<>();
+		likeMap.put("userId", userId);
+		likeMap.put("startNo", startNo);
+		likeMap.put("endNo", endNo);
+		likeMap.put("searchDate", searchDate);
+		List<UserLikeDto> likedList = userService.selectMyLikedPostList(likeMap);
+		return likedList;
+	}
+	
+	// 마이페이지 좋아요 리스트 조회
+	@ResponseBody
+	@GetMapping("/myLikedList")
+	public List<UserLikeDto> showMyLikedList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
 			, @RequestParam("searchDate") String searchDate
@@ -745,15 +761,23 @@ public class UserController {
 					List<User> followersList = userService.selectFollowersListById(userId);
 					List<User> followingsList = userService.selectFollowingsListById(userId);
 
-					// 로그인 유저의 팔로워, 팔로잉 리스트
+					// 로그인 유저의 팔로잉 리스트
 					List<User> loginUserFollowingsList = userService.selectFollowingsListById(loginUserId);
-
+					boolean checkIsFollow = false;
+					for(User loginUserFollowingCheck : loginUserFollowingsList) {
+						if(loginUserFollowingCheck.getUserId().equals(userId)) {
+							checkIsFollow = true;
+							break;
+						}
+						break;
+					}
+					user.setCheckIsFollow(checkIsFollow);
 					// 사용자(test01)의 팔로워 및 팔로잉 상태 설정
 					for (User follower : followersList) {
-					    follower.setCheckFollow(isFollowingUser(loginUserFollowingsList, follower.getUserId()));
+					    follower.setCheckIsFollow(isFollowingUser(loginUserFollowingsList, follower.getUserId()));
 					}
 					for (User following : followingsList) {
-					    following.setCheckFollow(isFollowingUser(loginUserFollowingsList, following.getUserId()));
+					    following.setCheckIsFollow(isFollowingUser(loginUserFollowingsList, following.getUserId()));
 					}
 
 
@@ -819,15 +843,15 @@ public class UserController {
 					List<User> followersList = userService.selectFollowersListById(userId);
 					List<User> followingsList = userService.selectFollowingsListById(userId);
 					for (User follower : followersList) {
-						boolean checkFollow = false;
+						boolean checkIsFollow = false;
 						for (User following : followingsList) { // followersList에 있는 사람이 내가 팔로우한 목록(followingsList)에 있는지
 																// 확인
 							if (follower.getUserId().equals(following.getUserId())) {
-								checkFollow = true;
+								checkIsFollow = true;
 								break;
 							}
 						}
-						follower.setCheckFollow(checkFollow);
+						follower.setCheckIsFollow(checkIsFollow);
 					}
 
 					

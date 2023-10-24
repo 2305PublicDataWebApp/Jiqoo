@@ -96,8 +96,16 @@
                         </div>
                     </div>
                     <div class="profile-button">
-                    <button class="btn btn-sm profile-btn">Follow</button>
+<%--                     <input type="text" value="${user.checkIsFollow}"> --%>
+                    <c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
+		                <c:if test="${user.checkIsFollow}">
+		                    <button class="btn btn-sm unfollow-btn" data-user-id="${user.userId}">Unfollow</button>
+		                </c:if>
+		                <c:if test="${not user.checkIsFollow}">
+		                    <button class="btn btn-sm follow-btn" data-user-id="${user.userId}">Follow</button>
+		                </c:if>
                     <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
+	                </c:if>
                     </div>
                 </div>
             </div>
@@ -175,11 +183,11 @@
 	                            </div>
 	                            <div class="col-3 list-sort">
 	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
-						                <c:if test="${follower.checkFollow}">
-						                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+						                <c:if test="${follower.checkIsFollow}">
+						                    <button class="btn btn-sm follow unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
 						                </c:if>
-						                <c:if test="${not follower.checkFollow}">
-						                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+						                <c:if test="${not follower.checkIsFollow}">
+						                    <button class="btn btn-sm follow follow-btn" data-user-id="${follower.userId}">Follow</button>
 						                </c:if>
 					                </c:if>
 	                            </div>
@@ -227,11 +235,11 @@
 	                            </div>
 	                            <div class="col-3 list-sort">
 	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
-						                <c:if test="${following.checkFollow}">
-						                    <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
+						                <c:if test="${following.checkIsFollow}">
+						                    <button class="btn btn-sm follow unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
 						                </c:if>
-						                <c:if test="${not following.checkFollow}">
-						                    <button class="btn btn-sm follow-btn" data-user-id="${following.userId}">Follow</button>
+						                <c:if test="${not following.checkIsFollow}">
+						                    <button class="btn btn-sm follow follow-btn" data-user-id="${following.userId}">Follow</button>
 						                </c:if>
 					                </c:if>
 	                            </div>
@@ -341,42 +349,6 @@
 	     	// 페이지 로드 시 초기 탭 데이터 로딩
 	        loadTabContent("jiqoo");
 	        
-// 	        $("#jiqoo").on("click", function(){
-// // 	        	alert("hi");
-// 				if (isLoading || !hasMoreData) {
-// 				        return;
-// 				}
-// 	        	tabContainer.empty();
-// 	        	currentPage = 1;
-// 				perPage = 10;
-// 				dataType="jiqoo";
-// 				loadData(dataType);
-// 	        })
-	        
-// 	        $("#moqoo").on("click", function(){
-// // 	        	alert("hi");
-// 				if (isLoading || !hasMoreData) {
-// 				        return;
-// 				}
-// 	        	tabContainer.empty();
-// 	        	currentPage = 1;
-// 				perPage = 10;
-// 				dataType="moqoo";
-// 				loadData(dataType);
-// 	        })
-	        
-// 	        $("#myComment").on("click", function() {
-// // 	        	alert("hi");
-// 				if (isLoading || !hasMoreData) {
-// 				        return;
-// 				}
-// 				tabContainer.empty();
-// 				currentPage = 1;
-// 				perPage = 10;
-// 				dataType="comment";
-// 		        loadData(dataType); // 댓글 탭을 클릭한 경우 댓글을 불러오는 함수 호출
-// 		    });
-	        
 	        $(window).scroll(function() {
 				if (isLoading || !hasMoreData) {
 				    return;
@@ -425,18 +397,18 @@
 // 	        		return;
 // 	        	}
 	        	var userId = $("#profileUserId").val();
-	        	console.log(userId);
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
  		        var searchDate = $("#inputDate").val();
 				var requestData = {
 					startNo : startNo, 
         			endNo : endNo,
-        			searchDate : searchDate
+        			searchDate : searchDate,
+        			userId : userId
 				}
 				var result = 0;
 	        	$.ajax({
-	        		url: "/user/myJiqooList",
+	        		url: "/user/jiqooList",
 	        		type: "POST",
 	        		data: requestData,
 	        		success: function(data){
@@ -501,7 +473,7 @@
 	        		},
 		            error: function(error) {
 		            	console.log(error);
-		            	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+		            	alert("[지꾸]서버오류가 발생했습니다. 다시 시도해주세요.");
                     	location.reload();
 		            }
 	        	})
@@ -513,16 +485,18 @@
 // 	        	if(!hasMoreData) {
 // 	        		return;
 // 	        	}
+				var userId = $("#profileUserId").val();
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
  		        var searchDate = $("#inputDate").val();
 	        	$.ajax({
-	        		url: "/user/myoqooList",
+	        		url: "/user/moqooList",
 	        		type: "GET",
 	        		data: {
 	        			startNo : startNo, 
 	        			endNo : endNo,
-	        			searchDate : searchDate
+	        			searchDate : searchDate,
+	        			userId : userId
 	        		},
 	        		success: function(data){
 // 	        			isLoading = false;
@@ -592,21 +566,13 @@
 			
 			
         	//////////////////////////////////////////////// 댓글 ////////////////////////////////////////////////
-        	// 탭 클릭시 댓글 로드
-// 			$("#myComment").on("click", function() {
-// 				tabContainer.empty();
-// 				currentPage = 1;
-// 				perPage = 10;
-// //		        loadComments(currentPage, perPage); // 댓글 탭을 클릭한 경우 댓글을 불러오는 함수 호출
-// 		        loadData('comment'); // 댓글 탭을 클릭한 경우 댓글을 불러오는 함수 호출
-// 		    });
         	
 			// 댓글 조회
 			function loadComments(page, perPage) {
 // 			    if (!hasMoreData) {
 // 			        return; //댓글 없으면 스크롤 이벤트 중지
 // 			    }
-			    
+			    var userId = $("#profileUserId").val();
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
  		        var searchDate = $("#inputDate").val();
@@ -617,7 +583,8 @@
 		            data: {
 		            	startNo: startNo,
 		            	endNo: endNo,
-		            	searchDate : searchDate
+		            	searchDate : searchDate,
+		            	userId
 		            },
 		            success: function(data) {
 		                isLoading = false;
@@ -701,7 +668,7 @@
 // 			    if (!hasMoreData) {
 // 			        return; //댓글 없으면 스크롤 이벤트 중지
 // 			    }
-
+				var userId = $("#profileUserId").val();
 				var startNo = (page * perPage) - (perPage - 1);
  		        var endNo =  page * perPage;
  		        var searchDate = $("#inputDate").val();
@@ -712,7 +679,8 @@
 		            data: {
 		            	startNo: startNo,
 		            	endNo: endNo,
-		            	searchDate : searchDate
+		            	searchDate : searchDate,
+		            	userId : userId
 		            },
 		            success: function(data) {
 		                isLoading = false;
@@ -798,20 +766,24 @@
 			//////////////////////////////////////////////// follow ////////////////////////////////////////////////        
         	// unfollow 버튼
         	$(".unfollow-btn").on("click", function(){
-        		const toUserId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
+         		console.log("언팔로우이벤트 시작")
+        		const toUnfollowUserId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
         		const button = $(this);
         		$.ajax({
                     type: 'POST',
                     url: '/user/unfollow',
-                    data: { toUserId: toUserId },
+                    data: { toUnfollowUserId: toUnfollowUserId },
                     success: function(result) {
                         if (result === "success") {
+                        	console.log("언팔로우성공")
                         	button.removeClass("unfollow-btn").addClass("follow-btn");
                             button.text("Follow");
                         } else if (result === "checkLogin") {
+                        	console.log("언팔로우실패")
                             alert("로그인 후 이용해주세요.");
                             window.location.href = "/user/login"; 
                         } else {
+                        	console.log("오류발생")
                             alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
                             location.reload();
                         }
@@ -826,18 +798,19 @@
         	
         	//follow버튼
          	$(".follow-btn").on("click", function () {
-         		console.log("이벤트 시작")
-			    const toUserId = $(this).data('user-id'); 
+         		console.log("팔로우이벤트 시작")
+			    const toFollowUserId = $(this).data('user-id'); 
 			    const button = $(this);
 			
 			    $.ajax({
 			        type: 'POST',
 			        url: '/user/follow', 
-			        data: { toUserId: toUserId },
+			        data: { toFollowUserId: toFollowUserId },
 			        success: function (result) {
 			            if (result === "success") {
 			                button.removeClass("follow-btn").addClass("unfollow-btn");
 			                button.text("Unfollow");
+			                
 			            } else if (result === "checkLogin") {
 			                alert("로그인 후 이용해주세요.");
 			                window.location.href = "/user/login";
