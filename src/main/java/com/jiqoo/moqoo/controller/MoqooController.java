@@ -225,7 +225,7 @@ public class MoqooController {
 		try {
 			String userId = (String) session.getAttribute("userId");
 			if(userId != null && !userId.equals("")) {
-				report.setReportWrite(userId);
+				report.setReportWriter(userId);
 				int result = moqooService.insertReport(report);
 				if(result > 0) {
 					return "redirect:/moqoo/moqoo";
