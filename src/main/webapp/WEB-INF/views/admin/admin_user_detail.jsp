@@ -281,7 +281,7 @@
 									<!--=====***** 지꾸Modal *****=====-->
 									<div class="modal fade" id="detailJiqooModal${i.count }" tabindex="-1"
 										aria-labelledby="exampleModalLabel" aria-hidden="true">
-										<div class="modal-dialog">
+										<div class="modal-dialog modal-lg">
 											<div class="modal-content">
 												<div class="modal-header">
 													<div class="modal-title fs-5" id="exampleModalLabel" >
@@ -314,7 +314,39 @@
 													
 													<div id="report-reason">
 														<div id="r-title">신고사유(${jiqooList.jReportCount})</div>
-														<div></div>
+														<div id="r-reason">
+															<c:forEach var="jiqooReport" items="${jiqooList.reportList}" varStatus="i">
+																<script>
+																	var reportContent = "${jiqooReport.reportContent}";
+																	var reportCount = "${jiqooReport.reportCount}";
+																	var replacedText = "";
+																						
+																	switch (reportContent) {
+																		case "abusive": replacedText = "욕설사용";
+																			 break;
+																		case "advertising": replacedText = "광고글";
+																			 break;
+																		case "noSubject": replacedText = "주제와 맞지 않는 글";
+																			break;
+																		case "violent":replacedText = "폭력적인 내용";
+																			break;
+																		case "discrimination": replacedText = "차별적인 내용";
+																			break;
+																		case "pornography": replacedText = "음란물";
+																			break;  
+																		case "personal": replacedText = "민감한 개인정보 노출";
+																			break;
+																		case "etc": replacedText = "기타 (직접 작성)";
+																			break;
+																		default: replacedText = reportContent;
+																			break;
+																		} 
+																	
+																	document.write(replacedText+"("+reportCount+")");
+																</script>
+																
+															</c:forEach>
+															</div>
 													</div>
 													<div id="report-btn">
 														<c:set var="jiqooStatus" value="${jiqooList.jiqooStatus}"></c:set>
@@ -330,8 +362,10 @@
 											</div>
 										</div>
 									</div>
+									</c:forEach>
 									<!-- End Modal -->
 									<!-- 지꾸 카카오맵api -->
+									<c:forEach var="jiqooList" items="${jiqooList}" varStatus="i">
 									<script>
 										$("#detailJiqooModal${i.count}").on('shown.bs.modal', function(){
 											var jiqooMapContainer = document.getElementById('jiqooMap${i.count }'), // 지도를 표시할 div 
@@ -366,7 +400,7 @@
 											
 										});
 										</script>
-								</c:forEach>
+										</c:forEach>
 							</tbody>
 						</table>
 						
@@ -474,12 +508,46 @@
 						</table>
 						
 						<!-- 모꾸 페이지 네비 -->
-						<script>
-							
+						<c:if test="${pInfoMoqoo.totalCount > 0}"> 
+							<div id="pageNavi">
+								<c:if test="${pInfoMoqoo.startNavi != 1}">
+									<c:url var="prevUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="moqooPage" value="${pInfoMoqoo.startNavi -1 }"></c:param>
+									</c:url>
+									<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
+								</c:if>
+								
+								<c:forEach begin="${pInfoMoqoo.startNavi}" end="${pInfoMoqoo.endNavi}"
+									var="p">
+									<c:url var="pageUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="moqooPage" value="${p}"></c:param>
+									</c:url>
+									<c:choose>
+										<c:when test="${p == pInfoMoqoo.currentPage}">
+											<p>
+												<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
+											</p>
+										</c:when>
+										<c:otherwise>
+											<p>
+												<a href="${pageUrl}"> ${p}</a>
+											</p>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+								
+								<c:if test="${pInfoMoqoo.endNavi != pInfoMoqoo.naviTotalCount}">
+									<c:url var="nextUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="moqooPage" value="${pInfoMoqoo.endNavi + 1}"></c:param>
+									</c:url>
+									<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
+								</c:if>
+							</div>
+						</c:if>
 						
-						
-						
-						</script>
 					</div>
 									
 					

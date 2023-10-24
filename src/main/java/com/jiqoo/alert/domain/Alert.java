@@ -7,13 +7,12 @@ public class Alert {
 	private String toUserId;  //받는사람id
 	private String fromUserId; //보내는사람id
 	private int boardNo; //게시판번호 
+	private int comtNo; //게시판번호 
 	private String title;  //글제목
 	private String alertType;  //알람타입 
 	private Timestamp alertCreateDate;
 	
 	public Alert() { }
-	
-	
 	
 	public Alert(int alertNo, String toUserId, String fromUserId, int boardNo, String title, String alertType,
 			Timestamp alertCreateDate) {
@@ -26,9 +25,13 @@ public class Alert {
 		this.alertType = alertType;
 		this.alertCreateDate = alertCreateDate;
 	}
-
 	
-
+	
+	public Alert(String fromUserId, int boardNo) {
+		super();
+		this.fromUserId = fromUserId;
+		this.boardNo = boardNo;
+	}
 
 	public int getAlertNo() {
 		return alertNo;
@@ -53,6 +56,15 @@ public class Alert {
 	}
 	public void setBoardNo(int boardNo) {
 		this.boardNo = boardNo;
+	}
+	
+
+	public int getComtNo() {
+		return comtNo;
+	}
+
+	public void setComtNo(int comtNo) {
+		this.comtNo = comtNo;
 	}
 
 	public String getTitle() {

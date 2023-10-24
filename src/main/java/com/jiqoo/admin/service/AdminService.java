@@ -362,6 +362,8 @@ public interface AdminService {
 	 */
 	public Integer deleteChatByAdmin(Integer chatNo);
 
+	public List<Map<String, Object>> jiqooCountList(Jiqoo jiqoo);
+
 	/**
 	 * 마지막 채팅시간있는 챗방리스트
 	 * @return
@@ -380,7 +382,7 @@ public interface AdminService {
 	 * @param chatMap
 	 * @return
 	 */
-//	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap);
+	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap);
 
 
 

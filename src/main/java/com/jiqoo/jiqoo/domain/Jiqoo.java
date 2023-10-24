@@ -29,7 +29,16 @@ public class Jiqoo {
 	
 	private List<Report> reportList;
 	private int jReportCount;
+	private int count;
 	
+	
+	
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
 	public int getjReportCount() {
 		return jReportCount;
 	}

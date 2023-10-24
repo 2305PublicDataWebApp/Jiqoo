@@ -1,5 +1,6 @@
 package com.jiqoo.admin.controller;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -180,6 +181,7 @@ public class AdminController {
 
 			Gson gson = new Gson();
 			return gson.toJson(dayCountList);
+			
 			
 		}
 		
@@ -465,11 +467,11 @@ public class AdminController {
 				PageInfo pInfoMoqoo = this.getPageInfo(5, currentMoqooPage, usersTotalMoqooCount); // 모꾸 리스트 페이징 
 				List<Moqoo> moqooList = adminService.showUserMoqooList(pInfoMoqoo, userId); // 회원별 모꾸 리스트
 				
-//				if(moqooList.size() > 0) {
-//					mv.addObject("pInfoMoqoo",  pInfoMoqoo).addObject("moqooList", moqooList);	
-//				}else {
-//					mv.addObject("noMoqooMsg", "작성한 모꾸가 없습니다.");
-//				}
+				if(moqooList.size() > 0) {
+					mv.addObject("pInfoMoqoo", pInfoMoqoo).addObject("moqooList", moqooList);	
+				}else {
+					mv.addObject("noMoqooMsg", "작성한 모꾸가 없습니다.");
+				}
 				
 				//회원별 댓글 정보 가져오기 
 				Integer usersTotalComtCount = adminService.getusersTotalComtCount(userId); // 회원별 총 댓글 수 카운트
@@ -842,17 +844,39 @@ public class AdminController {
 	
 	//지꾸관리페이지_지꾸차트 
 	@ResponseBody
-	@GetMapping("/admin/jiqoochart")
+	@GetMapping("/admin/jiqooChartLine")
 	public String jiqoochart(User user, Jiqoo jiqoo) {
-				
-		Map<String,Object>jiqooChartMap = new HashMap<>();
-		jiqooChartMap.put("user", user);
-		jiqooChartMap.put("jiqoo", jiqoo);
 		
-		List<Map<String,Object>> jiqooChartList = adminService.jiqooChartList(jiqoo);
+		Map<String,Object>statsMap = new HashMap<>();
+		statsMap.put("user", user);
+		statsMap.put("jiqoo", jiqoo);
+		
+		List<Map<String,Object>> jiqooCountList = adminService.jiqooCountList(jiqoo); //날짜별 지꾸 등록수 리스트
 
 		Gson gson = new Gson();
-		return gson.toJson(jiqooChartList);
+		return gson.toJson(jiqooCountList);
+		
+//		List<Map<String,Object>> jiqooCountList = adminService.jiqooCountList(jiqoo);
+//
+//
+//		Gson jiqooGson = new Gson();
+//		JsonArray jiqooArray = new JsonArray();
+//		Iterator<Jiqoo> jiqooIt = jiqooCntList.iterator();
+//		
+//		while(jiqooIt.hasNext()) {
+//			Jiqoo jiqooCnt = jiqooIt.next();
+//			JsonObject jiqooCntObject = new JsonObject();
+//			String jiqooDate = jiqooCnt.getjCreateDate();
+//			int count = jiqooCnt.getjReportCount();
+//			
+//			
+//			jiqooCntObject.addProperty("userGender", userGender);
+//			jiqooCntObject.addProperty("count", count);
+//			jiqooArray.add(jiqooCntObject);
+//		}
+//		String userGendergroup = jiqooGson.toJson(jiqooArray);
+		
+
 		
 	}
 	
@@ -1044,48 +1068,40 @@ public class AdminController {
 //**채팅***채팅***채팅****************************************************************************************************************//	
 		
 	// 채팅방관리_ 리스트 접속(+페이징)  //안됨
-//	@GetMapping("/admin/chatlist")
-//	public ModelAndView showAdminChat(ModelAndView mv
-//									, HttpSession session
-//									, @RequestParam("chatNo") int chatNo
-//									, @RequestParam("userId") int userId
-//									, @ModelAttribute ChatUser chatUser
-//									, @ModelAttribute ChatRoom chatRoom
-//									, @ModelAttribute ChatMessage chatMessage
-//									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
+	@GetMapping("/admin/chatlist")
+	public ModelAndView showAdminChat(ModelAndView mv
+									, HttpSession session
+									, @RequestParam(value = "page", required = false, defaultValue = "1") Integer currentPage) {
 
 //		List<User> userList = chatService.selectAllUserByChatNo(chatNo); //채팅방 별 참여자 
 //		List<ChatMessage> sendMsgList = adminService.selectlastMsgByChatNo(); //마지막 채팅시간 
 //		List<ChatRoom> chatRoomList = adminService.selectChatRoomList();  //채팅방리스트
-		
-//		Integer chatRoomCount = adminService.getChatRoomListCount(); // 채팅방 수
-//		PageInfo pInfo = this.getPageInfo(15, currentPage, chatRoomCount);  //채팅방리스트 페이징
-		
-		//다있는 채팅방 리스트
-//		Map<String,Object>chatMap = new HashMap<>();
-//		chatMap.put("chatUser", chatUser);
-//		chatMap.put("chatRoom", chatRoom);
-//		chatMap.put("chatMessage", chatMessage);
-//		List<Map<String, Object>>chatRoomAllList = adminService.selectChatRoomAllList(pInfo, chatMap);
-		
-//		try {
-//			if (chatRoomAllList.size() > 0) {
-//				mv.addObject("chatRoomAllList", chatRoomAllList);
-//				mv.addObject("pInfo", pInfo);
-//				mv.setViewName("admin/admin_chat");
-//			} else {
-//				mv.addObject("msg", "아직 만들어진 채팅방이 없습니다.");
-//				mv.addObject("url", "/admin/main");
-//				mv.setViewName("common/message");
-//			}
+	
+		Integer chatRoomCount = adminService.getChatRoomListCount(); // 채팅방 수
+		PageInfo pInfo = this.getPageInfo(15, currentPage, chatRoomCount);  //채팅방리스트 페이징
+	
+	//다있는 채팅방 리스트
+		Map<String,Object>chatMap = new HashMap<>();
+		List<Map<String, Object>>chatRoomAllList = adminService.selectChatRoomAllList(pInfo, chatMap);
+	
+		try {
+			if (chatRoomAllList.size() > 0) {
+				mv.addObject("chatRoomAllList", chatRoomAllList);
+				mv.addObject("pInfo", pInfo);
+				mv.setViewName("admin/admin_chat");
+			} else {
+				mv.addObject("msg", "아직 만들어진 채팅방이 없습니다.");
+				mv.addObject("url", "/admin/main");
+				mv.setViewName("common/message");
+			}
 
-//		} catch (Exception e) {
-//			mv.addObject("msg", "전체 채팅방 리스트 조회 실패");
-//			mv.addObject("url", "/admin/main");
-//			mv.setViewName("common/message");
-//		}
-//		return mv;
-//	}
+		} catch (Exception e) {
+			mv.addObject("msg", "전체 채팅방 리스트 조회 실패");
+			mv.addObject("url", "/admin/main");
+			mv.setViewName("common/message");
+		}
+		return mv;
+	}
 	
 	
 	

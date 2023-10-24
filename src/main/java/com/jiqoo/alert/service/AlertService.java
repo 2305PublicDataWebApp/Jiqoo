@@ -26,14 +26,14 @@ public interface AlertService {
 	 * @param memberId
 	 * @return
 	 */
-	public List<Alert> selectAlarmList(String memberId);
+	public List<Alert> selectAlarmList(Alert alert);
 
 	/**
 	 * 알람리스트 삭제 
 	 * @param paramMap
 	 * @return
 	 */
-	public Integer deleteAlarm(Map<String, Object> paramMap);
+	public Integer deleteAlarm(Alert alert);
 
 //	public void alramClick(String memberId, int boardNo);
 

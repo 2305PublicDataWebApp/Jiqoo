@@ -87,6 +87,7 @@
     <section>
       <div class="row">
         <div class="col-lg-12">
+        <h5 class="card-title" style="color: #222;">모꾸 리스트</h5>
           <div id="user-main">
 
             <!--서치바-->
@@ -201,11 +202,38 @@
 								</div>
 								<div id="report-reason">
 									<div id="r-title">신고사유()</div>
-									<c:forEach var="moqooReport" items="${search.reportList}" varStatus="i">
-										<div id="r-reason">
-											${ moqooReport.reportContent}
-										</div>
-									</c:forEach>
+									<div id="r-reason">
+										<c:forEach var="jiqooReport" items="${search.reportList}" varStatus="i">
+											<script>
+												var reportContent = "${jiqooReport.reportContent}";
+												var reportCount = "${jiqooReport.reportCount}";
+												var replacedText = "";
+																	
+												switch (reportContent) {
+													case "abusive": replacedText = "욕설사용";
+														 break;
+													case "advertising": replacedText = "광고글";
+														 break;
+													case "noSubject": replacedText = "주제와 맞지 않는 글";
+														break;
+													case "violent":replacedText = "폭력적인 내용";
+														break;
+													case "discrimination": replacedText = "차별적인 내용";
+														break;
+													case "pornography": replacedText = "음란물";
+														break;  
+													case "personal": replacedText = "민감한 개인정보 노출";
+														break;
+													case "etc": replacedText = "기타 (직접 작성)";
+														break;
+													default: replacedText = reportContent;
+														break;
+													} 
+												
+												document.write(replacedText+"("+reportCount+")");
+											</script>
+										</c:forEach>
+									</div>
 								</div>
 								<div id="report-btn">
 									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${search.moqooNo}');">삭제</button>

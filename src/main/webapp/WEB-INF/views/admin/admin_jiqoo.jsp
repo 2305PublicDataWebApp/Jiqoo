@@ -107,51 +107,81 @@
 			<div class="row">
 
 				<div class="col-lg-10" style="margin: 0 auto">
-					<h5 class="card-title" style="color: #222;">지꾸 목록</h5>
+					<h5 class="card-title" style="color: #222;">지꾸 리스트</h5>
 					<div class="card">
 						<div class="card-body">
 
 							<!-- Line Chart chart.js -->
 							<canvas id="lineChart" style="max-height: 400px;"></canvas>
 							<script>
-				                document.addEventListener("DOMContentLoaded", () => {
-				                  new Chart(document.querySelector('#lineChart'), {
-				                    type: 'line',
-				                    data: {
-				                      labels: ['07', '08', '09', '10', '11', '12', '13', '14', '15','16','17', '18','19', '20', '21', '22', '23','24','25', '26'],
-				                      datasets: [{
-				                        label: '지꾸 등록 현황',
-				                        data: [65, 59, 80, 81, 56, 55, 40, 45,67,78,45,34],
-				                        fill: false,
-				                        borderColor: '#19A7CE',
-				                        tension: 0.1 //곡률넣어줌
-				                      },
-				                      {
-				                        label: '여성',
-				                        type : 'bar',
-				                        data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
-				                        fill: false,
-				                        backgroundColor: '#FF9B9B',
-				
-				                      },
-				                      {
-				                        label: '남성',
-				                        type : 'bar',
-				                        data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
-				                        fill: false,
-				                        backgroundColor: '#82A0D8',
-				
-				                      }]
-				                    },
-				                    options: {
-				                      scales: {
-				                        y: {
-				                          beginAtZero: true //y축시작점이 0에서 시작
-				                        }
-				                      }
-				                    }
-				                  });
-				                });
+						
+							$(document).ready(function(){
+								getGraph();
+
+							});
+							
+							function getGraph(){
+								let timeList=[];
+								let postList=[];
+								
+								$.ajax({
+									url: "/admin/jiqooChartLine",
+									type: "get",
+									data: {
+										jCreateDate : jCreateDate,
+										count : count
+										
+									},
+									dataType :"json",
+									success: function(data) {
+										for (let i = 0; i <data.length; i++){
+											timeList.push(data[i].jCreateDate);
+											postList.push(data[i].count);
+										}
+										console.log(timeList);
+										console.log(postList);
+										
+										new Chart(document.querySelector('#lineChart'), {
+											
+											type: 'line',
+											data: {
+											  labels: timeList,
+											  datasets: [{
+												label: '지꾸 등록 현황',
+												data: postList,
+												fill: false,
+												borderColor: '#19A7CE',
+												tension: 0.1 //곡률넣어줌
+											  },
+											  {
+												label: '여성',
+												type : 'bar',
+												data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
+												fill: false,
+												backgroundColor: '#FF9B9B',
+
+											  },
+											  {
+												label: '남성',
+												type : 'bar',
+												data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
+												fill: false,
+												backgroundColor: '#82A0D8',
+
+											  }]
+											
+										},
+										options: {
+											scales: {
+												y: {
+												  beginAtZero: true //y축시작점이 0에서 시작
+												}
+											  }
+										}
+									}
+								});
+							};
+								
 			              </script>
 							<!-- End Line CHart -->
 

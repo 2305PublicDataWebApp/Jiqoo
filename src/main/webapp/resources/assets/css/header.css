@@ -293,3 +293,73 @@
 .navbar-mobile .dropdown .dropdown > .dropdown-active {
   display: block;
 }
+
+/*--------------------------------------------------------------
+# 추가css
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# 알람
+--------------------------------------------------------------*/
+
+#socketAlert{
+	width:500px;
+	height:50px;
+	background-color:#388E3C;
+	opacity: 0.8;
+	transition: background-color 0.3s ease;
+	border-radius : 10px;
+	margin:5px auto;
+	text-align : center;
+}
+
+.navbar .nav-icon {
+    --font-size: 22px;
+    --color: #012970;
+    --margin-right: 25px;
+    position: relative;
+}
+
+.navbar .badge {
+	position: absolute;
+    inset: 3px -3px auto auto;
+    font-weight: normal;
+    font-size: 10px;
+    padding: 3px 6px;
+  
+}
+
+/* .navbar  .notifications { */
+/*   inset: 8px -15px auto auto !important; */
+/* } */
+
+.navbar .notifications .notification-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+/* .navbar .notifications .alarm-list:hover { */
+/*   background-color: #f6f9ff; */
+/* } */
+
+/* .navbar .notifications .notification-item i { */
+/*   margin: 0 20px 0 10px; */
+/*   font-size: 24px; */
+/* } */
+
+/* .navbar .notifications .notification-item h4 { */
+/*   font-size: 16px; */
+/*   font-weight: 600; */
+/*   margin-bottom: 5px; */
+/* } */
+
+.navbar .notifications .notification-item p {
+  font-size: 13px;
+  margin-bottom: 3px;
+  color: #919191;
+}
+
+
+

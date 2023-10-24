@@ -39,7 +39,7 @@ public class AlertWebSocketConfig implements WebSocketConfigurer {
 
 //<beans:bean id="myHandler" class="kr.co.commons.socket.EchoHandler" />
 //<websocket:handlers>
-//	<websocket:mapping handler="myHandler" path="/alram" />
+//	<websocket:mapping handler="alertHandler" path="/alert" />
 //	<websocket:handshake-interceptors>
 //         <beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor"/>
 //      </websocket:handshake-interceptors>
