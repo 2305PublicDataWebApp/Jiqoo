@@ -701,8 +701,9 @@
 				    		loadingList = false;	
 				    	}
 				        // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
-				        alert("전체지롱" + loadingList);
 				        loadingInProgress = false;
+				        if(loadingList == false)
+				        alert("마지막 게시글 입니다");
 					},
 				    error: function () {
 				        // 서버 통신 중 오류 발생 시 오류 메시지를 표시
@@ -752,8 +753,10 @@
 		            		 // 로딩 플래그를 다시 false로 설정하여 다음 스크롤 이벤트를 기다립니다.
 		                    loadingSearch = false;
 		            	}
-			            alert("서치지롱" + loadingList + ", " + loadingSearch);
+// 			            alert("서치지롱" + loadingList + ", " + loadingSearch);
 		                loadingInProgress = false;
+		                if(loadingList == false)
+					        alert("마지막 게시글 입니다");
 	                },
 	                error: function () {
 	                    // 서버 통신 중 오류 발생 시 오류 메시지를 표시

@@ -90,6 +90,12 @@ public class MoqooStoreLogic implements MoqooStore{
 	}
 
 	@Override
+	public int updateNoAttend(SqlSession sqlSession, MoqooUser moqooUser) {
+		int result = sqlSession.update("MoqooUserMapper.updateNoAttend", moqooUser);
+		return result;
+	}
+
+	@Override
 	public int selectJoinCount(SqlSession sqlSession, int refMoqooNo) {
 		int moqooJoinCount = sqlSession.selectOne("MoqooUserMapper.selectJoinCount", refMoqooNo);
 		return moqooJoinCount;

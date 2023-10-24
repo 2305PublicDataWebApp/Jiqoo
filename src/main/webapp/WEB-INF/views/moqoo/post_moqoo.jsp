@@ -93,12 +93,12 @@
 		<div class="action_menu">
 		  <ul>
 			<li><a href="/user/myPage"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
-			<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+			<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target="#postReportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
 		  </ul>
 		</div>
 	  </c:if>	
 		<!-- 신고 모달 -->
-		<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="postReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -220,10 +220,10 @@
               	  <c:forEach var="moqooUserList" items="${moqooList }">
               	  	<tr>
               	  	<c:if test="${moqooUserList.user.userPhotoPath eq null }">
-   			          <td class="moqoo-table"><img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" id="moqoo-table-img" class="profile-image"></td>
+   			          <td class="moqoo-table"><img src="../resources/assets/img/no-profile.png" alt="프로필 이미지"  class="profile-image moqoo-table-img"></td>
               	  	</c:if>
               	  	<c:if test="${moqooUserList.user.userPhotoPath ne null }">
-   			          <td class="moqoo-table"><img src="${moqooUserList.user.userPhotoPath }" alt="프로필 이미지" class="profile-image"></td>
+   			          <td class="moqoo-table"><img src="${moqooUserList.user.userPhotoPath }" alt="프로필 이미지" class="profile-image moqoo-table-img"></td>
               	  	</c:if>
    			    	  <td class="moqoo-table">닉네임 : ${moqooUserList.user.userNickname}</td>
    				      <td class="moqoo-table">나이 :  ${moqooUserList.user.userBirth }</td>
@@ -296,18 +296,18 @@
 				<div class="mb-3">
 					<input type="text" class="form-control" id="title" name="moqooTitle" placeholder="제목" value="${moqoo.moqooTitle }" required>
 				</div>
-				<div class="mb-3" style="display: flex;">
+				<div class="mb-3">
 					<div>
 						<input type="file" class="custom-file-input" id="thum"
 							name="uploadFile" placeholder="썸네일" required> 
-							<label for="thum" class="custom-button">파일 선택</label>
+<!-- 							<label for="thum" class="custom-button">파일 선택</label> -->
 							<!-- 		기존 업로드 파일 체크할 때 사용 --><!-- 파일은 수정 안 할 때 필요함  -->
 							<input type="hidden" name="moqooThumName"   value="${moqoo.moqooThumName }">
 							<input type="hidden" name="moqooThumRename" value="${moqoo.moqooThumRename }">
 							<input type="hidden" name="moqooThumPath"   value="${moqoo.moqooThumPath }">
 					</div>
-					<!-- 파일 정보 표시 영역 -->
-					<div id="fileInfo"></div>
+<!-- 					파일 정보 표시 영역 -->
+<!-- 					<div id="fileInfo"></div> -->
 				</div>
 				<div class="mb-3">
 					<textarea id="summernote" name="moqooContent" required>${moqoo.moqooContent }</textarea>
@@ -580,38 +580,64 @@
       const categoryContainer = document.querySelector(".category-container");
       categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
     }
+    
+    $("#moqooForm").submit(function(e) {
+	    var now = new Date();
+	    var selectDate = new Date($("#date").val());
+	    let pmContent = $("#summernote");
+	    let regContent = pmContent.val().replace(/<[^>]*>/g, '');
+	    
+	    // 유효한 카테고리 선택을 확인
+	    var selectedCategory = $("input[name='category']:checked").val();
+	    if (!selectedCategory) {
+	        e.preventDefault(); // 폼 제출을 막음
+	        alert("카테고리를 선택해주세요.");
+	    } else if (selectDate < now) {
+	        e.preventDefault();
+	        alert("과거의 날짜는 선택할 수 없습니다.");
+	    } else if (regContent === null || regContent.trim().length === 0) {
+	        e.preventDefault();
+	        alert("내용을 입력해주세요");
+	    } else {
+	        submit(); // submit 함수 호출 (변경된 코드에는 없지만 필요한 경우 추가하세요)
+	    }
+	});
   </script>
 
   <script>
-	// JavaScript 코드를 추가합니다.
-	const radioButtons = document.querySelectorAll('.form-check-input');
-	const imageLabels = document.querySelectorAll('.form-check-label');
+// 	// JavaScript 코드를 추가합니다.
+// 	const radioButtons = document.querySelectorAll('.form-check-input');
+// 	const imageLabels = document.querySelectorAll('.form-check-label');
 	
-	imageLabels.forEach((label, index) => {
-	  label.addEventListener('click', () => {
-	    radioButtons[index].checked = true;
-	  });
-	});
+// 	imageLabels.forEach((label, index) => {
+// 	  label.addEventListener('click', () => {
+// 	    radioButtons[index].checked = true;
+// 	  });
+// 	});
+	
+	
+	
+	
 
   
   
-  // 이전 날짜 선택 안되게
-  $("#moqooForm").submit(function(e) {
-      var now = new Date();
-      var selectDate = new Date($("#date").val());
-		let pmContent = $("#summernote");
-		let regContent = pmContent.val().replace(/<[^>]*>/g, '');
-      // 종료일이 시작일보다 과거이거나 같은 경우 유효성 체크 메시지 표시
-      if (selectDate < now) {
-			e.preventDefault();
-          alert("과거의 날짜는 선택할 수 없습니다.");
-      } else if (regContent === null || regContent.trim().length === 0) {
-			e.preventDefault();
-			alert("내용을 입력해주세요");
-		} else {
-			submit(); // submit 함수 호출 (변경된 코드에는 없지만 필요한 경우 추가하세요)
-		}
-  });
+//   // 이전 날짜 선택 안되게
+//   $("#moqooForm").submit(function(e) {
+//       var now = new Date();
+//       var selectDate = new Date($("#date").val());
+// 		let pmContent = $("#summernote");
+// 		let regContent = pmContent.val().replace(/<[^>]*>/g, '');
+//       // 종료일이 시작일보다 과거이거나 같은 경우 유효성 체크 메시지 표시
+//       if (selectDate < now) {
+// 			e.preventDefault();
+//           alert("과거의 날짜는 선택할 수 없습니다.");
+//       } else if (regContent === null || regContent.trim().length === 0) {
+// 			e.preventDefault();
+// 			alert("내용을 입력해주세요");
+// 		} else {
+// 			submit(); // submit 함수 호출 (변경된 코드에는 없지만 필요한 경우 추가하세요)
+// 		}
+//   });
 
   
 
@@ -693,19 +719,19 @@
 
 
 
-//■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
-  // 파일 선택 이벤트 리스너 추가
-  document.getElementById('thum').addEventListener('change', function () {
-    // 선택된 파일 가져오기
-    const selectedFile = this.files[0];
+// //■■■■■■■■■■■■■■■■■ 파일 버튼 변경 및 선택된 파일 이름 가져오기 ■■■■■■■■■■■■■■■■■
+//   // 파일 선택 이벤트 리스너 추가
+//   document.getElementById('thum').addEventListener('change', function () {
+//     // 선택된 파일 가져오기
+//     const selectedFile = this.files[0];
 
-    // 파일 정보 표시
-    if (selectedFile) {
-        document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
-    } else {
-        document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
-    }
-  });
+//     // 파일 정보 표시
+//     if (selectedFile) {
+//         document.getElementById('fileInfo').innerHTML = `파일 이름 : ${selectedFile.name}`;
+//     } else {
+//         document.getElementById('fileInfo').innerHTML = '파일을 선택하지 않았습니다.';
+//     }
+//   });
 
   </script>
 
@@ -719,33 +745,74 @@
 			var moqooWriter = "${moqoo.moqooWriter }";
 			var userId = "${sessionScope.userId}";
 			var attendStatus = "${moqoo.moqooUser.attendStatus}";
-			if(userId != moqooWriter) {
-				$.ajax({
-					url : "/moqoo/post",
-					data : {refMoqooNo : refMoqooNo, userId : userId, attendStatus : attendStatus },
-					type : "POST",
-					success : function(data){
-						if(data == "true"){
-							alert("참여신청이 완료되었습니다.");
+			if (currentUserId == "") {
+		        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+		            // 사용자가 확인을 누르면 로그인 페이지로 이동
+		            window.location.href = "/user/login";
+		            return; // 이동 후 함수를 종료
+		        }
+		    }else {
+				if(userId != moqooWriter) {
+					$.ajax({
+						url : "/moqoo/post",
+						data : {refMoqooNo : refMoqooNo, userId : userId, attendStatus : attendStatus },
+						type : "POST",
+						success : function(data){
+							if(data == "true"){		
+								alert("참여신청이 완료되었습니다.");
+								
+								if(socket){
+				        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+				        			console.log(socketMsg);
+				        			socket.send(socketMsg); //값을 서버로 보냄
+								}
+							}
+							else if(data == "false"){
+								alert("참여신청이 완료되지 않았습니다.");
+								
+							}
+							else if(data == "full") {
+								alert("인원이 마감되었습니다.");	
+							}
+							else if(data == "already") {
+								alert("이미 참여신청 되었습니다.");	
+							}
+							else  {
+								alert("오류! 관리자에게 문의 바랍니다.");
+							}
+							location.reload();  // 새로고침 해주는 애
+							
+						},
+						error : function(){
+							alert("관리자에게 문의 바랍니다.");
 						}
-						else if(data == "false"){
-							alert("참여신청이 완료되지 않았습니다.");
-						}
-						else if(data == "full") {
-							alert("인원이 마감되었습니다.");	
-						}else {
-							alert("오류! 관리자에게 문의 바랍니다.");
-						}
-						location.reload();  // 새로고침 해주는 애
-						
-					},
-					error : function(){
-						alert("관리자에게 문의 바랍니다.");
-					}
-				});
-			}else{
-				alert("이미 참여신청 되었습니다.");
+					});
+				}else{
+					alert("본인의 게시글입니다.");
+				}
+		    }
+			
+			// 참여신청자 알람등록(참여신청버튼 누를때 보냄)
+			if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+				const comtNo = 0;
+				const title = "${moqoo.moqooTitle}";
+			
+			 $.ajax({
+			        url : '/alert/insertalarm',
+			        type : 'POST',
+			        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
+			        dataType : "json", 
+			     	// ↑보내는거
+					// ↓받는거
+			        success : function(result){
+//			           		if(sessionUserId  != boardWriter){
+			           		
+//				        	}
+			        }
+			    
+			    });
 			}
+			//알람끝
 		});
 	});
 
@@ -764,9 +831,14 @@
 	        success: function(response) {
 	        	if(response == "true"){
 					alert("승인 되었습니다.");
+					if(socket){
+	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+	        			console.log(socketMsg);
+	        			socket.send(socketMsg); //값을 서버로 보냄
+					}
 				}
 				else if(response == "false"){
-					alert("승인이 완료되지 않았습니다.");
+					alert("승인이 처리가 완료되지 않았습니다.");
 				}
 				else {
 					alert("오류! 관리자에게 문의 바랍니다.");
@@ -778,6 +850,86 @@
 	            alert('에러가 발생했습니다: ' + error);
 	        }
 	    });
+	    
+	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
+		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+			const comtNo = 0;
+			const title = "${moqoo.moqooTitle}";
+		
+		 $.ajax({
+		        url : '/alert/insertalarm',
+		        type : 'POST',
+		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
+		        dataType : "json", 
+		     	// ↑보내는거
+				// ↓받는거
+		        success : function(result){
+//		           		if(sessionUserId  != boardWriter){
+		           		
+//			        	}
+		        }
+		    
+		    });
+		}
+		//알람끝
+	});
+	
+	
+	
+	// 거절 버튼 클릭 이벤트 핸들러
+	$('#sorry').click(function() {
+		console.log(this);
+		var refMoqooNo = $(this).prev().val();
+		var refUserId = $(this).prev().prev().val();
+		var attendStatus = $(this).prev().prev().prev().val();
+	    $.ajax({
+	        type: 'POST',
+	        url: '/moqoo/attendN', // 백엔드에서 승인 로직이 구현된 엔드포인트
+	        data : {refMoqooNo : refMoqooNo, refUserId : refUserId, attendStatus : attendStatus },
+	        success: function(response) {
+	        	if(response == "true"){
+					alert("거절 되었습니다.");
+					if(socket){
+	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+	        			console.log(socketMsg);
+	        			socket.send(socketMsg); //값을 서버로 보냄
+					}
+				}
+				else if(response == "false"){
+					alert("거절 처리가 완료되지 않았습니다.");
+				}
+				else {
+					alert("오류! 관리자에게 문의 바랍니다.");
+				}
+	        	location.reload();
+// 	            alert(response); // 서버로부터의 응답 메시지를 표시
+	        },
+	        error: function(xhr, status, error) {
+	            alert('에러가 발생했습니다: ' + error);
+	        }
+	    });
+	    
+	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
+		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+			const comtNo = 0;
+			const title = null;
+		
+		 $.ajax({
+		        url : '/alert/insertalarm',
+		        type : 'POST',
+		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': " moqoono"},
+		        dataType : "json", 
+		     	// ↑보내는거
+				// ↓받는거
+		        success : function(result){
+//		           		if(sessionUserId  != boardWriter){
+		           		
+//			        	}
+		        }
+		    
+		    });
+		}
+		//알람끝
 	});
 	
 	</script>
@@ -1101,12 +1253,12 @@
 	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 	    
 	    // 액션 메뉴 추가
-	    var actionMenuBtn = $("<span>").attr("id", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
-	    var actionMenu = $("<div>").addClass("action_menu");
+	    var actionMenuBtn = $("<span>").attr("class", "action_menu_btn").html("<i class='bi bi-three-dots-vertical'></i>");
+	    var actionMenu = $("<div>").addClass("action_menu comt_action_menu");
 	    var actionMenuList = $("<ul>");
 	    
 	 	// 프로필 보기 메뉴
-	    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
+	    var profileMenuItem = $("<li>").html("<a href='/user/profile?userId=" + comment.user.userId + "'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
 	    
 	    actionMenuList.append(profileMenuItem);
 	    actionMenu.append(actionMenuList);
@@ -1140,7 +1292,9 @@
 	 	// 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var showReportLink = !isCurrentUser;
 	    if (showReportLink) {
-	        var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	        var reportMenuItem = $("<li>").html(`<a href='#' onclick='createComtReportModal(${comment.commentNo}, ${comment.comtWriter});' data-bs-toggle='modal' data-bs-target='#comtReportModal' data-commentNo="${comment.comtNo}" data-commentWriter="${comment.comtWriter}"><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	        reportMenuItem.data("comtNo", comment.comtNo);
+	        reportMenuItem.data("comtWriter", comment.comtWriter);
 	        actionMenuList.append(reportMenuItem);
 	    }
 	    
@@ -1177,7 +1331,11 @@
 
 	// 좋아요
 	function like() {
+		var sessionUserId = "${sessionScope.userId }";
+		var moqooWriter = "${moqoo.moqooWriter }"
  		var moqooNo = ${moqoo.moqooNo };
+ 		var comtNo = 0;
+ 		var title = null;
 		var likeCount = ${likeCount };
 		if (currentUserId == "") {
 	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
@@ -1197,6 +1355,13 @@
 	                    $("#likeButton i").removeClass("bi-heart").addClass("bi-heart-fill");
 	                    updateLikeCount(1); // 좋아요 숫자를 1 증가
 	                    alert("좋아요를 등록하였습니다.");
+	                    
+	                    if(socket){
+		        			let socketMsg = "comment,"+sessionUserId+","+moqooWriter+","+moqooNo+","+comtNo+","+title;
+		        			console.log(socketMsg);
+		        			socket.send(socketMsg); //값을 서버로 보냄
+		           		}
+	                    
 	                } else if (data === "delete") {
 	                    $("#likeButton i").removeClass("bi-heart-fill").addClass("bi-heart");
 	                    updateLikeCount(-1); // 좋아요 숫자를 1 감소
@@ -1209,7 +1374,27 @@
 		        }
 	    	});
 	    }
+		
+		//알람등록(댓글등록버튼 누를때 보냄)
+		if(sessionUserId != moqooWriter){ //댓단사람 != 모꾸쓴이
+		 $.ajax({
+		        url : '/alert/insertalarm',
+		        type : 'POST',
+		        data : {'fromUserId': sessionUserId , 'toUserId': moqooWriter , 'boardNo':moqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "like"},
+		        dataType : "json", 
+		     	// ↑보내는거
+				// ↓받는거
+		        success : function(result){
+//		           		if(sessionUserId  != boardWriter){
+		           		
+//			        	}
+		        }
+		    
+		    });
+		}
+		//알람끝
 	}
+	
 			
 	function updateLikeCount(change) {
 	    var likeCountElement = document.getElementById("like-count");
@@ -1218,16 +1403,25 @@
 	    likeCountElement.textContent = newLikeCount;
 	}
 	
-	// 게시물신고버튼 토글
-	$(document).on("click", "#action_menu_btn", function() {
-		$(this).next().toggle();
-	});
+	
+	// 게시물 신고버튼 토글
 	$('#action_menu_btn').on("click", function() {
 		$(this).next().toggle();
     });
+	
+	// 댓글 신고버튼 토글
+	$(document).on("click", ".action_menu_btn", function() {
+		if($('.comt_action_menu').show()){
+			$('.comt_action_menu').hide();
+		}		
+		$(this).next().toggle();
+	});
+	
+	
 
     var selectElement = document.getElementById("reportSelect");
     var textareaElement = document.getElementById("customReason");
+   
     selectElement.addEventListener("change", function() {
        if (selectElement.value === "etc") {
            textareaElement.style.display = "block";
@@ -1236,6 +1430,8 @@
            textareaElement.style.display = "none";
        }
      });
+    
+    
     $("#reportForm").on("submit", function() {
     	if(textareaElement.style.display == "block") {
 	    	selectElement.disabled = "true";
@@ -1243,6 +1439,104 @@
     		textareaElement.disabled = "true";
     	}
    	});	
+    
+    function goBack() {
+		window.history.back(); // 뒤로가기
+	}
+    
+    
+ // 모달을 생성할 때 사용할 함수
+    function createComtReportModal(comtNo, comtWriter) {
+        var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">');
+        var modalDialog = $('<div class="modal-dialog">');
+        var modalContent = $('<div class="modal-content">');
+
+        // 모달 헤더
+        var modalHeader = $('<div class="modal-header">');
+        var modalTitle = $('<h1 class="modal-title fs-5" id="exampleModalLabel">').text("댓글 신고하기");
+        var closeButton = $('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">');
+
+        // 모달 바디
+        var modalBody = $('<div class="modal-body">');
+        var selectLabel = $('<label for="reportSelect">신고 사유:</label>');
+        var select = $('<select name="report" id="reportSelect">')
+            .append($('<option value="abusive">욕설사용</option>'))
+            .append($('<option value="advertising">광고글</option>'))
+            .append($('<option value="noSubject">주제와 맞지 않는 글</option>'))
+            .append($('<option value="violent">폭력적인 내용</option>'))
+            .append($('<option value="Discrimination">차별적인 내용</option>'))
+            .append($('<option value="pornography">음란물</option>'))
+            .append($('<option value="Personal">민감한 개인정보 노출</option>'))
+            .append($('<option value="etc">기타 (직접 작성)</option>'));
+        var customReasonTextArea = $('<textarea id="customReason" style="display:none" spellcheck="false"></textarea');
+        var smallNote = $('<small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>');
+
+        modalBody.append(selectLabel, select, customReasonTextArea, smallNote);
+
+        // 모달 푸터
+        var modalFooter = $('<div class="modal-footer">');
+        var sendButton = $('<button type="submit" id="send-comt-report" class="btn send-report report-comment-button">').text("보내기");
+        var cancelButton = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">').text("취소");
+
+        modalHeader.append(modalTitle, closeButton);
+        modalFooter.append(sendButton, cancelButton);
+        modalContent.append(modalHeader, modalBody, modalFooter);
+        modalDialog.append(modalContent);
+        modal.append(modalDialog);
+
+        $('body').append(modal);
+
+        var myModal = new bootstrap.Modal(modal[0], {
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        var commentNo, commentWriter;
+        sendButton.on('click', function() {
+            var commentNo = $('#comtReportModal').data('commentNo');
+            var commentWriter = $('#comtReportModal').data('commentWriter');
+            var moqooReportContent = $("#reportSelect").val();
+            if (moqooReportContent === "etc") {
+                moqooReportContent = $("#customReason").val();
+            }
+            $.ajax({
+                url: "/moqoo/report",
+                data: {
+                    reportWriter: currentUserId,
+                    reportContent: moqooReportContent,
+                    reportComtNo: commentNo,
+                    reportUserId: commentWriter,
+                    reportType: 'MC'
+                },
+                type: "get",
+                success: function(data) {
+                    if (data == "moqooComtReport") {
+                        $('#comtReportModal').modal('hide');
+                        alert("게시물 신고가 완료되었습니다.");
+                    }
+                }
+            });
+        });
+        
+        return function(comtNo, comtWriter) {
+            $('#reportSelect').val('abusive');
+            $('#customReason').val('');
+            commentNo = comtNo;
+            commentWriter = comtWriter;
+            myModal.show();
+            modal.data('commentNo', commentNo);
+            modal.data('commentWriter', commentWriter);
+        };
+    }
+ 
+    var openComtReportModal = createComtReportModal();
+    
+    
+    $('.report-comment-button').on('click', function() {
+        var commentNo = $(this).data('comment-no');
+        var commentWriter = $(this).data('comment-writer');
+        openComtReportModal(commentNo, commentWriter);
+    });
 	</script>
 </body>
 </html>
