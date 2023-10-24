@@ -11,6 +11,7 @@ import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.store.ChatStore;
+import com.jiqoo.report.domain.ChatReport;
 import com.jiqoo.user.domain.User;
 
 @Repository
@@ -47,6 +48,12 @@ public class ChatStoreLogic implements ChatStore {
 	public int insertNewChatRoomByMoqoo(SqlSession sqlSession, ChatRoom chatRoom) {
 		int moqooChatNo = sqlSession.insert("ChatMapper.insertNewChatRoomByMoqoo", chatRoom);
 		return moqooChatNo;
+	}
+
+	@Override
+	public int insertChatReport(SqlSession sqlSession, ChatReport chatReport) {
+		int result = sqlSession.insert("ChatMapper.insertChatReport", chatReport);
+		return result;
 	}
 
 	@Override
@@ -152,6 +159,14 @@ public class ChatStoreLogic implements ChatStore {
 	public ChatRoom selectChatRoomByMoqoo(SqlSession sqlSession, int moqooNo) {
 		ChatRoom chatRoom = sqlSession.selectOne("ChatMapper.selectChatRoomByMoqoo", moqooNo);
 		return chatRoom;
+	}
+
+	@Override
+	public void updateChatNameFromOut(SqlSession sqlSession, String str, int refChatNo) {
+		Map<String, Object> chatMap = new HashMap<>();
+		chatMap.put("str", str);
+		chatMap.put("chatNo", refChatNo);
+		sqlSession.update("ChatMapper.updateChatNameFromOut", chatMap);
 	}
 
 }

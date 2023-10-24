@@ -379,6 +379,7 @@
 					</div>
 					<div class="modal-body">
 						<select name="report" id="reportSelect">
+							<option value="none" disabled selected>신고 사유를 선택해주세요</option>
 							<option value="abusive">욕설사용</option>
 							<option value="advertising">광고글</option>
 							<option value="noSubject">주제와 맞지 않는 글</option>
@@ -395,7 +396,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn send-report">보내기</button>
+						<button type="button" class="btn send-report" id="report-send">보내기</button>
 						<button type="button" class="btn btn-secondary"
 							data-bs-dismiss="modal">취소</button>
 					</div>
@@ -458,6 +459,34 @@
 		      }
 		    });
 		  }
+		 // 신고 제출
+		 $("#report-send").on('click', function() {
+			 chatNo = $("#hiddenChatNo").val();
+			 var chatReportContent = $("#reportSelect").val();
+			 if($("#reportSelect").val() === "etc") {
+				 chatReportContent = $("#customReason").val();
+			 }
+			 if(chatReportContent !== "none" || chatReportContent === "") {
+				 $.ajax({
+					 url : "/chat/report",
+					 data : {
+						 chatReportWriter : userId,
+						 chatReportContent : chatReportContent,
+						 reportChatNo : chatNo
+					 },
+					 type : "POST",
+					 success : function(data) {
+						 if(data == "success"){
+							 alert("신고가 완료되었습니다. 관리자 확인 후 처리 예정입니다. 감사합니다.");
+							 $('#reportModal').modal('hide');
+						 }else {
+							 alert("오류가 발생하였습니다. 다시 시도해주세요.");
+						 }
+					 }
+				 })
+				 
+			 }
+		 })
 
 		  // 불러온 데이터를 모달에 표시하는 함수
 		  function displayUserInformation(data) {
@@ -538,16 +567,20 @@
 		}
 		function scrollToBottom() {
 		    var chatBody = $("#chat_body");
-		    var chatMessages = chatBody.find(".msg_cotainer img"); // 이미지 엘리먼트를 찾습니다.
+		    var chatMessages = chatBody.find(".msg_cotainer img");
 
-		    // 모든 이미지가 로드될 때까지 대기
-		    if(chatMessages.length > 0) {
-			    chatMessages.on("load", function() {
-			        // 모든 이미지가 로드된 후에 스크롤 위치를 조절합니다.
-			        chatBody.scrollTop(chatBody[0].scrollHeight);
-			    });		    	
-		    }else {
-		    	chatBody.scrollTop(chatBody[0].scrollHeight);
+		    if (chatMessages.length > 0) {
+		        // 이미지 로드 이벤트 리스너를 추가
+		        chatMessages.on("load", function() {
+		            // 모든 이미지가 로드된 후에 스크롤 위치를 조절
+		            chatBody.scrollTop(chatBody[0].scrollHeight);
+		        });
+
+		        // 이미지 로딩 중일 때도 현재 스크롤 위치를 하단으로 설정
+		        chatBody.scrollTop(chatBody[0].scrollHeight);
+		    } else {
+		        // 이미지가 없는 경우에는 그냥 스크롤을 아래로 내림
+		        chatBody.scrollTop(chatBody[0].scrollHeight);
 		    }
 		}
 		function formatTimestamp(timestamp) {

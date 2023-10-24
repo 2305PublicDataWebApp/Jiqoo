@@ -64,6 +64,9 @@
 		INSERT INTO CHAT_ROOM_TBL (CHAT_NO, CHAT_NAME, REF_MOQOO_NO, C_CREATE_DATE, C_IMAGE_PATH)
 		VALUES (#{moqooChatNo}, #{chatName}, #{refMoqooNo}, DEFAULT, #{cImagePath)
 	</insert>
+	<insert id="insertChatReport">
+		INSERT INTO CHAT_REPORT_TBL VALUES(CHAT_REPORT_NO.NEXTVAL, #{chatReportWriter}, #{chatReportContent}, DEFAULT, #{reportChatNo})
+	</insert>
 	<update id="updateChatLastDate">
 		UPDATE CHAT_USER_TBL SET CHAT_LAST_DATE = DEFAULT
 		WHERE REF_CHAT_NO = #{refChatNo} AND USER_ID = #{userId}
@@ -71,6 +74,11 @@
 	<update id="updateChatName" parameterType="Map">
 		UPDATE CHAT_ROOM_TBL
 		SET CHAT_NAME = CONCAT(CHAT_NAME, #{str})
+		WHERE CHAT_NO = #{chatNo}
+	</update>
+	<update id="updateChatNameFromOut" parameterType="Map">
+		UPDATE CHAT_ROOM_TBL
+		SET CHAT_NAME = #{str}
 		WHERE CHAT_NO = #{chatNo}
 	</update>
 	<delete id="deleteChatUserById">

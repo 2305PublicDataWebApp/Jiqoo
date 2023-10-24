@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
+import com.jiqoo.report.domain.ChatReport;
 import com.jiqoo.user.domain.User;
 
 public interface ChatStore {
@@ -47,6 +48,24 @@ public interface ChatStore {
 	 * @return int
 	 */
 	int insertChatUserByChatNo(SqlSession sqlSession, int chatNo, String userId);
+
+	/**
+	 * 모꾸 생성시 채팅방 개설 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatRoom
+	 * @return int
+	 */
+	int insertNewChatRoomByMoqoo(SqlSession sqlSession, ChatRoom chatRoom);
+
+	/**
+	 * 채팅방 신고 Store
+	 * 
+	 * @param sqlSession
+	 * @param chatReport
+	 * @return int
+	 */
+	int insertChatReport(SqlSession sqlSession, ChatReport chatReport);
 
 	/**
 	 * 채팅방 연결 해제시 마지막 접속시간 업데이트 Store
@@ -179,15 +198,6 @@ public interface ChatStore {
 	ChatRoom selectChatRoomByNo(SqlSession sqlSession, int chatNo);
 
 	/**
-	 * 모꾸 생성시 채팅방 개설 Store
-	 * 
-	 * @param sqlSession
-	 * @param chatRoom
-	 * @return int
-	 */
-	int insertNewChatRoomByMoqoo(SqlSession sqlSession, ChatRoom chatRoom);
-
-	/**
 	 * 모꾸 번호로 채팅방 조회 Store
 	 * 
 	 * @param sqlSession
@@ -195,5 +205,14 @@ public interface ChatStore {
 	 * @return ChatRoom
 	 */
 	ChatRoom selectChatRoomByMoqoo(SqlSession sqlSession, int moqooNo);
+
+	/**
+	 * 채팅방 나갈때 채팅방 이름 업데이트 Store
+	 * 
+	 * @param sqlSession
+	 * @param str
+	 * @param refChatNo
+	 */
+	void updateChatNameFromOut(SqlSession sqlSession, String str, int refChatNo);
 
 }

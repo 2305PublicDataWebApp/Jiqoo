@@ -37,6 +37,7 @@ import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatRoomWithUnreadCount;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.service.ChatService;
+import com.jiqoo.report.domain.ChatReport;
 import com.jiqoo.user.domain.User;
 
 @Controller
@@ -236,7 +237,7 @@ public class ChatController {
 		List<String> selectedUserIds = (List<String>) requestData.get("selectedUserIds");
 		for (String userId : selectedUserIds) {
 			result += chatService.insertChatUserByChatNo(chatNo, userId);
-			str += " " + chatService.getUserNickname(userId);
+			str += chatService.getUserNickname(userId);
 		}
 		if (result >= selectedUserIds.size()) {
 			chatService.updateChatName(str, chatNo);
@@ -251,6 +252,12 @@ public class ChatController {
 	@GetMapping("/chat/delete-chat-user")
 	public String deleteChatUser(@ModelAttribute ChatUser chatUser, Model model) {
 		int result = chatService.deleteChatUserById(chatUser);
+		List<User> userList = chatService.selectAllUserByChatNo(chatUser.getRefChatNo());
+		String str = "";
+		for(User user : userList) {
+			str += user.getUserNickname() + " ";
+		}
+		chatService.updateChatNameFromOut(str, chatUser.getRefChatNo());
 		if (result > 0) {
 			return "success";
 		} else {
@@ -344,11 +351,16 @@ public class ChatController {
 		}
 	}
 
-
-//	@MessageMapping(value = "/chat/chatRoom-{refChatNo}")
-//	public void receiveMessage(ChatMessage message, @DestinationVariable int refChatNo) {
-//		template.convertAndSend("/toppic/chat/chatRoom-" + refChatNo, message);
-//		
-//	}
+	// 채팅방 신고
+	@ResponseBody
+	@PostMapping("/chat/report")
+	public String insertChatRoomReport(@ModelAttribute ChatReport chatReport) {
+		int result = chatService.insertChatReport(chatReport);
+		if(result > 0) {
+			return "success";
+		}else {
+			return "fail";
+		}
+	}
 
 }
