@@ -29,7 +29,7 @@
 		
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a class="nav-link" href="/jiqoo/list">지꾸</a></li>
+          <li><a class="nav-link" href="/jiqoo/mapList">지꾸</a></li>
           <li><a class="nav-link" href="/moqoo/moqoo">모꾸</a></li>
           <!-- 알람아이콘 -->
           <li class="nav-item dropdown alarm">
@@ -227,25 +227,37 @@
 						else if(alertType == "jlike"){ //지꾸좋아요
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
+						}else if(alertType == "mcomment"){  //모꾸 댓글달림
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 댓글을 달았습니다</a></span>';
+// 							alarm += '<div class="small text-gray-500" style="text-align:right;">'+value.alertCreateDate+'</div>';
+							alarm += '<hr class="dropdown-divider">'
+						}
+						else if(alertType == "mcocomment"){  //모꾸 대댓글달림
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 대댓글을 달았습니다</a></span>';
+							alarm += '<hr class="dropdown-divider">'
+						}
+						else if(alertType == "mlike"){ //모꾸좋아요
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
+							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "follow"){  //팔로우
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="deleteAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 팔로우 했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "chat"){  //채팅 
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showChatList('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 팔로우 했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="/chat/list"  onclick="showChatList('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 에게 채팅을 보냈습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqoook"){  //모임요청승인 
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 팔로우 했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 모임 멤버로 승인했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqoono"){  //모임요청거절
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 팔로우 했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님은 '+value.toUserId+' 의 모임에 참여할 수 없습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqooreque"){  //모임신청받음
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 팔로우 했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 의 모임에 참가신청을 보냈습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						
