@@ -91,7 +91,7 @@
 		<section class="section">
 			<div class="row">
 				<div class="col-lg-12 ">
-					<h5 class="card-title" style="margin: 0 auto">회원 목록</h5>
+					<h5 class="card-title" style="margin: 0 auto">회원 리스트</h5>
 
 					<div id="user-main">
 

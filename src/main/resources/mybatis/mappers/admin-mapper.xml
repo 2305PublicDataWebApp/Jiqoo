@@ -40,8 +40,16 @@
 		<collection property="reportList" column="COMT_NO" javaType="List" ofType="Report" select="comtReportByNoList"></collection>
 	</resultMap>
 	
-
+	<resultMap type="ChatRoom" id="ChatResultMap">
+		<id property="chatNo" column="CHAT_NO"/>
+		<result property="cReportCount" column="C_REPORT_COUNT"/>
+		<collection property="reportList" column="CHAT_NO" javaType="List" ofType="Report" select="chatReportByNoList"></collection>
+	</resultMap>
 	
+	
+	
+<!-- *************************************************** -->
+
 	<!-- 회원관리페이지 총회원수 (= 총게시물수) -->
 	<select id="getUserListCount" resultType="_int">
 		SELECT COUNT (*) FROM USER_TBL WHERE ADMIN_YN = 'N'
@@ -209,7 +217,7 @@
 		SELECT COUNT (*) FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter}
 	</select>
 	
-	<!-- 회원별 댓글 리스트  -->
+	<!-- 회원별 댓글 리스트(+신고수)  -->
 	<select id="showUserComtList" resultType="Comment" resultMap="ComtResultMap">
 <!-- 		SELECT * FROM COMT_TBL WHERE COMT_WRITER = #{comtWriter} ORDER BY COMT_NO DESC -->
 
@@ -228,7 +236,14 @@
 	
 	<!-- 댓글 신고사유 리스트  by 회원아이디 -->
 	<select id="comtReportByNoList" resultType="Report" >
-		SELECT * FROM REPORT_TBL WHERE REPORT_COMT_NO = #{reportComtNo} ORDER BY REPORT_DATE DESC
+<!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_COMT_NO = #{reportComtNo} ORDER BY REPORT_DATE DESC -->
+		
+		SELECT REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
+		FROM REPORT_TBL
+		WHERE REPORT_COMT_NO = #{reportComtNo}
+		GROUP BY REPORT_CONTENT
+		
+		
 	</select>
 	
 <!-- ============================지꾸============================ -->	
@@ -339,7 +354,7 @@
 		SELECT COUNT (*) FROM MOQOO_TBL 
 	</select>
 
-	<!-- 모꾸관리페이지 총 모꾸 리스트 -->
+	<!-- 모꾸관리페이지 총 모꾸 리스트(+신고수) -->
 	<select id="selectAllMoqoo" resultType="moqoo" resultMap="MoqooResultMap">
 <!-- 		SELECT * FROM MOQOO_TBL ORDER BY MOQOO_NO DESC -->
 		SELECT M.*, NVL(R.M_REPORT_COUNT, 0) AS M_REPORT_COUNT
@@ -623,9 +638,9 @@
 <!-- ============================채팅============================ -->
 	
 	<!-- 채팅방관리_ 총 채팅방 수 (= 총게시물수) -->
-<!-- 	<select id="getChatRoomListCount" resultType="_int"> -->
-<!-- 		SELECT COUNT (*) FROM CHAT_ROOM_TBL  -->
-<!-- 	</select> -->
+	<select id="getChatRoomListCount" resultType="_int">
+		SELECT COUNT (*) FROM CHAT_ROOM_TBL 
+	</select>
 	
 	<!-- 채팅방관리_ 채팅방 리스트 -->
 <!-- 	<select id="selectAllChatRoom" > -->
@@ -642,8 +657,8 @@
 <!-- 		ORDER BY REF_CHAT_NO; -->
 <!-- 	</select> -->
 	
-	<!-- 다있는 채팅방 리스트 -->
-<!-- 	<select id="selectChatRoomAllList" resultType="map" parameterType="Map">	 -->
+	<!-- 다있는 채팅방 리스트(+신고수) -->
+	<select id="selectChatRoomAllList" resultMap="ChatResultMap">	
 <!-- 		SELECT CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE, -->
 <!--        LISTAGG(USR.USER_ID, ', ') WITHIN GROUP (ORDER BY USR.USER_ID) AS PARTICIPANTS, -->
 <!--        COUNT(USR.USER_ID) AS PARTICIPANT_COUNT -->
@@ -656,10 +671,32 @@
 <!-- 		JOIN CHAT_MSG_TBL MSG ON CRT.CHAT_NO = MSG.REF_CHAT_NO AND MAX_MSG.MAX_SEND_DATE = MSG.MSG_SEND_DATE -->
 <!-- 		LEFT JOIN CHAT_USER_TBL USR ON CRT.CHAT_NO = USR.REF_CHAT_NO -->
 <!-- 		GROUP BY CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE -->
-<!-- 		ORDER BY CRT.C_CREATE_DATE DESC; -->
-<!-- 	</select> -->
+<!-- 		ORDER BY CRT.C_CREATE_DATE DESC -->
+
+		SELECT CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE,
+		       LISTAGG(USR.USER_ID, ', ') WITHIN GROUP (ORDER BY USR.USER_ID) AS PARTICIPANTS,
+		       COUNT(USR.USER_ID) AS PARTICIPANT_COUNT,
+		       (SELECT COUNT(*) FROM CHAT_REPORT_TBL WHERE REPORT_CHAT_NO = CRT.CHAT_NO) AS REPORT_COUNT
+		FROM CHAT_ROOM_TBL CRT
+		JOIN (
+		    SELECT REF_CHAT_NO, MAX(MSG_SEND_DATE) AS MAX_SEND_DATE
+		    FROM CHAT_MSG_TBL
+		    GROUP BY REF_CHAT_NO
+		) MAX_MSG ON CRT.CHAT_NO = MAX_MSG.REF_CHAT_NO
+		JOIN CHAT_MSG_TBL MSG ON CRT.CHAT_NO = MSG.REF_CHAT_NO AND MAX_MSG.MAX_SEND_DATE = MSG.MSG_SEND_DATE
+		LEFT JOIN CHAT_USER_TBL USR ON CRT.CHAT_NO = USR.REF_CHAT_NO
+		GROUP BY CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE
+		ORDER BY CRT.C_CREATE_DATE DESC
+	</select>
 	
-	
+	<!-- 채팅방 신고사유 리스트  by 채팅번호 -->
+	<select id="chatReportByNoList" resultType="Report" >
+<!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_CHAT_NO = #{reportChatNo} AND REPORT_TYPE = 'M' ORDER BY REPORT_DATE DESC -->
+		SELECT CHAT_REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
+		FROM CHAT_REPORT_TBL
+		WHERE REPORT_CHAT_NO = #{reportChatNo}
+		GROUP BY CHAT_REPORT_CONTENT
+	</select>
 	
 	
 	
@@ -679,7 +716,7 @@
 		DELETE CHAT_ROOM_TBL WHERE CHAT_NO = #{chatNo}
 	</delete>
 	
-	
+
 
 	
 	
@@ -731,6 +768,29 @@
 		JOIN UserCounts ON JiqooCounts.TheDate = UserCounts.TheDate
 		ORDER BY JiqooCounts.TheDate
 	</select>
+	
+	
+		<!-- 날짜별 지꾸 등록수 리스트 -->
+	<select id="jiqooCountList" resultType="map">	
+		WITH DateRange AS (
+		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate
+		  FROM DUAL
+		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-12', 'YYYY-MM-DD') + 1)
+		)
+		, JiqooCounts AS (
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
+		         COALESCE(COUNT(JT.J_CREATE_DATE), 0) AS JiqooCount
+		  FROM DateRange
+		  LEFT JOIN JIQOO_TBL JT ON DateRange.FullDate = TRUNC(JT.J_CREATE_DATE)
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
+		)
+		SELECT JiqooCounts.TheDate AS TheDate,
+		       JiqooCounts.JiqooCount AS JiqooCount
+		FROM JiqooCounts
+		ORDER BY JiqooCounts.TheDate;
+	</select>
+
+
 
 
 	

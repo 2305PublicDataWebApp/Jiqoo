@@ -9,7 +9,7 @@
 		<result property="toUserId"     	column="TO_USER_ID"/> <!-- 받은사람 -->
 		<result property="fromUserId"   	column="FROM_USER_ID"/> <!-- 보낸사람 -->
 		<result property="boardNo"    		column="BOARD_NO"/>
-		<result property="replyNo"    		column="REPLY_NO"/>
+		<result property="comtNo"    		column="COMT_NO"/>
 		<result property="title" 			column="TITLE"/>
 		<result property="alertType"  		column="ALERT_TYPE"/>
 		<result property="alertCreateDate"  column="ALERT_CREATE_DATE"/>
@@ -17,7 +17,7 @@
 
 	<!-- 알람등록 -->
 	<insert id="insertAlarm">
-		INSERT INTO ALERT_TBL VALUES (SEQ_ALERT_NO.NEXTVAL,#{toUserId},#{fromUserId},#{boardNo},#{replyNo},#{title},#{alertType},DEFAULT)
+		INSERT INTO ALERT_TBL VALUES (SEQ_ALERT_NO.NEXTVAL,#{toUserId},#{fromUserId},#{boardNo},#{comtNo},#{title},#{alertType},DEFAULT)
 	</insert>
 
 	<!-- 알람수 -->
@@ -26,15 +26,15 @@
 	</select>
 	
 	<!-- 알람리스트 -->
-	<select id="selectAlarmList" resultMap="AlertResultMap">
+	<select id="selectAlarmList"  resultType="Alert">
 		SELECT * FROM 
 		(SELECT * FROM ALERT_TBL WHERE TO_USER_ID = #{toUserId} ) 
-		WHERE rowNUM &lt;=6 ORDER BY ALERT_CREATE_DATE ASC
+		WHERE rowNUM &lt;=6 ORDER BY ALERT_CREATE_DATE DESC
 	</select>
 	
-	
-	<delete id="deleteAlarm">
-		DELETE FROM ALERT_TBL WHERE TO_USER_ID = #{toUserId} AND BOARD_NO = #{boardNo}
+	<!-- 알람리스트 삭제 -->
+	<delete id="deleteAlarm" >
+		DELETE FROM ALERT_TBL WHERE FROM_USER_ID = #{fromUserId} AND BOARD_NO = #{boardNo}
 	</delete>
 
 

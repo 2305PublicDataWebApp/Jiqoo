@@ -518,11 +518,11 @@ public class AdminServiceImpl implements AdminService {
 	/**
 	 * 다있는 채팅방 리스트
 	 */
-//	@Override
-//	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap) {
-//		List<Map<String, Object>> chatRoomAllList = adminStore.selectChatRoomAllList(sqlSession, pInfo, chatMap);
-//		return chatRoomAllList;
-//	}
+	@Override
+	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap) {
+		List<Map<String, Object>> chatRoomAllList = adminStore.selectChatRoomAllList(sqlSession, pInfo, chatMap);
+		return chatRoomAllList;
+	}
 
 
 
@@ -538,6 +538,12 @@ public class AdminServiceImpl implements AdminService {
 	public List<Map<String, Object>> userCountList(User user) {
 		List<Map<String, Object>> userCountList = adminStore.userCountList(sqlSession, user);
 		return userCountList;
+	}
+
+	@Override
+	public List<Map<String, Object>> jiqooCountList(Jiqoo jiqoo) {
+		List<Map<String, Object>> jiqooCountList = adminStore.jiqooCountList(sqlSession, jiqoo);
+		return jiqooCountList;
 	}
 
 

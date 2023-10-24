@@ -442,7 +442,7 @@ public interface AdminStore {
 	 * @param chatMap
 	 * @return
 	 */
-//	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap);
+	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap);
 
 	/**
 	 * 회원 날짜별 가입수 리스트
@@ -451,6 +451,8 @@ public interface AdminStore {
 	 * @return
 	 */
 	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
+
+	public List<Map<String, Object>> jiqooCountList(SqlSession sqlSession, Jiqoo jiqoo);
 
 
 

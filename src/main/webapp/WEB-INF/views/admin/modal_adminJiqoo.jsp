@@ -47,11 +47,9 @@
 					
 					<div id="r-reason">
 						<c:forEach var="jiqooReport" items="${jiqooList.reportList}" varStatus="i">
-							
-	<%-- 							${ jiqooReport.reportContent} --%>
 							<script>
-								var reportContent = "${moqooReport.reportContent}";
-								var reportCount = "${moqooReport.reportCount}";
+								var reportContent = "${jiqooReport.reportContent}";
+								var reportCount = "${jiqooReport.reportCount}";
 								var replacedText = "";
 													
 								switch (reportContent) {

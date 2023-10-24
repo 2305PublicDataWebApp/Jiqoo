@@ -31,7 +31,7 @@ public interface AlertStore {
 	 * @param memberId
 	 * @return
 	 */
-	List<Alert> selectAlarmList(SqlSession sqlSession, String memberId);
+	List<Alert> selectAlarmList(SqlSession sqlSession, Alert alert);
 
 	/**
 	 * 알람리스트 삭제 
@@ -39,8 +39,7 @@ public interface AlertStore {
 	 * @param paramMap
 	 * @return
 	 */
-	Integer deleteAlarm(SqlSession sqlSession, Map<String, Object> paramMap);
+	Integer deleteAlarm(SqlSession sqlSession, Alert alert);
 
-//	void alramClick(SqlSession sqlSession, String memberId, int boardNo);
 
 }

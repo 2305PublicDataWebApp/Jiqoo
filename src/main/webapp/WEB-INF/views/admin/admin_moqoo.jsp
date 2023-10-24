@@ -91,7 +91,7 @@
       <div class="row">
 
         <div class="col-lg-10" style="margin:0 auto">
-          <h5 class="card-title" style="color:#222;">모꾸 목록</h5>
+          <h5 class="card-title" style="color:#222;">모꾸 리스트</h5>
           <div class="card">
             <div class="card-body">
               

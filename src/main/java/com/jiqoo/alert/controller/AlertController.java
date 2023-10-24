@@ -34,7 +34,7 @@ public class AlertController {
 	@ResponseBody
 	@PostMapping(value = "/alert/insertalarm", produces="application/json;charset=utf-8")
 	public Integer insertAlram (@ModelAttribute Alert alert
-							  , @RequestParam(value="replyNo", required=false ) int replyNo ) throws Exception{
+							  , @RequestParam(value="comtNo", required=false ) int comtNo ) throws Exception{
 		Integer result = 1;
 		result = alertService.insertAlarm(alert);
 //		System.out.println(alert);
@@ -43,21 +43,21 @@ public class AlertController {
 	
 	//알람수
 	@ResponseBody
-	@GetMapping(value = "/alert/alarmcount.kh")
+	@GetMapping(value = "/alert/alarmcount")
 	public Integer selectAlarmCount (@ModelAttribute Alert alert
 									,HttpSession session) throws Exception{
-		String memberId = (String)session.getAttribute("memberId");
-		Integer result = alertService.selectAlarmCount(memberId);
-		alert.setToUserId(memberId);
+		String toUserId = (String)session.getAttribute("userId");
+		Integer result = alertService.selectAlarmCount(toUserId);
+		alert.setToUserId(toUserId);
 		
-			return result;
+		return result;
 	}
 	
-	//알람목록
+	//알람리스트
 	@ResponseBody
-	@GetMapping(value = "/alert/alarmlist.kh" , produces="application/json;charset=utf-8")
-	public String selectAlarmList(String memberId) throws Exception{
-		 List<Alert> alertList = alertService.selectAlarmList(memberId);				
+	@GetMapping(value = "/alert/alarmlist" , produces="application/json;charset=utf-8")
+	public String selectAlarmList(Alert alert , HttpSession session ) throws Exception{
+		 List<Alert> alertList = alertService.selectAlarmList(alert);				
 
 		 Gson gson = new Gson();
 		return gson.toJson(alertList);
@@ -66,21 +66,34 @@ public class AlertController {
 	
 	//알람리스트 삭제 
 	@ResponseBody
-	@PostMapping(value = "/alert/deletealarm.kh")
-	public Integer deleteAlarm(@ModelAttribute Alert alert, String memberId, Integer boardNo, HttpSession session) throws Exception{
+	@PostMapping(value = "/alert/deletealarm")
+	public Integer deleteAlarm(String fromUserId
+							 , int boardNo
+							 , HttpSession session) throws Exception{
 		System.out.println("알람클릭");
-		String toUserId = (String)session.getAttribute("memberId");
+//		String toUserId = (String)session.getAttribute("userId");
 		
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("toUserId", toUserId);
-		paramMap.put("boardNo", boardNo);
-		Integer result = alertService.deleteAlarm(paramMap);
+//		Map<String, Object> paramMap = new HashMap<String, Object>();
+//		paramMap.put("alert", alert);
+//		paramMap.put("boardNo", boardNo);
+		Alert alert = new Alert(fromUserId, boardNo);
+		Integer result = alertService.deleteAlarm(alert);
 		
 		return result;
 	}
-//	https://kimfk567.tistory.com/75
 		
+	//알람 정보 가져오기 
+	//알람리스트
+	@ResponseBody
+	@GetMapping(value = "/alert/saerchAlarm" , produces="application/json;charset=utf-8")
+	public String searchAlarmList(Alert alert , HttpSession session ) throws Exception{
+		 List<Alert> alertList = alertService.selectAlarmList(alert);		
 		
+
+		 Gson gson = new Gson();
+		return gson.toJson(alertList);
+	}
+	
 		
 
 

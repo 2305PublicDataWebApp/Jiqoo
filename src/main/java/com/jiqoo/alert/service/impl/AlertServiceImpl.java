@@ -40,8 +40,8 @@ public class AlertServiceImpl implements AlertService{
 	 * 알람리스트
 	 */
 	@Override
-	public List<Alert> selectAlarmList(String memberId) {
-		List<Alert> alramList = alertStore.selectAlarmList(sqlSession, memberId);
+	public List<Alert> selectAlarmList(Alert alert) {
+		List<Alert> alramList = alertStore.selectAlarmList(sqlSession, alert);
 		return alramList;
 	}
 
@@ -49,8 +49,8 @@ public class AlertServiceImpl implements AlertService{
 	 * 알람리스트 삭제 
 	 */
 	@Override
-	public Integer deleteAlarm(Map<String, Object> paramMap) {
-		Integer result = alertStore.deleteAlarm(sqlSession, paramMap);
+	public Integer deleteAlarm(Alert alert) {
+		Integer result = alertStore.deleteAlarm(sqlSession, alert);
 		return result;
 	}
 

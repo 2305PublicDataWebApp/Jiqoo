@@ -561,15 +561,15 @@ public class AdminStoreLogic implements AdminStore {
 	/**
 	 * 다있는 채팅방 리스트
 	 */
-//	@Override
-//	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap) {
-//		int limit = pInfo.getRecordCountPerPage();
-//		int offset = (pInfo.getCurrentPage() - 1) * limit;
-//
-//		RowBounds rowBounds = new RowBounds(offset, limit);
-//		List<Map<String, Object>> chatRoomAllList = sqlSession.selectList("AdminMapper.selectChatRoomAllList", chatMap, rowBounds);
-//		return chatRoomAllList;
-//	}
+	@Override
+	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap) {
+		int limit = pInfo.getRecordCountPerPage();
+		int offset = (pInfo.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<Map<String, Object>> chatRoomAllList = sqlSession.selectList("AdminMapper.selectChatRoomAllList", chatMap, rowBounds);
+		return chatRoomAllList;
+	}
 
 	/**
 	 * 챗방 강제삭제
@@ -589,6 +589,12 @@ public class AdminStoreLogic implements AdminStore {
 	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user) {
 		List<Map<String, Object>> userCountList = sqlSession.selectList("AdminMapper.userCountList", user);
 		return userCountList;
+	}
+
+	@Override
+	public List<Map<String, Object>> jiqooCountList(SqlSession sqlSession, Jiqoo jiqoo) {
+		List<Map<String, Object>> jiqooCountList = sqlSession.selectList("AdminMapper.jiqooCountList", jiqoo);
+		return jiqooCountList;
 	}
 
 

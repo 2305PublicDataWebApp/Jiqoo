@@ -25,8 +25,8 @@ public class AlertStoreLogic implements AlertStore{
 	 * 알람수
 	 */
 	@Override
-	public Integer selectAlarmCount(SqlSession sqlSession, String toUserId) {
-		Integer result = sqlSession.selectOne("AlertMapper.selectAlarmCount", toUserId);
+	public Integer selectAlarmCount(SqlSession sqlSession, String userId) {
+		Integer result = sqlSession.selectOne("AlertMapper.selectAlarmCount", userId);
 		return result;
 	}
 
@@ -34,8 +34,8 @@ public class AlertStoreLogic implements AlertStore{
 	 * 알람리스트
 	 */
 	@Override
-	public List<Alert> selectAlarmList(SqlSession sqlSession, String memberId) {
-		List<Alert> alramList = sqlSession.selectList("AlertMapper.selectAlarmList", memberId);
+	public List<Alert> selectAlarmList(SqlSession sqlSession, Alert alert) {
+		List<Alert> alramList = sqlSession.selectList("AlertMapper.selectAlarmList", alert);
 		return alramList;
 	}
 
@@ -43,8 +43,8 @@ public class AlertStoreLogic implements AlertStore{
 	 * 알람리스트 삭제 
 	 */
 	@Override
-	public Integer deleteAlarm(SqlSession sqlSession, Map<String, Object> paramMap) {
-		Integer result = sqlSession.delete("AlertMapper.deleteAlarm", paramMap);
+	public Integer deleteAlarm(SqlSession sqlSession, Alert alert) {
+		Integer result = sqlSession.delete("AlertMapper.deleteAlarm", alert);
 		return result;
 	}
 

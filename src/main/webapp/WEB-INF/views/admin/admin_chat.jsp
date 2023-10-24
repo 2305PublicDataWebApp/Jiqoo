@@ -84,7 +84,7 @@
 
           <!--=====단체채팅방=====-->
           <div class="col-lg-10 group-chat" style="margin:0 auto">
-          	<h5 class="card-title" style="color:#222;">채팅방 목록</h5>
+          	<h5 class="card-title" style="color:#222;">채팅방 리스트</h5>
             
             <!-- <h4 class="card-title" style="margin:20px auto">단체채팅방</h4> -->
             <!-- <div id="group-part"> -->
@@ -138,13 +138,13 @@
 	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
 	                    <td>${chatRoomList.chatName }</td>  <!-- 채팅방이름 -->
 	                    <td>
-	                      <img src="..resources/assets/img/no-profile.png" style="width:50px"> <!-- 프로필 -->
+	                      <img src="${chatRoomAllList.participants}" style="width:50px"> <!-- 프로필 -->
 	                    </td>
-	                    <td title="">${chatRoomList.participants }</td> <!-- 참여자목록 -->
-	                    <td>${chatRoomList.count }</td>
-	                    <td>${chatRoomList.chatMessage.msgSendDate }</td>
+	                    <td title="">${chatRoomAllList.participant }</td> <!-- 참여자목록 -->
+	                    <td>${chatRoomAllList.participant_count }</td>
+	                    <td>${chatRoomAllList.msg_send_date }</td>
 <%-- 	                    <td>${chatList.msgSendDate }</td> --%>
-	                    <td>신고수</td>
+	                    <td>${chatRoomAllList.cReportCount}</td>
 	                    <td>
 	                       <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailChatModal${i.count }">조회</button>
 	                    </td>
