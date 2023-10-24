@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
+import com.jiqoo.report.domain.ChatReport;
 import com.jiqoo.user.domain.User;
 
 public interface ChatService {
@@ -51,6 +52,14 @@ public interface ChatService {
 	 * @return int
 	 */
 	int insertNewChatRoomByMoqoo(ChatRoom chatRoom);
+
+	/**
+	 * 채팅방 신고 Service
+	 * 
+	 * @param chatReport
+	 * @return int
+	 */
+	int insertChatReport(ChatReport chatReport);
 
 	/**
 	 * 채팅방 연결 해제시 마지막 접속시간 업데이트 Service
@@ -176,6 +185,13 @@ public interface ChatService {
 	 * @return ChatRoom
 	 */
 	ChatRoom selectChatRoomByMoqoo(int moqooNo);
+
+	/**
+	 * 채팅방 나가기 할 때 채팅방 이름 업데이트 Service
+	 * @param str
+	 * @param refChatNo
+	 */
+	void updateChatNameFromOut(String str, int refChatNo);
 
 
 }

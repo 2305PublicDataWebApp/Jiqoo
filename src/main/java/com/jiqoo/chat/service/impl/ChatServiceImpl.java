@@ -11,6 +11,7 @@ import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.chat.domain.ChatUser;
 import com.jiqoo.chat.service.ChatService;
 import com.jiqoo.chat.store.ChatStore;
+import com.jiqoo.report.domain.ChatReport;
 import com.jiqoo.user.domain.User;
 
 @Service
@@ -40,6 +41,12 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
+	public int insertChatReport(ChatReport chatReport) {
+		int result = chatStore.insertChatReport(sqlSession, chatReport);
+		return result;
+	}
+
+	@Override
 	public List<ChatRoom> selectChatRoomById(String userId) {
 		List<ChatRoom> chatRoomList = chatStore.selectChatRoomById(sqlSession, userId);
 		return chatRoomList;
@@ -55,6 +62,11 @@ public class ChatServiceImpl implements ChatService {
 	public int updateChatLastDate(ChatUser chatUser) {
 		int result = chatStore.updateChatLastDate(sqlSession, chatUser);
 		return result;
+	}
+
+	@Override
+	public void updateChatNameFromOut(String str, int refChatNo) {
+		chatStore.updateChatNameFromOut(sqlSession, str, refChatNo);
 	}
 
 	@Override
