@@ -462,22 +462,27 @@
 		 // 신고 제출
 		 $("#report-send").on('click', function() {
 			 chatNo = $("#hiddenChatNo").val();
-			 var chatReportContent = $("#reportSelect").val();
+			 var selectedReason = $("#reportSelect").val();
 			 if($("#reportSelect").val() === "etc") {
-				 chatReportContent = $("#customReason").val();
+				 selectedReason = $("#customReason").val();
 			 }
-			 if(chatReportContent !== "none" || chatReportContent === "") {
+			 
+			 if(selectedReason === "none" || selectedReason === "" || selectedReason === null) {
+				 alert("신고 사유를 선택하거나 입력해주세요.");
+				 return;
+			 }else {
 				 $.ajax({
 					 url : "/chat/report",
 					 data : {
 						 chatReportWriter : userId,
-						 chatReportContent : chatReportContent,
+						 chatReportContent : selectedReason,
 						 reportChatNo : chatNo
 					 },
 					 type : "POST",
 					 success : function(data) {
 						 if(data == "success"){
 							 alert("신고가 완료되었습니다. 관리자 확인 후 처리 예정입니다. 감사합니다.");
+							 $("#reportSelect").val("none");
 							 $('#reportModal').modal('hide');
 						 }else {
 							 alert("오류가 발생하였습니다. 다시 시도해주세요.");
