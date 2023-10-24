@@ -205,19 +205,24 @@ public class MoqooController {
 			 @RequestParam("refMoqooNo") int refMoqooNo
 			, @RequestParam("userId") String refUserId
 			, @RequestParam("attendStatus") String attendStatus) {
-		MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
-		int moqooJoinCount = moqooService.selectJoinCount(refMoqooNo);
-		int moqooJoinFull = moqooService.selectOneByMoqooJoin(refMoqooNo);
-		if(moqooJoinFull <= moqooJoinCount) {
-			return "full";
+		try {
+			MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
+			int moqooJoinCount = moqooService.selectJoinCount(refMoqooNo);
+			int moqooJoinFull = moqooService.selectOneByMoqooJoin(refMoqooNo);
+			if(moqooJoinFull <= moqooJoinCount) {
+				return "full";
+			}
+			int result = moqooService.insertMoqooPost(moqooUser);
+			if(result > 0) {
+				return "true";
+			}
+			else {
+				return "false";
+			}
+		} catch (Exception e) {
+			return "already";
 		}
-		int result = moqooService.insertMoqooPost(moqooUser);
-		if(result > 0) {
-			return "true";
-		}
-		else {
-			return "false";
-		}
+		
 	}
 	
 	@PostMapping("/moqoo/report")
@@ -394,10 +399,21 @@ public class MoqooController {
 	// 참여신청자 거절하기
     @PostMapping("/moqoo/sorry")
     @ResponseBody
-    public String rejectUser() {
+    public String rejectUser(
+    		@RequestParam("refMoqooNo") int refMoqooNo
+    		, @RequestParam("refUserId") String refUserId
+    		, @RequestParam("attendStatus") String attendStatus ) {
         // 거절 로직을 수행합니다.
+    	MoqooUser moqooUser = new MoqooUser(refMoqooNo, refUserId, attendStatus);
+		int result = moqooService.updateNoAttend(moqooUser);
+		if(result > 0) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+    	
         // 거절 처리 후 메시지 반환
-        return "사용자가 거절되었습니다.";
     }
 	
 	

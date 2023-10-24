@@ -115,6 +115,13 @@ public interface MoqooService {
 	 * @return
 	 */
 	int updateYesAttend(MoqooUser moqooUser);
+	
+	/**
+	 * 참여신청자 거절
+	 * @param moqooUser
+	 * @return
+	 */
+	int updateNoAttend(MoqooUser moqooUser);
 
 	/**
 	 * 현재 참여자 인원
@@ -179,4 +186,6 @@ public interface MoqooService {
 	 * @return
 	 */
 	int insertReport(Report report);
+
+	
 }

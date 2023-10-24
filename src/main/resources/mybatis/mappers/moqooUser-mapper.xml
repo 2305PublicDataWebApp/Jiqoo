@@ -41,6 +41,10 @@
 		UPDATE MOQOO_USER_TBL SET ATTEND_STATUS = 'Y' WHERE REF_USER_ID = #{refUserId } AND REF_MOQOO_NO = #{refMoqooNo }
 	</update>
 	
+	<update id="updateNoAttend">
+		UPDATE MOQOO_USER_TBL SET ATTEND_STATUS = 'X' WHERE REF_USER_ID = #{refUserId } AND REF_MOQOO_NO = #{refMoqooNo }
+	</update>
+	
 	<!-- 강사님 help -->
 	<select id="selectMoqooUserList" resultMap="MoqooUserResultMap">
 		SELECT * FROM MOQOO_USER_TBL JOIN USER_TBL ON REF_USER_ID = USER_ID WHERE REF_MOQOO_NO = #{refMoqooNo } AND USER_STATUS = 'Y'

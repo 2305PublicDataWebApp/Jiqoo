@@ -100,6 +100,12 @@ public class MoqooServiceImpl implements MoqooService {
 	}
 
 	@Override
+	public int updateNoAttend(MoqooUser moqooUser) {
+		int result = moqooStore.updateNoAttend(sqlSession, moqooUser);
+		return result;
+	}
+
+	@Override
 	public int selectJoinCount(int refMoqooNo) {
 		int moqooJoinCount = moqooStore.selectJoinCount(sqlSession, refMoqooNo );
 		return moqooJoinCount;

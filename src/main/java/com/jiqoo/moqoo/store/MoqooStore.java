@@ -134,6 +134,14 @@ public interface MoqooStore {
 	int updateYesAttend(SqlSession sqlSession, MoqooUser moqooUser);
 
 	/**
+	 * 참여 신청자 거절
+	 * @param sqlSession
+	 * @param moqooUser
+	 * @return
+	 */
+	int updateNoAttend(SqlSession sqlSession, MoqooUser moqooUser);
+
+	/**
 	 * 현재 참여자 수
 	 * @param sqlSession
 	 * @param refMoqooNo
