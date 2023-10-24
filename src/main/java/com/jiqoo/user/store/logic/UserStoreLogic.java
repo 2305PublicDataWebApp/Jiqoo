@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
 import com.jiqoo.user.domain.UserJiqooDto;
@@ -190,6 +191,12 @@ public class UserStoreLogic implements UserStore{
 	public List<UserJiqooDto> selectMyJiqooSearchList(SqlSession sqlSession, Map<String, Object> jiqooMap) {
 		List<UserJiqooDto> jiqooSearchList = sqlSession.selectList("UserMapper.selectMyJiqooSearchList", jiqooMap);
 		return jiqooSearchList;
+	}
+
+	@Override
+	public int insertUserReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("UserMapper.insertUserReport", report);
+		return result;
 	}
 
 

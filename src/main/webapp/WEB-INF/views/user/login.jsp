@@ -8,6 +8,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="keywords" content="">
+        <meta name ="google-signin-client_id" content="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com">
+          <script>
+    function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); 
+    }
+  </script>
         <title>지꾸 로그인</title>
         
         <!-- Favicons -->
@@ -46,6 +56,7 @@
         <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 <!--         <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script> -->
 <!-- 		<script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js" charset="utf-8"></script> -->
+<!-- <script src="https://accounts.google.com/gsi/client" async></script> -->
     </head>
 
 
@@ -90,13 +101,28 @@
 				</a>
             </div>
             <div id="naver_id_login" style="margin-top:10px;"></div>
-            <script type="text/javascript">
-			  	
-		  	</script>
-<!--                 <a id="naver-login-btn" href="#" role="button" style="margint-top:10px;"> -->
-<!-- 					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem" alt="네이버 로그인 버튼" /> -->
-<!-- 				</a> -->
-            
+<!-- 			<div id="g_id_onload" -->
+<!-- 			     data-client_id="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com" -->
+<!-- 			     data-context="signin" -->
+<!-- 			     data-ux_mode="popup" -->
+<!-- 			     data-login_uri="http://localhost:9999/user/login" -->
+<!-- 			     data-auto_prompt="false"> -->
+<!-- 			</div> -->
+			
+<!-- 			<div class="g_id_signin" -->
+<!-- 			     data-type="standard" -->
+<!-- 			     data-shape="rectangular" -->
+<!-- 			     data-theme="outline" -->
+<!-- 			     data-text="signin_with" -->
+<!-- 			     data-size="large" -->
+<!-- 			     data-logo_alignment="left"> -->
+<!-- 			</div>     -->
+<!-- <div id="buttonDiv"></div>  -->
+<!-- <div id="g_id_onload" -->
+<!--      data-client_id="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com" -->
+<!--      data-callback="handleCredentialResponse"> -->
+<!-- </div> -->
+<!-- <div class="g_id_signin" data-type="icon" data-shape="circle" ></div> -->
             <div id="findInfo" style="margin-top: 20px;">
                 <ul>
                     <li><a data-bs-toggle="modal" href="#findIdModal">아이디찾기</a></li>
@@ -314,6 +340,38 @@
 		  	naver_id_login.setDomain("http://localhost:9999/user/login");
 		  	naver_id_login.setState(state);
 		  	naver_id_login.init_naver_id_login();
+		  	
+		  	// google 로그인
+// 		    function handleCredentialResponse(response) {
+// 		        console.log("Encoded JWT ID token: " + response.credential);
+// 		    	const responsePayload = parseJwt(response.credential);
+// 		        console.log("ID: " + responsePayload.sub);
+// 		        console.log('Full Name: ' + responsePayload.name);
+// 		        console.log("Email: " + responsePayload.email);
+// 		        console.log("Access Token: " + response.credential.accessToken);
+// 		      }
+		  	
+// 	      window.onload = function () {
+// 	        google.accounts.id.initialize({
+// 	          client_id: "818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com",
+// 	          callback: handleCredentialResponse
+// 	        });
+// 	        google.accounts.id.renderButton(
+// 	          document.getElementById("buttonDiv"),
+// 	          { theme: "outline", size: "large" }  // customization attributes
+// 	        );
+// 	        google.accounts.id.prompt(); // also display the One Tap dialog
+// 	      }
+	      
+// 	      function parseJwt (token) {
+// 	    	    const base64Url = token.split('.')[1];
+// 	    	    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+// 	    	    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+// 	    	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+// 	    	    }).join(''));
+
+// 	    	    return JSON.parse(jsonPayload);
+// 	    	};
         </script>
     </body>
 </html>

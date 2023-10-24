@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
@@ -247,5 +248,13 @@ public interface UserStore {
 	 * @return
 	 */
 	List<UserJiqooDto> selectMyJiqooSearchList(SqlSession sqlSession, Map<String, Object> jiqooMap);
+
+	/**
+	 * 회원 신고 Store
+	 * @param sqlSession
+	 * @param report
+	 * @return
+	 */
+	int insertUserReport(SqlSession sqlSession, Report report);
 
 }

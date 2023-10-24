@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
@@ -119,6 +120,24 @@ public class UserController {
 		}
 	}
 
+	// 회원 신고
+	@ResponseBody
+	@GetMapping("/report")
+	public String insertUserReport(@ModelAttribute Report report) {
+		System.out.println(report);
+		try {
+			int result = userService.insertUserReport(report);
+			if(result > 0) {
+				return "success";
+			} else {
+				return "fail";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "fail";
+		}
+	}
+	
 	// 프로필사진 변경
 	@ResponseBody
 	@PostMapping("/updatePhoto")
@@ -962,16 +981,6 @@ public class UserController {
 		}
 	}
 	
-	// 
-	/*
-	 * @ResponseBody
-	 * 
-	 * @GetMapping("/myCommentsList") public List<Comment> getComments(HttpSession
-	 * session) { String userId = (String) session.getAttribute("userId");
-	 * List<Comment> comtList = userService.selectMyCommentList(userId); if(isAjax)
-	 * { Gson gson = new Gson(); return gson.toJson(comtList); } return commentList;
-	 * }
-	 */
 	
 	// 인증메일 발송
 	private String sendEmail(String userEmail) {

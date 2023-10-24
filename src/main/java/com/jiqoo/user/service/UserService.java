@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.jiqoo.domain.Jiqoo;
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.Follow;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
@@ -202,6 +203,13 @@ public interface UserService {
 	 * @return
 	 */
 	List<UserJiqooDto> selectMyJiqooSearchList(Map<String, Object> jiqooMap);
+
+	/**
+	 * 회원 신고 service
+	 * @param report
+	 * @return
+	 */
+	int insertUserReport(Report report);
 
 
 

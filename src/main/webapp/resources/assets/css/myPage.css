@@ -108,7 +108,7 @@ main {
 	vertical-align: middle;
 	-webkit-transition: all .25s;
 	transition: all .25s;
-	background-color: white;
+/* 	background-color: white; */
 }
 
 .profile-btn:hover {
@@ -678,4 +678,120 @@ main {
 }
 .jiqoo-writer p {
 	margin:0;
+}
+
+/* 신고 */
+#post_action_menu_btn, .comt_action_menu_btn{
+position: absolute;
+right: 10px;
+top: 10px;
+color: black;
+cursor: pointer;
+font-size: 26px;
+}
+.action_menu{
+z-index: 1;
+position: absolute;
+padding: 15px 0;
+background-color: rgba(0,0,0,0.5);
+color: white;
+border-radius: 15px;
+top: 45px;
+right: 20px;
+display: none;
+}
+.action_menu ul{
+list-style: none;
+padding: 0;
+margin: 0;
+}
+.action_menu ul li{
+width: 100%;
+padding: 10px 15px;
+margin-bottom: 5px;
+}
+.action_menu ul li a {
+  color : white;
+}
+.action_menu ul li i{
+padding-right: 10px;
+
+}
+.action_menu ul li:hover{
+cursor: pointer;
+background-color: rgba(0,0,0,0.2);
+}
+/*-----신고모달---*/
+/*--------------------------------------------------------------
+# modal
+--------------------------------------------------------------*/
+.modal-header {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-bottom: none;
+}
+
+.modal-header .btn-close {
+  color: #fff;
+}
+
+.modal-body {
+  background-color: #fff; 
+  color: #333; 
+}
+
+.modal-footer {
+  background-color: var(--color-primary);
+  border-top: none;
+}
+
+.insert {
+  background-color: #FFF59D;
+  transition: all 0.4s;
+}
+
+.insert:hover {
+  background-color: #388E3C;
+  color: #fff;
+}
+
+.reset {
+  background-color: #fff;
+  transition: all 0.4s;
+}
+
+.reset:hover {
+  background-color: #61686e;
+  color: #fff;
+}
+
+.reset,  .insert {
+  width: 80px;
+}
+
+.modal-body select {
+  width: 100%;
+  margin-bottom: 5px;
+  outline: none;
+}
+.modal-body textarea {
+  width: 100%;
+  resize : none;
+  outline: none;
+}
+.modal-footer .btn {
+  font-family: var(--font-primary);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.send-report {
+  background-color: var(--color-secondary);
+  color:  #fff;
+}
+.send-report:hover {
+  background-color:#007500;
+  border : 1px solid var(--color-secondary);
+  color:  white;
+}
+.send-report:active {
+  color:  var(--color-secondary);
 }

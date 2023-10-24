@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jiqoo.report.domain.Report;
 import com.jiqoo.user.domain.User;
 import com.jiqoo.user.domain.UserComment;
 import com.jiqoo.user.domain.UserJiqooDto;
@@ -183,6 +184,12 @@ public class UserServiceImpl implements UserService{
 	public List<UserJiqooDto> selectMyJiqooSearchList(Map<String, Object> jiqooMap) {
 		List<UserJiqooDto> myJiqooSearchList = userStore.selectMyJiqooSearchList(sqlSession, jiqooMap);
 		return myJiqooSearchList;
+	}
+
+	@Override
+	public int insertUserReport(Report report) {
+		int result = userStore.insertUserReport(sqlSession, report);
+		return result;
 	}
 
 
