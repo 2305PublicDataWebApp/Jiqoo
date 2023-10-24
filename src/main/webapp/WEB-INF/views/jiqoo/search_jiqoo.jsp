@@ -25,8 +25,15 @@
   <!-- Template Main CSS File -->
   <link href="../resources/assets/css/search_jiqoo.css" rel="stylesheet">
   <link href="../resources/assets/css/header.css" rel="stylesheet">
-  <link href="../resources/assets/css/footer.css" rel="stylesheet">
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <link href="../resources/assets/css/footer.css" rel="stylesheet"> 
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  
+  <!-- 서머노트를 위해 추가해야할 부분 -->
+<!-- <script src="../resources/assets/vendor/summernote/summernote-lite.js"></script>
+<script src="../resources/assets/vendor/summernote/summernote-ko-KR.js"></script>
+<link rel="stylesheet" href="../resources/assets/vendor/summernote/summernote-lite.css"> -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
   
   <!-- =======================================================
   * Template Name: Bootslander
@@ -83,7 +90,77 @@
 	    <div id="list-container"  data-aos="fade-up">
 		</div>
 	</div>
-      
+    		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>
+		<!-- ======= Modal ======= -->
+		<div class="modal" tabindex="-1" id="insert-modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content"
+					style="background-color: #6DBE45; color: #fff;">
+					<div class="modal-header">
+						<h5 class="modal-title">게시물 입력</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<!-- 게시물 입력 폼 -->
+						<form action="/jiqoo/insert" method="POST">
+							<div class="mb-3 col-lg-5 mx-auto location-container">
+								<input type="text" class="form-control" id="location"
+									name="jiqooW3W" value="" readonly>
+								<button id="open-map-btn">+</button>
+							</div>
+							<div class="mb-3 date-tag-container">
+								<div class="date-container col-md-3">
+									<input type="date" class="form-control" id="date" name="jiqooDate"
+										required>
+								</div>
+<!-- 								<div id="show-ctgr-btn" class="col-md-2 c-btn" onmouseenter="showCategory()" onmouseleave="hideCategory()"> -->
+								<div id="show-ctgr-btn" class="col-md-2 c-btn" onclick="toggleCC()">
+									<span>카테고리</span> <i class="bi bi-caret-down-fill"></i>
+								</div>
+<!-- 								<div class="category-container" onmouseenter="showCategory()" onmouseleave="hideCategory()"> -->
+								<div class="category-container">
+									<div class="category-list">
+										<c:forEach var="categoryList" items="${categoryList }">
+											<div class="form-check category"> 
+												<input class="form-check-input" type="radio" id="${categoryList.cName }" name="jiqooCtgr"
+													 value="${categoryList.cName }" required> <label
+													class="form-check-label" for="${categoryList.cName }"> <img
+													class="tag-img" src="${categoryList.cImgPath }"
+													alt="${categoryList.cName }">
+												</label>
+											</div>
+										</c:forEach>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="lat" name="jiqooLat">
+							<input type="hidden" id="lng" name="jiqooLng">
+							<input type="hidden" id="jiqoo-writer" name="jiqooWriter" value="${sessionScope.userId }">
+							<div class="mb-3">
+								<input type="text" class="form-control" id="title" name="jiqooTitle"
+									placeholder="제목" required>
+							</div>
+					           <div class="mb-3">
+				                <textarea id="summernote" name="jiqooContent" required></textarea>
+				              </div>
+							 <div class="mb-3 form-switch">
+				                <input type="checkbox" class="form-check-input" id="private" name="jOpenStatus" value="N">
+				                <label class="form-check-label" for="private">비공개</label>
+				              </div>
+				              <div class="mb-3 form-switch">
+				                <input type="checkbox" class="form-check-input" id="allowComments" name="jAllowComt" value="Y" checked>
+				                <label class="form-check-label" for="allowComments">댓글 허용</label>
+				              </div>
+							<div class="modal-footer">
+								<button type="reset" class="btn reset" data-bs-dismiss="modal">취소</button>
+								<button type="submit" class="btn insert">등록</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>  
 	</main><!-- End #main -->
 	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
 	
@@ -109,6 +186,7 @@
 	</script>
 
 	<script>
+	var currentUserId = "${sessionScope.userId}"
 	var currentOffsetAll = 0; // 현재 offset 값 for all
 	var currentOffsetMy = 0; // 현재 offset 값 for my
 	var currentOffsetSearch = 0; // 현재 offset 값 for search
@@ -122,17 +200,63 @@
 	var btnMyList = $("#btn-myList");
 	var btnAllList = $("#btn-allList");
 	
+	$(document).ready(function() {
+        $('#summernote').summernote({
+            height: 300,                 // 에디터 높이
+            minHeight: null,             // 최소 높이
+            maxHeight: null,             // 최대 높이
+            focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+            lang: "ko-KR",					// 한글 설정
+            placeholder: '내용을 입력하세요.',	//placeholder 설정
+            toolbar: [
+                    // [groupName, [list of button]]
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+                    ['color', ['forecolor','color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert',['picture','link','video']],
+                    ['view', ['fullscreen', 'help']]
+                ],
+                fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋움체','바탕체'],
+                fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+                callbacks:{ 
+                    onImageUpload : function(files){ 
+                       uploadSummernoteImageFile(files[0],this); 
+                   } 
+                } 
+        });
+        function uploadSummernoteImageFile(file,editor){ 
+            data = new FormData(); 
+            data.append("file",file); 
+            $.ajax({ 
+		        data:data, 
+		        type:"POST", 
+		        url:"/uploadSummernoteImageFile", 
+		        /* dataType:"JSON", */ 
+		        enctype:'multipart/form-data',
+		        contentType:false, 
+		        processData:false
+		        
+		    }).done(function(data) {
+		    	console.log(data);
+		    	var imgNode = $("<img>");
+		    	imgNode.attr("src", data);
+		    	$(".note-editable").append(imgNode);
+		    }).fail(function(a,b,c){
+		    	console.log(a);
+		    	console.log(b);
+		    	console.log(c);
+		    });
+        }
+	});
+	
 	$("#search-btn").on('click', function() {
 		loadInitialJiqooSearchList();
 	})
-// 		// 스타일 클래스 없애기
-// 		document.getElementById("btn-myList").classList.remove("qoo");
-// 		$("#search-btn").on('click', function() {
-// 			loadInitialJiqooSearchList();
-// 		})
 
-// 	    // 스타일 클래스 생성
-// 	    document.getElementById("btn-allList").classList.add("qoo");
 	    
 		
 		// 초기 지꾸 전체 리스트 로드하는 함수
@@ -455,28 +579,28 @@
 		    });
 		}
 		
-		function createResultItem(jiqooAllList) {
+		function createResultItem(data) {
 		    var listItem = $('<div class="row result-item">');
-		    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + jiqooAllList.jiqooNo);
+		    var postLink = $('<a>').attr('href', '/jiqoo/detail?jiqooNo=' + data.jiqooNo);
 
 		    var postHeader = $('<div class="post-header">');
 		    var category = $('<div class="category">');
-		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', jiqooAllList.category.cImgPath);
-		    var location = $('<div class="location"><span class="location-text">' + jiqooAllList.jiqooW3W + '</span></div');
+		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', data.category.cImgPath);
+		    var location = $('<div class="location"><span class="location-text">' + data.jiqooW3W + '</span></div');
 		    var userInfoContainer = $('<div class="user-info-container row">');
 		    var userInfo = $('<div class="user-info col-sm-12">');
 		    var profileImg = $('<div class="profile-img col-4" class="col-sm-12">');
-		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', jiqooAllList.user.userPhotoPath);
+		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', data.user.userPhotoPath);
 			
-		    var userNickname = $('<div class="user-nickname">' + jiqooAllList.user.userNickname + '</div>');
+		    var userNickname = $('<div class="user-nickname">' + data.user.userNickname + '</div>');
 		 	// jCreateDate 값을 나타내기 위한 업데이트
-		    var postDate = $('<div class="info col-lg-6 col-sm-12">' + formatDate(jiqooAllList.jCreateDate) + '</div>');
+		    var postDate = $('<div class="info col-lg-6 col-sm-12">' + formatDate(data.jCreateDate) + '</div>');
 
 		    
 		    var postMain = $('<div class="post-main row">');
 		    var postInfo = $('<div class="post-info col">');
 		    
-		    var title = $('<div class="title">' + jiqooAllList.jiqooTitle + '</div>');
+		    var title = $('<div class="title">' + data.jiqooTitle + '</div>');
 
 		    // <p>와 <img> 요소를 추출하는 함수
 		    function parseContent(content) {
@@ -501,7 +625,7 @@
 		    }
 
 		    // jiqooAllList.jiqooContent에서 HTML 요소 추출
-		    var content = jiqooAllList.jiqooContent;
+		    var content = data.jiqooContent;
 		    var parsedContent = parseContent(content);
 
 		    // 부모 <div>를 추가
@@ -532,10 +656,6 @@
 		    return listItem;
 		}
 		
-		
-
-
-	
 	function formatDate(date) {
 	    var d = new Date(date);
 	    var year = d.getFullYear().toString().slice(-2);
@@ -547,103 +667,58 @@
 	    return formattedDate;
 	}
 	
+	function toggleCC() {
+	    const categoryContainer = document.querySelector(".category-container");
+	    categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
+	  }
+
 	
 	
-/////
+	// 지꾸 게시물 작성 모달 띄우기
+	  document.getElementById("confirmButton").addEventListener("click", function() {
+		  if (currentUserId === "") {
+		    var confirmed = confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?");
+		    if (confirmed) {
+		      window.location.href = "/user/login"; // 사용자가 확인을 누르면 로그인 페이지로 이동
+		    }
+		  } else {
+		    // 로그인된 사용자의 경우 모달을 띄우도록 설정
+		    var insertModal = new bootstrap.Modal(document.getElementById('insert-modal'));
+		    insertModal.show();
+		  }
+		});
+	
+	  const radioButtons = document.querySelectorAll('.form-check-input');
+	  const imageLabels = document.querySelectorAll('.form-check-label');
 
-// $(document).ready(function () {
-//     var currentOffsetAll = 0; // 현재 offset 값 for all
-//     var currentOffsetMy = 0; // 현재 offset 값 for my
-//     var loadingAll = false; // 중복 로드 방지용 플래그 for all
-//     var loadingMy = false; // 중복 로드 방지용 플래그 for my
+	  imageLabels.forEach((label, index) => {
+	      label.addEventListener('click', () => {
+	          radioButtons[index].checked = true;
+	      });
+	  });
+	  
+// 	  let categoryShown = false;
 
-//     // 초기 지꾸 전체 리스트 로드하는 함수
-//     function loadInitialJiqooAllList() {
-//         // ...
-//         // 여기에 all 리스트 로드 관련 코드 추가
-//     }
+// 	  function showCategory() {
+// 	      const categoryContainer = document.querySelector(".category-container");
+// 	      if (!categoryShown) {
+// 	          categoryContainer.style.display = "block";
+// 	          categoryShown = true;
+// 	      }
+// 	  }
 
-//     // 초기 지꾸 본인 리스트 로드하는 함수
-//     function loadInitialJiqooMyList() {
-//         // ...
-//         // 여기에 my 리스트 로드 관련 코드 추가
-//     }
+// 	  function hideCategory() {
+// 	      const categoryContainer = document.querySelector(".category-container");
+// 	      categoryContainer.style.display = "none";
+// 	  }
 
-//     // 지꾸 전체 리스트 스크롤 이벤트 핸들러 for all
-//     $(window).scroll(function () {
-//         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-//             if (!loadingAll) {
-//                 loadingAll = true;
-//                 var ajaxUrlAll = "/jiqoo/loadMoreJiqllAllList"; // URL for all
+// 	  document.querySelector("#show-ctgr-btn").addEventListener("mouseenter", function () {
+// 	      showCategory();
+// 	  });
 
-//                 $.ajax({
-//                     url: ajaxUrlAll,
-//                     type: "get",
-//                     data: {
-//                         offset: currentOffsetAll,
-//                         limit: 10
-//                     },
-//                     success: function (result) {
-//                         if (result.length > 0) {
-//                             var listContainer = $("#list-container");
-//                             for (var i = 0; i < result.length; i++) {
-//                                 var jiqooAllList = result[i];
-//                                 var listItem = createResultItem(jiqooAllList);
-//                                 listContainer.append(listItem);
-//                             }
-//                             currentOffsetAll += 10;
-//                         }
-//                         loadingAll = false;
-//                     },
-//                     error: function () {
-//                         const errorContainer = $("#error-container");
-//                         errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
-//                         loadingAll = false;
-//                     }
-//                 });
-//             }
-//         }
-//     });
-
-//     // 지꾸 본인 리스트 스크롤 이벤트 핸들러 for my
-//     $(window).scroll(function () {
-//         if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-//             if (!loadingMy) {
-//                 loadingMy = true;
-//                 var ajaxUrlMy = "/jiqoo/loadMoreJiqllMyList"; // URL for my
-
-//                 $.ajax({
-//                     url: ajaxUrlMy,
-//                     type: "get",
-//                     data: {
-//                         offset: currentOffsetMy,
-//                         limit: 10
-//                     },
-//                     success: function (result) {
-//                         if (result.length > 0) {
-//                             var listContainer = $("#list-container");
-//                             for (var i = 0; i < result.length; i++) {
-//                                 var jiqooMyList = result[i];
-//                                 var listItem = createResultItem(jiqooMyList);
-//                                 listContainer.append(listItem);
-//                             }
-//                             currentOffsetMy += 10;
-//                         }
-//                         loadingMy = false;
-//                     },
-//                     error: function () {
-//                         const errorContainer = $("#error-container");
-//                         errorContainer.text("지꾸 불러오는 중 오류가 발생했습니다.");
-//                         loadingMy = false;
-//                     }
-//                 });
-//             }
-//         }
-//     });
-
-//     loadInitialJiqooAllList();
-//     loadInitialJiqooMyList();
-// });
+// 	  document.querySelector(".category-container").addEventListener("mouseleave", function () {
+// 	      hideCategory();
+// 	  });
 
 	</script>
 </body>

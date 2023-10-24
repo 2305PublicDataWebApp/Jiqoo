@@ -126,8 +126,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 		<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
 		<div id="map"></div>
 
-		<button type="button" class="btn insert-jiqoo-btn"
-			data-bs-toggle="modal" data-bs-target=".modal">지꾸 +</button>
+		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>
 		<!-- ======= Modal ======= -->
 		<div class="modal" tabindex="-1" id="insert-modal">
 			<div class="modal-dialog modal-lg">
@@ -146,7 +145,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 									name="jiqooW3W" value="" readonly>
 								<button id="open-map-btn">+</button>
 							</div>
-							<div class="mb-3 row date-tag-container">
+							<div class="mb-3 date-tag-container">
 								<div class="date-container col-md-3">
 									<input type="date" class="form-control" id="date" name="jiqooDate"
 										required>
@@ -168,14 +167,6 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 											</div>
 										</c:forEach>
 									</div>
-<!-- 									<div class="form-check"> -->
-<!-- 										<input class="form-check-input" type="radio" name="category" -->
-<!-- 											id="category1" value="option1" required> <label -->
-<!-- 											class="form-check-label" for="category1"> <img -->
-<!-- 											class="tag-img" src="../resources/assets/img/rice.png" -->
-<!-- 											alt="밥"> -->
-<!-- 										</label> -->
-<!-- 									</div> -->
 								</div>
 							</div>
 							<input type="hidden" id="lat" name="jiqooLat">
@@ -229,6 +220,8 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 
 <!-- 썸머노트 -->
   <script>
+  var currentUserId = "${sessionScope.userId}"
+  
     $(document).ready(function() {
     //여기 아래 부분
         $('#summernote').summernote({
@@ -262,24 +255,24 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
-        data:data, 
-        type:"POST", 
-        url:"/uploadSummernoteImageFile", 
-        /* dataType:"JSON", */ 
-        enctype:'multipart/form-data',
-        contentType:false, 
-        processData:false
-        
-    }).done(function(data) {
-    	console.log(data);
-    	var imgNode = $("<img>");
-    	imgNode.attr("src", data);
-    	$(".note-editable").append(imgNode);
-    }).fail(function(a,b,c){
-    	console.log(a);
-    	console.log(b);
-    	console.log(c);
-    });
+		        data:data, 
+		        type:"POST", 
+		        url:"/uploadSummernoteImageFile", 
+		        /* dataType:"JSON", */ 
+		        enctype:'multipart/form-data',
+		        contentType:false, 
+		        processData:false
+		        
+		    }).done(function(data) {
+		    	console.log(data);
+		    	var imgNode = $("<img>");
+		    	imgNode.attr("src", data);
+		    	$(".note-editable").append(imgNode);
+		    }).fail(function(a,b,c){
+		    	console.log(a);
+		    	console.log(b);
+		    	console.log(c);
+		    });
         }
 		showAllMap();
     });
@@ -515,6 +508,19 @@ $("#btn-myMap").click(function() {
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
   }
 
+  // 지꾸 게시물 작성 모달 띄우기
+  document.getElementById("confirmButton").addEventListener("click", function() {
+	  if (currentUserId === "") {
+	    var confirmed = confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?");
+	    if (confirmed) {
+	      window.location.href = "/user/login"; // 사용자가 확인을 누르면 로그인 페이지로 이동
+	    }
+	  } else {
+	    // 로그인된 사용자의 경우 모달을 띄우도록 설정
+	    var insertModal = new bootstrap.Modal(document.getElementById('insert-modal'));
+	    insertModal.show();
+	  }
+	});
 
     
 </script>

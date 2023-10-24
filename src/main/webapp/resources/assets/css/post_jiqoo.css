@@ -253,10 +253,9 @@ p {
       }
       
       #backbtn-container {
-      	display: flex;
-	    justify-content: flex-start;
-	    margin-left: 80px;
-	    margin-bottom: 50px;
+      	position: absolute;
+	    bottom: -217px;
+	    right: 208px;
       }
       
       .backbtn {
@@ -413,6 +412,7 @@ p {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
+	margin-top: 70px;
 }
 
 .comment-form textarea, .reply-form textarea, .modify-form input {

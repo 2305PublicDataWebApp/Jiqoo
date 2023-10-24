@@ -420,12 +420,13 @@
 			            loadInitialComments();
 			            console.log(loading);
 			            $("#comtContent").val("");
-			            
-			            if(socket){
-		        			let socketMsg = "jcomment,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
-		        			console.log(socketMsg);
-		        			socket.send(socketMsg); //값을 서버로 보냄
-		           		}
+			            if(currentUserId != boardWriter) {
+				            if(socket){
+			        			let socketMsg = "jcomment,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
+			        			console.log(socketMsg);
+			        			socket.send(socketMsg); //값을 서버로 보냄
+			           		}
+			            }
 			        } else {
 			            alert("댓글이 등록되지 않았습니다.");
 			        }
@@ -647,10 +648,12 @@
 								alert("답글등록에 성공하였습니다.");
 			    	            replyForm.remove(); // 답글 작성 폼 제거
 			    	            loadInitialComments();
-			    	            if(socket){
-				        			let socketMsg = "jcocomment,"+commentWriter+","+currentUserId+","+refPostNo+","+pComtNo+","+title;
-				        			console.log(socketMsg);
-				        			socket.send(socketMsg); //값을 서버로 보냄
+			    	            if(currentUserId != commentWriter) {
+				    	            if(socket){
+					        			let socketMsg = "jcocomment,"+commentWriter+","+currentUserId+","+refPostNo+","+pComtNo+","+title;
+					        			console.log(socketMsg);
+					        			socket.send(socketMsg); //값을 서버로 보냄
+				    	            }
 			    	            }
 			    	        } else {
 			    	            // 서버에서 success가 false인 경우, errorMessage를 표시
@@ -899,11 +902,13 @@
 	                    $("#likeButton i").removeClass("bi-heart").addClass("bi-heart-fill");
 	                    updateLikeCount(1); // 좋아요 숫자를 1 증가
 	                    alert("좋아요를 등록하였습니다.");
-	                    if(socket){
-		        			let socketMsg = "jlike,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
-		        			console.log(socketMsg);
-		        			socket.send(socketMsg); //값을 서버로 보냄
-		           		}
+	                    if(currentUserId != boardWriter) {
+		                    if(socket){
+			        			let socketMsg = "jlike,"+currentUserId+","+boardWriter+","+refPostNo+","+comtNo+","+title;
+			        			console.log(socketMsg);
+			        			socket.send(socketMsg); //값을 서버로 보냄
+			           		}
+	                    }
 	                } else if (data === "delete") {
 	                    $("#likeButton i").removeClass("bi-heart-fill").addClass("bi-heart");
 	                    updateLikeCount(-1); // 좋아요 숫자를 1 감소
@@ -974,85 +979,93 @@
       
    // 모달을 생성할 때 사용할 함수
       function createComtReportModal(comtNo, comtWriter) {
-          var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-commentno='+comtNo+' data-commentwriter='+comtWriter+'>');
-          var modalDialog = $('<div class="modal-dialog">');
-          var modalContent = $('<div class="modal-content">');
-
-          // 모달 헤더
-          var modalHeader = $('<div class="modal-header">');
-          var modalTitle = $('<h1 class="modal-title fs-5" id="exampleModalLabel">').text("댓글 신고하기");
-          var closeButton = $('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">');
-
-          // 모달 바디
-          var modalBody = $('<div class="modal-body">');
-          var selectLabel = $('<label for="reportSelect">신고 사유:</label>');
-          var select = $('<select name="report" id="reportSelect">')
-              .append($('<option value="abusive">욕설사용</option>'))
-              .append($('<option value="advertising">광고글</option>'))
-              .append($('<option value="noSubject">주제와 맞지 않는 글</option>'))
-              .append($('<option value="violent">폭력적인 내용</option>'))
-              .append($('<option value="Discrimination">차별적인 내용</option>'))
-              .append($('<option value="pornography">음란물</option>'))
-              .append($('<option value="Personal">민감한 개인정보 노출</option>'))
-              .append($('<option value="etc">기타 (직접 작성)</option>'));
-          var customReasonTextArea = $('<textarea id="customReason" style="display:none" spellcheck="false"></textarea');
-          var smallNote = $('<small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>');
-
-          modalBody.append(selectLabel, select, customReasonTextArea, smallNote);
-
-          // 모달 푸터
-          var modalFooter = $('<div class="modal-footer">');
-          var sendButton = $('<button type="button" id="send-comt-report" class="btn send-report">').text("보내기");
-          var cancelButton = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">').text("취소");
-
-          modalHeader.append(modalTitle, closeButton);
-          modalFooter.append(sendButton, cancelButton);
-          modalContent.append(modalHeader, modalBody, modalFooter);
-          modalDialog.append(modalContent);
-          modal.append(modalDialog);
-
-          $('body').append(modal);
-
-          var myModal = new bootstrap.Modal(modal[0], {
-              backdrop: 'static',
-              keyboard: false
-          });
-
-          var commentNo, commentWriter;
-          sendButton.on('click', function() {
-        	  debugger;
-              var commentNo = $('#comtReportModal').data('commentno');
-              var commentWriter = $('#comtReportModal').data('commentwriter');
-              var jiqooReportContent = $("#reportSelect").val();
-              if (jiqooReportContent === "etc") {
-                  jiqooReportContent = $("#customReason").val();
-              }
-              $.ajax({
-                  url: "/jiqoo/report",
-                  data: {
-                      reportWriter: currentUserId,
-                      reportContent: jiqooReportContent,
-                      reportComtNo: commentNo,
-                      reportUserId: commentWriter,
-                      reportType: 'JC'
-                  },
-                  type: "get",
-                  success: function(data) {
-                      if (data == "jiqooComtReport") {
-                          $('#comtReportModal').modal('hide');
-                          alert("게시물 신고가 완료되었습니다.");
-                      }
-                  }
-              });
-          });
-
-          return function(comtNo, comtWriter) {
-              $('#reportSelect').val('abusive');
-              $('#customReason').val('');
-              myModal.show();
-              modal.data('commentNo', comtNo);
-              modal.data('commentWriter', comtWriter);
-          };
+    	  if (currentUserId == "") {
+	  	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
+	  	            // 사용자가 확인을 누르면 로그인 페이지로 이동
+	  	            window.location.href = "/user/login";
+	  	            return; // 이동 후 함수를 종료
+	  	        }
+  	      }else {
+		          var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-commentno='+comtNo+' data-commentwriter='+comtWriter+'>');
+		          var modalDialog = $('<div class="modal-dialog">');
+		          var modalContent = $('<div class="modal-content">');
+		
+		          // 모달 헤더
+		          var modalHeader = $('<div class="modal-header">');
+		          var modalTitle = $('<h1 class="modal-title fs-5" id="exampleModalLabel">').text("댓글 신고하기");
+		          var closeButton = $('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">');
+		
+		          // 모달 바디
+		          var modalBody = $('<div class="modal-body">');
+		          var selectLabel = $('<label for="reportSelect">신고 사유:</label>');
+		          var select = $('<select name="report" id="reportSelect">')
+		              .append($('<option value="abusive">욕설사용</option>'))
+		              .append($('<option value="advertising">광고글</option>'))
+		              .append($('<option value="noSubject">주제와 맞지 않는 글</option>'))
+		              .append($('<option value="violent">폭력적인 내용</option>'))
+		              .append($('<option value="Discrimination">차별적인 내용</option>'))
+		              .append($('<option value="pornography">음란물</option>'))
+		              .append($('<option value="Personal">민감한 개인정보 노출</option>'))
+		              .append($('<option value="etc">기타 (직접 작성)</option>'));
+		          var customReasonTextArea = $('<textarea id="customReason" style="display:none" spellcheck="false"></textarea');
+		          var smallNote = $('<small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>');
+		
+		          modalBody.append(selectLabel, select, customReasonTextArea, smallNote);
+		
+		          // 모달 푸터
+		          var modalFooter = $('<div class="modal-footer">');
+		          var sendButton = $('<button type="button" id="send-comt-report" class="btn send-report">').text("보내기");
+		          var cancelButton = $('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">').text("취소");
+		
+		          modalHeader.append(modalTitle, closeButton);
+		          modalFooter.append(sendButton, cancelButton);
+		          modalContent.append(modalHeader, modalBody, modalFooter);
+		          modalDialog.append(modalContent);
+		          modal.append(modalDialog);
+		
+		          $('body').append(modal);
+		
+		          var myModal = new bootstrap.Modal(modal[0], {
+		              backdrop: 'static',
+		              keyboard: false
+		          });
+		
+		          var commentNo, commentWriter;
+		          sendButton.on('click', function() {
+		        	  debugger;
+		              var commentNo = $('#comtReportModal').data('commentno');
+		              var commentWriter = $('#comtReportModal').data('commentwriter');
+		              var jiqooReportContent = $("#reportSelect").val();
+		              if (jiqooReportContent === "etc") {
+		                  jiqooReportContent = $("#customReason").val();
+		              }
+		              $.ajax({
+		                  url: "/jiqoo/report",
+		                  data: {
+		                      reportWriter: currentUserId,
+		                      reportContent: jiqooReportContent,
+		                      reportComtNo: commentNo,
+		                      reportUserId: commentWriter,
+		                      reportType: 'JC'
+		                  },
+		                  type: "get",
+		                  success: function(data) {
+		                      if (data == "jiqooComtReport") {
+		                          $('#comtReportModal').modal('hide');
+		                          alert("게시물 신고가 완료되었습니다.");
+		                      }
+		                  }
+		              });
+		          });
+		
+		          return function(comtNo, comtWriter) {
+		              $('#reportSelect').val('abusive');
+		              $('#customReason').val('');
+		              myModal.show();
+		              modal.data('commentNo', comtNo);
+		              modal.data('commentWriter', comtWriter);
+		          };
+  	      }
       }
 
 //       var openComtReportModal = createComtReportModal();
