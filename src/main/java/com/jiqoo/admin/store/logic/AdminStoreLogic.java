@@ -7,6 +7,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.jiqoo.admin.domain.AdminChat;
 import com.jiqoo.admin.store.AdminStore;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
@@ -540,34 +541,17 @@ public class AdminStoreLogic implements AdminStore {
 		return result;
 	}
 
-	/**
-	 * 마지막 채팅시간있는 챗방리스트
-	 */
-//	@Override
-//	public List<ChatMessage> selectlastMsgByChatNo(SqlSession sqlSession) {
-//		List<ChatMessage> sendMsgList = sqlSession.selectList("AdminMapper.selectlastMsgByChatNo");
-//		return sendMsgList;
-//	}
-
-	/**
-	 * 채팅방리스트
-	 */
-//	@Override
-//	public List<ChatRoom> selectChatRoomList(SqlSession sqlSession) {
-//		List<ChatRoom> chatRoomList = sqlSession.selectList("AdminMapper.selectChatRoomList");
-//		return chatRoomList;
-//	}
 
 	/**
 	 * 다있는 채팅방 리스트
 	 */
 	@Override
-	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap) {
+	public List<AdminChat> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo) {
 		int limit = pInfo.getRecordCountPerPage();
 		int offset = (pInfo.getCurrentPage() - 1) * limit;
 
 		RowBounds rowBounds = new RowBounds(offset, limit);
-		List<Map<String, Object>> chatRoomAllList = sqlSession.selectList("AdminMapper.selectChatRoomAllList", chatMap, rowBounds);
+		List<AdminChat> chatRoomAllList = sqlSession.selectList("AdminMapper.selectChatRoomAllList",null, rowBounds);
 		return chatRoomAllList;
 	}
 
@@ -596,6 +580,14 @@ public class AdminStoreLogic implements AdminStore {
 		List<Map<String, Object>> jiqooCountList = sqlSession.selectList("AdminMapper.jiqooCountList", jiqoo);
 		return jiqooCountList;
 	}
+
+	@Override
+	public List<Map<String, Object>> moqooCountList(SqlSession sqlSession) {
+		List<Map<String, Object>> moqooCountList = sqlSession.selectList("AdminMapper.moqooCountList");
+		return moqooCountList;
+	}
+
+
 
 
 

@@ -123,62 +123,50 @@
 							function getGraph(){
 								let timeList=[];
 								let postList=[];
+								let reportList=[];
 								
 								$.ajax({
-									url: "/admin/jiqooChartLine",
+									url: "/admin/jiqooLineChart",
 									type: "get",
-									data: {
-										jCreateDate : jCreateDate,
-										count : count
-										
-									},
-									dataType :"json",
+									dataType: "json",
 									success: function(data) {
+										console.log(data);
 										for (let i = 0; i <data.length; i++){
-											timeList.push(data[i].jCreateDate);
-											postList.push(data[i].count);
+											timeList.push(data[i].THEDATE);
+											postList.push(data[i].JIQOOCOUNT);
+											reportList.push(data[i].JREPORTCOUNT);
 										}
-										console.log(timeList);
-										console.log(postList);
-										
-										new Chart(document.querySelector('#lineChart'), {
-											
-											type: 'line',
-											data: {
-											  labels: timeList,
-											  datasets: [{
-												label: '지꾸 등록 현황',
-												data: postList,
-												fill: false,
-												borderColor: '#19A7CE',
-												tension: 0.1 //곡률넣어줌
-											  },
-											  {
-												label: '여성',
-												type : 'bar',
-												data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
-												fill: false,
-												backgroundColor: '#FF9B9B',
+										 new Chart(document.querySelector('#lineChart'), {
+											    type: 'line',
+											    data: {
+											      labels: timeList,
+											      datasets: [
+											    	{
+											        label: '지꾸 등록 현황',
+											        data: postList,
+											        fill: false,
+											        borderColor: '#19A7CE',
+											        tension: 0.1 //곡률넣어줌
+											      }
+											      ,{
+											          label: '신고수',
+											          type : 'line',
+											          data: reportList,
+											          fill: false,
+											          borderColor: '#FF9B9B',
 
-											  },
-											  {
-												label: '남성',
-												type : 'bar',
-												data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
-												fill: false,
-												backgroundColor: '#82A0D8',
-
-											  }]
-											
-										},
-										options: {
-											scales: {
-												y: {
-												  beginAtZero: true //y축시작점이 0에서 시작
-												}
-											  }
-										}
+											        }]
+											    },
+											    options: {
+											      scales: {
+											        y: {
+											          beginAtZero: true //y축시작점이 0에서 시작
+											        }
+											      }
+											    }
+											  });
 									}
+										
 								});
 							};
 								

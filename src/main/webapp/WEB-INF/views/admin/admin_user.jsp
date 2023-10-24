@@ -171,7 +171,7 @@
 												<c:if test="${userList.platformType eq 'naver'}"> 네이버 </c:if>
 											</td>
 											<td>${userList.userStatus }</td>
-											<td>${userList.count }</td>
+											<td>${userList.uReportCount }</td>
 											<td>
 												<button type="button" class="button show-detail-btn"
 													onclick="showUserDetail('${userList.userId}');">조회</button>
@@ -328,15 +328,6 @@
 		
 	</script>
 	<script type="text/javascript">
-// 	    document.addEventListener("DOMContentLoaded", function() {
-// 	        var rows = document.querySelectorAll("tr");
-// 	        for (var i = 0; i < rows.length; i++) {
-// 	            var userStatus = rows[i].querySelector("td:nth-child(6)").textContent; // 6th column (0-based index)
-// 	            if (userStatus.includes("A")) {
-// 	                rows[i].style.color = "red";
-// 	            }
-// 	        }
-// 	    });
 
 		//userStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
 	  document.addEventListener("DOMContentLoaded", function() {

@@ -178,7 +178,7 @@
 			         	console.log("알람수 카운트 성공");
 			         	if(data > 0) {
 //				       		$('#alarm-count').text(data);
-							$("#alarm-count").append("<i style='font-size:26px;' class='bi bi-bell'></i> <span class='badge bg-primary badge-number'>"+data+"</span>'");		
+							$("#alarm-count").append("<span class='badge bg-primary badge-number'>"+data+"</span>'");		
 							$("#alert-header").text("새로운 알림이 있습니다");
 						}else {
 							$("#alarm-count").append("<i style='font-size:26px;' class='bi bi-bell'></i>")

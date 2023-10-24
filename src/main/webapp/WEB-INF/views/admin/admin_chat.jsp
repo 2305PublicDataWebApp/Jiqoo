@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -76,13 +78,8 @@
 
       <section class="section">
         <div class="row">
-<!--           <div id="list-type" style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-between; width: 400px;  margin: 15px auto;"> -->
-<!--             <button id="group-list" class="btn-get-started scrollto" onclick="toggleButton(1);" style="background-color: #8BC34A; color: #fff;">유지중인 채팅방</button> -->
-<!--             <button id="personal-list" class="btn-get-started scrollto" onclick="toggleButton(2);">삭제된 채팅방</button> -->
-<!--           </div> -->
+        
 
-
-          <!--=====단체채팅방=====-->
           <div class="col-lg-10 group-chat" style="margin:0 auto">
           	<h5 class="card-title" style="color:#222;">채팅방 리스트</h5>
             
@@ -112,8 +109,9 @@
                   <col scope="col" width ="10%" > <!--#-->
                   <col scope="col" width ="10%" > <!--채팅방이름-->
                   <col scope="col" width ="10%" > <!--프로필-->
-                  <col scope="col" width ="30%" > <!--참여자목록-->
+                  <col scope="col" width ="20%" > <!--참여자목록-->
                   <col scope="col" width ="5%" > <!--총인원-->
+                  <col scope="col" width ="10%" > <!--채팅생성일-->
                   <col scope="col" width ="10%" > <!--마지막채팅전송일자-->
                   <col scope="col" width ="10%" > <!--신고수-->
                   <col scope="col" width ="15%" > <!--삭제버튼-->
@@ -126,6 +124,7 @@
                     <th scope="col" onclick="sortTable(1)" class="hover">프로필</th>
                     <th scope="col" onclick="sortTable(2)" class="hover">참여자목록</th>
                     <th scope="col" class="hover">총인원</th>
+                    <th scope="col" class="hover">채팅생성일</th>
                     <th scope="col" class="hover">마지막채팅</th>
                     <th scope="col" onclick="sortTable(3)">신고</th>
                     <th scope="col" >상세</th>
@@ -136,21 +135,83 @@
 	                <c:forEach var="chatRoomAllList" items="${chatRoomAllList}" varStatus="i">
 	                  <tr>
 	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
-	                    <td>${chatRoomList.chatName }</td>  <!-- 채팅방이름 -->
+	                    <td title="${chatRoomAllList.chatName }">${chatRoomAllList.chatName }</td>  <!-- 채팅방이름 -->
 	                    <td>
-	                      <img src="${chatRoomAllList.participants}" style="width:50px"> <!-- 프로필 -->
+	                      <img src="${chatRoomAllList.cImagePath}" style="width:50px"> <!-- 프로필 -->
 	                    </td>
-	                    <td title="">${chatRoomAllList.participant }</td> <!-- 참여자목록 -->
-	                    <td>${chatRoomAllList.participant_count }</td>
-	                    <td>${chatRoomAllList.msg_send_date }</td>
-<%-- 	                    <td>${chatList.msgSendDate }</td> --%>
-	                    <td>${chatRoomAllList.cReportCount}</td>
+	                    <td title="${chatRoomAllList.participants }">${chatRoomAllList.participants }</td> <!-- 참여자목록 -->
+	                    <td>${chatRoomAllList.participantCount }</td> <!-- 총인원 -->
+	                    <td><fmt:formatDate pattern="yy-MM-dd" value="${chatRoomAllList.cCreateDate }"/></td> <!-- 채팅생성일 -->
+	                    <td><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chatRoomAllList.msgSendDate }"/></td> <!-- 마지막채팅 -->
+	                    <td>${chatRoomAllList.reportCount }</td>
 	                    <td>
 	                       <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailChatModal${i.count }">조회</button>
 	                    </td>
 	                  </tr>
+	                  <!--===== 채팅방 상세보기 Modal =====-->
+	                  <div class="modal fade" id="detailChatModal${i.count }" tabindex="-1"
+							aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<div class="modal-title fs-5" id="exampleModalLabel">
+											<h3>
+												<i class="bi bi-bookmark-heart"></i> ${chatRoomAllList.chatNo} 번째 채팅방
+											</h3>
+										</div>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+						
+										<div id="report-reason">
+											<div id="r-title">신고사유(${chatRoomAllList.reportCount})</div>s
+											
+											<div id="r-reason">
+												<c:forEach var="chatReport" items="${chatRoomAllList.reportList}" varStatus="i">
+													<script>
+														var reportContent = "${chatReport.chatReportContent}";
+														var reportCount = "${chatReport.reportCount}";
+														var replacedText = "";
+																			
+														switch (reportContent) {
+															case "abusive": replacedText = "욕설사용";
+																 break;
+															case "advertising": replacedText = "광고글";
+																 break;
+															case "noSubject": replacedText = "주제와 맞지 않는 글";
+																break;
+															case "violent":replacedText = "폭력적인 내용";
+																break;
+															case "discrimination": replacedText = "차별적인 내용";
+																break;
+															case "pornography": replacedText = "음란물";
+																break;  
+															case "personal": replacedText = "민감한 개인정보 노출";
+																break;
+															case "etc": replacedText = "기타 (직접 작성)";
+																break;
+															default: replacedText = reportContent;
+																break;
+															} 
+														
+														document.write(replacedText+"("+reportCount+")");
+													</script>
+												</c:forEach>
+											</div>
+											
+										</div>
+										<div id="report-btn">
+											<button type="button" class="button delete-btn" onclick="deleteChatRoomByA('${chatRoomAllList.chatNo}');">삭제</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End 모꾸 상세보기 Modal -->
 					</c:forEach>
-					<jsp:include page="/WEB-INF/views/admin/modal_adminChat.jsp"></jsp:include>
+		
+					
                 </tbody>
               </table>
               
@@ -193,6 +254,7 @@
 			  </c:if>
 			  <!-- End 페이지네비 -->
             </div>
+            
           <!-- </div> -->
               <script>
                 function sortTable(n,sortName) {
@@ -433,7 +495,6 @@
             
           </div>
   
-        </div>
       </section>
 
     </main>

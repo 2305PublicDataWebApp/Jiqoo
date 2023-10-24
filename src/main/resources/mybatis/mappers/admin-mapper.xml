@@ -17,7 +17,7 @@
 	
 	<resultMap type="User" id="UserResultMap">
 		<id property="userId" column="USER_ID"/>
-		<result property="count" column="U_REPORT_COUNT"/>
+		<result property="userGender" column="USER_GENDER" />
 		<collection property="reportList" column="USER_ID" javaType="List" ofType="Report" select="userReportByIdList"></collection>
 	</resultMap>
 	
@@ -25,6 +25,7 @@
 		<id property="jiqooNo" column="JIQOO_NO"/>
 		<result property="jReportCount" column="J_REPORT_COUNT" />
 		<collection property="reportList" column="JIQOO_NO" javaType="List" ofType="Report" select="jiqooReportByJNoList"></collection>
+	
 	</resultMap>
 	
 	<resultMap type="Moqoo" id="MoqooResultMap">
@@ -34,16 +35,16 @@
 		<collection property="reportList" column="MOQOO_NO" javaType="List" ofType="Report" select="moqooReportByMNoList"></collection>
 	</resultMap>
 
+	
 	<resultMap type="Comment" id="ComtResultMap">
 		<id property="comtNo" column="COMT_NO"/>
 		<result property="cReportCount" column="C_REPORT_COUNT"/>
 		<collection property="reportList" column="COMT_NO" javaType="List" ofType="Report" select="comtReportByNoList"></collection>
 	</resultMap>
 	
-	<resultMap type="ChatRoom" id="ChatResultMap">
+	<resultMap type="AdminChat" id="ChatResultMap">
 		<id property="chatNo" column="CHAT_NO"/>
-		<result property="cReportCount" column="C_REPORT_COUNT"/>
-		<collection property="reportList" column="CHAT_NO" javaType="List" ofType="Report" select="chatReportByNoList"></collection>
+		<collection property="reportList" column="CHAT_NO" javaType="List" ofType="ChatReport" select="chatReportByNoList"></collection>
 	</resultMap>
 	
 	
@@ -347,6 +348,11 @@
 	
 	</select>
 
+
+
+<!-- 	<update id="updateDelComment"> -->
+<!-- 		UPDATE COMT_TBL SET COMT_CONTENT = '관리자에 의해 삭제된 댓글입니다.', C_UPDATE_DATE = DEFAULT WHERE COMT_NO = #{comtNo } -->
+<!-- 	</update> -->
 <!-- ============================모꾸============================ -->	
 
 	<!-- 모꾸관리페이지 총 모꾸수 (= 총게시물수) -->
@@ -453,6 +459,9 @@
 	<update id="deleteComtByAdmin">
 		UPDATE COMT_TBL SET COMT_STATUS ='A'  WHERE COMT_NO = #{comtNo} 
 	</update>
+	
+
+	
 	
 	<!-- 강제삭제 댓글 복원-->
 	<update id="reviveCommentByAdmin">
@@ -642,23 +651,8 @@
 		SELECT COUNT (*) FROM CHAT_ROOM_TBL 
 	</select>
 	
-	<!-- 채팅방관리_ 채팅방 리스트 -->
-<!-- 	<select id="selectAllChatRoom" > -->
-<!-- 		SELECT * FROM CHAT_ROOM_TBL ORDER BY C_CREATE_DATE DESC -->
-<!-- 	</select> -->
-	
-	<!-- 마지막 채팅시간있는 챗방리스트 -->
-<!-- 	<select id="selectlastMsgByChatNo" resultType="ChatMessage"> -->
-<!-- 		SELECT REF_CHAT_NO, -->
-<!-- 	       MSG_SENDER_ID, -->
-<!-- 	       MAX(MSG_SEND_DATE) AS LAST_MSG_SEND_DATE -->
-<!-- 		FROM CHAT_MSG_TBL -->
-<!-- 		GROUP BY REF_CHAT_NO, MSG_SENDER_ID -->
-<!-- 		ORDER BY REF_CHAT_NO; -->
-<!-- 	</select> -->
-	
 	<!-- 다있는 채팅방 리스트(+신고수) -->
-	<select id="selectChatRoomAllList" resultMap="ChatResultMap">	
+	<select id="selectChatRoomAllList" resultType="AdminChat" resultMap="ChatResultMap">	
 <!-- 		SELECT CRT.CHAT_NO, CRT.CHAT_NAME, CRT.C_CREATE_DATE, CRT.C_IMAGE_PATH, MSG.MSG_SEND_DATE, -->
 <!--        LISTAGG(USR.USER_ID, ', ') WITHIN GROUP (ORDER BY USR.USER_ID) AS PARTICIPANTS, -->
 <!--        COUNT(USR.USER_ID) AS PARTICIPANT_COUNT -->
@@ -690,7 +684,7 @@
 	</select>
 	
 	<!-- 채팅방 신고사유 리스트  by 채팅번호 -->
-	<select id="chatReportByNoList" resultType="Report" >
+	<select id="chatReportByNoList" resultType="ChatReport" >
 <!-- 		SELECT * FROM REPORT_TBL WHERE REPORT_CHAT_NO = #{reportChatNo} AND REPORT_TYPE = 'M' ORDER BY REPORT_DATE DESC -->
 		SELECT CHAT_REPORT_CONTENT, COUNT(*) AS REPORT_COUNT
 		FROM CHAT_REPORT_TBL
@@ -772,6 +766,24 @@
 	
 		<!-- 날짜별 지꾸 등록수 리스트 -->
 	<select id="jiqooCountList" resultType="map">	
+<!-- 		WITH DateRange AS ( -->
+<!-- 		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate -->
+<!-- 		  FROM DUAL -->
+<!-- 		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-12', 'YYYY-MM-DD') + 1) -->
+<!-- 		) -->
+<!-- 		, JiqooCounts AS ( -->
+<!-- 		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate, -->
+<!-- 		         COALESCE(COUNT(JT.J_CREATE_DATE), 0) AS JiqooCount -->
+<!-- 		  FROM DateRange -->
+<!-- 		  LEFT JOIN JIQOO_TBL JT ON DateRange.FullDate = TRUNC(JT.J_CREATE_DATE) -->
+<!-- 		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') -->
+<!-- 		) -->
+<!-- 		SELECT JiqooCounts.TheDate AS TheDate, -->
+<!-- 		       JiqooCounts.JiqooCount AS JiqooCount -->
+<!-- 		FROM JiqooCounts -->
+<!-- 		ORDER BY JiqooCounts.TheDate -->
+
+		<!-- 날짜별 지꾸 등록수+신고수 리스트 -->
 		WITH DateRange AS (
 		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate
 		  FROM DUAL
@@ -784,12 +796,69 @@
 		  LEFT JOIN JIQOO_TBL JT ON DateRange.FullDate = TRUNC(JT.J_CREATE_DATE)
 		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
 		)
+		, ReportCounts AS (
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
+		         COALESCE(COUNT(CASE WHEN R.REPORT_TYPE = 'J' THEN 1 ELSE NULL END), 0) AS JReportCount
+		  FROM DateRange
+		  LEFT JOIN REPORT_TBL R ON DateRange.FullDate = TRUNC(R.REPORT_DATE)
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
+		)
 		SELECT JiqooCounts.TheDate AS TheDate,
-		       JiqooCounts.JiqooCount AS JiqooCount
+		       JiqooCounts.JiqooCount AS JiqooCount,
+		       ReportCounts.JReportCount AS JReportCount
 		FROM JiqooCounts
-		ORDER BY JiqooCounts.TheDate;
+		LEFT JOIN ReportCounts ON JiqooCounts.TheDate = ReportCounts.TheDate
+		ORDER BY JiqooCounts.TheDate
 	</select>
+	
+	<!-- 날짜별 지꾸 신고수 리스트 -->
+<!-- 	<select id="jiqooRCountList" resultType="map"> -->
+<!-- 		WITH DateRange AS ( -->
+<!-- 		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate -->
+<!-- 		  FROM DUAL -->
+<!-- 		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-12', 'YYYY-MM-DD') + 1) -->
+<!-- 		) -->
+<!-- 		, ReportCounts AS ( -->
+<!-- 		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate, -->
+<!-- 		         COALESCE(COUNT(CASE WHEN R.REPORT_TYPE = 'J' THEN 1 ELSE NULL END), 0) AS JReportCount -->
+<!-- 		  FROM DateRange -->
+<!-- 		  LEFT JOIN REPORT_TBL R ON DateRange.FullDate = TRUNC(R.REPORT_DATE) -->
+<!-- 		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') -->
+<!-- 		) -->
+<!-- 		SELECT ReportCounts.TheDate AS TheDate, -->
+<!-- 		       ReportCounts.JReportCount AS JReportCount -->
+<!-- 		FROM ReportCounts -->
+<!-- 		ORDER BY ReportCounts.TheDate -->
+<!-- 	</select> -->
 
+		<!-- 날짜별 모꾸 등록수+신고수 리스트 -->
+	<select id="moqooCountList" resultType="map">	
+		WITH DateRange AS (
+		  SELECT TO_DATE('2023-10-12', 'YYYY-MM-DD') + LEVEL - 1 AS FullDate
+		  FROM DUAL
+		  CONNECT BY LEVEL &lt;= (SYSDATE - TO_DATE('2023-10-12', 'YYYY-MM-DD') + 1)
+		)
+		, MoqooCounts AS (
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
+		         COALESCE(COUNT(MT.MOQOO_DATE), 0) AS MoqooCount
+		  FROM DateRange
+		  LEFT JOIN MOQOO_TBL MT ON DateRange.FullDate = TRUNC(MT.MOQOO_DATE)
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
+		)
+		, ReportCounts AS (
+		  SELECT TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD') AS TheDate,
+		         COALESCE(COUNT(CASE WHEN R.REPORT_TYPE = 'M' THEN 1 ELSE NULL END), 0) AS MReportCount
+		  FROM DateRange
+		  LEFT JOIN REPORT_TBL R ON DateRange.FullDate = TRUNC(R.REPORT_DATE)
+		  GROUP BY TO_CHAR(DateRange.FullDate, 'YYYY-MM-DD')
+		)
+		SELECT MoqooCounts.TheDate AS TheDate,
+		       MoqooCounts.MoqooCount AS MoqooCount,
+		       ReportCounts.MReportCount AS MReportCount
+		FROM MoqooCounts
+		LEFT JOIN ReportCounts ON MoqooCounts.TheDate = ReportCounts.TheDate
+		ORDER BY MoqooCounts.TheDate
+	</select>
 
 
 

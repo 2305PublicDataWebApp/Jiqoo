@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.jiqoo.admin.domain.AdminChat;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.common.domain.Comment;
@@ -442,7 +443,7 @@ public interface AdminStore {
 	 * @param chatMap
 	 * @return
 	 */
-	public List<Map<String, Object>> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo, Map<String, Object> chatMap);
+	public List<AdminChat> selectChatRoomAllList(SqlSession sqlSession, PageInfo pInfo);
 
 	/**
 	 * 회원 날짜별 가입수 리스트
@@ -453,6 +454,11 @@ public interface AdminStore {
 	public List<Map<String, Object>> userCountList(SqlSession sqlSession, User user);
 
 	public List<Map<String, Object>> jiqooCountList(SqlSession sqlSession, Jiqoo jiqoo);
+
+
+	public List<Map<String, Object>> moqooCountList(SqlSession sqlSession);
+
+
 
 
 

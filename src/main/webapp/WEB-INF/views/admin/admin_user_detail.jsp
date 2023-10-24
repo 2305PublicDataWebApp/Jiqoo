@@ -189,7 +189,7 @@
 							<div class="title">신고누적</div>
 							<div class="report-count">
 								<a class="modal-link modal-link-jq" data-bs-toggle="modal"
-									href="#user-report-Modal" style="color: #388E3C"> ${user.count }회 </a>
+									href="#user-report-Modal" style="color: #388E3C"> ${user.uReportCount }회 </a>
 							</div>
 						</div>
 						<div class="btn-wrap">
@@ -552,9 +552,8 @@
 									
 					
 					
-					<!--=====***** 댓글테이블 *****=====-->
 					<div id="cmt-table" style="display: none">
-						<table id="c-table">
+						<table>
 							<colgroup>
 								<col scope="col" class="col1" width="15%">
 								<col scope="col" width="40%">
@@ -573,69 +572,73 @@
 									<th scope="col" class="col1">상세</th>
 								</tr>
 							</thead>
-							<tbody> </tbody>
-							<!-- 댓글 상세보기 모달 -->
+							<tbody>
+								<c:if test="${uComtList eq null}">
+									<tr>
+										<td colspan="7">${noComtMsg}</td>
+									</tr>
+								</c:if>
+								
+								<c:forEach var="comtList" items="${uComtList}" varStatus="i">
+									<tr>
+										<td class="list-no" scope="row">${(pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 ) }</td>
+										<td>${comtList.comtContent}</td>
+										<td>${comtList.cBoardType}</td>
+										<td>${comtList.comtStatus}</td>
+										<td>0</td>
+										<td>
+											<button type="button" class="button show-detail-btn"
+												data-bs-toggle="modal" data-bs-target="#cmtModal${i.count }">
+												조회</button>
+										</td>
+									</tr>
+								</c:forEach>
+								<jsp:include page="/WEB-INF/views/admin/modal_adminComt.jsp"></jsp:include> 
+							</tbody>
 						</table>
+						
+						<!-- 댓글 페이지네비 -->
+						<c:if test="${pInfoComt.totalCount > 0}"> 
+							<div id="pageNavi">
+								<c:if test="${pInfoComt.startNavi != 1}">
+									<c:url var="prevUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.startNavi -1 }"></c:param>
+									</c:url>
+									<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
+								</c:if>
+								
+								<c:forEach begin="${pInfoComt.startNavi}" end="${pInfoComt.endNavi}"
+									var="p">
+									<c:url var="pageUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${p}"></c:param>
+									</c:url>
+									<c:choose>
+										<c:when test="${p == pInfoComt.currentPage}">
+											<p>
+												<a href="${pageUrl}" style="color: #8BC34A"> ${p}</a>
+											</p>
+										</c:when>
+										<c:otherwise>
+											<p>
+												<a href="${pageUrl}"> ${p}</a>
+											</p>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+								
+								<c:if test="${pInfoComt.endNavi != pInfoComt.naviTotalCount}">
+									<c:url var="nextUrl" value="/admin/userdetail">
+										<c:param name="userId" value="${user.userId}"></c:param>
+										<c:param name="comtPage" value="${pInfoComt.endNavi + 1}"></c:param>
+									</c:url>
+									<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
+								</c:if>
+							</div>
+						</c:if>
+						<!-- End 댓글페이지네비 -->
 					</div>
-						<jsp:include page="/WEB-INF/views/admin/modal_adminComt.jsp"></jsp:include>
-					
-					<!-- 댓글리스트 가져오는 ajax -->
-					<script>
-					$("#cmt-list").on("click", function(){
-						const userId = "${user.userId}";
-						$.ajax({
-							url : "/admin/u_detail_comtlist",
-							data : { userId : userId },
-							type : "GET",
-							
-							success : function(data){
-								const tableBody = $("#c-table tbody");
-								tableBody.children().remove(); // 댓글버튼 클릭할때마다 누적되는거 방지 
-								
-								let tr;
-								let listNo;
-								let comtContent;
-								let cBoardType;
-								let comtStatus;
-								let cReportCount;
-								let btnArea;
-								let noList
-								
-								if(data.length > 0) { //가져온 데이터가 있으면 for문 돌림
-									for(let i in data){
-										tr = $("<tr>"); // <tr></tr> 만들어줌
-										// (pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 )
-										listNo = $("<td class='list-no' scope='row'>").text(parseInt(i)+1); 
-										comtContent = $("<td >").text(data[i].comtContent); 
-										cBoardType = $("<td >").text(data[i].cBoardType); 
-										comtStatus = $("<td >").text(data[i].comtStatus);
-										cReportCount = $("<td >").text(data[i].cReportCount);
-// 										btnArea = $("<td >").append("<button type='button' class='button show-detail-btn' data-bs-toggle='modal' data-bs-target='#cmtModal"+(i+1)+"'>조회</button>")
-										btnArea = $("<td >").append("<button type='button' class='button show-detail-btn' data-bs-toggle='modal' data-bs-target='#cmtModal"+(parseInt(i)+1)+"'>조회</button>")
-										
-										tr.append(listNo); 
-										tr.append(comtContent);
-										tr.append(cBoardType);
-										tr.append(comtStatus);
-										tr.append(cReportCount);
-										tr.append(btnArea);
-										tableBody.append(tr); 
-									}
-								
-								}else {
-									tr = $("<tr>");
-									noList = $("<td colspan='7'>").text("작성한 댓글이 없습니다"); 
-									
-									tr.append(noList);
-									tableBody.append(tr);
-								}
-							},
-							error : function(){ 
-								alert("ajax 오류");
-							}
-						});
-					});
-					</script>
 					
 					
 					
