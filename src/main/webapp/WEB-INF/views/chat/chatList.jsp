@@ -504,7 +504,9 @@
 			      src: userPhoto
 			    });
 			    var userName = $("<p>").text(user.userNickname);
-			
+			    userBox.on("click", function() {
+			        location.href = "/user/profile?userId=" + user.userId;
+			      });
 			    userBox.append(userImg, userName);
 			    userProfile.append(userBox);
 			  });
@@ -687,8 +689,8 @@
 		}
 		 // 웹소켓 연결 초기화
 	    function connect(chatRoomId) {
-	        var socket = new SockJS('http://localhost:9999/chat/list');
-	        stompClient = Stomp.over(socket);
+	        var chatSocket = new SockJS('http://localhost:9999/chat/list');
+	        stompClient = Stomp.over(chatSocket);
 	        stompClient.connect({}, function(frame) {
 	            console.log('Connected: ' + frame);
 	            /* stompClient.send('/toppic/chatRoom-'+ chatRoomId,{},JSON.stringify({refChatNo : chatNo, msgSenderId : userId}),function(test){
@@ -776,7 +778,41 @@
             	msgSenderNickname : userNickname,
             	msgSenderPhotoPath : userPhotoPath
             }));
-            
+            $.ajax({
+            	url : "/chat/users",
+            	data : {
+            		chatNo : chatRoomId
+            	},
+            	type : "GET",
+            	contentType: "application/json",
+            	success : function(data) {
+            		var comtNo = 0;
+            		for(var i = 0; i < data.length; i++) {
+            			if(data[i].userId != userId) {
+				            if(socket){
+				    			let socketMsg = "chat,"+userId+","+data[i].userId+","+chatRoomId+","+comtNo+",채팅방"+chatRoomId;
+				    			console.log(socketMsg);
+				    			socket.send(socketMsg); //값을 서버로 보냄
+				       		}
+				            $.ajax({
+						        url : '/alert/insertalarm',
+						        type : 'POST',
+						        data : {'fromUserId': userId , 'toUserId': data[i].userId , 'boardNo':chatRoomId, 'comtNo': comtNo, 'title':message, 'alertType': "chat"},
+						        dataType : "json", 
+						     	// ↑보내는거
+								// ↓받는거
+						        success : function(result){
+	//					           		if(sessionUserId  != boardWriter){
+						           		
+	//						        	}
+						        }
+						    });
+            			
+            			}
+            				
+           			}
+            	}
+            })
             var currentTime = getCurrentTime();
             addMessage(true, userNickname, userPhotoPath, message, currentTime);
             chatListReload();
@@ -903,6 +939,7 @@
 		// 채팅방 개설 유저 선택
 		$("#addUsersButton").on('click', function () {
 	    // 선택한 유저들의 아이디 또는 고유한 식별자를 가져옵니다.
+	    	var returnChatNo = 0;
 		    var selectedAddUserIds = [];
 		    $(".add-user-checkbox:checked").each(function () {
 		    	selectedAddUserIds.push($(this).val());
@@ -922,7 +959,9 @@
 			        }),
 			        contentType: "application/json",
 			        success: function (data) {
+			        	returnChatNo = data;
 			        	// 성공 메시지를 alert로 표시
+			        	var comtNo = 0;
 			            alert("채팅방을 개설하였습니다.");
 			            $("#add-user-input").val("");
 			            $("#add-user-result table tbody").children().remove();
@@ -953,19 +992,9 @@
 			        			/* }
 			        		});
 			        	} */
+			        	
 			        	location.reload(true);
-			        	chatListReload();
-			        	$.ajax({
-			        		url : "/chat/room-info",
-			        		data : {
-			        			chatNo : chatNo
-			        		},
-			        		type : "GET",
-			        		success : function(data) {
-			        			$("#chatName").text(data.chatName);
-			        			$("#chat-users").text("참여자 : " + data.chatName);
-			        		}
-			        	})
+			        	
 			            // 추가한 메시지로 스크롤을 이동하여 가장 최근 메시지를 보여줍니다.
 			            /* scrollToBottom(); */
 			        }
@@ -1021,6 +1050,26 @@
 						            	msgSenderPhotoPath : ""
 						            }));
 						        	before += resultNickname + " ";
+						        	var comtNo = 0;
+						        	if(socket){
+					        			let socketMsg = "chat,"+userId+","+data.userId+","+chatRoomId+","+comtNo+",채팅방"+chatRoomId;
+					        			console.log(socketMsg);
+					        			socket.send(socketMsg); //값을 서버로 보냄
+					           		}
+						        	$.ajax({
+			        			        url : "/alert/insertalarm",
+			        			        type : 'POST',
+			        			        data : {fromUserId: userId, toUserId: data.userId, boardNo:chatRoomId, comtNo: comtNo, title:"채팅방"+chatRoomId, alertType: "chat"},
+			        			        dataType : "json", 
+			        			     	// ↑보내는거
+			        					// ↓받는거
+			        			        success : function(result){
+//			        			           		if(sessionUserId  != boardWriter){
+			        			           		
+//			        				        	}
+			        			        }
+			        			    
+			        			    });
 			        			}
 			        		});
 			        	}

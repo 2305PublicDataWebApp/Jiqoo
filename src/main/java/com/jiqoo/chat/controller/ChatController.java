@@ -201,7 +201,7 @@ public class ChatController {
 
 	// 채팅방별 참여자 조회
 	@ResponseBody
-	@GetMapping("/chat/users")
+	@GetMapping(value = "/chat/users", produces = "application/json;charset=UTF-8;")
 	public String selectAllUserByChatNo(@RequestParam int chatNo) {
 		List<User> userList = chatService.selectAllUserByChatNo(chatNo);
 		Gson gson = new Gson();
@@ -237,7 +237,7 @@ public class ChatController {
 		List<String> selectedUserIds = (List<String>) requestData.get("selectedUserIds");
 		for (String userId : selectedUserIds) {
 			result += chatService.insertChatUserByChatNo(chatNo, userId);
-			str += chatService.getUserNickname(userId);
+			str += chatService.getUserNickname(userId) + " ";
 		}
 		if (result >= selectedUserIds.size()) {
 			chatService.updateChatName(str, chatNo);
