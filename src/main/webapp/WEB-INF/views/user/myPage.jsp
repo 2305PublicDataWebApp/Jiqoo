@@ -115,7 +115,7 @@
             </div>
             
 <!--             <input type="hidden" id="dateInput" name="dateInput" value=""> -->
-            <input type="text" id="inputDate" name="inputDate" value="">
+            <input type="hidden" id="inputDate" name="inputDate" value="">
             <div class="container">
                 <div class="row justify-content-center">
                     <!-- 캘린더 -->
@@ -187,11 +187,11 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-					                <c:if test="${follower.checkFollow}">
-					                    <button class="btn btn-sm unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
+					                <c:if test="${follower.checkIsFollow}">
+					                    <button class="btn btn-sm follow unfollow-btn" data-user-id="${follower.userId}">Unfollow</button>
 					                </c:if>
-					                <c:if test="${not follower.checkFollow}">
-					                    <button class="btn btn-sm follow-btn" data-user-id="${follower.userId}">Follow</button>
+					                <c:if test="${not follower.checkIsFollow}">
+					                    <button class="btn btn-sm follow follow-btn" data-user-id="${follower.userId}">Follow</button>
 					                </c:if>
 	                            </div>
 	                        </div>
@@ -237,7 +237,7 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-	                                <button class="btn btn-sm unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
+	                                <button class="btn btn-sm follow unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
 	                            </div>
 	                        </div>
 	                    </c:forEach>
@@ -666,7 +666,7 @@
  		        var endNo =  page * perPage;
  		        var searchDate = $("#inputDate").val();
 		        $.ajax({
-		            url: "/user/likedList",
+		            url: "/user/myLikedList",
 		            type: "GET",
 		            data: {
 		            	startNo: startNo,
@@ -754,64 +754,197 @@
 		        });
 		    }
 			
-			//////////////////////////////////////////////// follow ////////////////////////////////////////////////        
-        	// unfollow 버튼
-        	$(".unfollow-btn").on("click", function(){
-        		const userId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
-        		const button = $(this);
-        		$.ajax({
-                    type: 'POST',
-                    url: '/user/unfollow',
-                    data: { userId: userId },
-                    success: function(result) {
-                        if (result === "success") {
-                        	button.removeClass("unfollow-btn").addClass("follow-btn");
-                            button.text("Follow");
-                        } else if (result === "checkLogin") {
-                            alert("로그인 후 이용해주세요.");
-                            window.location.href = "/user/login"; 
-                        } else {
-                            alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
-                            location.reload();
-                        }
-                    },
-                    error: function(error) {
-                    	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
-                    	location.reload();
-                    }
-        		});
-        	})
-        	
-        	//follow버튼
-         	$(".follow-btn").on("click", function () {
-         		console.log("이벤트 시작")
-			    const toUserId = $(this).data('user-id'); 
-			    const button = $(this);
+			//////////////////////////////////////////////// follow ////////////////////////////////////////////////
+
 			
-			    $.ajax({
-			        type: 'POST',
-			        url: '/user/follow', 
-			        data: { toUserId: toUserId },
-			        success: function (result) {
-			            if (result === "success") {
-			                button.removeClass("follow-btn").addClass("unfollow-btn");
-			                button.text("Unfollow");
-			                
-			            } else if (result === "checkLogin") {
-			                alert("로그인 후 이용해주세요.");
-			                window.location.href = "/user/login";
-			            } else {
-			                alert("팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
-			                location.reload();
-			            }
-			        },
-			        error: function (error) {
-			        	console.log(error);
-			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
-			            location.reload();
-			        }
-			    });
+// 			$(document).on("click", ".unfollow-btn", function () {
+// 			    const userId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉 userId) 저장
+// 			    console.log('팔로잉 유저: ' + userId);
+// 			    const button = $(this);
+			
+// 			    $.ajax({
+// 			        type: 'POST',
+// 			        url: '/user/unfollow',
+// 			        data: { userId: userId },
+// 			        success: function (result) {
+// 			            if (result === "success") {
+// 			                button.removeClass("unfollow-btn").addClass("follow-btn");
+// 			                button.text("Follow");
+// 			            } else if (result === "checkLogin") {
+// 			                alert("로그인 후 이용해주세요.");
+// 			                window.location.href = "/user/login";
+// 			            } else {
+// 			                alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+// 			                location.reload();
+// 			            }
+// 			        },
+// 			        error: function (error) {
+// 			            console.log(error);
+// 			            alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+// 			            location.reload();
+// 			        }
+// 			    });
+// 			});
+			
+
+			
+		   	$(".follow").on("click", function () {
+         		console.log("언팔로우이벤트 시작")
+			    const toFollowUserId = $(this).data('user-id'); 
+         		console.log("toFollowUserId : " + toFollowUserId);
+			    const button = $(this);
+			    const buttonText = button.html();
+         		console.log("버튼타입 : " + buttonText);
+				if(buttonText === "Follow") {
+					$.ajax({
+	 			        type: "POST",
+	 			        url: "/user/follow", 
+	 			        data: { toFollowUserId: toFollowUserId },
+	 			        success: function (result) {
+	 			            if (result === "success") {
+	 			                button.removeClass("follow-btn").addClass("unfollow-btn");
+	 			                button.html("Unfollow");
+	 			            } else if (result === "checkLogin") {
+	 			                alert("로그인 후 이용해주세요.");
+	 			                window.location.href = "/user/login";
+	 			            } else {
+	 			                alert("팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+	 			                location.reload();
+	 			            }
+	 			        },
+	 			        error: function (error) {
+	 			        	console.log(error);
+	 			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+	 			            location.reload();
+	 			        }
+	 			    });
+				} else if (buttonText === "Unfollow") {
+				    $.ajax({
+				        type: 'POST',
+				        url: "/user/unfollow", 
+				        data: { toFollowUserId: toFollowUserId },
+				        success: function (result) {
+				            if (result === "success") {
+				                button.removeClass("unfollow-btn").addClass("follow-btn");
+				                button.html("Follow");
+				                
+				            } else if (result === "checkLogin") {
+				                alert("로그인 후 이용해주세요.");
+				                window.location.href = "/user/login";
+				            } else {
+				                alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+				                location.reload();
+				            }
+				        },
+				        error: function (error) {
+				        	console.log(error);
+				            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+				            location.reload();
+				        }
+				    });
+				}
 			});
+			         	
+// 			$(".follow-btn").on("click", function () {
+//          		console.log("팔로우이벤트 시작")
+// 			    const toFollowUserId = $(this).data('user-id'); 
+// 			    const followType = $(this).val();
+// 			    console.log("팔로우타입" + followType);
+			    
+				
+// 			 	// 이벤트가 발생한 모달의 ID를 확인
+// 		        selectedModalId = button.closest('.modal').attr('id');
+// 			 	console.log(selectedModalId);
+// 			    $.ajax({
+// 			        type: 'POST',
+// 			        url: '/user/follow', 
+// 			        data: { toFollowUserId: toFollowUserId },
+// 			        success: function (result) {
+// 			            if (result === "success") {
+// 			                button.removeClass("follow-btn").addClass("unfollow-btn");
+// 			                button.text("Unfollow");
+// 			                if (selectedModalId) {
+// 		                        $(`#${selectedModalId}`).modal('show');
+// 		                    }
+// 			            } else if (result === "checkLogin") {
+// 			                alert("로그인 후 이용해주세요.");
+// 			                window.location.href = "/user/login";
+// 			            } else {
+// 			                alert("팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+// 			                location.reload();
+// 			            }
+// 			        },
+// 			        error: function (error) {
+// 			        	console.log(error);
+// 			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+// 			            location.reload();
+// 			        }
+// 			    });
+// 			});
+
+//************************************************************************************			
+        	       	// unfollow 버튼
+//         	$(".unfollow-btn").on("click", function(){
+//          		console.log("언팔로우이벤트 시작")
+//         		const toUnfollowUserId = $(this).data('user-id'); // 클릭한 버튼의 데이터(팔로잉userId) 저장
+//         		const button = $(this);
+//         		$.ajax({
+//                     type: 'POST',
+//                     url: '/user/unfollow',
+//                     data: { toUnfollowUserId: toUnfollowUserId },
+//                     success: function(result) {
+//                         if (result === "success") {
+//                         	console.log("언팔로우성공")
+//                         	button.removeClass("unfollow-btn").addClass("follow-btn");
+//                             button.text("Follow");
+//                         } else if (result === "checkLogin") {
+//                         	console.log("언팔로우실패")
+//                             alert("로그인 후 이용해주세요.");
+//                             window.location.href = "/user/login"; 
+//                         } else {
+//                         	console.log("오류발생")
+//                             alert("언팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+//                             location.reload();
+//                         }
+//                     },
+//                     error: function(error) {
+//                     	console.log(error)
+//                     	alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+//                     	location.reload();
+//                     }
+//         		});
+//         	})
+        	
+//         	//follow버튼
+//          	$(".follow-btn").on("click", function () {
+//          		console.log("팔로우이벤트 시작")
+// 			    const toUnfollowUserId = $(this).data('user-id'); 
+// 			    const button = $(this);
+			
+// 			    $.ajax({
+// 			        type: 'POST',
+// 			        url: '/user/follow', 
+// 			        data: { toFollowUserId: toFollowUserId },
+// 			        success: function (result) {
+// 			            if (result === "success") {
+// 			                button.removeClass("follow-btn").addClass("unfollow-btn");
+// 			                button.text("Unfollow");
+			                
+// 			            } else if (result === "checkLogin") {
+// 			                alert("로그인 후 이용해주세요.");
+// 			                window.location.href = "/user/login";
+// 			            } else {
+// 			                alert("팔로우가 실행되지 않았습니다. 다시 시도해주세요.");
+// 			                location.reload();
+// 			            }
+// 			        },
+// 			        error: function (error) {
+// 			        	console.log(error);
+// 			            alert("서버오류가 발생했습니다. 다시 시도해주세요.");
+// 			            location.reload();
+// 			        }
+// 			    });
+// 			});
 			//-----------------------------------------------------------------------------------------------------
 			
 			////////////////////////////////////////////// 프사변경 /////////////////////////////////////////////// 			

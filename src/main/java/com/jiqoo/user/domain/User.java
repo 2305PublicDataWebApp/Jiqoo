@@ -34,7 +34,7 @@ public class User {
 
 	private int followers; //나를 팔로우한 사람들
 	private int followings; //내가 팔로우한 사람들
-	private boolean checkFollow;
+	private boolean checkIsFollow;
 	
 	private int comtCount;
 	private int jiqooCount;
@@ -182,12 +182,12 @@ public class User {
 		this.followings = followings;
 	}
 	
-	public boolean getCheckFollow() {
-		return checkFollow;
+	public boolean getCheckIsFollow() {
+		return checkIsFollow;
 	}
 
-	public void setCheckFollow(boolean checkFollow) {
-		this.checkFollow = checkFollow;
+	public void setCheckIsFollow(boolean checkFollow) {
+		this.checkIsFollow = checkFollow;
 	}
 
 	public int getCount() {
@@ -263,7 +263,7 @@ public class User {
 				+ userPhotoPath + ", 가입일=" + uCreateDate + ", 탈퇴일=" + uDeleteDate + ", 회원여부="
 				+ userStatus + ", 관리자여부=" + adminYn + ", count=" + count + ", ageGroup=" + ageGroup + ", reportList="
 				+ reportList + ", comtList=" + comtList + ", uReportCount=" + uReportCount + ", 팔로워수=" + followers
-				+ ", 팔로잉수=" + followings + ", 팔로우여부=" + checkFollow + ", 댓글수=" + comtCount
+				+ ", 팔로잉수=" + followings + ", 팔로우여부=" + checkIsFollow + ", 댓글수=" + comtCount
 				+ ", 지꾸게시물수=" + jiqooCount + ", 모꾸게시물수=" + moqooCount + "]";
 	}
 
