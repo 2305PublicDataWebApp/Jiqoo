@@ -127,13 +127,13 @@ public class MoqooStoreLogic implements MoqooStore{
 
 	@Override
 	public int deleteLike(SqlSession sqlSession, Like like) {
-		int result = sqlSession.insert("MoqooMapper.deleteLike", like);
+		int result = sqlSession.delete("MoqooMapper.deleteLike", like);
 		return result;
 	}
 
 	@Override
 	public int selectLikeOrNot(SqlSession sqlSession, Like like) {
-		int result = sqlSession.insert("MoqooMapper.selectLikeOrNot", like);
+		int result = sqlSession.selectOne("MoqooMapper.selectLikeOrNot", like);
 		return result;
 	}
 

@@ -85,26 +85,63 @@
     <div id="container" data-aos=fade-in> 
 
       
-    <!-- ======= Post ======= -->
-    <div id="post" class="col-md-12 col-xxl-10 mx-auto">
-      <div class="post-header">
-		  <c:if test="${sessionScope.userId ne moqoo.user.userId }">
-			<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
-			<div class="action_menu">
-			  <ul>
-				<li><a href="#"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
-				<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target=".fade"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
-			  </ul>
-			</div>
-		  </c:if>
-		  <div style="text-align: center;">
-			<div id="post-category-img-container">
-			  <img id="post-category-img" alt="" src="${category.cImgPath}">
-			</div>
-			<div class="location col-xs-12 col-sm-8 col-md-6">
-			  <span id="location-text">${moqoo.moqooW3W}</span>
-			</div>
+	<!-- ======= Post ======= -->
+	<div id="post" class="col-md-12 col-xxl-10 mx-auto">
+	  <div class="post-header">
+	  <c:if test="${sessionScope.userId ne moqoo.user.userId }">
+   		<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
+		<div class="action_menu">
+		  <ul>
+			<li><a href="/user/myPage"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
+			<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target="#reportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
+		  </ul>
+		</div>
+	  </c:if>	
+		<!-- 신고 모달 -->
+		<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <form action="/moqoo/report" method="post" id="reportForm">
+		      	<input type="hidden" name="reportPostNo" value="${moqoo.moqooNo }">
+		      	<input type="hidden" name="reportUserId" value="${moqoo.user.userId }">
+			       <div class="modal-body">
+			         <select name="reportContent" id="reportSelect">
+			           <option value="abusive">욕설사용</option>
+			           <option value="advertising">광고글</option>
+			           <option value="noSubject">주제와 맞지 않는 글</option>
+			           <option value="violent">폭력적인 내용</option>
+			           <option value="Discrimination">차별적인 내용</option>
+			           <option value="pornography">음란물</option>
+			           <option value="Personal">민감한 개인정보 노출</option>
+			           <option value="etc">기타 (직접 작성)</option>
+			         </select>
+			         <textarea id="customReason" name="reportContent" style="display:none" spellcheck="false"></textarea>
+			         <div>
+			           <small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>
+			         </div>
+	       		   </div>
+		       <div class="modal-footer">
+		         <button type="submit" id="send-report" class="btn send-report">보내기</button>
+		         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+		       </div>
+		      </form>
+		    </div>
 		  </div>
+		</div>
+		  
+		  
+	  <div style="text-align: center;">
+		<div id="post-category-img-container">
+		  <img id="post-category-img" alt="" src="${category.cImgPath}">
+		</div>
+		<div class="location col-xs-12 col-sm-8 col-md-6">
+		  <span id="location-text">${moqoo.moqooW3W}</span>
+		</div>
+	  </div>
       </div>
       <div id="post-title">${moqoo.moqooTitle }</div>
         <div id="writer-info">
@@ -125,7 +162,7 @@
             </div>
           </div>
         </div>
-      <hr>
+        <hr>
       	<div id="content">${moqoo.moqooContent }</div>
       
 	    <!-- 지도 들어갈 자리 -->
@@ -139,18 +176,16 @@
 	
 	    <div class="post-footer">
 	      <div class="heart-container">
-<!-- 	        <img id="heart" class="heart" src="../resources/assets/img/heart(empty).png" alt="빈 하트" onclick="changeImage()"> -->
-<%-- 	        <span class="heart-count">${likeCount }</span> --%>
-				<button id="likeButton"  onclick="like(${moqoo.moqooNo})">
-				    <c:if test="${likeOrNot == 0 }">
-				        <i class="bi bi-heart heart"></i>
-				    </c:if>
-				    <c:if test="${likeOrNot == 1 }">
-				    	<i class="bi bi-heart-fill heart"></i>
-				    </c:if>
-				</button>
-				<span id="like-count">${likeCount }</span>
-				<!-- 좋아요 버튼 -->
+			<button id="likeButton"  onclick="like(${moqoo.moqooNo})">
+			    <c:if test="${likeOrNot == 0 }">
+			        <i class="bi bi-heart heart"></i>
+			    </c:if>
+			    <c:if test="${likeOrNot == 1 }">
+			    	<i class="bi bi-heart-fill heart"></i>
+			    </c:if>
+			</button>
+			<span id="like-count">${likeCount }</span>
+			<!-- 좋아요 버튼 -->
 	      </div>
 	      
 		  <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
@@ -171,8 +206,6 @@
 	    </c:if>  
 	      <button class="btn post-btn" id="participate-btn">참여하기</button>
 	    </div>
-	  
-	  
 	  
 	  <!-- 참여현황 모달 -->
         <div class="modal joinInfo" id="joinModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -310,6 +343,8 @@
 			</div>
 		</div>
 		<div class="comment-page-container"></div>
+	  </div>
+    </main><!-- End #main -->
         
 <!--           <ul class="comment-list"> -->
 <%--           <c:forEach var="comt1" items="${comtList }" varStatus="i"> --%>
@@ -407,41 +442,8 @@
 <!--         </form> -->
           
           
-        <!-- 신고 모달 -->
-        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <form action="moqoo/report" method="post">
-	              <div class="modal-body">
-	                <select name="report" id="reportSelect">
-	                  <option value="abusive">욕설사용</option>
-	                  <option value="advertising">광고글</option>
-	                  <option value="noSubject">주제와 맞지 않는 글</option>
-	                  <option value="violent">폭력적인 내용</option>
-	                  <option value="Discrimination">차별적인 내용</option>
-	                  <option value="pornography">음란물</option>
-	                  <option value="Personal">민감한 개인정보 노출</option>
-	                  <option value="etc">기타 (직접 작성)</option>
-	                </select>
-	                <textarea id="customReason" style="display:none" spellcheck="false"></textarea>
-	                <div>
-	                  <small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>
-	                </div>
-	              </div>
-	              <div class="modal-footer">
-	                <button type="submit" class="btn send-report">보내기</button>
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-	              </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main><!-- End #main -->
+        
+      
     
     <jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
     
@@ -663,8 +665,11 @@
 //   // 신고버튼 등장
 //   var rePortVisible = false;  // 신고 div 상태 변수
 
+  function toggleReportDiv() {
 //   function toggleReportDiv(obj) {
 //     var reportDiv = obj.nextElementSibling;
+	const reportDiv = document.getElementById("report-div");
+	reportDiv.style.display = reportDiv.style.display === "none" ? "block" : "none";
 
 //     if(rePortVisible) {
 //       reportDiv.style.display = "none";
@@ -673,7 +678,7 @@
 //       reportDiv.style.display = "block";
 //       rePortVisible = true; 
 //     }
-//   }
+  }
 
 //   // 신고 모달
 //   var selectElement = document.getElementById("reportSelect");
@@ -788,7 +793,7 @@
 	// 댓글 등록
 	$("#submit-btn").on("click", function() {
 		const cContent = $("#comtContent").val();
-		const refMoqooNo = ${moqoo.moqooNo };
+		const refMoqooNo = "${moqoo.moqooNo }";
 		const sessionUserId = "${sessionScope.userId }";
 		if (currentUserId == "") {
 			if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
@@ -799,7 +804,7 @@
 		}else {
 			$.ajax({
 				url : "/comt/insert",
-				data : {refMoqooNo : refMoqooNo, comtContent : cContent},
+				data : {refPostNo : refMoqooNo, comtContent : cContent},
 				type : "POST",
 				success : function(result){
 					if(result == "success"){
@@ -822,10 +827,10 @@
 	});
 	
 	// 댓글 수정 폼
-	const modifyView = (comtContent, comtNo) => {
+	const modifyView = (obj, comtContent, comtNo) => {
 		  console.log("comtNo:", comtNo);
 		    // 이미 수정 폼이 표시되고 있는지 확인
-		    const existingForm = $(this).closest('.comment').find('.modify-form');
+		    const existingForm = $(obj).closest('.comment').find('.modify-form');
 
 		    if (existingForm.length > 0) {
 		        // 폼이 이미 표시 중이면, 폼을 숨깁니다.
@@ -837,16 +842,16 @@
 		        const saveButton = $("<button type='button'>").text("수정 완료").click(function() {
 		            const newContent = inputField.val();
 		            const refPostNo = "${moqoo.moqooNo}";
-		            modifyComment(refPostNo, comtNo, newContent);
+		            modifyComment(obj, refPostNo, comtNo, newContent);
 		        });
 
 		        formDiv.append(inputField, saveButton);
-		        $(this).closest('.comment').append(formDiv);
+		        $(obj).closest('.comment').append(formDiv);
 		    }
 		};
 
 	// 댓글 수정
-	const modifyComment = (refPostNo, comtNo, newContent) => {
+	const modifyComment = (obj, refPostNo, comtNo, newContent) => {
 	    const comment = {
 	    	refPostNo: refPostNo,
 	        comtNo: comtNo,
@@ -900,9 +905,9 @@
 	
 	
 	// 대댓글 폼, 대댓글 작성
-	function showReplyForm(pComtNo) {
+	function showReplyForm(obj, pComtNo) {
 // 		console.log(currentUserId);
-
+		var moqooNo = ${moqoo.moqooNo};
 	 	if (currentUserId == "") {
 	        if (confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?")) {
 	            // 사용자가 확인을 누르면 로그인 페이지로 이동
@@ -911,7 +916,7 @@
 	        }
 	    }
 	 	else {
-			const targetComment = $(this).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
+			const targetComment = $(obj).closest('.comment'); // 'comment' 클래스를 가진 요소를 찾음
 		    // 'comment-text' 클래스를 가진 요소를 찾아 그 뒤에 replyForm 추가
 		    const replyForm = $("<div>").addClass("reply-form");
 		    const replyTextarea = $("<textarea>").attr("placeholder", "답글을 작성하세요");
@@ -965,7 +970,6 @@
 	function loadInitialComments() {
 		currentOffset = 0;
 		var moqooNo = "${moqoo.moqooNo}";
-// 		var sessionUserId = "${sessionScope.userId}";
 	    // 페이지 로딩 중 메시지를 표시
 	    const loadingMessage = $("<div>").addClass("loading-message").text("로딩 중...");
 	    const commentContainer = $("#comment-container");
@@ -1052,7 +1056,7 @@
 	                    	var commentList = $("<ul>").addClass("comment-list");
 	                    	
 	                    	data.forEach(comment => {
-	    	                    const commentItem = createCommentItem(comment);
+	    	                    var commentItem = createCommentItem(comment);
 	    	                    commentList.append(commentItem);
 	    	                });
 
@@ -1104,9 +1108,9 @@
 	 	// 프로필 보기 메뉴
 	    var profileMenuItem = $("<li>").html("<a href='#'><i class='bi bi-person-vcard'></i> 프로필 보기</a>");
 	    
-	    actionMenu.append(actionMenuList);
 	    actionMenuList.append(profileMenuItem);
-	    
+	    actionMenu.append(actionMenuList);
+
 	    userInfo.append(userImage);
 	    userInfo.append(username);
 	    userInfo.append(date);
@@ -1120,6 +1124,7 @@
 	        var removeLink = $("<a>").attr("href", 'javascript:void(0)').html('<i class="bi bi-x"></i>').data("comtNo", comment.comtNo).on("click", function() {removeComment(comment.comtNo);});
 	        userInfo.append(modifyLink);
 	        userInfo.append(removeLink);
+	        actionMenuBtn.hide();
 	    }
 	    
 	 	// 답글쓰기 링크 (pComtNo가 0이 아닌 경우에 표시)
@@ -1135,7 +1140,7 @@
 	 	// 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var showReportLink = !isCurrentUser;
 	    if (showReportLink) {
-	        var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='.fade'><i class='bi bi-exclamation-triangle'></i> 신고하기`);
+	        var reportMenuItem = $("<li>").html(`<a href='#' data-bs-toggle='modal' data-bs-target='#reportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기`);
 	        actionMenuList.append(reportMenuItem);
 	    }
 	    
@@ -1212,8 +1217,32 @@
 	    var newLikeCount = currentLikeCount + change;
 	    likeCountElement.textContent = newLikeCount;
 	}
+	
+	// 게시물신고버튼 토글
+	$(document).on("click", "#action_menu_btn", function() {
+		$(this).next().toggle();
+	});
+	$('#action_menu_btn').on("click", function() {
+		$(this).next().toggle();
+    });
+
+    var selectElement = document.getElementById("reportSelect");
+    var textareaElement = document.getElementById("customReason");
+    selectElement.addEventListener("change", function() {
+       if (selectElement.value === "etc") {
+           textareaElement.style.display = "block";
+           //selectElement.disabled = "true";
+       } else {
+           textareaElement.style.display = "none";
+       }
+     });
+    $("#reportForm").on("submit", function() {
+    	if(textareaElement.style.display == "block") {
+	    	selectElement.disabled = "true";
+    	}else{
+    		textareaElement.disabled = "true";
+    	}
+   	});	
 	</script>
-
 </body>
-
 </html>

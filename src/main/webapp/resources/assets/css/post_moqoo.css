@@ -18,7 +18,8 @@
   --color-default : #FFF59D;
 }
 body {
-  font-family: "Open Sans", sans-serif;
+	font-family: 'Nanum Gothic', sans-serif;
+/*   font-family: "Open Sans", sans-serif; */
   color: #444444;
 }
 
@@ -47,6 +48,7 @@ p {
   margin: 0 auto;
 }
 
+ul { margin-bottom: 0 !important;}
 /*--------------------------------------------------------------
 # Modal
 --------------------------------------------------------------*/
@@ -515,7 +517,7 @@ p {
 }
 
 
-/* 신고 */
+/* ----------- 신고 -------------- */
 #action_menu_btn{
 	position: absolute;
 	right: 10px;
@@ -537,11 +539,13 @@ p {
 	display: none;
 }
 
+
 .action_menu ul{
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
+
 
 .action_menu ul li{
 	width: 100%;
@@ -553,9 +557,14 @@ p {
   color : white;
 }
 
+
+
 .action_menu ul li i{
 	padding-right: 10px;
 }
+
+
+
 .action_menu ul li:hover{
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.2);
@@ -583,13 +592,6 @@ p {
   /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); */
 }
 
-/* report-text 스타일 */
-#report-text {
-  cursor: pointer;
-  color: #007bff;
-  float: left;
-  margin-right: 10px;
-}
 
 .bi-exclamation-circle{
   color: #007bff;
@@ -825,15 +827,20 @@ p {
 
 
 /* 댓글 스타일 */
+.comment {
+    position: relative; /* 부모 요소를 상대적으로 위치시킴 */
+    display: flex;
+  	flex-direction: column; /* 이 부분이 내용을 아래로 내리는 역할을 합니다. */
+  	padding: 10px;
+  	border-bottom: 1px solid #ddd;
+}
 
 .comment-list {
   list-style-type: none;
   padding: 0;
+  border-top: 1px solid #ddd;
 }
 
-.comment {
-    position: relative; /* 부모 요소를 상대적으로 위치시킴 */
-}
 
 .comment .mini-dots {
     position: absolute; /* 자식 요소를 절대적으로 위치시킴 */
@@ -842,17 +849,13 @@ p {
     width: 15px;
 }
 
-.comment-list{
-	border-top: 1px solid #ddd;
+.has-parent-comment {
+	padding-left: 70px;
+    background-color: #f7f7f7;
 }
 
 
-.comment {
-  display: flex;
-  flex-direction: column; /* 이 부분이 내용을 아래로 내리는 역할을 합니다. */
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
+
 
 .user-info {
   display: flex;
@@ -864,6 +867,10 @@ p {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info a {
   margin-right: 10px;
 }
 

@@ -65,7 +65,7 @@
 	</insert>
 	
 	<insert id="insertReport"> 
-		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, NULL, #{reportPostNo }, NULL, 'M') 
+		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWrite }, #{reportContent }, DEFAULT, #{reportUserId }, #{reportPostNo }, NULL, 'M') 
 	</insert>
 	
 	<update id="updateMoqoo">
@@ -135,7 +135,6 @@
         JOIN USER_TBL ON USER_ID = MOQOO_WRITER
         JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
         WHERE (MOQOO_TITLE LIKE '%' || #{searchValue } || '%' OR REGEXP_REPLACE(MOQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue } || '%')
-        AND USER_ID = #{userId }
         ORDER BY MOQOO_DAY DESC
 	</select>
 	

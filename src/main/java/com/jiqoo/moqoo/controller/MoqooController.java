@@ -189,18 +189,15 @@ public class MoqooController {
 	}
 	
 	@ResponseBody
-	@GetMapping(value =  "/moqoo/searchList", produces = "application/json;charset=UTF-8;")
-	public String showSearchList(@RequestParam("searchValue") String searchValue, HttpSession session) {
+	@GetMapping(value = "/moqoo/loadInitialMoqooSearchList", produces = "application/json;charset=UTF-8;")
+	public List<Moqoo> showSearchList(@RequestParam("searchValue") String searchValue, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		Map<String, Object> params = new HashMap<>();
 		params.put("searchValue", searchValue);
 		params.put("userId", userId);
-
 		List<Moqoo> moqooSearchList = moqooService.selectMoqooSearchList(params);
-		Gson gson = new Gson();
-		return gson.toJson(moqooSearchList);
+		return moqooSearchList;
 	}
-	
 	
 	@ResponseBody
 	@PostMapping("/moqoo/post")
@@ -223,36 +220,34 @@ public class MoqooController {
 		}
 	}
 	
-//	@GetMapping("/moqoo/report")
-//	public String insertReport(@ModelAttribute Report report, @RequestParam("reportContent") String reportContent, @RequestParam("moqooNo") int moqooNo, Model model, HttpSession session) {
-//		try {
-//			String userId = (String) session.getAttribute("userId");
-//			if(userId != null && !userId.equals("")) {
-//				report.setReportWriter(userId);
-//				report.setReportContent(reportContent);
-//				report.setReportPostNo(moqooNo);
-//				int result = moqooService.insertReport(report);
-//				if(result > 0) {
-//					return "redirect:/moqoo/moqoo";
-//				}
-//				else {
-//					model.addAttribute("msg", "신고접수가 완료되지 않았습니다.");
-//					model.addAttribute("url", "/moqoo/moqoo");
-//					return "common/message";
-//				}
-//			}
-//			else {
-//				model.addAttribute("msg", "회원정보가 없습니다. 로그인 후 이용해 주셍.");
-//				model.addAttribute("url", "/moqoo/moqoo");
-//				return "common/message";
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			model.addAttribute("msg", e.getMessage());
-//			model.addAttribute("url", "/moqoo/moqoo");
-//			return "common/message";
-//		}
-//	}
+	@PostMapping("/moqoo/report")
+	public String insertReport(@ModelAttribute Report report, Model model, HttpSession session) {
+		try {
+			String userId = (String) session.getAttribute("userId");
+			if(userId != null && !userId.equals("")) {
+				report.setReportWrite(userId);
+				int result = moqooService.insertReport(report);
+				if(result > 0) {
+					return "redirect:/moqoo/moqoo";
+				}
+				else {
+					model.addAttribute("msg", "신고접수가 완료되지 않았습니다.");
+					model.addAttribute("url", "/moqoo/moqoo");
+					return "common/message";
+				}
+			}
+			else {
+				model.addAttribute("msg", "회원정보가 없습니다. 로그인 후 이용해 주셍.");
+				model.addAttribute("url", "/moqoo/moqoo");
+				return "common/message";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "/moqoo/moqoo");
+			return "common/message";
+		}
+	}
 	
 	// 좋아요
 		@ResponseBody
