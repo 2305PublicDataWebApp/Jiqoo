@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jiqoo.admin.domain.AdminChat;
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.admin.store.AdminStore;
 import com.jiqoo.chat.domain.ChatMessage;
@@ -519,8 +520,8 @@ public class AdminServiceImpl implements AdminService {
 	 * 다있는 채팅방 리스트
 	 */
 	@Override
-	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap) {
-		List<Map<String, Object>> chatRoomAllList = adminStore.selectChatRoomAllList(sqlSession, pInfo, chatMap);
+	public List<AdminChat> selectChatRoomAllList(PageInfo pInfo) {
+		List<AdminChat> chatRoomAllList = adminStore.selectChatRoomAllList(sqlSession, pInfo);
 		return chatRoomAllList;
 	}
 
@@ -545,6 +546,15 @@ public class AdminServiceImpl implements AdminService {
 		List<Map<String, Object>> jiqooCountList = adminStore.jiqooCountList(sqlSession, jiqoo);
 		return jiqooCountList;
 	}
+
+
+	@Override
+	public List<Map<String, Object>> moqooCountList() {
+		List<Map<String, Object>> moqooCountList = adminStore.moqooCountList(sqlSession);
+		return moqooCountList;
+	}
+
+
 
 
 

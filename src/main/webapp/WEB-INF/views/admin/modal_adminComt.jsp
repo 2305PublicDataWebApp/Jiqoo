@@ -91,4 +91,29 @@
 	</div>
 </div>
 </c:forEach>
+<script>
+$(document).ready(function(){
+	updateComt();
+});
+
+function updateComt() { 
+	const commentText = $("<p class='comment-text'>").val();
+	if(comtList.comtStatus == 'A' && comtList.comtWriter !== 'admin'){
+	// comtStatus가 A && 댓글 쓴 사람이 관리자가 아님 
+		// 댓글 내용을 변경
+       commentText.text("관리자에 의해 삭제된 댓글입니다");
+	
+    	// 삭제된 댓글입니다라는 텍스트가 포함되어 있다면 텍스트 색상을 빨간색으로 변경
+       if (commentText.text().includes('관리자에 의해 삭제된 댓글입니다')) {
+           commentText.css({ color: 'red' });
+       }
+	}
+} 
+
+
+
+
+
+
+</script>
 <!-- End 댓글 Modal -->

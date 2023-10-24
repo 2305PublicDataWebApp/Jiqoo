@@ -98,40 +98,65 @@
                 <!-- Line Chart -->
               <canvas id="lineChart" style="max-height: 400px;"></canvas>
               <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                  new Chart(document.querySelector('#lineChart'), {
-                    data: {
-                      labels: ['07', '08', '09', '10', '11', '12', '13', '14', '15','16','17', '18','19', '20', '21', '22', '23','24','25', '26'],
-                      datasets: [{
-                        label: '모꾸 등록 현황',
-                        type: 'line',
-                        data: [65, 59, 80, 81, 56, 55, 40, 45,67,78,45,34],
-                        fill: false,
-                        borderColor: '#19A7CE',
-                        tension: 0.1
-                      },{
-                        label: '여성',
-                        type : 'bar',
-                        data: [60, 50, 80, 80, 50, 38, 40, 45,60,70,40,30],
-                        fill: false,
-                        backgroundColor: '#FF9B9B',
-                      },{
-                        label: '남성',
-                        type : 'bar',
-                        data: [5, 9, 0, 1, 6, 5, 2, 5,7,8,5,4],
-                        fill: false,
-                        backgroundColor: '#82A0D8',
-                      }]
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true
-                        }
-                      }
-                    }
-                  });
-                });
+              $(document).ready(function(){
+					getGraph();
+
+				});
+				
+				function getGraph(){
+					let timeList=[];
+					let postList=[];
+					let reportList=[];
+					
+					$.ajax({
+						url: "/admin/moqooLineChart",
+						type: "get",
+						dataType: "json",
+						success: function(data) {
+							console.log(data);
+							for (let i = 0; i <data.length; i++){
+								timeList.push(data[i].THEDATE);
+								postList.push(data[i].MOQOOCOUNT);
+								reportList.push(data[i].MREPORTCOUNT);
+							}
+							console.log("AAAA"+timeList);
+							console.log("BBBB"+postList);
+							console.log("CCCC"+reportList);
+							
+							 new Chart(document.querySelector('#lineChart'), {
+								    type: 'line',
+								    data: {
+								      labels: timeList,
+								      datasets: [
+								    	{
+								        label: '모꾸 등록 현황',
+								        data: postList,
+								        fill: false,
+// 								        backgroundColor: '#19A7CE',
+										borderColor: '#19A7CE',
+// 								        tension: 0.1 //곡률넣어줌
+								      }
+								      ,{
+								          label: '신고수',
+								          type : 'line',
+								          data: reportList,
+								          fill: false,
+								          borderColor: '#FF9B9B',
+
+								        }]
+								    },
+								    options: {
+								      scales: {
+								        y: {
+								          beginAtZero: true //y축시작점이 0에서 시작
+								        }
+								      }
+								    }
+								  });
+						}
+							
+					});
+				};
               </script>
               <!-- End Line CHart -->
 

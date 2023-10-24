@@ -9,6 +9,18 @@ public class ChatReport {
 	private String chatReportContent;
 	private Timestamp chatReportDate;
 	private int reportChatNo;
+	private int reportCount;
+	
+	
+	
+
+	public int getReportCount() {
+		return reportCount;
+	}
+
+	public void setReportCount(int reportCount) {
+		this.reportCount = reportCount;
+	}
 
 	public int getChatReportNo() {
 		return chatReportNo;

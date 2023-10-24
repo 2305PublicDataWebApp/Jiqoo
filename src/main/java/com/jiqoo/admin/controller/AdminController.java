@@ -1,6 +1,7 @@
 package com.jiqoo.admin.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.jiqoo.admin.domain.AdminChat;
 import com.jiqoo.admin.service.AdminService;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
@@ -478,17 +480,12 @@ public class AdminController {
 				PageInfo pInfoComt = this.getPageInfo(5, currentComtPage, usersTotalComtCount); // 지꾸 댓글 페이징 
 				List<Comment> comtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
 				
-//				if(comtList.size() > 0) {
-//					mv.addObject("pInfoComt", pInfoComt).addObject("comtList", comtList);	
-//				}else {
-//					mv.addObject("noComtMsg", "작성한 댓글이 없습니다.");
-//				}
+				if(comtList.size() > 0) {
+					mv.addObject("pInfoComt", pInfoComt).addObject("comtList", comtList);	
+				}else {
+					mv.addObject("noComtMsg", "작성한 댓글이 없습니다.");
+				}
 				
-//				for (User userReport : user) {
-//					List<Report> originalText = userReport.getReportList(); 
-//					List<Report> replacedText = originalText.replaceA("대체전단어", "대체후단어");
-//				    user.setReportList(replacedText);
-//				}
 						
 				mv.addObject("user", user);
 				mv.addObject("comtList", comtList);
@@ -512,18 +509,18 @@ public class AdminController {
 	}
 	
 	//회원상세_댓글(ajax)
-	@ResponseBody
-	@GetMapping(value="/admin/u_detail_comtlist"
-			  , produces="application/json;charset=utf-8")
-	public String showComtList(@RequestParam("userId") String userId
-							 , @RequestParam(value = "comtPage", required = false, defaultValue = "1") Integer currentComtPage) { 
-		Integer usersTotalComtCount = adminService.getusersTotalComtCount(userId); // 회원별 총 댓글 수 카운트
-		PageInfo pInfoComt = this.getPageInfo(5, currentComtPage, usersTotalComtCount); // 지꾸 댓글 페이징 
-		List<Comment> comtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
-
-		Gson gson = new Gson();
-		return gson.toJson(comtList);
-	}
+//	@ResponseBody
+//	@GetMapping(value="/admin/u_detail_comtlist"
+//			  , produces="application/json;charset=utf-8")
+//	public String showComtList(@RequestParam("userId") String userId
+//							 , @RequestParam(value = "comtPage", required = false, defaultValue = "1") Integer currentComtPage) { 
+//		Integer usersTotalComtCount = adminService.getusersTotalComtCount(userId); // 회원별 총 댓글 수 카운트
+//		PageInfo pInfoComt = this.getPageInfo(5, currentComtPage, usersTotalComtCount); // 지꾸 댓글 페이징 
+//		List<Comment> comtList = adminService.showUserComtList(pInfoComt, userId); // 회원별 댓글 리스트
+//
+//		Gson gson = new Gson();
+//		return gson.toJson(comtList);
+//	}
 
 	
 	
@@ -535,6 +532,7 @@ public class AdminController {
 	
 	
 	// 회원상세_지꾸강제삭제 + 지꾸관리페이지 지꾸 강제삭제 
+	
 	@GetMapping("/admin/deletejiqoo")
 	public ModelAndView deleteJiqooByAdmin (ModelAndView mv
 											, @RequestParam(value="jiqooNo") Integer jiqooNo
@@ -797,6 +795,36 @@ public class AdminController {
 			return mv;
 	}
 	
+//	@ResponseBody
+//	@GetMapping("/admin/checkStateType")
+//	public String deleteComtByAdmin (@RequestParam(value="comtNo") Integer comtNo
+//									, @RequestParam(value="userId") String userId) {
+//		
+//		Integer result = adminService.updateComtContent(comtNo);
+//		if(result > 0) {
+//			return "success";
+//		} else {
+//			return "fail";
+//		}
+//	}
+	
+	
+//	// 회원상세_댓글관리_강제삭제
+//	@ResponseBody
+//	@GetMapping("/admin/deletecomt")
+//	public String deleteComtByAdmin (@RequestParam(value="comtNo") Integer comtNo
+//									, @RequestParam(value="userId") String userId
+//									, HttpSession session) {
+//		//UPDATE COMT_TBL SET COMT_STATUS ='A'  WHERE COMT_NO = ?
+//				
+//		Integer result = adminService.deleteComtByAdmin(comtNo);
+//			if(result>0) {
+//				return "success";
+//			}else {
+//				return "fail";
+//			}
+//	}
+	
 	// 회원상세 강제삭제 댓글 복원 
 	@GetMapping("/admin/comtrevival")
 	public ModelAndView reviveCommentByAdmin (ModelAndView mv
@@ -844,40 +872,34 @@ public class AdminController {
 	
 	//지꾸관리페이지_지꾸차트 
 	@ResponseBody
-	@GetMapping("/admin/jiqooChartLine")
-	public String jiqoochart(User user, Jiqoo jiqoo) {
-		
-		Map<String,Object>statsMap = new HashMap<>();
-		statsMap.put("user", user);
-		statsMap.put("jiqoo", jiqoo);
+	@GetMapping("/admin/jiqooLineChart")
+	public List<Map<String,Object>> jiqoochart(String jiqooWriter, Jiqoo jiqoo) {
 		
 		List<Map<String,Object>> jiqooCountList = adminService.jiqooCountList(jiqoo); //날짜별 지꾸 등록수 리스트
-
-		Gson gson = new Gson();
-		return gson.toJson(jiqooCountList);
+		System.out.println("AAAAAAA"+jiqooCountList);
 		
-//		List<Map<String,Object>> jiqooCountList = adminService.jiqooCountList(jiqoo);
-//
-//
-//		Gson jiqooGson = new Gson();
-//		JsonArray jiqooArray = new JsonArray();
-//		Iterator<Jiqoo> jiqooIt = jiqooCntList.iterator();
-//		
-//		while(jiqooIt.hasNext()) {
-//			Jiqoo jiqooCnt = jiqooIt.next();
-//			JsonObject jiqooCntObject = new JsonObject();
-//			String jiqooDate = jiqooCnt.getjCreateDate();
-//			int count = jiqooCnt.getjReportCount();
-//			
-//			
-//			jiqooCntObject.addProperty("userGender", userGender);
-//			jiqooCntObject.addProperty("count", count);
-//			jiqooArray.add(jiqooCntObject);
-//		}
-//		String userGendergroup = jiqooGson.toJson(jiqooArray);
+//		List<Map<String,Object>> jiqooRCountList = adminService.jiqooRCountList(); //날짜별 지꾸 신고수 리스트
+//		System.out.println(jiqooRCountList);
 		
+//		Gson gson = new Gson();
+//		return gson.toJson(jiqooCountList);
 
 		
+//		List<Map<String, Object>> combinedList = new ArrayList<>();
+//		combinedList.addAll(jiqooCountList);
+//		combinedList.addAll(jiqooRCountList);
+		
+//		System.out.println("AAAAAAAAAAA"+combinedList);
+		
+//		Gson gson = new Gson();
+//		String result = gson.toJson(jiqooCountList);
+//		System.out.println("BBBBBBBBBB"+combinedResult);
+		
+		
+//		List<Map<String,Object>> jWriteGenderList = adminService.jWriteGenderList(jiqooWriter); //날짜별 지꾸 등록수 리스트
+//		System.out.println("BBBBBB"+jWriteGenderList);
+		
+		return jiqooCountList;
 	}
 	
 	
@@ -895,7 +917,6 @@ public class AdminController {
 		PageInfo pInfo = this.getPageInfo(10, currentPage, totalJiqooCount);
 		
 		List<Jiqoo> jiqooList = adminService.selectAllJiqoo(pInfo); // 전체 지꾸 리스트(+신고수)
-//		List<Report> jiqooReport = reportService.jiqooReportByJNoList(jiqooNo); // 지꾸 번호별 신고사유리스트 
 		
 		try {
 			if (jiqooList.size() > 0) {
@@ -975,9 +996,21 @@ public class AdminController {
 	
 	
 	
-	
 //**모꾸***모꾸***모꾸****************************************************************************************************************//	
 
+	//모꾸관리페이지_모꾸차트 
+	@ResponseBody
+	@GetMapping("/admin/moqooLineChart")
+	public List<Map<String,Object>> moqoochart() {
+		
+		List<Map<String,Object>> moqooCountList = adminService.moqooCountList(); //날짜별 지꾸 등록수 리스트
+		System.out.println("AAAAAAA"+moqooCountList);
+		
+	
+		return moqooCountList;
+	}
+	
+	
 	// 모꾸관리 리스트 (+페이징)
 		@GetMapping("/admin/moqoolist")
 		public ModelAndView showAdminMoqoo(ModelAndView mv
@@ -1081,8 +1114,7 @@ public class AdminController {
 		PageInfo pInfo = this.getPageInfo(15, currentPage, chatRoomCount);  //채팅방리스트 페이징
 	
 	//다있는 채팅방 리스트
-		Map<String,Object>chatMap = new HashMap<>();
-		List<Map<String, Object>>chatRoomAllList = adminService.selectChatRoomAllList(pInfo, chatMap);
+		List<AdminChat>chatRoomAllList = adminService.selectChatRoomAllList(pInfo);
 	
 		try {
 			if (chatRoomAllList.size() > 0) {

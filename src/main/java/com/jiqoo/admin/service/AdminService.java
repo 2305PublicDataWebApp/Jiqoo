@@ -3,6 +3,7 @@ package com.jiqoo.admin.service;
 import java.util.List;
 import java.util.Map;
 
+import com.jiqoo.admin.domain.AdminChat;
 import com.jiqoo.chat.domain.ChatMessage;
 import com.jiqoo.chat.domain.ChatRoom;
 import com.jiqoo.common.domain.Comment;
@@ -382,7 +383,11 @@ public interface AdminService {
 	 * @param chatMap
 	 * @return
 	 */
-	public List<Map<String, Object>> selectChatRoomAllList(PageInfo pInfo, Map<String, Object> chatMap);
+	public List<AdminChat> selectChatRoomAllList(PageInfo pInfo);
+
+	public List<Map<String, Object>> moqooCountList();
+
+
 
 
 
