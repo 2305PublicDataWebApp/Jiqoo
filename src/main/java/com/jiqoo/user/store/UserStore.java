@@ -240,4 +240,12 @@ public interface UserStore {
 	 */
 	List<UserLikeDto> selectMyLikedPostList(SqlSession sqlSession, Map<String, Object> likeMap);
 
+	/**
+	 * 마이페이지 날짜 리스트 조회 Store
+	 * @param sqlSession
+	 * @param jiqooMap
+	 * @return
+	 */
+	List<UserJiqooDto> selectMyJiqooSearchList(SqlSession sqlSession, Map<String, Object> jiqooMap);
+
 }

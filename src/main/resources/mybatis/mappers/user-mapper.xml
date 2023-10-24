@@ -239,6 +239,9 @@
 	          LEFT JOIN USER_TBL U ON C.COMT_WRITER = U.USER_ID
 	          WHERE C.COMT_WRITER = #{userId} 
 	          AND C.COMT_STATUS NOT LIKE 'N' AND (J.JIQOO_STATUS NOT LIKE 'N' OR M.MOQOO_STATUS NOT LIKE 'N')
+	      	<if test="searchDate != ''"> 
+				AND TO_CHAR(COMT_DATE, 'yyyy-mm-dd') = #{searchDate}
+			</if>
       		)
       	WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
       	ORDER BY COMT_DATE DESC
@@ -252,7 +255,23 @@
 			JOIN CATEGORY_TBL ON JIQOO_CTGR = C_NAME
 			JOIN USER_TBL ON USER_ID = JIQOO_WRITER
 			WHERE JIQOO_WRITER = #{userId} AND JIQOO_STATUS NOT LIKE 'N'
+			<if test="searchDate != ''"> 
+				AND TO_CHAR(JIQOO_DATE, 'yyyy-mm-dd') = #{searchDate}
+			</if>
 			)
+		WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
+		ORDER BY JIQOO_DATE DESC
+	</select>
+	
+	<select id="selectMyJiqooSearchList" resultMap="UserJiqooDtoResultMap">
+		SELECT *
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY JIQOO_DATE DESC) AS RNUM, JIQOO_NO, JIQOO_W3W, JIQOO_DATE, JIQOO_CTGR, C_IMG_PATH, JIQOO_TITLE, JIQOO_CONTENT, JIQOO_WRITER, USER_PHOTO_PATH, J_VIEW_COUNT 
+			FROM JIQOO_TBL
+			JOIN CATEGORY_TBL ON JIQOO_CTGR = C_NAME
+			JOIN USER_TBL ON USER_ID = JIQOO_WRITER
+			WHERE (JIQOO_WRITER = #{userId}) AND (JIQOO_STATUS NOT LIKE 'N') AND 
+    			  (JIQOO_DATE = #{selectedDate})
 		WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
 		ORDER BY JIQOO_DATE DESC	
 	</select>
@@ -265,6 +284,9 @@
 		    JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
 		    JOIN USER_TBL ON USER_ID = MOQOO_WRITER
 		    WHERE MOQOO_WRITER = #{userId} AND MOQOO_STATUS NOT LIKE 'N'
+			<if test="searchDate != ''"> 
+				AND TO_CHAR(MOQOO_DAY, 'yyyy-mm-dd') = #{searchDate}
+			</if>
 			)
 		WHERE RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo}
 		ORDER BY MOQOO_DAY DESC	
@@ -320,6 +342,9 @@
 		    LEFT JOIN CATEGORY_TBL C ON POST_CATEGORY = C.C_NAME
 		)
 		WHERE (POST_STATUS NOT LIKE 'N') AND (RNUM &gt;= #{startNo} AND RNUM &lt;= #{endNo})
+		<if test="searchDate != ''"> 
+			AND TO_CHAR(POST_DATE, 'yyyy-mm-dd') = #{searchDate}
+		</if>
 		ORDER BY POST_DATE DESC
 	</select>
 </mapper>

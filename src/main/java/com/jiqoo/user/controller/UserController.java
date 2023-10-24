@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -94,7 +95,7 @@ public class UserController {
 	// 팔로우
 	@ResponseBody
 	@PostMapping("/follow")
-	public String insertFollow(@RequestParam(value = "userId") String toUserId, HttpSession session) {
+	public String insertFollow(@RequestParam(value = "toUserId") String toUserId, HttpSession session) {
 		try {
 			String fromUserId = (String) session.getAttribute("userId");
 			if (fromUserId != "" && fromUserId != null) {
@@ -254,7 +255,7 @@ public class UserController {
 	// 언팔로우
 	@ResponseBody
 	@PostMapping("/unfollow")
-	public String deleteFollow(@RequestParam(value = "userId") String toUserId, HttpSession session) {
+	public String deleteFollow(@RequestParam(value = "toUserId") String toUserId, HttpSession session) {
 		try {
 			String fromUserId = (String) session.getAttribute("userId");
 			if (fromUserId != "" && fromUserId != null) {
@@ -598,21 +599,57 @@ public class UserController {
 		return mv;
 	}
 	
+	// 프로필 지꾸 리스트 조회
+	@ResponseBody
+	@PostMapping("/jiqooList")
+	public List<UserJiqooDto> showUserJiqooList(
+			@RequestParam("startNo") int startNo
+			, @RequestParam("endNo") int endNo
+			, @RequestParam("userId") int userId) {
+		Map<String, Object> jiqooMap = new HashMap<>();
+		jiqooMap.put("userId", userId);
+		jiqooMap.put("startNo", startNo);
+		jiqooMap.put("endNo", endNo);
+		System.out.println("프로필유저 : " + userId);
+		List<UserJiqooDto> jiqooList = userService.selectMyJiqooList(jiqooMap);
+		return jiqooList;
+	}
+	
 	// 지꾸 리스트 조회
 	@ResponseBody
-	@GetMapping("/myJiqooList")
+	@PostMapping("/myJiqooList")
 	public List<UserJiqooDto> showMyJiqooList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
+			, @RequestParam("searchDate") String searchDate
 			, HttpSession session) {
 		String userId = (String)session.getAttribute("userId");
 		Map<String, Object> jiqooMap = new HashMap<>();
 		jiqooMap.put("userId", userId);
 		jiqooMap.put("startNo", startNo);
 		jiqooMap.put("endNo", endNo);
+		jiqooMap.put("searchDate", searchDate);
+
 		List<UserJiqooDto> jiqooList = userService.selectMyJiqooList(jiqooMap);
 		return jiqooList;
 	}
+	
+//	@ResponseBody
+//	@GetMapping("/myJiqooSearchList")
+//	public List<UserJiqooDto> showMyJiqooSearchList(
+//			@RequestParam("startNo") int startNo
+//			, @RequestParam("endNo") int endNo
+//			, @RequestParam("selectedDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date selectedDate
+//			, HttpSession session) {
+//		String userId = (String)session.getAttribute("userId");
+//		Map<String, Object> jiqooMap = new HashMap<>();
+//		jiqooMap.put("userId", userId);
+//		jiqooMap.put("startNo", startNo);
+//		jiqooMap.put("endNo", endNo);
+//		jiqooMap.put("selectedDate", selectedDate);
+//		List<UserJiqooDto> jiqooSearchList = userService.selectMyJiqooSearchList(jiqooMap);
+//		return jiqooSearchList;
+//	}
 	
 	// 모꾸 리스트 조회
 	@ResponseBody
@@ -620,12 +657,14 @@ public class UserController {
 	public List<UserMoqooDto> showMoqooList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
+			, @RequestParam("searchDate") String searchDate
 			, HttpSession session) {
 		String userId = (String)session.getAttribute("userId");
 		Map<String, Object> moqooMap = new HashMap<>();
 		moqooMap.put("userId", userId);
 		moqooMap.put("startNo", startNo);
 		moqooMap.put("endNo", endNo);
+		moqooMap.put("searchDate", searchDate);
 		List<UserMoqooDto> jiqooList = userService.selectMyMoqooList(moqooMap);
 		return jiqooList;
 	}
@@ -659,12 +698,14 @@ public class UserController {
 	public List<UserComment> showMyComtList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
+			, @RequestParam("searchDate") String searchDate
 			, HttpSession session) {
 		String userId = (String)session.getAttribute("userId");
 		Map<String, Object> comtMap = new HashMap<>();
 		comtMap.put("userId", userId);
 		comtMap.put("startNo", startNo);
 		comtMap.put("endNo", endNo);
+		comtMap.put("searchDate", searchDate);
 		List<UserComment> commentList = userService.selectMyCommentList(comtMap);
 
 		return commentList;
@@ -676,12 +717,14 @@ public class UserController {
 	public List<UserLikeDto> showLikedList(
 			@RequestParam("startNo") int startNo
 			, @RequestParam("endNo") int endNo
+			, @RequestParam("searchDate") String searchDate
 			, HttpSession session) {
 		String userId = (String)session.getAttribute("userId");
 		Map<String, Object> likeMap = new HashMap<>();
 		likeMap.put("userId", userId);
 		likeMap.put("startNo", startNo);
 		likeMap.put("endNo", endNo);
+		likeMap.put("searchDate", searchDate);
 		List<UserLikeDto> likedList = userService.selectMyLikedPostList(likeMap);
 		return likedList;
 	}
@@ -698,14 +741,21 @@ public class UserController {
 					// 팔로워, 팔로잉 수 & 리스트
 					int followersCount = userService.selectFollowersCount(userId);
 					int followingsCount = userService.selectFollowingCount(userId);
-
+					// 프로필페이지 사용자의 팔로워, 팔로잉 리스트
 					List<User> followersList = userService.selectFollowersListById(userId);
 					List<User> followingsList = userService.selectFollowingsListById(userId);
+
+					// 로그인 유저의 팔로워, 팔로잉 리스트
+					List<User> loginUserFollowingsList = userService.selectFollowingsListById(loginUserId);
+
+					// 사용자(test01)의 팔로워 및 팔로잉 상태 설정
 					for (User follower : followersList) {
-						boolean checkFollow = isFollowingUser(followingsList, loginUserId, follower.getUserId());
-						System.out.println("팔로우 체크 : " + checkFollow);
-						follower.setCheckFollow(checkFollow);
-	                }
+					    follower.setCheckFollow(isFollowingUser(loginUserFollowingsList, follower.getUserId()));
+					}
+					for (User following : followingsList) {
+					    following.setCheckFollow(isFollowingUser(loginUserFollowingsList, following.getUserId()));
+					}
+
 
 					
 					// 지꾸 모꾸 게시글 수 조회
@@ -740,17 +790,18 @@ public class UserController {
 			model.addAttribute("url", "/");
 			return "common/message";
 		}
-	
 	}
+
 	// 유저가 팔로우 중인지 체크하는 함수
-	private boolean isFollowingUser(List<User> followingsList, String loginUserId, String targetUserId) {
-	    for (User following : followingsList) {
-	        if (following.getUserId().equals(targetUserId)) {
+	private boolean isFollowingUser(List<User> followingsList, String targetUserId) {
+	    for (User user : followingsList) {
+	        if (user.getUserId().equals(targetUserId)) {
 	            return true;
 	        }
 	    }
 	    return false;
 	}
+
 	
 	// 마이페이지 접속
 	@GetMapping("/myPage")

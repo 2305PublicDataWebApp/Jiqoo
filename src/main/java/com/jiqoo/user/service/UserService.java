@@ -196,6 +196,13 @@ public interface UserService {
 	 */
 	List<UserLikeDto> selectMyLikedPostList(Map<String, Object> likeMap);
 
+	/**
+	 * 지꾸 리스트 날짜조회 service
+	 * @param jiqooMap
+	 * @return
+	 */
+	List<UserJiqooDto> selectMyJiqooSearchList(Map<String, Object> jiqooMap);
+
 
 
 }
