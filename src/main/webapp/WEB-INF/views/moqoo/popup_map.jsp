@@ -43,20 +43,20 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
-        :root {
-        --font-default : 'Nanum Gothic', sans-serif;
-        --font-primary: 'Black Han Sans', sans-serif;
-        --color-primary: #8BC34A;
-        --color-secondary: #388E3C;
-        --color-default : #FFF59D;
-        }
-        body {
-        font-family: "Open Sans", sans-serif;
-        color: #444444;
-        margin: 0px;
-        height: 100%;
-        background-color: var(--color-default);
-        }
+		@font-face {
+		  font-family: 'IBMPlexSansKR-Regular';
+		  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+		  font-weight: normal;
+		  font-style: normal;
+		}
+		:root {
+		  --font-default : 'IBMPlexSansKR-Regular';
+		  --font-secondary : 'Nanum Gothic', sans-serif;
+		  --font-primary: 'Black Han Sans', sans-serif;
+		  --color-primary: #8BC34A;
+		  --color-secondary: #388E3C;
+		  --color-default : #FFF59D;
+		}
 
         #map-container {
           width: 1200px;

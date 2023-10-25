@@ -1287,6 +1287,7 @@
 	    var userInfo = $("<div>").addClass("user-info");
 	    var userImage = $("<img>").attr("src", comment.user.userPhotoPath).attr("alt", "UserPhoto");
 	    var username = $("<span>").addClass("username").text(comment.user.userNickname);
+	    var userId = $("<input>").addClass("userId").attr("type", "hidden").val(comment.user.userId);
 	    var date = $("<span>").addClass("date").text(formatDate(comment.comtDate));
 	    
 	    // 액션 메뉴 추가

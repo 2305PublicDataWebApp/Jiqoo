@@ -10,8 +10,15 @@
 # General
 --------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 :root {
-  --font-default : 'Nanum Gothic', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
@@ -217,10 +224,12 @@ p {
 
 .user-nickname {
     font-size: 20px;
+    font-weight: 600;
 }
 
 /* 결과 목록 아이템 스타일 */
 .result-item {
+  box-shadow: 3px 4px 6px #D5D5D5;		
   border: 1px solid #ddd;
   padding: 20px;
   margin-bottom: 50px;
@@ -297,13 +306,24 @@ p {
     margin-top: 30px;
     margin-bottom: 15px;
     font-size: 25px;
+/*     display: block; */
+/*     white-space: nowrap; */
+/*     overflow: hidden; */
+/*     text-overflow: ellipsis; */
+}
+
+.p-content-div {
+	width: 100%;
+}
+
+.thumbnail-div {
+    width: 230px;
 }
 
 .thumbnail-div img {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
-    width: 300px;
 }
 
 .content {

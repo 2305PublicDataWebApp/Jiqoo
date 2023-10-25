@@ -26,7 +26,7 @@
 	font-size: 12px;
 	font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
 	line-height: 1.5;
-	background: #e8ffdded; 
+	background: #fbfbfbed; 
 }
 
 .infoWindow * {
@@ -519,6 +519,8 @@
     	          clickable: true
     	        });
 
+    	        
+    		    
     	        // 커스텀 오버레이에 표시될 내용을 생성합니다
     	        var overlayContent = '<div class="infoWindow">' + 
               '        <div class="w3w">' + data[i].moqooW3W + '</div>' + 
@@ -847,9 +849,15 @@
 		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src',  moqooList.ctgr.cImgPath);
 		    var location = $('<div class="location"><span class="location-text">' + moqooList.moqooW3W + '</span></div');
 		    var userInfoContainer = $('<div class="user-info-container row">');
-		    var userInfo = $('<div class="user-info col-sm-12">');
+		    var userInfo = $('<div class="user-info col-md-6 col-sm-12">');
 		    var profileImg = $('<div class="profile-img col-4" class="col-sm-12">');
-		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', moqooList.user.userPhotoPath);
+		    var photophoto;
+		    if(moqooList.user.userPhotoPath == null || moqooList.user.userPhotoPath == "" || moqooList.user.userPhotoPath == undefined) {
+		    	photophoto = "../resources/assets/img/no-profile.png";
+		    }else {
+		    	photophoto = moqooList.user.userPhotoPath;
+		    }
+		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', photophoto);
 			
 		    var userNickname = $('<div class="user-nickname">' + moqooList.user.userNickname + '</div>');
 		 	// jCreateDate 값을 나타내기 위한 업데이트
@@ -891,10 +899,10 @@
 		    var contentContainer = $('<div class="content-container row">');
 		    
 		    // <p> 내용과 썸네일 이미지를 각각의 <div>에 추가
-		    var pContentDiv = $('<div class="p-content-div col-md-6 col-sm-12">').append(parsedContent.pContent);
+		    var pContentDiv = $('<div class="p-content-div col-md-8 col-sm-12">').append(parsedContent.pContent);
 		    var thumbnailDiv = $('<div class="thumbnail-div col-md-6 col-sm-12">');
-		    if (parsedContent.imgSource) {
-		        var thumbnailImage = $('<img class="thumbnail-image" alt="썸네일" src="' + parsedContent.imgSource + '">');
+		    if (moqooList.moqooThumPath) {
+		        var thumbnailImage = $('<img class="thumbnail-image" alt="썸네일" src="' + moqooList.moqooThumPath + '">');
 		        thumbnailDiv.append(thumbnailImage);
 		    }
 

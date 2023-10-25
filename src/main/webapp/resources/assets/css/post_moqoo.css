@@ -727,17 +727,25 @@ ul { margin-bottom: 0 !important;}
     }
 
     .heart-container {
-      display: inline-block;
-      text-align: end;
+		display: flex;
+		align-items: center;
+		margin-top: 15px;
     }
     
-    .heart {
-      width: 25px;
-    }
-    
-    .heart-count {
-      color: #9da3a8;
-    }
+    #likeButton {
+	    border: none;
+	    background-color: #FBFBFB;
+	}
+	
+	#likeButton .bi {
+	    color: red;
+	    font-size: 25px;
+	}
+	
+	#like-count {
+		font-size: 20px;
+	    color: #ccc;
+	}
     
     .heart:hover {
       transform: scale(1.2); /* 10% 크기 증가 */
