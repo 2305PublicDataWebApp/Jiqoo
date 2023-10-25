@@ -110,7 +110,12 @@
 		<div class="modal-body"></div>
 		<!-- ======= Map Section ======= -->
 		<!-- 지도를 표시할 div 입니다 -->
-		<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
+		<div id="list-icon-container">
+			<div id="list-icon">
+				<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
+			</div>
+		</div>
+		
 		<div id="map"></div>
 
 		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>
@@ -137,9 +142,8 @@
 									<input type="date" class="form-control" id="date" name="jiqooDate"
 										required>
 								</div>
-								<div class="col-md-2 c-btn">
-									<span>카테고리</span> <i class="bi bi-caret-down-fill"
-										onclick="toggleCC()"></i>
+								<div class="col-md-2 c-btn" onclick="toggleCC()">
+									<span>카테고리</span> <i class="bi bi-caret-down-fill"></i>
 								</div>
 								<div class="category-container" style="display: none;">
 									<div class="category-list">

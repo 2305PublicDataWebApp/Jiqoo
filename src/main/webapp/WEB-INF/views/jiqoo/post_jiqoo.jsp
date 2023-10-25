@@ -296,7 +296,7 @@
 			</div>
 			<div class="comment-page-container">
 			</div>
-		</div>
+		</div>    
 	</main>
 	<!-- End #main -->
 	<jsp:include page="/WEB-INF/views/include/footer.jsp"></jsp:include>
@@ -1032,7 +1032,11 @@
   	      }
       }
    
-   
+   // 버튼 클릭 시 팝업 창 열기
+      document.getElementById("open-map-btn").onclick = function() {
+        // 팝업 창을 열기 위한 윈도우.open 함수 사용
+        window.open("popupW3WMap", "Popup", "width=1200,height=800,resizable=no");
+      };
 
 //       var openComtReportModal = createComtReportModal();
 
