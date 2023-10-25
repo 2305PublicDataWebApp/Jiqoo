@@ -38,7 +38,7 @@
 				<br>
 				<h5 style="display:inline"><i class="bi bi-tag"></i>${jiqooList.jiqooCtgr}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
 				<h5 style="display:inline"><i class="bi bi-globe"></i> ${jiqooList.jiqooW3W}</h5>&nbsp; <!-- W3W -->
-				<span><i class="bi bi-clock"></i> ${jiqooList.jiqooDate}</span>&nbsp; <!-- 모임일자 -->
+				<span><i class="bi bi-clock"></i> ${jiqooList.jiqooDate}</span>&nbsp; <!-- 일기일자 -->
 				
 				<div id="map${i.count }" class="map" style="width:100%; height:350px;"></div>
 				

@@ -1350,7 +1350,9 @@ td {
   color : #222;
 }
 
-
+.modal-body{
+	overflow:hidden;
+}
 
 
 .modal-body select {
@@ -1363,6 +1365,16 @@ td {
   width: 100%;
   resize : none;
   outline: none;
+}
+
+.modal-body .content {
+	width : 100%;
+	height : auto;
+	border : 1px solid #388E3C;
+	border-radius : 10px; 
+	margin: 10px auto;
+	padding : 5px;
+	
 }
 
 .modal-footer .btn {
