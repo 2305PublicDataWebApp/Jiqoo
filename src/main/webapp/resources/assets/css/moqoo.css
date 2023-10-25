@@ -26,7 +26,7 @@
 }
 body {
 /*   font-family: "Open Sans", sans-serif; */
-font-family: 'Nanum Gothic', sans-serif;
+font-family: var(--font-default);
   color: #444444;
 }
 
@@ -47,7 +47,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: 'Nanum Gothic', sans-serif;
+  font-family: var(--font-default);
 }
 
 /*--------------------------------------------------------------
@@ -102,7 +102,7 @@ p {
     width: 270px;
   }
 #main .btn-get-started {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-default);
   text-transform: uppercase;
   font-weight: 400;
   font-size: 13px;
@@ -124,7 +124,7 @@ p {
 }
 
 #main .btn-get-start {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-default);
   text-transform: uppercase;
   font-weight: 400;
   font-size: 13px;

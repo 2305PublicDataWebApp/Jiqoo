@@ -24,7 +24,7 @@
 	text-align: left;
 	overflow: hidden;
 	font-size: 12px;
-	font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+	font-family: var(--font-default);
 	line-height: 1.5;
 	background: #fbfbfbed; 
 }
@@ -520,14 +520,19 @@
     	        });
 
     	        
-    		    
+    		    var photoPhoto;
+    		    if(data[i].user.userPhotoPath == null || data[i].user.userPhotoPath == undefined || data[i].user.userPhotoPath == "") {
+    		    	photoPhoto = "../resources/assets/img/no-profile.png";
+    		    }else {
+    		    	photoPhoto = data[i].user.userPhotoPath;
+    		    }
     	        // 커스텀 오버레이에 표시될 내용을 생성합니다
     	        var overlayContent = '<div class="infoWindow">' + 
               '        <div class="w3w">' + data[i].moqooW3W + '</div>' + 
               '        <div class="body">' + 
               '			   <div class ="moqooTitle">' + data[i].moqooTitle + '</div>' +
               '			   <div class ="moqooContent">' + data[i].moqooContent + '</div>' +
-              '			   <div class ="moqooProfile">' + '<img class="infoImg" src="' + data[i].user.userPhotoPath + '" >' + data[i].user.userNickname + '</div>' +
+              '			   <div class ="moqooProfile">' + '<img class="infoImg" src="' + photoPhoto + '" >' + data[i].user.userNickname + '</div>' +
               '            <div class="detail-link"><a href="/moqoo/detail?moqooNo='+data[i].moqooNo +'" class="link">상세보기</a></div>' + 
               '        </div>' + 
               '</div>';
