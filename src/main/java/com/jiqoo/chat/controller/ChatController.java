@@ -306,8 +306,8 @@ public class ChatController {
 	}
 	
 	// 모꾸 채팅방 개설
-	@ResponseBody
-	@GetMapping("/chat/room-moqoo")
+//	@ResponseBody
+//	@GetMapping("/chat/room-moqoo")
 	public String insertNewChatRoomByMoqoo(@ModelAttribute ChatRoom chatRoom, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		String userNickname = (String) session.getAttribute("userNickname");

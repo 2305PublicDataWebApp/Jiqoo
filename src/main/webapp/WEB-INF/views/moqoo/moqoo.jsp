@@ -294,8 +294,8 @@
 								<div class="date-container col-md-3">
 									<input type="date" class="form-control" id="date" name="moqooDay" required>
 								</div>
-								<div class="col-md-2 c-btn">
-									<span>카테고리</span><i class="bi bi-caret-down-fill" onclick="toggleCC()"></i>
+								<div class="col-md-2 c-btn"  onclick="toggleCC()">
+									<span>카테고리</span><i class="bi bi-caret-down-fill"></i>
 								</div>
 								<div class="category-container" style="display: none;">
 									<div class="category-list">
@@ -319,11 +319,11 @@
 							</div>
 							<div class="mb-3" style="display: flex;">
 								<div>
-									<label for="thum" class="custom-button">파일 선택</label>
-									<input type="file" class="custom-file-input" id="thum" name="uploadFile" placeholder="썸네일" required> 
+<!-- 									<label for="thum" class="custom-button">파일 선택</label> -->
+									<input type="file" class=" " id="thum" name="uploadFile" placeholder="썸네일" required> 
 								</div>
-								<!-- 파일 정보 표시 영역 -->
-								<div id="fileInfo"></div>
+<!-- 								파일 정보 표시 영역 -->
+<!-- 								<div id="fileInfo"></div> -->
 							</div>
 							<div class="mb-3">
 								<textarea id="summernote" name="moqooContent" required></textarea>
@@ -839,38 +839,81 @@
 	
 	
 	function createResultItem(moqooList) {
-	    var listItem = $('<div class="row result-item">');
-	    var postLink = $('<a>').attr('href', '/moqoo/detail?moqooNo=' + moqooList.moqooNo);
-	    
-	    var postHeader = $('<div class="post-header">');
-	    var category = $('<div class="category">');
-	    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', moqooList.ctgr.cImgPath);
-	    var location = $('<div class="location"><span class="location-text">' + moqooList.moqooW3W + '</span></div');
-	    
-	    var profileImg = $('<div id="profile-img" class="col-sm-12">');
-	    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', moqooList.user.userPhotoPath);
-	    
-	    var colMd10 = $('<div class="col-md-10">');
-	    var title = $('<div class="title">' + moqooList.moqooTitle + '</div>');
-	    var content = $('<div class="content">' + moqooList.moqooContent + '</div>');
-	    var author = $('<div class="author col-md-12">' + moqooList.user.userNickname + '</div>');
-	    var info = $('<div class="info col-lg-6 col-sm-12">' + formatDate(moqooList.moqooDate) + '</div>');
-	    
-	    var heartContainer = $('<div class="heart-container">');
-	    var heartImage = $('<img class="heart" alt="" src="../resources/assets/img/heart(full).png">');
-	    
-	    category.append(categoryImg);
-	    postHeader.append(category, location);
-	    profileImg.append(profileImage);
-	    colMd10.append(title, content, author, info, heartContainer);
-	    heartContainer.append(heartImage);
-	    
-	    postLink.append(postHeader, profileImg, colMd10);
-	    listItem.append(postLink);
-	    
-	    return listItem;
-	}
-	
+		 var listItem = $('<div class="row result-item">');
+		    var postLink = $('<a>').attr('href', '/moqoo/detail?moqooNo=' + moqooList.moqooNo);
+		    
+		    var postHeader = $('<div class="post-header">');
+		    var category = $('<div class="category">');
+		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src',  moqooList.ctgr.cImgPath);
+		    var location = $('<div class="location"><span class="location-text">' + moqooList.moqooW3W + '</span></div');
+		    var userInfoContainer = $('<div class="user-info-container row">');
+		    var userInfo = $('<div class="user-info col-sm-12">');
+		    var profileImg = $('<div class="profile-img col-4" class="col-sm-12">');
+		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', moqooList.user.userPhotoPath);
+			
+		    var userNickname = $('<div class="user-nickname">' + moqooList.user.userNickname + '</div>');
+		 	// jCreateDate 값을 나타내기 위한 업데이트
+		    var postDate = $('<div class="info col-lg-6 col-sm-12">' + formatDate(moqooList.moqooDate) + '</div>');
+
+		    
+		    var postMain = $('<div class="post-main row">');
+		    var postInfo = $('<div class="post-info col">');
+		    
+		    var title = $('<div class="title">' + moqooList.moqooTitle + '</div>');
+
+		    // <p>와 <img> 요소를 추출하는 함수
+		    function parseContent(content) {
+		        var parser = new DOMParser();
+		        var doc = parser.parseFromString(content, 'text/html');
+
+		        // <p> 요소를 추출
+		        var pElements = doc.querySelectorAll('p');
+		        var pContent = '';
+		        for (var i = 0; i < pElements.length; i++) {
+		            pContent += pElements[i].innerHTML;
+		        }
+
+		        // <img> 요소를 추출
+		        var imgElement = doc.querySelector('img'); // 첫 번째 이미지 요소만 가져옴
+		        var imgSource = imgElement ? imgElement.getAttribute('src') : ''; // 이미지가 없을 경우 빈 문자열 반환
+
+		        return {
+		            pContent: pContent,
+		            imgSource: imgSource
+		        };
+		    }
+
+		    // moqooList.moqooContent에서 HTML 요소 추출
+		    var content = moqooList.moqooContent;
+		    var parsedContent = parseContent(content);
+
+		    // 부모 <div>를 추가
+		    var contentContainer = $('<div class="content-container row">');
+		    
+		    // <p> 내용과 썸네일 이미지를 각각의 <div>에 추가
+		    var pContentDiv = $('<div class="p-content-div col-md-6 col-sm-12">').append(parsedContent.pContent);
+		    var thumbnailDiv = $('<div class="thumbnail-div col-md-6 col-sm-12">');
+		    if (parsedContent.imgSource) {
+		        var thumbnailImage = $('<img class="thumbnail-image" alt="썸네일" src="' + parsedContent.imgSource + '">');
+		        thumbnailDiv.append(thumbnailImage);
+		    }
+
+		    
+		    category.append(categoryImg);
+		    postHeader.append(category, location);
+		    profileImg.append(profileImage);
+
+		    // 각 요소를 부모 <div>에 추가
+		    postMain.append(postInfo, thumbnailDiv);
+		    postInfo.append(userInfoContainer, title, pContentDiv);
+		    userInfoContainer.append(profileImg, userInfo);
+		    userInfo.append(userNickname, postDate);
+
+		    postLink.append(postHeader, postMain);
+		    listItem.append(postLink, postMain);
+
+		    return listItem;
+		}
 	
 	function formatDate(date) {
 	    var d = new Date(date);

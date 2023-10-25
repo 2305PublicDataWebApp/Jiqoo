@@ -51,7 +51,7 @@
 			SELECT SEQ_CHAT_NO.NEXTVAL FROM DUAL
 		</selectKey>
 		INSERT INTO CHAT_ROOM_TBL (CHAT_NO, CHAT_NAME, REF_MOQOO_NO, C_CREATE_DATE, C_IMAGE_PATH)
-		VALUES (#{chatNo}, #{chatName}, NULL, DEFAULT, #{cImagePath})
+		VALUES (#{chatNo}, #{chatName}, #{refMoqooNo}, DEFAULT, #{cImagePath})
 	</insert>
 	<insert id="insertChatUserById" parameterType="Map">
 	    INSERT INTO CHAT_USER_TBL (REF_CHAT_NO, USER_ID, CHAT_LAST_DATE)
@@ -62,7 +62,7 @@
 			SELECT SEQ_CHAT_NO.NEXTVAL FROM DUAL
 		</selectKey>
 		INSERT INTO CHAT_ROOM_TBL (CHAT_NO, CHAT_NAME, REF_MOQOO_NO, C_CREATE_DATE, C_IMAGE_PATH)
-		VALUES (#{moqooChatNo}, #{chatName}, #{refMoqooNo}, DEFAULT, #{cImagePath)
+		VALUES (#{moqooChatNo}, #{chatName}, #{refMoqooNo}, DEFAULT, #{cImagePath})
 	</insert>
 	<insert id="insertChatReport">
 		INSERT INTO CHAT_REPORT_TBL VALUES(CHAT_REPORT_NO.NEXTVAL, #{chatReportWriter}, #{chatReportContent}, DEFAULT, #{reportChatNo})

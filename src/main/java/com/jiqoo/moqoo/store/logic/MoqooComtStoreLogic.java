@@ -64,7 +64,7 @@ public class MoqooComtStoreLogic implements MoqooComtStore{
 
 	@Override
 	public int updateDelComment(SqlSession sqlSession, Comment comt) {
-		int result = sqlSession.selectOne("MoqooComtMapper.updateDelComment", comt);
+		int result = sqlSession.update("MoqooComtMapper.updateDelComment", comt);
 		return result;
 	}
 

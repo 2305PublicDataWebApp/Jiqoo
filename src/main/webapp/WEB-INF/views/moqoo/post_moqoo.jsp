@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" 		prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" 		prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -88,6 +89,7 @@
 	<!-- ======= Post ======= -->
 	<div id="post" class="col-md-12 col-xxl-10 mx-auto">
 	  <div class="post-header">
+	  <input type="hidden"  id="loginUserId" value="${sessionScope.userId }">
 	  <c:if test="${sessionScope.userId ne moqoo.user.userId }">
    		<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
 		<div class="action_menu">
@@ -105,18 +107,19 @@
 		        <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
 		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		      </div>
-		      <form action="/moqoo/report" method="post" id="reportForm">
-		      	<input type="hidden" name="reportPostNo" value="${moqoo.moqooNo }">
-		      	<input type="hidden" name="reportUserId" value="${moqoo.user.userId }">
+		      <form id="reportForm" action="/moqoo/report" method="post">
+		      	<input type="hidden" id="reportPostNo" name="reportPostNo" value="${moqoo.moqooNo }">
+		      	<input type="hidden" id="reportUserId" name="reportUserId" value="${moqoo.user.userId }">
+		      	<input type="hidden" id="reportWriter" name="reportWriter" value="${userId }">
 			       <div class="modal-body">
 			         <select name="reportContent" id="reportSelect">
 			           <option value="abusive">욕설사용</option>
 			           <option value="advertising">광고글</option>
 			           <option value="noSubject">주제와 맞지 않는 글</option>
 			           <option value="violent">폭력적인 내용</option>
-			           <option value="Discrimination">차별적인 내용</option>
+			           <option value="discrimination">차별적인 내용</option>
 			           <option value="pornography">음란물</option>
-			           <option value="Personal">민감한 개인정보 노출</option>
+			           <option value="personal">민감한 개인정보 노출</option>
 			           <option value="etc">기타 (직접 작성)</option>
 			         </select>
 			         <textarea id="customReason" name="reportContent" style="display:none" spellcheck="false"></textarea>
@@ -201,10 +204,17 @@
 		  </c:if>
 	    </div>
 	    <div id="participate">
-	    <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
-	      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
-	    </c:if>  
-	      <button class="btn post-btn" id="participate-btn">참여하기</button>
+<!-- 		    <div> -->
+			    <c:if test="${moqoo.moqooWriter eq sessionScope.userId }">
+			      <button class="btn post-btn" id="joinInfo" data-bs-toggle="modal" data-bs-target=".joinInfo">참여현황</button>
+			    </c:if>
+		    
+<!-- 		    </div> -->
+<!-- 		    <div> -->
+	<%-- 	    <c:if test="${moqoo.moqooWriter ne sessionScope.userId }"> --%>
+		      <button class="btn post-btn" id="participate-btn">참여하기</button>
+	<%-- 	    </c:if>   --%>
+<!-- 		    </div> -->
 	    </div>
 	  
 	  <!-- 참여현황 모달 -->
@@ -217,6 +227,7 @@
               </div>
               <div class="modal-body">
                 <table>
+                <c:if test="${fn:length(moqooList) > 0 }">
               	  <c:forEach var="moqooUserList" items="${moqooList }">
               	  	<tr>
               	  	<c:if test="${moqooUserList.user.userPhotoPath eq null }">
@@ -234,11 +245,23 @@
    				      	<input type="hidden" value="${moqooUserList.refMoqooNo }">
    				      	<c:if test="${moqooUserList.attendStatus eq 'N' }">
 	   				        <button id="ok" class="table-btn">승인</button>
-	   				        <button id="sorry" class="table-btn" onclick="sorry();">거절</button>
+	   				        <button id="sorry" class="table-btn">거절</button>
+   				        </c:if>
+   				        <c:if test="${moqooUserList.attendStatus eq 'Y' }">
+	   				        <span>승인 완료</span>
+   				        </c:if>
+   				        <c:if test="${moqooUserList.attendStatus eq 'X' }">
+	   				        <span>승인 거절</span>
    				        </c:if>
    				      </td>
 	       		    </tr>
 	              </c:forEach>
+	            </c:if>
+	            <c:if test="${fn:length(moqooList) == 0 }">
+	            	<tr>
+	            		<td colspan="5">참여한 사람이 없습니다.</td>
+	            	</tr>
+	            </c:if>
                 </table>
               </div>
               <div class="modal-footer">
@@ -270,9 +293,8 @@
 					<div class="date-container col-md-3">
 						<input type="date" class="form-control" id="date" name="moqooDay" value="${moqoo.moqooDay }" required>
 					</div>
-					<div class="col-md-2 c-btn">
-						<span>카테고리</span> <i class="bi bi-caret-down-fill"
-							onclick="toggleCC()"></i>
+					<div class="col-md-2 c-btn" onclick="toggleCC()">
+						<span>카테고리</span> <i class="bi bi-caret-down-fill"></i>
 					</div>
 					<div class="category-container" style="display: none;">
 						<div class="category-list">
@@ -333,7 +355,7 @@
 	         <textarea placeholder="댓글을 입력하세요" id="comtContent"></textarea>
 	         <button class="btn postbtn" id="submit-btn">등록</button>
 	        </div>
-		    <span>댓글</span><span>3</span>
+<!-- 		    <span>댓글</span><span>3</span> -->
 		    <div id="comment-container"></div>
 			<div id="reportPopup" class="popup">
 				<h2>댓글 신고하기</h2>
@@ -830,13 +852,28 @@
 	        data : {refMoqooNo : refMoqooNo, refUserId : refUserId, attendStatus : attendStatus },
 	        success: function(response) {
 	        	if(response == "true"){
-					alert("승인 되었습니다.");
-					if(socket){
-	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
-	        			console.log(socketMsg);
-	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					if(socket){
+// 	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+// 	        			console.log(socketMsg);
+// 	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					}
+					$.ajax({
+						url : "/chat/invite-users-moqoo",
+						data : {
+							moqooNo : refMoqooNo,
+							userId : refUserId
+						},
+						type : "GET",
+						success : function(data) {
+							if(data == "success") {
+								alert("참여 승인 및 모꾸 채팅방에 초대하였습니다.");
+							}else {
+								alert("오류~");
+							}
+						}
+					
+						})
 					}
-				}
 				else if(response == "false"){
 					alert("승인이 처리가 완료되지 않았습니다.");
 				}
@@ -852,25 +889,25 @@
 	    });
 	    
 	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
-		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
-			const comtNo = 0;
-			const title = "${moqoo.moqooTitle}";
+// 		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+// 			const comtNo = 0;
+// 			const title = "${moqoo.moqooTitle}";
 		
-		 $.ajax({
-		        url : '/alert/insertalarm',
-		        type : 'POST',
-		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
-		        dataType : "json", 
-		     	// ↑보내는거
-				// ↓받는거
-		        success : function(result){
-//		           		if(sessionUserId  != boardWriter){
+// 		 $.ajax({
+// 		        url : '/alert/insertalarm',
+// 		        type : 'POST',
+// 		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': "moqooreque"},
+// 		        dataType : "json", 
+// 		     	// ↑보내는거
+// 				// ↓받는거
+// 		        success : function(result){
+// //		           		if(sessionUserId  != boardWriter){
 		           		
-//			        	}
-		        }
+// //			        	}
+// 		        }
 		    
-		    });
-		}
+// 		    });
+// 		}
 		//알람끝
 	});
 	
@@ -879,9 +916,9 @@
 	// 거절 버튼 클릭 이벤트 핸들러
 	$('#sorry').click(function() {
 		console.log(this);
-		var refMoqooNo = $(this).prev().val();
-		var refUserId = $(this).prev().prev().val();
-		var attendStatus = $(this).prev().prev().prev().val();
+		var attendStatus = $(this).siblings("input").eq(0).val();
+		var refUserId 	 = $(this).siblings("input").eq(1).val();
+		var refMoqooNo 	 = $(this).siblings("input").eq(2).val();
 	    $.ajax({
 	        type: 'POST',
 	        url: '/moqoo/attendN', // 백엔드에서 승인 로직이 구현된 엔드포인트
@@ -889,11 +926,11 @@
 	        success: function(response) {
 	        	if(response == "true"){
 					alert("거절 되었습니다.");
-					if(socket){
-	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
-	        			console.log(socketMsg);
-	        			socket.send(socketMsg); //값을 서버로 보냄
-					}
+// 					if(socket){
+// 	        			let socketMsg = "comment,"+sessionUserId+","+boardWriter+","+boardNo+","+comtNo+","+title;
+// 	        			console.log(socketMsg);
+// 	        			socket.send(socketMsg); //값을 서버로 보냄
+// 					}
 				}
 				else if(response == "false"){
 					alert("거절 처리가 완료되지 않았습니다.");
@@ -910,25 +947,25 @@
 	    });
 	    
 	 // 참여신청자 알람등록(참여신청버튼 누를때 보냄)
-		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
-			const comtNo = 0;
-			const title = null;
+// 		if(userId != moqooWriter){ //참여버튼 누른 사람 != 모꾸쓴이
+// 			const comtNo = 0;
+// 			const title = null;
 		
-		 $.ajax({
-		        url : '/alert/insertalarm',
-		        type : 'POST',
-		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': " moqoono"},
-		        dataType : "json", 
-		     	// ↑보내는거
-				// ↓받는거
-		        success : function(result){
-//		           		if(sessionUserId  != boardWriter){
+// 		 $.ajax({
+// 		        url : '/alert/insertalarm',
+// 		        type : 'POST',
+// 		        data : {'fromUserId': userId , 'toUserId': moqooWriter , 'boardNo': refMoqooNo, 'comtNo': comtNo, 'title':title, 'alertType': " moqoono"},
+// 		        dataType : "json", 
+// 		     	// ↑보내는거
+// 				// ↓받는거
+// 		        success : function(result){
+// //		           		if(sessionUserId  != boardWriter){
 		           		
-//			        	}
-		        }
+// //			        	}
+// 		        }
 		    
-		    });
-		}
+// 		    });
+// 		}
 		//알람끝
 	});
 	
@@ -1292,8 +1329,8 @@
 	 	// 신고하기 메뉴 (댓글 작성자와 현재 사용자를 비교하여 표시 여부 결정)
 	    var showReportLink = !isCurrentUser;
 	    if (showReportLink) {
-	        var reportMenuItem = $("<li>").html(`<a href='#' onclick='createComtReportModal(${comment.commentNo}, ${comment.comtWriter});' data-bs-toggle='modal' data-bs-target='#comtReportModal' data-commentNo="${comment.comtNo}" data-commentWriter="${comment.comtWriter}"><i class='bi bi-exclamation-triangle'></i> 신고하기`);
-	        reportMenuItem.data("comtNo", comment.comtNo);
+	    	var reportMenuItem = $("<li>").html("<a href='#' onclick='createComtReportModal("+comment.comtNo+", \""+comment.comtWriter+"\");' data-bs-toggle='modal' data-bs-target='#comtReportModal'><i class='bi bi-exclamation-triangle'></i> 신고하기");
+	    	reportMenuItem.data("comtNo", comment.comtNo);
 	        reportMenuItem.data("comtWriter", comment.comtWriter);
 	        actionMenuList.append(reportMenuItem);
 	    }
@@ -1303,15 +1340,15 @@
 	    commentItem.append(userInfo);
 	    commentItem.append(commentText);
 	    
-	 	// comtNo를 input hidden 요소로 추가
+	 // comtNo를 input hidden 요소로 추가
 	    var comtNoInput = $("<input>").attr("type", "hidden").val(comment.comtNo);
 	    commentItem.append(comtNoInput);
-	    
-	 	// comment.pComtNo가 0이 아닌 경우 클래스 추가
+
+	    // comment.pComtNo가 0이 아닌 경우 클래스 추가
 	    if (comment.pComtNo !== 0) {
 	        commentItem.addClass("has-parent-comment");
 	    }
-	 	
+	    
 	    return commentItem;
 	}
 	
@@ -1447,7 +1484,7 @@
     
  // 모달을 생성할 때 사용할 함수
     function createComtReportModal(comtNo, comtWriter) {
-        var modal = $('<div class="modal fade" id="comtReportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">');
+        var modal = $('<div class="modal fade" id="comtReportModal" data-commentno="'+comtNo+'" data-commentwriter="'+comtWriter+'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">');
         var modalDialog = $('<div class="modal-dialog">');
         var modalContent = $('<div class="modal-content">');
 
@@ -1464,9 +1501,9 @@
             .append($('<option value="advertising">광고글</option>'))
             .append($('<option value="noSubject">주제와 맞지 않는 글</option>'))
             .append($('<option value="violent">폭력적인 내용</option>'))
-            .append($('<option value="Discrimination">차별적인 내용</option>'))
+            .append($('<option value="discrimination">차별적인 내용</option>'))
             .append($('<option value="pornography">음란물</option>'))
-            .append($('<option value="Personal">민감한 개인정보 노출</option>'))
+            .append($('<option value="personal">민감한 개인정보 노출</option>'))
             .append($('<option value="etc">기타 (직접 작성)</option>'));
         var customReasonTextArea = $('<textarea id="customReason" style="display:none" spellcheck="false"></textarea');
         var smallNote = $('<small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>');
@@ -1492,17 +1529,20 @@
         });
 
         var commentNo, commentWriter;
+        
         sendButton.on('click', function() {
-            var commentNo = $('#comtReportModal').data('commentNo');
-            var commentWriter = $('#comtReportModal').data('commentWriter');
+			var reportWriter = $('#loginUserId').val();  
+            var commentNo = $('#comtReportModal').data('commentno');
+            var commentWriter = $('#comtReportModal').data('commentwriter');
             var moqooReportContent = $("#reportSelect").val();
             if (moqooReportContent === "etc") {
                 moqooReportContent = $("#customReason").val();
             }
+			console.log(reportWriter);
             $.ajax({
                 url: "/moqoo/report",
                 data: {
-                    reportWriter: currentUserId,
+                    reportWriter: reportWriter,
                     reportContent: moqooReportContent,
                     reportComtNo: commentNo,
                     reportUserId: commentWriter,
@@ -1521,22 +1561,19 @@
         return function(comtNo, comtWriter) {
             $('#reportSelect').val('abusive');
             $('#customReason').val('');
-            commentNo = comtNo;
-            commentWriter = comtWriter;
             myModal.show();
-            modal.data('commentNo', commentNo);
-            modal.data('commentWriter', commentWriter);
+            modal.data('commentNo', comtNo);
+            modal.data('commentWriter', comtWriter);
         };
     }
- 
-    var openComtReportModal = createComtReportModal();
+//     var openComtReportModal = createComtReportModal();
     
     
-    $('.report-comment-button').on('click', function() {
-        var commentNo = $(this).data('comment-no');
-        var commentWriter = $(this).data('comment-writer');
-        openComtReportModal(commentNo, commentWriter);
-    });
+//     $('.report-comment-button').on('click', function() {
+//         var commentNo = $(this).data('comment-no');
+//         var commentWriter = $(this).data('comment-writer');
+//         openComtReportModal(commentNo, commentWriter);
+//     });
 	</script>
 </body>
 </html>

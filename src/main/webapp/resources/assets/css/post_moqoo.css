@@ -10,15 +10,24 @@
 # General
 --------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 :root {
-  --font-default : 'Nanum Gothic', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
 }
+
 body {
-	font-family: 'Nanum Gothic', sans-serif;
+/* 	font-family: 'Nanum Gothic', sans-serif; */
+	font-family: var(--font-default);
 /*   font-family: "Open Sans", sans-serif; */
   color: #444444;
 }
@@ -40,7 +49,8 @@ h4,
 h5,
 h6,
 p {
-  font-family: 'Nanum Gothic', sans-serif;
+/*   font-family: 'Nanum Gothic', sans-serif; */
+	font-family: var(--font-default);
 }
 
 #container {
@@ -415,9 +425,9 @@ ul { margin-bottom: 0 !important;}
 }
 
 
-.location:hover {
-  background-color: #45a049; /* 마우스 호버 시 배경색 변경 */
-}
+/* .location:hover { */
+/*   background-color: #45a049; 마우스 호버 시 배경색 변경 */
+/* } */
 
 #location {
   background-color: #4CAF50;
@@ -483,6 +493,8 @@ ul { margin-bottom: 0 !important;}
   margin: 50px;
   position: relative;
 }
+
+
 
 
 /* ----------- 신고 -------------- */
@@ -578,7 +590,7 @@ ul { margin-bottom: 0 !important;}
 
   .location {  /* w3w디자인 */
 	font-size: 28px;
-/* 	width: 246px; */
+	width: 310px;
 	font-weight: bold;
 	color: black;
 	text-align: center;
@@ -678,11 +690,9 @@ ul { margin-bottom: 0 !important;}
     border-radius: 15px;
   }
 
-  /* .participate {
-    display: flex;
-    justify-content: center;
-    margin: 40px 0;
-  } */
+/*   #participate { */
+/*     width: 40px; */
+/*   } */
 
   .post-footer {
     display: flex;
@@ -906,17 +916,17 @@ ul { margin-bottom: 0 !important;}
     font-size: 16px;
 }
 
-/* 댓글 폼 스타일 */
-.comment-form, .reply-form, .modify-form {
-  border: 1px solid #C2D1D9;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
-}
+/* /* 댓글 폼 스타일 */ */
+/* .comment-form, .reply-form, .modify-form { */
+/*   border: 1px solid #C2D1D9; */
+/*   border-radius: 10px; */
+/*   margin-bottom: 30px; */
+/*   padding: 10px; */
+/*   display: flex; */
+/*   justify-content: space-between; */
+/*   align-items: flex-end; */
+/*   width: 100%; */
+/* } */
 
 /* 신고하기 버튼 스타일 */
 .mini-dots {
@@ -932,11 +942,12 @@ ul { margin-bottom: 0 !important;}
 .comment-form, .reply-form, .modify-form {
   border: 1px solid #C2D1D9;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  width: 100%;
 }
 
 .comment-form textarea, .reply-form textarea, .modify-form input {

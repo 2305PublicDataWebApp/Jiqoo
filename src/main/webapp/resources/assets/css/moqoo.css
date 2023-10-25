@@ -198,10 +198,25 @@ p {
 
 /* 동그란 프로필 이미지 스타일 */
 .profile-image {
-  width: 85px;
-  height: 85px;
-  border-radius: 50%;
-  object-fit: cover;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-img {
+    width: 100px;
+}
+
+.user-Info {
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.user-nickname {
+    font-size: 20px;
 }
 
 /* 결과 목록 아이템 스타일 */
@@ -266,15 +281,29 @@ p {
 }
 
 /* 제목 및 작성자 스타일 */
+/* .title { */
+/*   display: block; */
+/*   white-space: nowrap; */
+/*   overflow: hidden; */
+/*   text-overflow: ellipsis; */
+/*   font-weight: bold; */
+/*   margin-top: 10px; */
+/*   margin-bottom: 10px; */
+/*   font-size: 25px; */
+/* } */
+
 .title {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 25px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 25px;
+}
+
+.thumbnail-div img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    width: 300px;
 }
 
 .content {
@@ -296,9 +325,9 @@ p {
 
 /* 위치, 날짜, 좋아요 스타일 */
 .info {
-  color: #888;
+    color: #888;
+    width: 125px;
 }
-
 
 .heart-container {
   position: relative; /* 부모 요소도 position: relative;로 설정 */
@@ -327,10 +356,12 @@ p {
 }
 
 .post-header {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-
+	text-align: center;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
 }
 
 #profile-img {
@@ -516,10 +547,10 @@ p {
 /* -----------------------------
 /* 파일 업로드 버튼 바꾸기 */
 
-/* 실제로 표시되는 파일 업로드 버튼 숨기기 */
-.custom-file-input {
-  display: none;
-}
+/* /* 실제로 표시되는 파일 업로드 버튼 숨기기 */ */
+/* .custom-file-input { */
+/*   display: none; */
+/* } */
 
 /* 스타일을 적용할 버튼 디자인 */
 .custom-button {
@@ -552,15 +583,19 @@ p {
 # option
 --------------------------------------------------------------*/
 .category-container {
-  text-align: center;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  padding: 0.375rem 0.75rem;
+	border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 0.375rem 0.75rem;
 }
 
 .category {
-    margin-right: 10px;
+	margin-right: 10px;
 }
+
+.category-img{
+	width: 40px;
+}
+
 
 .location-text {
     box-shadow: inset 0 -15px 0 #ffed7c;
@@ -593,18 +628,14 @@ p {
 }
 
 .category-container {
-  width: 330px;
-  height: 200px;
-  background-color: white;
-  position: absolute;
-  top: 135px;
-  right: 16px;
-  z-index: 1;
-  box-shadow: rgba(0, 0, 0, 0.1);
-}
-
-.category-img{
-	width: 40px;
+    width: 280px;
+    height: ato;
+    background-color: white;
+    position: absolute;
+    top: 135px;
+    right: 16px;
+    z-index: 1;
+    box-shadow: rgba(0, 0, 0, 0.1);
 }
 
 .form-check {

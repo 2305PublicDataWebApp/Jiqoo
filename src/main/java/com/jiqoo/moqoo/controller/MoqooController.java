@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.jiqoo.chat.domain.ChatMessage;
+import com.jiqoo.chat.domain.ChatRoom;
+import com.jiqoo.chat.service.ChatService;
 import com.jiqoo.common.domain.Category;
 import com.jiqoo.common.domain.Comment;
 import com.jiqoo.common.domain.Like;
@@ -43,6 +46,8 @@ public class MoqooController {
 	@Autowired
 	private MoqooComtService moqooComtService;
 	
+	@Autowired
+	private ChatService chatService;
 	
 	@GetMapping("/moqoo/mapList")
 	public String showMoqooMapList(Model model, HttpSession session) {
@@ -124,7 +129,26 @@ public class MoqooController {
 	            moqooUser.setRefUserId((String)session.getAttribute("userId")); // 사용자 ID 설정
 	            moqooUser.setAttendStatus("Y"); // 참석 상태 설정
 	            moqooService.insertMoqooUser(moqooUser);
-				return "redirect:/moqoo/moqoo";
+	            String userId = (String) session.getAttribute("userId");
+	    		String userNickname = (String) session.getAttribute("userNickname");
+	    		String currentUserNickname = (String) session.getAttribute("userNickname");
+	    		String currentUserPhotoPath = (String) session.getAttribute("userPhotoPath");
+	    		ChatRoom chatRoom = new ChatRoom();
+	    		chatRoom.setChatName(moqoo.getMoqooTitle());
+	    		chatRoom.setRefMoqooNo(moqoo.getMoqooNo());
+	    		chatRoom.setcImagePath(moqoo.getMoqooThumPath());
+	    		int chatNo = chatService.insertNewChatRoom(chatRoom);
+    			int resultChat = chatService.insertChatUserById(chatNo, userId);
+				ChatMessage chatMessage = new ChatMessage();
+				chatMessage.setRefChatNo(chatNo);
+				chatMessage.setMsgSenderId(userId);
+				chatMessage.setMsgContent(userNickname + "님이 채팅에 참여합니다.");
+				chatMessage.setMsgSenderNickname(currentUserNickname);
+				chatMessage.setMsgSenderPhotoPath(currentUserPhotoPath);
+				chatService.insertChatMessage(chatMessage);
+				model.addAttribute("msg", "모임 등록 및 모임 채팅방이 개설되었습니다.");
+				model.addAttribute("url", "/moqoo/moqoo");
+				return "common/message";
 			}
 			else {
 				model.addAttribute("msg", "모임 등록이 완료되지 않았습니다.");
@@ -156,30 +180,18 @@ public class MoqooController {
 			int likeCount = moqooService.selectLikeCountByNo(moqooNo);
 			int likeOrNot = moqooService.selectLikeOrNot(like);
 			int moqooJoinCount = moqooService.selectJoinCount(moqooNo);
-			if(moqoo != null) {
-//				// 게시글 번호에 맞는 댓글들 가져오기
-//				List<Comment> comtList = moqooComtService.initialComments(moqooNo);
-				// 모임 참여신청자들
-				List<MoqooUser> moqooUserList  = moqooService.selectMoqooUserList(moqooNo);
-//				if(comtList.size() > 0) {
-//					model.addAttribute("comtList", comtList);
-//				}
-				if(moqooUserList.size() > 0) {
-					model.addAttribute("moqooList", moqooUserList);
-				}
-				model.addAttribute("moqoo", moqoo);
-				model.addAttribute("category", category);
-				model.addAttribute("categoryList", categoryList);
-				model.addAttribute("likeCount", likeCount);
-				model.addAttribute("joinCount", moqooJoinCount);
-				model.addAttribute("likeOrNot", likeOrNot);
-				return "moqoo/post_moqoo";
-			}
-			else {
-				model.addAttribute("msg", "게시글 데이터 조회를 실패하였습니다.");
-				model.addAttribute("url", "/moqoo/moqoo");
-				return "common/message";
-			}
+			// 게시글 번호에 맞는 댓글들 가져오기
+//			List<Comment> comtList = moqooComtService.initialComments(moqooNo);
+			// 모임 참여신청자들
+			List<MoqooUser> moqooUserList  = moqooService.selectMoqooUserList(moqooNo);
+			model.addAttribute("moqoo", moqoo);
+			model.addAttribute("moqooList", moqooUserList);
+			model.addAttribute("category", category);
+			model.addAttribute("categoryList", categoryList);
+			model.addAttribute("likeCount", likeCount);
+			model.addAttribute("joinCount", moqooJoinCount);
+			model.addAttribute("likeOrNot", likeOrNot);
+			return "moqoo/post_moqoo";
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("msg", e.getMessage());
@@ -231,7 +243,7 @@ public class MoqooController {
 			String userId = (String) session.getAttribute("userId");
 			if(userId != null && !userId.equals("")) {
 				report.setReportWriter(userId);
-				int result = moqooService.insertReport(report);
+				int result = moqooService.insertMoqooReport(report);
 				if(result > 0) {
 					return "redirect:/moqoo/moqoo";
 				}
@@ -251,6 +263,17 @@ public class MoqooController {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "/moqoo/moqoo");
 			return "common/message";
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/moqoo/report")
+	public String reportMoqoo(@ModelAttribute Report report) {
+		int result = moqooService.insertMoqooComtReport(report);
+		if(result > 0) {
+			return "moqooComtReport";
+		}else {
+			return "fail";
 		}
 	}
 	
@@ -293,9 +316,7 @@ public class MoqooController {
 			}
 			int result = moqooService.updateMoqoo(moqoo);
 			if(result > 0) {
-				model.addAttribute("msg", "게시물이 수정되었습니다.");
-				model.addAttribute("url", "/moqoo/detail?moqooNo=" + moqoo.getMoqooNo());
-				return "moqoo/post_moqoo";
+				return "redirect:/moqoo/detail?moqooNo=" + moqoo.getMoqooNo();
 			}
 			else {
 				model.addAttribute("msg", "게시물이 수정에 실패하였습니다.");
@@ -397,7 +418,7 @@ public class MoqooController {
 
 	
 	// 참여신청자 거절하기
-    @PostMapping("/moqoo/sorry")
+    @PostMapping("/moqoo/attendN")
     @ResponseBody
     public String rejectUser(
     		@RequestParam("refMoqooNo") int refMoqooNo
