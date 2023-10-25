@@ -83,8 +83,10 @@
 		<button id="btn-myList" class="btn-get-started scrollto" onclick="loadInitialJiqooMyList();">내꾸만 보기</button>
 		<button id="btn-allList" class="btn-get-started scrollto qoo" onclick="loadInitialJiqooAllList();">남꾸도 보기</button>
 	</div>
-	<div id="map-icon">
-		<a href="/jiqoo/mapList"><i class="bi bi-map"></i></a>
+	<div id="map-icon-container">
+		<div id="map-icon">
+			<a href="/jiqoo/mapList"><i class="bi bi-map"></i></a>
+		</div>
 	</div>
     <div id="container">
 	    <div id="list-container"  data-aos="fade-up">
@@ -119,7 +121,7 @@
 									<span>카테고리</span> <i class="bi bi-caret-down-fill"></i>
 								</div>
 <!-- 								<div class="category-container" onmouseenter="showCategory()" onmouseleave="hideCategory()"> -->
-								<div class="category-container">
+								<div class="category-container" style="display: none;">
 									<div class="category-list">
 										<c:forEach var="categoryList" items="${categoryList }">
 											<div class="form-check category"> 
@@ -606,7 +608,7 @@
 		    var postInfo = $('<div class="post-info col">');
 
 		    var title = data.jiqooTitle; // 제목 문자열
-		    var maxLength = 10; // 원하는 최대 길이
+		    var maxLength = 20; // 원하는 최대 길이
 
 		    if (title.length > maxLength) {
 		        title = title.substring(0, maxLength) + "...";
@@ -627,7 +629,7 @@
 		        }
 
 		        // 만약 pContent의 길이가 특정 길이를 초과하면 자르고 "..."을 추가
-		        var maxContentLength = 20; // 원하는 최대 길이로 설정하세요
+		        var maxContentLength = 30; // 원하는 최대 길이로 설정하세요
 		        if (pContent.length > maxContentLength) {
 		            pContent = pContent.substring(0, maxContentLength) + '...';
 		        }

@@ -90,10 +90,29 @@ p {
 /*--------------------------------------------------------------
 # map
 --------------------------------------------------------------*/
-.bi-list {
-	margin-top: 30px;
-	margin-left: 10%;
+#list-icon {
+    display: flex;
     font-size: 30px;
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    background-color: #fbfbfb;
+    border-radius: 50%;
+    border: 1px solid #f3f2e6;
+    box-shadow: 1px 2px 6px #D5D5D5;
+    align-items: center;
+    justify-content: space-around;
+    transition: 0.3s;
+}
+
+#list-icon:hover {
+	background-color: #fffbd9;
+	color: #fff;
+}
+
+#list-icon-container {
+	margin-left: 11%;
+	margin-bottom: 30px;
 }
 
 #map {

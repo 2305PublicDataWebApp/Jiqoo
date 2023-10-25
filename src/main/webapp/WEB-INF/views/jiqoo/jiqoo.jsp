@@ -110,7 +110,12 @@
 		<div class="modal-body"></div>
 		<!-- ======= Map Section ======= -->
 		<!-- 지도를 표시할 div 입니다 -->
-		<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
+		<div id="list-icon-container">
+			<div id="list-icon">
+				<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
+			</div>
+		</div>
+		
 		<div id="map"></div>
 
 		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>

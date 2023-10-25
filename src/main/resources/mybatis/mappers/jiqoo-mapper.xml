@@ -49,7 +49,7 @@
 	<insert id="insertJiqoo">
 		INSERT INTO JIQOO_TBL VALUES(SEQ_JIQOO_NO.NEXTVAL,
 		#{jiqooW3W }, #{jiqooDate }, #{jiqooCtgr }, #{jiqooTitle },
-		#{jiqooContent }, #{jiqooWriter }, #{jOpenStatus }, #{jAllowComt },
+		#{jiqooContent }, #{jiqooWriter }, #{jAllowComt }, #{jOpenStatus },
 		DEFAULT, DEFAULT, DEFAULT, #{jiqooLat }, #{jiqooLng }, DEFAULT )
 	</insert>
 	
@@ -111,7 +111,7 @@
 		JOIN USER_TBL U ON
 		J.JIQOO_WRITER = U.USER_ID
 		JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+		WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'N'
 		ORDER BY J.JIQOO_DATE DESC
 	</select>
 
@@ -154,7 +154,7 @@
 			    FROM JIQOO_TBL J
 			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
 			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'N'
 			    ORDER BY J.J_CREATE_DATE DESC
 			) A
 		WHERE ROWNUM &lt;= 10
@@ -171,7 +171,7 @@
 			    FROM JIQOO_TBL J
 			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
 			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'Y'
+			    WHERE J.JIQOO_STATUS = 'Y' AND J.J_OPEN_STATUS = 'N'
 			    ORDER BY J.J_CREATE_DATE DESC
 			) A
 		WHERE ROWNUM &lt;= (#{offset} + #{limit})
@@ -242,7 +242,7 @@
 			        SELECT * FROM JIQOO_TBL J
 			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
 			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
+			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%' AND J.J_OPEN_STATUS = 'N'
 			        ORDER BY J.J_CREATE_DATE DESC
 			        ) S
 				WHERE ROWNUM &lt;= 10
@@ -279,7 +279,7 @@
 			        SELECT * FROM JIQOO_TBL J
 			        JOIN USER_TBL U ON U.USER_ID = J.JIQOO_WRITER
 			        JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
-			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%'
+			        WHERE J.JIQOO_TITLE LIKE '%' || #{searchValue} || '%' OR REGEXP_REPLACE(J.JIQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue} || '%' AND J.J_OPEN_STATUS = 'N'
 			        ORDER BY J.J_CREATE_DATE DESC
 			        ) S
 				WHERE ROWNUM &lt;= (#{offset} + #{limit})

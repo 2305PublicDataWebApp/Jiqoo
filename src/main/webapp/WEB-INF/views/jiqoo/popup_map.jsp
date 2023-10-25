@@ -201,6 +201,7 @@
         });
       });
     }
+    
 
     document.querySelector("#info-btn").addEventListener("click", function () {
       closePopup();
