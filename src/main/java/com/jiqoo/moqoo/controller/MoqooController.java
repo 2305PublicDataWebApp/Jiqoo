@@ -301,7 +301,7 @@ public class MoqooController {
 			}
 		}
 	
-	@PostMapping("moqoo/update")
+	@PostMapping("/moqoo/update")
 	public String updateMoqoo(@ModelAttribute Moqoo moqoo,@RequestParam(value = "uploadFile", required=false) MultipartFile uploadFile, Model model, HttpServletRequest request) {
 		try {
 			if(uploadFile != null && !uploadFile.isEmpty()) {
@@ -332,7 +332,7 @@ public class MoqooController {
 		}
 	}
 	
-	@GetMapping("moqoo/delete")
+	@GetMapping("/moqoo/delete")
 	public String deleteMoqoo(@RequestParam("moqooNo") int moqooNo,@RequestParam("moqooWriter") String moqooWriter, Model model, HttpSession session) {
 		try {
 			String userId = (String)session.getAttribute("userId");
