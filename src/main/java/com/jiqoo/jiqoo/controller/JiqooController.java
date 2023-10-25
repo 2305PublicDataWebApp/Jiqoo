@@ -210,15 +210,13 @@ public class JiqooController {
 	}
 
 	@PostMapping("/jiqoo/update")
-	public String updateJiqoo(@ModelAttribute Jiqoo jiqoo, Model model) {
+	public String updateJiqoo(@ModelAttribute Jiqoo jiqoo, @RequestParam(value="jOpenStatus", required=false) String jOpenStatus, @RequestParam(value="jAllowComt", required=false) String jAllowComt, Model model) {
 		try {
-			String allowComt = jiqoo.getjAllowComt();
-			String openStatus = jiqoo.getjOpenStatus();
-			System.out.println(jiqoo.getJiqooCtgr());
-			allowComt = allowComt != null ? "Y" : "N";
-			openStatus = openStatus != null ? "Y" : "N";
-			jiqoo.setjAllowComt(allowComt);
-			jiqoo.setjOpenStatus(openStatus);
+			System.out.println(jOpenStatus + jAllowComt);
+			jOpenStatus = jOpenStatus != null ? "Y" : "N";
+			jAllowComt = jAllowComt != null ? "Y" : "N";
+			jiqoo.setjAllowComt(jAllowComt);
+			jiqoo.setjOpenStatus(jOpenStatus);
 			int result = jiqooService.updateJiqoo(jiqoo);
 			if (result > 0) {
 				model.addAttribute("msg", "게시물이 수정되었습니다.");
@@ -240,7 +238,7 @@ public class JiqooController {
 	@ResponseBody
 	@GetMapping("/jiqoo/report")
 	public String reportJiqoo(@ModelAttribute Report report) {
-		if(report.getReportType() == "J") {
+		if(report.getReportType().equals("J")) {
 			int result = jiqooService.insertJiqooReport(report);
 			if(result > 0) {
 				return "jiqooReport";

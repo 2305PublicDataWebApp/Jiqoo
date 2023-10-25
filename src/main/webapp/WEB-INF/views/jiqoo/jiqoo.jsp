@@ -99,19 +99,6 @@
 	<!-- End Hero -->
 
 	<main id="main">
-		<!-- ======= Search Section ======= -->
-		<div class="search-container">
-			<form action="" method="" class="search-form">
-				<input type="text" placeholder="search" />
-				<button type="submit" id="search-btn">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-              <path
-							d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-            </svg>
-				</button>
-			</form>
-		</div>
 
 		<!-- ======= Tab Section ======= -->
 		<!-- ======= 목록으로 이동 ======= -->
@@ -126,8 +113,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 		<a href="/jiqoo/list"><i class="bi bi-list"></i></a>
 		<div id="map"></div>
 
-		<button type="button" class="btn insert-jiqoo-btn"
-			data-bs-toggle="modal" data-bs-target=".modal">지꾸 +</button>
+		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>
 		<!-- ======= Modal ======= -->
 		<div class="modal" tabindex="-1" id="insert-modal">
 			<div class="modal-dialog modal-lg">
@@ -146,7 +132,7 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 									name="jiqooW3W" value="" readonly>
 								<button id="open-map-btn">+</button>
 							</div>
-							<div class="mb-3 row date-tag-container">
+							<div class="mb-3 date-tag-container">
 								<div class="date-container col-md-3">
 									<input type="date" class="form-control" id="date" name="jiqooDate"
 										required>
@@ -168,14 +154,6 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 											</div>
 										</c:forEach>
 									</div>
-<!-- 									<div class="form-check"> -->
-<!-- 										<input class="form-check-input" type="radio" name="category" -->
-<!-- 											id="category1" value="option1" required> <label -->
-<!-- 											class="form-check-label" for="category1"> <img -->
-<!-- 											class="tag-img" src="../resources/assets/img/rice.png" -->
-<!-- 											alt="밥"> -->
-<!-- 										</label> -->
-<!-- 									</div> -->
 								</div>
 							</div>
 							<input type="hidden" id="lat" name="jiqooLat">
@@ -229,6 +207,8 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 
 <!-- 썸머노트 -->
   <script>
+  var currentUserId = "${sessionScope.userId}"
+  
     $(document).ready(function() {
     //여기 아래 부분
         $('#summernote').summernote({
@@ -262,24 +242,24 @@ fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
-        data:data, 
-        type:"POST", 
-        url:"/uploadSummernoteImageFile", 
-        /* dataType:"JSON", */ 
-        enctype:'multipart/form-data',
-        contentType:false, 
-        processData:false
-        
-    }).done(function(data) {
-    	console.log(data);
-    	var imgNode = $("<img>");
-    	imgNode.attr("src", data);
-    	$(".note-editable").append(imgNode);
-    }).fail(function(a,b,c){
-    	console.log(a);
-    	console.log(b);
-    	console.log(c);
-    });
+		        data:data, 
+		        type:"POST", 
+		        url:"/uploadSummernoteImageFile", 
+		        /* dataType:"JSON", */ 
+		        enctype:'multipart/form-data',
+		        contentType:false, 
+		        processData:false
+		        
+		    }).done(function(data) {
+		    	console.log(data);
+		    	var imgNode = $("<img>");
+		    	imgNode.attr("src", data);
+		    	$(".note-editable").append(imgNode);
+		    }).fail(function(a,b,c){
+		    	console.log(a);
+		    	console.log(b);
+		    	console.log(c);
+		    });
         }
 		showAllMap();
     });
@@ -345,69 +325,73 @@ function showMyMap(){
 	
 	 // 커스텀 오버레이 배열을 선언합니다
 	  var customOverlays = [];
-	 $.ajax({
-	        url: "/jiqoo/showMyMap",
-	        type: "GET",
-	        success: function (data) {
-	  	      for (var i = 0; i < data.length; i++) {
-	  	        // 마커 이미지의 이미지 크기 입니다
-	  	        var imageSize = new kakao.maps.Size(70, 70);
 
-	  	        // 마커 이미지를 생성합니다    
-	  	        var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize);
-
-	  	        // 마커를 생성합니다
-	  	        var marker = new kakao.maps.Marker({
-	  	          map: map, // 마커를 표시할 지도
-	  	          position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng),
-	  	          image: markerImage,
-	  	          clickable: true
-	  	        });
-	  	        
-	  	        
-
-	  	        // 커스텀 오버레이에 표시될 내용을 생성합니다
-	  	        var overlayContent =  '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
-	  	          '<div class="info-header"><a href="/jiqoo/detail?jiqooNo='+data[i].jiqooNo +'">' + data[i].jiqooW3W + '</a></div>' +
-	  	          '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
-	  	          '</div>';
-
-	  	   // 커스텀 오버레이를 생성합니다
-		        var customOverlay = new kakao.maps.CustomOverlay({
-		          content: overlayContent,
-		          position: marker.getPosition(),
-		          clickable: true
-		        });
-
-		        // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
-		        var overlayClicked = false;
-
-		     // 마커에 클릭 이벤트를 등록합니다
-		        (function (customOverlay, marker) {
-		            kakao.maps.event.addListener(marker, 'click', function () {
-		                if (customOverlay.getMap()) {
-		                    customOverlay.setMap(null);
-		                } else {
-		                    customOverlay.setMap(map);
-		                }
-
-		                lastClickedOverlay = customOverlay;
-
-		                for (var j = 0; j < customOverlays.length; j++) {
-		                    if (customOverlays[j] !== customOverlay) {
-		                        customOverlays[j].setMap(null);
-		                    }
-		                }
-		            });
-
-		            customOverlays.push(customOverlay);
-		        })(customOverlay, marker);
-		     
-		     
-
-		      }
+	  $.ajax({
+		    url: "/jiqoo/showMyMap", // 서버에서 데이터를 가져올 URL
+		    type: "GET", // GET 요청 사용
+		    dataType: 'json', // 가져올 데이터의 형식 (JSON 사용)
+		    success: function (data) { // 데이터 가져오기에 성공하면 실행
+		    	if(data.length > 0) {
+			        for (var i = 0; i < data.length; i++) { // 데이터 배열을 반복
+			            var imageSize = new kakao.maps.Size(70, 70); // 마커 이미지의 크기 설정
+			            var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize); // 마커 이미지 생성
+			            var marker = new kakao.maps.Marker({
+			                map: map, // 마커를 지도에 추가
+			                position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng), // 마커 위치 설정
+			                image: markerImage, // 마커 이미지 설정
+			                clickable: true // 마커 클릭 가능
+			            });
+	
+			         	// 사용자 정의 컨텐츠를 가져오는 함수 호출
+			            var contentData = parseContent(data[i].jiqooContent);
+	
+			            var overlayContent = '<div class="infoWindow" id="custom-' + data[i].jiqooNo + '">' +
+			                '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+			                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
+			                '<div class="info-content">' + contentData.pContent + '</div>';
+	
+			            if (contentData.imgSource) {
+			                overlayContent += '<div class="info-image">' +
+			                    contentData.imgSource +
+			                    '</div>';
+			            }
+	
+			            overlayContent += '</div>';
+	
+			            var customOverlay = new kakao.maps.CustomOverlay({
+			                content: overlayContent, // 커스텀 오버레이의 내용 설정
+			                position: marker.getPosition(), // 오버레이 위치 설정
+			                clickable: true // 오버레이 클릭 가능
+			            });
+	
+			            // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
+			            var overlayClicked = false;
+	
+			            (function (customOverlay, marker) { // 클로저 함수 사용
+			                kakao.maps.event.addListener(marker, 'click', function () { // 마커 클릭 이벤트 등록
+			                    if (customOverlay.getMap()) {
+			                        customOverlay.setMap(null); // 이미 열려있는 경우 오버레이 닫음
+			                    } else {
+			                        customOverlay.setMap(map); // 오버레이 열기
+			                    }
+	
+			                    lastClickedOverlay = customOverlay; // 마지막으로 클릭된 커스텀 오버레이 업데이트
+	
+			                    for (var j = 0; j < customOverlays.length; j++) { // 다른 커스텀 오버레이 닫기
+			                        if (customOverlays[j] !== customOverlay) {
+			                            customOverlays[j].setMap(null);
+			                        }
+			                    }
+			                });
+	
+			                customOverlays.push(customOverlay); // 커스텀 오버레이 배열에 추가
+			            })(customOverlay, marker);
+			        }
+		    	}else {
+		    		alert("+버튼을 눌러 지꾸를 시작해보세요!");
+		    	}
 		    }
-		  });
+		});
 		}
 	
 function showAllMap() {
@@ -434,69 +418,109 @@ function showAllMap() {
 	  var customOverlays = [];
 
 	  $.ajax({
-	    url: "/jiqoo/showAllMap",
-	    type: "GET",
-	    dataType: 'json',
-	    success: function (data) {
-	      for (var i = 0; i < data.length; i++) {
-	        // 마커 이미지의 이미지 크기 입니다
-	        var imageSize = new kakao.maps.Size(70, 70);
+		    url: "/jiqoo/showAllMap", // 서버에서 데이터를 가져올 URL
+		    type: "GET", // GET 요청 사용
+		    dataType: 'json', // 가져올 데이터의 형식 (JSON 사용)
+		    success: function (data) { // 데이터 가져오기에 성공하면 실행
+		        for (var i = 0; i < data.length; i++) { // 데이터 배열을 반복
+		            var imageSize = new kakao.maps.Size(70, 70); // 마커 이미지의 크기 설정
+		            var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize); // 마커 이미지 생성
+		            var marker = new kakao.maps.Marker({
+		                map: map, // 마커를 지도에 추가
+		                position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng), // 마커 위치 설정
+		                image: markerImage, // 마커 이미지 설정
+		                clickable: true // 마커 클릭 가능
+		            });
 
-	        // 마커 이미지를 생성합니다
-	        var markerImage = new kakao.maps.MarkerImage(data[i].category.cImgPath, imageSize);
+		         	// 사용자 정의 컨텐츠를 가져오는 함수 호출
+		            var contentData = parseContent(data[i].jiqooContent);
 
-	        // 마커를 생성합니다
-	        var marker = new kakao.maps.Marker({
-	          map: map, // 마커를 표시할 지도
-	          position: new kakao.maps.LatLng(data[i].jiqooLat, data[i].jiqooLng),
-	          image: markerImage,
-	          clickable: true
-	        });
+		            var overlayContent = '<div class="infoWindow" id="custom-' + data[i].jiqooNo + '">' +
+		                '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+		                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
+		                '<div class="info-content">' + contentData.pContent + '</div>';
 
-	        // 커스텀 오버레이에 표시될 내용을 생성합니다
-	         var overlayContent =  '<div class="infoWindow" id="custom-'+ data[i].jiqooNo +'">' +
-	  	        '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
-	  	        data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
-	  	        '<div class="info-footer">' + data[i].jiqooContent + '</div>' +
-	  	        '</div>'; 
+		            if (contentData.imgSource) {
+		                overlayContent += '<div class="info-image">' +
+		                    contentData.imgSource +
+		                    '</div>';
+		            }
 
-	        // 커스텀 오버레이를 생성합니다
-	        var customOverlay = new kakao.maps.CustomOverlay({
-	          content: overlayContent,
-	          position: marker.getPosition(),
-	          clickable: true
-	        });
+		            overlayContent += '</div>';
 
-	        // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
-	        var overlayClicked = false;
+		            var customOverlay = new kakao.maps.CustomOverlay({
+		                content: overlayContent, // 커스텀 오버레이의 내용 설정
+		                position: marker.getPosition(), // 오버레이 위치 설정
+		                clickable: true // 오버레이 클릭 가능
+		            });
 
-	     // 마커에 클릭 이벤트를 등록합니다
-	        (function (customOverlay, marker) {
-	          kakao.maps.event.addListener(marker, 'click', function () {
-	            // 클릭된 마커의 커스텀 오버레이를 열고 닫기
-	            if (customOverlay.getMap()) {
-	              customOverlay.setMap(null); // 커스텀 오버레이 닫음
-	            } else {
-	              customOverlay.setMap(map); // 커스텀 오버레이 열음
-	            }
+		            // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
+		            var overlayClicked = false;
 
-	            // 마지막으로 클릭된 커스텀 오버레이 업데이트
-	            lastClickedOverlay = customOverlay;
+		            (function (customOverlay, marker) { // 클로저 함수 사용
+		                kakao.maps.event.addListener(marker, 'click', function () { // 마커 클릭 이벤트 등록
+		                    if (customOverlay.getMap()) {
+		                        customOverlay.setMap(null); // 이미 열려있는 경우 오버레이 닫음
+		                    } else {
+		                        customOverlay.setMap(map); // 오버레이 열기
+		                    }
 
-	            // 다른 커스텀 오버레이 닫기
-	            for (var j = 0; j < customOverlays.length; j++) {
-	              if (customOverlays[j] !== customOverlay) {
-	                customOverlays[j].setMap(null);
-	              }
-	            }
-	          });
+		                    lastClickedOverlay = customOverlay; // 마지막으로 클릭된 커스텀 오버레이 업데이트
 
-	          customOverlays.push(customOverlay);
-	        })(customOverlay, marker);
-	      }
-	    }
-	  });
+		                    for (var j = 0; j < customOverlays.length; j++) { // 다른 커스텀 오버레이 닫기
+		                        if (customOverlays[j] !== customOverlay) {
+		                            customOverlays[j].setMap(null);
+		                        }
+		                    }
+		                });
+
+		                customOverlays.push(customOverlay); // 커스텀 오버레이 배열에 추가
+		            })(customOverlay, marker);
+		        }
+		    }
+		});
+
 	}
+
+
+function parseContent(content) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(content, 'text/html');
+
+ // <p> 요소를 추출
+    var pElements = doc.querySelectorAll('p');
+    var pContent = '';
+
+    for (var i = 0; i < pElements.length; i++) {
+        var innerHTML = pElements[i].innerHTML.trim(); // 텍스트 내용을 얻고 좌우 공백을 제거
+        if (innerHTML) { // 비어있지 않은 경우에만 <p> 요소 추가
+            pContent += '<p>' + innerHTML + '</p>';
+        }
+    }
+
+    // <img> 요소를 추출
+    var imgElements = doc.querySelectorAll('img');
+    var imgSource = ''; // 이미지가 없을 경우 빈 문자열
+    if (imgElements.length > 0) {
+        // 이미지가 있을 경우 img 태그 생성
+        imgSource = imgElements[0].getAttribute('src');
+        imgSource = '<img src="' + imgSource + '" alt="Image">';
+    }
+
+    // 만약 pContent의 길이가 특정 길이를 초과하면 자르고 "..."을 추가
+    var maxContentLength = 10; // 원하는 최대 길이로 설정하세요
+    if (pContent.length > maxContentLength) {
+        pContent = pContent.substring(0, maxContentLength) + '...';
+    }
+    
+    // <p><br></p>를 제거
+    pContent = pContent.replace(/<p><br><\/p>/g, '');
+
+    return {
+        pContent: pContent,
+        imgSource: imgSource
+    };
+}
 
 
 	
@@ -515,6 +539,19 @@ $("#btn-myMap").click(function() {
     categoryContainer.style.display = categoryContainer.style.display === "none" ? "block" : "none";
   }
 
+  // 지꾸 게시물 작성 모달 띄우기
+  document.getElementById("confirmButton").addEventListener("click", function() {
+	  if (currentUserId === "") {
+	    var confirmed = confirm("로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?");
+	    if (confirmed) {
+	      window.location.href = "/user/login"; // 사용자가 확인을 누르면 로그인 페이지로 이동
+	    }
+	  } else {
+	    // 로그인된 사용자의 경우 모달을 띄우도록 설정
+	    var insertModal = new bootstrap.Modal(document.getElementById('insert-modal'));
+	    insertModal.show();
+	  }
+	});
 
     
 </script>

@@ -52,7 +52,7 @@
         --color-default : #FFF59D;
         }
         body {
-        font-family: "Open Sans", sans-serif;
+        font-family: 'IBMPlexSansKR-Regular';
         color: #444444;
         margin: 0px;
         height: 100%;
@@ -60,29 +60,41 @@
         }
 
         #map-container {
-          width: 1200px;
-          height: 800px;
+          width: 1199px;
+          height: 799px;
         }
         #search-container {
           margin: 10px 0 0 10px;
         }
         #search-input {
           width: 300px;
+          position: relative;
+    	  border-radius: 5px;
         }
         #current-location-container {
-          margin: 0 10px 10px 0;
+            margin: 0 10px 10px 0;
+		    position: absolute;
+		    bottom: 119px !important;
+		    right: -2px !important;
         }
 
         #current-location-container button {
-            width: 200px;
-            height: 60px;
-            border-radius: 25px;
-            background-color: #8BC34A;
-            color: white;
-            font-size: 20px;
-            border: none;
-            box-shadow:  rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+            width: 60px;
+		    height: 60px;
+		    border-radius: 50%;
+		    background-color: #ffffff;
+		    border: none;
+		    box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 7px 0px;
         }
+        
+        #current-location-container button img {
+        	width: 30px;
+        }
+        
+/*         .gmnoprint { */
+/*         	display: none; */
+/*         } */
+        
         #search-input {
         	position: relative;
         }
@@ -100,7 +112,12 @@
 		    border: none;
 		    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
 		    cursor: pointer;
-		    }
+		    transition: 0.3s;
+		}
+		
+		#info-btn:hover {
+			background-color: #8BC34A;
+		}
 		    
         </style>
   <!-- =======================================================
@@ -114,7 +131,7 @@
 
 <body>
   <main id="main">
-         <div id="map">
+         <div id="map-container">
         <what3words-map
           id="w3w-map"
           api_key="RVOKZN3U"
@@ -142,7 +159,7 @@
               </what3words-autosuggest>
           </div>
           <div slot="current-location-control" id="current-location-container">
-              <button>Current Location</button>
+              <button> <img alt="현재위치표시" src="../resources/assets/img/gps-location.png"> </button>
           </div>
         </what3words-map>
       </div>

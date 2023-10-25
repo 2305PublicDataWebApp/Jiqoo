@@ -9,8 +9,8 @@
 		<result property="jiqooTitle" column="JIQOO_TITLE" />
 		<result property="jiqooContent" column="JIQOO_CONTENT" />
 		<result property="jiqooWriter" column="JIQOO_WRITER" />
-		<result property="jOpenStatus" column="J_ALLOW_COMT" />
-		<result property="jAllowComt" column="J_OPEN_STATUS" />
+		<result property="jAllowComt" column="J_ALLOW_COMT" />
+		<result property="jOpenStatus" column="J_OPEN_STATUS" />
 		<result property="jCreateDate" column="J_CREATE_DATE" />
 		<result property="jUpdateDate" column="J_UPDATE_DATE" />
 		<result property="jViewCount" column="J_VIEW_COUNT" />
@@ -78,7 +78,7 @@
 	</update>
 	
 	<update id="updateJiqoo">
-		UPDATE JIQOO_TBL SET JIQOO_W3W = #{jiqooW3W }, JIQOO_DATE = #{jiqooDate }, JIQOO_CTGR = #{jiqooCtgr }, JIQOO_TITLE = #{jiqooTitle }, JIQOO_CONTENT = #{jiqooContent }, J_OPEN_STATUS = #{jOpenStatus }, J_ALLOW_COMT = #{jAllowComt }, J_UPDATE_DATE = DEFAULT, JIQOO_LAT = #{jiqooLat }, JIQOO_LNG = #{jiqooLng } WHERE JIQOO_NO = #{jiqooNo }
+		UPDATE JIQOO_TBL SET JIQOO_W3W = #{jiqooW3W }, JIQOO_DATE = #{jiqooDate }, JIQOO_CTGR = #{jiqooCtgr }, JIQOO_TITLE = #{jiqooTitle }, JIQOO_CONTENT = #{jiqooContent }, J_ALLOW_COMT = #{jAllowComt }, J_OPEN_STATUS = #{jOpenStatus }, J_UPDATE_DATE = DEFAULT, JIQOO_LAT = #{jiqooLat }, JIQOO_LNG = #{jiqooLng } WHERE JIQOO_NO = #{jiqooNo }
 	</update>
 	
 	<update id="updateJiqooCount" parameterType="int">
@@ -150,7 +150,7 @@
 		FROM (
 			SELECT A.*, ROWNUM AS rnum
 			FROM (
-			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+			    SELECT J.*, U.*, C.C_IMG_PATH
 			    FROM JIQOO_TBL J
 			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
 			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
@@ -167,7 +167,7 @@
 		FROM (
 			SELECT A.*, ROWNUM AS rnum
 			FROM (
-			    SELECT J.*, U.USER_NICKNAME, C.C_IMG_PATH
+			    SELECT J.*, U.*, C.C_IMG_PATH
 			    FROM JIQOO_TBL J
 			    JOIN USER_TBL U ON J.JIQOO_WRITER = U.USER_ID
 			    JOIN CATEGORY_TBL C ON J.JIQOO_CTGR = C.C_NAME
