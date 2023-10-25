@@ -686,7 +686,7 @@
                         }
                       },
                       labels: genderLabelList,
-                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B', '#A8DF8E']
+                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B']
                       
                     }).render();
                   });
@@ -718,7 +718,7 @@
 	                    	 ageLabelList.push("20대");
 					    }else if(ageData.ageGroup === '30-39') {
 	                    	 ageLabelList.push("30대");
-					    }else if(ageData.ageGroup === '40-100') {
+					    }else if(ageData.ageGroup >= '40') {
 	                    	 ageLabelList.push("40대 이상");
 					    }
 					    else {
@@ -742,7 +742,7 @@
                         }
                       },
                       labels: ageLabelList,
-                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B', '#A8DF8E']
+                      colors: ['#FBF0B2', '#82A0D8','#FF9B9B', '#A8DF8E', '#80B3FF', '#A7D397', '#FFDFDF']
                       
                     }).render();
                   });
@@ -845,14 +845,23 @@
 				          <div class="modal-dialog">
 				            <div class="modal-content">
 				              <div class="modal-header">
-				                <h1 class="modal-title fs-5" id="exampleModalLabel"> ${todayJiqoo.jiqooTitle}</h1>
+				                <h1 class="modal-title fs-5" id="exampleModalLabel" style="display:inline"><i class="bi bi-sticky"></i> ${todayJiqoo.jiqooTitle}</h1><!-- 타이틀 -->
+								
 				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				              </div>
 				              <div class="modal-body">
-				                ${todayJiqoo.jiqooContent}
-				              </div>
-				              <div class="modal-footer">
-				                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				              	<span><i class="bi bi-pencil"></i> ${todayJiqoo.jiqooWriter} </span>&nbsp; <!-- 작성자 -->
+								<span><i class="bi bi-calendar-week"></i> 
+									<fmt:parseDate value='${todayJiqoo.jCreateDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='jCreateDate'/>
+									<fmt:formatDate value="${jCreateDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+								</span>
+								<br>
+								<h5 style="display:inline"><i class="bi bi-tag"></i>${todayJiqoo.jiqooCtgr}</h5>&nbsp;&nbsp; <!-- 카테고리 -->
+								<h5 style="display:inline"><i class="bi bi-globe"></i> ${todayJiqoo.jiqooW3W}</h5>&nbsp; <!-- W3W -->
+								<span><i class="bi bi-clock"></i> ${todayJiqoo.jiqooDate}</span>&nbsp; <!-- 일기일자 -->
+								<div class="content">
+									${todayJiqoo.jiqooContent}
+								</div>
 				              </div>
 				            </div>
 				          </div>
@@ -914,10 +923,28 @@
 					                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					              </div>
 					              <div class="modal-body">
-					                ${todayMoqoo.moqooContent}
-					              </div>
-					              <div class="modal-footer">
-					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					              
+					                <span><i class="bi bi-pencil"></i> ${todayMoqoo.moqooWriter} </span>&nbsp; <!-- 작성자 -->
+									<span><i class="bi bi-calendar-week"></i> 
+										<fmt:parseDate value='${todayMoqoo.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate' /> 
+										<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm" />  <!-- 작성일자 --> 
+									</span>&nbsp; 
+									<span><i class="bi bi-eye"></i>${todayMoqoo.mViewCount} </span>
+									<br>
+									<h5 style="display: inline">
+										<i class="bi bi-tag"></i> ${todayMoqoo.category} <!-- 카테고리 -->
+									</h5>
+									&nbsp;&nbsp;
+									
+									<h5 style="display: inline">
+										<i class="bi bi-globe"></i> ${todayMoqoo.moqooW3W} <!-- W3W -->
+									</h5>
+									&nbsp;
+									<span><i class="bi bi-clock"></i> ${todayMoqoo.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+									<span><i class="bi bi-people"></i> ${todayMoqoo.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
+					              	<div class="content">
+					                	<c:out value='${todayMoqoo.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+					                </div>
 					              </div>
 					            </div>
 					          </div>
@@ -968,7 +995,9 @@
 							<c:if test="${todayComment.cBoardType eq 'J' }">지꾸</c:if>
 							<c:if test="${todayComment.cBoardType eq 'M' }">모꾸</c:if>
 						  </td>
-	                      <td>${todayComment.comtWriter }</td>
+	                      <td>
+	                      	<c:out value='${todayComment.comtWriter.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
+	                      </td>
 	                      <td>
 	                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal${i.count }" >
 	                        ${todayComment.comtContent }
@@ -986,11 +1015,21 @@
 				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				              </div>
 				              <div class="modal-body">
-				                ${todayComment.comtContent }
+				             	<h5 style="display:inline"><i class="bi bi-pencil" style="margin-left:5px"></i> ${todayComment.comtWriter} </h5>&nbsp; <!-- 작성자 -->
+								<h5 style="display:inline"><i class="bi bi-calendar-week"></i> 
+									<fmt:parseDate value='${todayComment.comtDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='comtDate'/>
+									<fmt:formatDate value="${comtDate}" pattern="yy/MM/dd HH:mm"/> <!-- 작성일자 -->
+								</h5>
+								<br>
+								<span><i class="bi bi-clipboard-check" style="margin-left:5px"></i> ${todayComment.cBoardType}</span>&nbsp; <!-- 보드타입 -->
+								<span><i class="bi bi-clipboard-plus"></i> ${todayComment.refPostNo}</span>&nbsp; <!-- 댓달린 게시글 번호 -->
+								<span><i class="bi bi-reply-all-fill"></i> ${todayComment.pComtNo}</span>&nbsp; <!-- 대댓일경우 부모댓글번호 -->
+				              	<div class="content">
+				                	 ${todayComment.comtContent }
+				                </div>
+				               
 				              </div>
-				              <div class="modal-footer">
-				                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				              </div>
+				             
 				            </div>
 				          </div>
 				        </div>
@@ -1035,7 +1074,7 @@
 	                      <td>${todayUser.userName }</td>
 	                      <td>
 	                      	${todayUser.userGender}
-	                      	<c:if test="${todayUser.userGender eq null}"> 불명 </c:if>
+	                      	<c:if test="${todayUser.userGender eq ''}"> 불명 </c:if>
 	                      </td>
 	                      <td>
 							<c:if test="${todayUser.platformType eq 'normal'}"> 홈페이지 </c:if>
@@ -1051,39 +1090,7 @@
         </div>
 
 
-        <!-- ======= Modal =======  -->
-          <!-- 신고 Modal -->
-          <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">신고하기</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <select name="report" id="reportSelect">
-                    <option value="abusive">욕설사용</option>
-                    <option value="advertising">광고글</option>
-                    <option value="noSubject">주제와 맞지 않는 글</option>
-                    <option value="violent">폭력적인 내용</option>
-                    <option value="discrimination">차별적인 내용</option>
-                    <option value="pornography">음란물</option>
-                    <option value="personal">민감한 개인정보 노출</option>
-                    <option value="etc">기타 (직접 작성)</option>
-                  </select>
-                  <textarea id="customReason" style="display:none" spellcheck="false"></textarea>
-                  <div>
-                    <small>게시물을 신고하신 이유를 제출해주시면 관리자 검토 후 조치하겠습니다.</small>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn send-report">보내기</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
+        
 
           <script>
             var selectElement = document.getElementById("reportSelect");

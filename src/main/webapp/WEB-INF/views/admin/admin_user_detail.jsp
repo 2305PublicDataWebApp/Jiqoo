@@ -216,12 +216,12 @@
 
 				<div id="list-type"
 					style="border-radius: 15px; border: 1px solid #DAE4ED; display: flex; justify-content: space-evenly; width: 400px; margin: 20px auto;">
-					<button id="jiqoo-list" class="btn-get-started"
+					<button id="jiqoo-list" class=" btn-get-started"
 							style="background: #8BC34A; color: #fff;" 
 							onclick="toggleButton(1)">지꾸</button>
-					<button id="moqoo-list" class="btn-get-started"
+					<button id="moqoo-list" class="   btn-get-started"
 							onclick="toggleButton(2);">모꾸</button>
-					<button id="cmt-list" class="btn-get-started"
+					<button id="cmt-list" class="  btn-get-started"
 							onclick="toggleButton(3);">댓글</button>
 				</div>
 

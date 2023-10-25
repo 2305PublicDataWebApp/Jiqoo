@@ -1046,7 +1046,7 @@ public class AdminController {
 					
 				} else {
 					mv.addObject("msg", "검색된 지꾸가 없습니다.");
-					mv.addObject("url", "/admin/jiqoo");
+					mv.addObject("url", "/admin/jiqoolist");
 					mv.setViewName("common/message");
 				}
 				
@@ -1058,7 +1058,7 @@ public class AdminController {
 
 		} catch (Exception e) {
 			mv.addObject("msg", "검색 실패");
-			mv.addObject("url", "/admin/jiqoo");
+			mv.addObject("url", "/admin/jiqoolist");
 			mv.setViewName("common/message");
 		}
 		return mv;
@@ -1172,7 +1172,7 @@ public class AdminController {
 						
 					} else {
 						mv.addObject("msg", "검색된 모꾸가 없습니다.");
-						mv.addObject("url", "/admin/moqoo");
+						mv.addObject("url", "/admin/moqoolist");
 						mv.setViewName("common/message");
 					}
 					
@@ -1184,7 +1184,7 @@ public class AdminController {
 
 			} catch (Exception e) {
 				mv.addObject("msg", "검색 실패");
-				mv.addObject("url", "/admin/jiqoo");
+				mv.addObject("url", "/admin/moqoolist");
 				mv.setViewName("common/message");
 			}
 			return mv;
@@ -1320,7 +1320,7 @@ public class AdminController {
 						
 					} else {
 						mv.addObject("msg", "검색 결과가 없습니다");
-						mv.addObject("url", "/chatlist");
+						mv.addObject("url", "/admin/chatlist");
 						mv.setViewName("common/message");
 						
 					}
@@ -1333,7 +1333,7 @@ public class AdminController {
 
 			} catch (Exception e) {
 				mv.addObject("msg", "검색 실패");
-				mv.addObject("url", "/chatlist");
+				mv.addObject("url", "/admin/chatlist");
 				mv.setViewName("common/message");
 			}
 			return mv;

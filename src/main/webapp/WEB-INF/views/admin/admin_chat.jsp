@@ -139,7 +139,13 @@
 	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
 	                    <td title="${chatRoomAllList.chatName }">${chatRoomAllList.chatName }</td>  <!-- 채팅방이름 -->
 	                    <td class="col1">
-	                      <img src="${chatRoomAllList.cImagePath}" style="width:50px"> <!-- 프로필 -->
+	                    	<c:if test="${empty chatRoomAllList.cImagePath }">
+								<img src="../resources/assets/img/no-profile.png" style="width:50px;">
+							</c:if>
+							
+							<c:if test="${!empty chatRoomAllList.cImagePath }">
+								<img src="${chatRoomAllList.cImagePath }" style="width:50px;">
+							</c:if>
 	                    </td>
 	                    <td title="${chatRoomAllList.participants }">${chatRoomAllList.participants }</td> <!-- 참여자목록 -->
 	                    <td>${chatRoomAllList.participantCount }</td> <!-- 총인원 -->
