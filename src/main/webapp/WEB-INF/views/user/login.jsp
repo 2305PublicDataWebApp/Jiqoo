@@ -8,16 +8,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="keywords" content="">
-        <meta name ="google-signin-client_id" content="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com">
-          <script>
-    function onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile();
-      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-      console.log('Name: ' + profile.getName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail()); 
-    }
-  </script>
+<!--         <meta name ="google-signin-client_id" content="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com"> -->
+
         <title>지꾸 로그인</title>
         
         <!-- Favicons -->
@@ -81,7 +73,7 @@
         </section>
         <main class="form-signin">
             <form action="/user/login" method="post">
-                <h1 style="margin-bottom: 30px;">로그인</h1>
+                <h1 style="margin-bottom: 30px; font-weight:600">로그인</h1>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
                     <label for="userId">아이디</label>
@@ -97,10 +89,16 @@
             </form>
             <div style="margin-top:10px;">
                 <a id="kakao-login-btn" href="javascript:loginWithKakao()">
-					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem;" alt="카카오 로그인 버튼" />
+					<img src="../resources/assets/img/user/kakao.png" style="border-radius:0.5rem; width:300px" alt="카카오 로그인 버튼" />
 				</a>
             </div>
-            <div id="naver_id_login" style="margin-top:10px;"></div>
+            <div id="naver_id_login" style="margin-top:10px; display:none"></div>
+            <div class="naver-btn" style="margin-top:10px;">
+                <a id="naverCustomBtn" href="#">
+					<img src="../resources/assets/img/user/naver.png" style="border-radius:0.5rem; width:300px" alt="네이버 로그인 버튼" />
+				</a>
+			</div>
+<!-- 구글로그인 -->
 <!-- 			<div id="g_id_onload" -->
 <!-- 			     data-client_id="818341885940-10jecrna0ublqtoere3bdq2atrp1qq2l.apps.googleusercontent.com" -->
 <!-- 			     data-context="signin" -->
@@ -341,6 +339,12 @@
 		  	naver_id_login.setState(state);
 		  	naver_id_login.init_naver_id_login();
 		  	
+		    // 네이버 로그인 소스에서 추가되는 부분
+		    $(document).on("click", "#naverCustomBtn", function(){
+		        var naver_id_login = document.getElementById("naver_id_login").firstChild;
+		        naver_id_login.click();
+		    });
+		    
 		  	// google 로그인
 // 		    function handleCredentialResponse(response) {
 // 		        console.log("Encoded JWT ID token: " + response.credential);
@@ -373,5 +377,14 @@
 // 	    	    return JSON.parse(jsonPayload);
 // 	    	};
         </script>
+                  <script>
+//     function onSignIn(googleUser) {
+//       var profile = googleUser.getBasicProfile();
+//       console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+//       console.log('Name: ' + profile.getName());
+//       console.log('Image URL: ' + profile.getImageUrl());
+//       console.log('Email: ' + profile.getEmail()); 
+//     }
+  		</script>
     </body>
 </html>

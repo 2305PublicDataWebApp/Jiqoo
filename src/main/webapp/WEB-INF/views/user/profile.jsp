@@ -123,16 +123,16 @@
                         <!-- 마이페이지 네비탭 -->
                         <div id="myPageNav">
                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="jiqoo" class="nav-link active" data-toggle="pill" role="tab" aria-controls="jiqoo" aria-selected="true">지꾸</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="moqoo"class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="myComment" class="nav-link" data-toggle="pill" role="tab" aria-controls="myComment" aria-selected="false">댓글</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="like" class="nav-link" data-toggle="pill" role="tab" aria-controls="like">좋아요</a>
                                 </li>
                             </ul>
@@ -267,7 +267,7 @@
 	                                </div>
 	                            </div>
 	                            <div class="col-3 list-sort">
-	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
+	                            	<c:if test="${sessionScope.userId ne null and sessionScope.userId ne following.userId}">
 						                <c:if test="${following.checkIsFollow}">
 						                    <button class="btn btn-sm follow unfollow-btn" data-user-id="${following.userId}">Unfollow</button>
 						                </c:if>
@@ -669,10 +669,10 @@
 					                                +"<p>"+myComtList.comtContent+"</p>"
 					                                +"<div class='row align-items-center'>"
 					                                    +"<span class='col-7'>"+formatDate+"</span>"
-					                                    +"<div class='col-5 myReplyContentBtn'>"
-					                                        +"<button class='btn btn-sm follow-btn col-2'>수정</button>"
-					                                        +"<button class='btn btn-sm follow-btn col-3'>삭제</button>"
-					                                    +"</div>"
+// 					                                    +"<div class='col-5 myReplyContentBtn'>"
+// 					                                        +"<button class='btn btn-sm follow-btn col-2'>수정</button>"
+// 					                                        +"<button class='btn btn-sm follow-btn col-3'>삭제</button>"
+// 					                                    +"</div>"
 					                                +"</div>"
 					                            +"</div>"
 					                        +"</div>";				
@@ -835,6 +835,7 @@
          		console.log("toFollowUserId : " + toFollowUserId);
 			    const button = $(this);
 			    const buttonText = button.html();
+
          		console.log("버튼타입 : " + buttonText);
 				if(buttonText === "Follow") {
 					$.ajax({
@@ -847,11 +848,12 @@
 	 			                button.html("Unfollow");
 	 			                
 	 			                //알림
-	 		                    if(socket){
-	 			        			let socketMsg = "follow,"+fromUserId+","+toFollowUserId;
-	 			        			console.log(socketMsg);
-	 			        			socket.send(socketMsg); //값을 서버로 보냄
-	 			           		}
+// 	 		                    if(socket){
+// 	 			        			let socketMsg = "follow,"+fromUserId+","+toFollowUserId+","+0+","+0+","+null;
+// 	 			        			//let socketMsg = "jcocomment,"+commentWriter+","+currentUserId+","+refPostNo+","+pComtNo+","+title;
+// 	 			        			console.log(socketMsg);
+// 	 			        			socket.send(socketMsg); //값을 서버로 보냄
+// 	 			           		}
 	 			               
 	 			            } else if (result === "checkLogin") {
 	 			                alert("로그인 후 이용해주세요.");
@@ -868,22 +870,22 @@
 	 			        }
 	 			    });
 			    	//알람등록(좋아요등록버튼 누를때 보냄)
-					if(fromUserId != toFollowUserId){ //댓단사람 != 모꾸쓴이
-					 $.ajax({
-					        url : '/alert/insertalarm',
-					        type : 'POST',
-					        data : {'fromUserId': fromUserId, 'toUserId': toFollowUserId, 'alertType': "follow"},
-					        dataType : "json", 
-					     	// ↑보내는거
-							// ↓받는거
-					        success : function(result){
-//					           		if(sessionUserId  != boardWriter){
+// 					if(fromUserId != toFollowUserId){ //댓단사람 != 모꾸쓴이
+// 					 $.ajax({
+// 					        url : '/alert/insertalarm',
+// 					        type : 'POST',
+// 					        data : {'fromUserId': fromUserId, 'toUserId': toFollowUserId, , 'boardNo':refPostNo, 'comtNo': comtNo, 'title':title, 'alertType': "follow"},
+// 					        dataType : "json", 
+// 					     	// ↑보내는거
+// 							// ↓받는거
+// 					        success : function(result){
+// //					           		if(sessionUserId  != boardWriter){
 					           		
-//						        	}
-					        }
+// //						        	}
+// 					        }
 					    
-					    });
-					}
+// 					    });
+// 					}
 					//알람끝
 				} else if (buttonText === "Unfollow") {
 				    $.ajax({

@@ -788,9 +788,9 @@ public class UserController {
 							checkIsFollow = true;
 							break;
 						}
-						break;
 					}
 					user.setCheckIsFollow(checkIsFollow);
+					System.out.println("내가 팔로우 중? : " + checkIsFollow);
 					// 사용자(test01)의 팔로워 및 팔로잉 상태 설정
 					for (User follower : followersList) {
 					    follower.setCheckIsFollow(isFollowingUser(loginUserFollowingsList, follower.getUserId()));

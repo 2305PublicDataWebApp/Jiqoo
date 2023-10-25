@@ -59,9 +59,11 @@
                 <use xlink:href="#wave-path" x="50" y="9" fill="#fff">
                 </g>
             </svg>
-        </section>
+        </section> 
+        
         <!-- main -->
         <main>
+        <input type="hidden" id="userId" value="${user.userId }">
             <!-- 프로필 -->
             <div>
                 <div class="profile-header bg"></div>
@@ -126,16 +128,16 @@
                         <!-- 마이페이지 네비탭 -->
                         <div id="myPageNav">
                             <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="jiqoo" class="nav-link active" data-toggle="pill" role="tab" aria-controls="jiqoo" aria-selected="true">지꾸</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="moqoo"class="nav-link" data-toggle="pill" role="tab" aria-controls="moqoo" aria-selected="false">모꾸</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="myComment" class="nav-link" data-toggle="pill" role="tab" aria-controls="myComment" aria-selected="false">댓글</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item min-nav-item" role="presentation">
                                     <a href="javascript:void(0)" id="like" class="nav-link" data-toggle="pill" role="tab" aria-controls="like">좋아요</a>
                                 </li>
                             </ul>
@@ -426,40 +428,47 @@
 	        			} else {
 	        				for(var i = 0; i < data.length; i++) {
 	        					var myJiqooList = data[i];
-	        					var jiqooHtml = "<div class='listContent row'>"+
-					                           	"	<a href='/jiqoo/detail?jiqooNo="+myJiqooList.jiqooNo+"'>"+
-					                       		"	<div class='post-header'>"+
-					                       		"		<div class='category'>"+
-					                       		"			<img class='category-img' alt='카테고리' src='"+myJiqooList.cImgPath+"'>"+
-					                       		"		</div>"+
-					                       		"		<div class='location'>"+
-					                       		"			<span class='location-text'>"+myJiqooList.jiqooW3W+"</span>"+
-					                       		"		</div>"+
-					                       		"	</div>"+
-					                   			"	<div class='title text-start'>"+myJiqooList.jiqooTitle+"</div>"+
-					                   			"	<hr>"+
-					                       		"	<div class='jiqoo-writer-info'>"+
-					                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
-	                            if (myJiqooList.userPhotoPath !== null && myJiqooList.userPhotoPath !== '') {
-	                            	jiqooHtml += "			<img src='" + myJiqooList.userPhotoPath + "'><br>";
-	                            } else {
-	                            	jiqooHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
-	                            }
-	                            	jiqooHtml +="		</div>"+
-					                           	"		<div class='jiqoo-writer'>"+
-					                           	"			<div class='author text-start'>"+myJiqooList.jiqooWriter+"</div>"+
-							                	"          	<div>"+
-							                   	"				<span>"+myJiqooList.jiqooDate+"</span>"+
-							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
-							                   	"				<span>"+myJiqooList.jViewCount+"</span>"+
-						                   		"			</div>"+
-					                           	"		</div>"+
-					                       		"	</div>"+
-					                   			"	<div class='content text-start'>"+myJiqooList.jiqooContent+"</div>"+
-					                       		"	</a>"+
-										    	"</div>";
-
-						    	tabContainer.append(jiqooHtml);
+	        					if(myJiqooList.jiqooStatus === 'A') {
+	        						var jiqooHtml = "<div class='listContent row admin-delete'>"+
+						     						"관리자가 삭제한 글입니다."+
+											    	"</div>";
+									
+	        					} else {
+		        					var jiqooHtml = "<div class='listContent row'>"+
+						                           	"	<a href='/jiqoo/detail?jiqooNo="+myJiqooList.jiqooNo+"'>"+
+						                       		"	<div class='post-header'>"+
+						                       		"		<div class='category'>"+
+						                       		"			<img class='category-img' alt='카테고리' src='"+myJiqooList.cImgPath+"'>"+
+						                       		"		</div>"+
+						                       		"		<div class='location'>"+
+						                       		"			<span class='location-text'>"+myJiqooList.jiqooW3W+"</span>"+
+						                       		"		</div>"+
+						                       		"	</div>"+
+						                   			"	<div class='title text-start'>"+myJiqooList.jiqooTitle+"</div>"+
+						                   			"	<hr>"+
+						                       		"	<div class='jiqoo-writer-info'>"+
+						                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
+		                            if (myJiqooList.userPhotoPath !== null && myJiqooList.userPhotoPath !== '') {
+		                            	jiqooHtml += "			<img src='" + myJiqooList.userPhotoPath + "'><br>";
+		                            } else {
+		                            	jiqooHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
+		                            }
+		                            	jiqooHtml +="		</div>"+
+						                           	"		<div class='jiqoo-writer'>"+
+						                           	"			<div class='author text-start'>"+myJiqooList.jiqooWriter+"</div>"+
+								                	"          	<div>"+
+								                   	"				<span>"+myJiqooList.jiqooDate+"</span>"+
+								                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
+								                   	"				<span>"+myJiqooList.jViewCount+"</span>"+
+							                   		"			</div>"+
+						                           	"		</div>"+
+						                       		"	</div>"+
+						                   			"	<div class='content text-start'>"+myJiqooList.jiqooContent+"</div>"+
+						                       		"	</a>"+
+											    	"</div>";
+		        					}
+	
+							    	tabContainer.append(jiqooHtml);
 	        				}
 	        			}
 		                //$("#jiqooCount").text(data.length);
@@ -511,39 +520,45 @@
 	        			} else {
 	        				for(var i = 0; i < data.length; i++) {
 	        					var myMoqooList = data[i];
-	        					var moqooHtml = "<div class='listContent row'>"+
-					                           	"	<a href='/moqoo/detail?moqooNo="+myMoqooList.moqooNo+"'>"+
-					                       		"	<div class='post-header'>"+
-					                       		"		<div class='category'>"+
-					                       		"			<img class='category-img' alt='카테고리' src='"+myMoqooList.cImgPath+"'>"+
-					                       		"		</div>"+
-					                       		"		<div class='location'>"+
-					                       		"			<span class='location-text'>"+myMoqooList.moqooW3W+"</span>"+
-					                       		"		</div>"+
-					                       		"	</div>"+
-					                   			"	<div class='title text-start'>"+myMoqooList.moqooTitle+"</div>"+
-					                   			"	<hr>"+
-					                       		"	<div class='jiqoo-writer-info'>"+
-					                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
-	                            if (myMoqooList.userPhotoPath !== null && myMoqooList.userPhotoPath !== '') {
-	                            	moqooHtml += "			<img src='" + myMoqooList.userPhotoPath + "'><br>";
-	                            } else {
-	                            	moqooHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
-	                            }
-	                            	moqooHtml +="		</div>"+
-					                           	"		<div class='jiqoo-writer'>"+
-					                           	"			<div class='author text-start'>"+myMoqooList.moqooWriter+"</div>"+
-							                	"          	<div>"+
-							                   	"				<span>"+myMoqooList.moqooDay+"</span>"+
-							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
-							                   	"				<span>"+myMoqooList.mViewCount+"</span>"+
-						                   		"			</div>"+
-					                           	"		</div>"+
-					                       		"	</div>"+
-					                   			"	<div class='content text-start'>"+myMoqooList.moqooContent+"</div>"+
-					                       		"	</a>"+
-										    	"</div>";
-
+	        					if(myMoqooList.moqooStatus === 'A') {
+	        						var moqooHtml = "<div class='listContent row admin-delete'>"+
+						     						"관리자가 삭제한 글입니다."+
+											    	"</div>";
+	        						tabContainer.append(moqooHtml);
+	        					} else {
+		        					var moqooHtml = "<div class='listContent row'>"+
+						                           	"	<a href='/moqoo/detail?moqooNo="+myMoqooList.moqooNo+"'>"+
+						                       		"	<div class='post-header'>"+
+						                       		"		<div class='category'>"+
+						                       		"			<img class='category-img' alt='카테고리' src='"+myMoqooList.cImgPath+"'>"+
+						                       		"		</div>"+
+						                       		"		<div class='location'>"+
+						                       		"			<span class='location-text'>"+myMoqooList.moqooW3W+"</span>"+
+						                       		"		</div>"+
+						                       		"	</div>"+
+						                   			"	<div class='title text-start'>"+myMoqooList.moqooTitle+"</div>"+
+						                   			"	<hr>"+
+						                       		"	<div class='jiqoo-writer-info'>"+
+						                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
+		                            if (myMoqooList.userPhotoPath !== null && myMoqooList.userPhotoPath !== '') {
+		                            	moqooHtml += "			<img src='" + myMoqooList.userPhotoPath + "'><br>";
+		                            } else {
+		                            	moqooHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
+		                            }
+		                            	moqooHtml +="		</div>"+
+						                           	"		<div class='jiqoo-writer'>"+
+						                           	"			<div class='author text-start'>"+myMoqooList.moqooWriter+"</div>"+
+								                	"          	<div>"+
+								                   	"				<span>"+myMoqooList.moqooDay+"</span>"+
+								                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
+								                   	"				<span>"+myMoqooList.mViewCount+"</span>"+
+							                   		"			</div>"+
+						                           	"		</div>"+
+						                       		"	</div>"+
+						                   			"	<div class='content text-start'>"+myMoqooList.moqooContent+"</div>"+
+						                       		"	</a>"+
+											    	"</div>";
+	        					}
 						    	tabContainer.append(moqooHtml);
 	        				}
 	        			}
@@ -598,44 +613,57 @@
 		                } else {
 			                for (var i = 0; i < data.length; i++) {
 			                	var myComtList = data[i];
-				                var formatDate = myComtList.comtDate.split("T")[0];
-			                	
-			                	var boardType = null;
-			                	var detailUrl = null;
-			                	if(myComtList.cBoardType === 'M') {
-			                		boardType = "모꾸";
-			                		detailUrl = "/moqoo/detail?moqooNo=";
-			                	} else if(myComtList.cBoardType === 'J'){
-			                		boardType = "지꾸";
-			                		detailUrl = "/jiqoo/detail?jiqooNo=";
-			                	}
-
-								var commentHtml = "<div class='comtListContent row'>"
-													+"<div class='comtTitleArea'>"
-														+"<span class='comtListTitle'>"+boardType+"</span>"
-						                            	+"<a class='myReplyRefTitle' href='"+detailUrl+myComtList.refPostNo+"'>"+myComtList.postTitle+"</a>"
+			                	if(myComtList.comtStatus === 'A') {
+	        						var commentHtml = "<div class='listContent row admin-delete'>"+
+						     						"관리자가 삭제한 댓글입니다."+
+											    	"</div>";
+									
+	        					} else if(myComtList.comtContent === '관리자에 의해 삭제된 댓글입니다.'){
+	        						var commentHtml = "<div class='listContent row admin-delete'>"+
+						     						"관리자가 삭제한 댓글입니다."+
+											    	"</div>";
+	        						
+	        					} else if(myComtList.comtStatus === 'Y' && myComtList.comtContent !== '삭제된 댓글입니다.'){
+					                var formatDate = myComtList.comtDate.split("T")[0];
+				                	
+				                	var boardType = null;
+				                	var detailUrl = null;
+				                	if(myComtList.cBoardType === 'M') {
+				                		boardType = "모꾸";
+				                		detailUrl = "/moqoo/detail?moqooNo=";
+				                	} else if(myComtList.cBoardType === 'J'){
+				                		boardType = "지꾸";
+				                		detailUrl = "/jiqoo/detail?jiqooNo=";
+				                	}
+	
+									var commentHtml = "<div class='comtListContent row'>"
+														+"<div class='comtTitleArea'>"
+															+"<span class='comtListTitle'>"+boardType+"</span>"
+							                            	+"<a class='myReplyRefTitle' href='"+detailUrl+myComtList.refPostNo+"'>"+myComtList.postTitle+"</a>"
+							                            +"</div>"
+							                            +"<div class='col-2 myReplyProfile'>";
+		                            // 조건부로 이미지를 추가
+		                            if (myComtList.userPhotoPath !== null && myComtList.userPhotoPath !== '') {
+		                                 commentHtml += "<img src='" + myComtList.userPhotoPath + "'><br>";
+		                            } else {
+		                                 commentHtml += "<img src='../resources/assets/img/no-profile.png'><br>";
+		                            }             
+		                            
+		                            	commentHtml += "<p>"+myComtList.comtWriter+"</p>"
 						                            +"</div>"
-						                            +"<div class='col-2 myReplyProfile'>";
-	                            // 조건부로 이미지를 추가
-	                            if (myComtList.userPhotoPath !== null && myComtList.userPhotoPath !== '') {
-	                                 commentHtml += "<img src='" + myComtList.userPhotoPath + "'><br>";
-	                            } else {
-	                                 commentHtml += "<img src='../resources/assets/img/no-profile.png'><br>";
-	                            }             
-	                            
-	                            	commentHtml += "<p>"+myComtList.comtWriter+"</p>"
-					                            +"</div>"
-					                            +"<div class='col-10 myReplyContent text-start'>"
-					                                +"<p>"+myComtList.comtContent+"</p>"
-					                                +"<div class='row align-items-center'>"
-					                                    +"<span class='col-7'>"+formatDate+"</span>"
-					                                    +"<div class='col-5 myReplyContentBtn'>"
-					                                        +"<button class='btn btn-sm follow-btn col-2'>수정</button>"
-					                                        +"<button class='btn btn-sm follow-btn col-3'>삭제</button>"
-					                                    +"</div>"
-					                                +"</div>"
-					                            +"</div>"
-					                        +"</div>";				
+						                            +"<div class='col-10 myReplyContent text-start'>"
+						                                +"<p>"+myComtList.comtContent+"</p>"
+						                                +"<div class='row align-items-center'>"
+						                                    +"<span class='col-7'>"+formatDate+"</span>"
+						                                    +"<div class='col-5 myReplyContentBtn'>"
+						                                        +"<button class='btn btn-sm follow-btn col-2'>수정</button>"
+						                                        +"<button class='btn btn-sm col-3 comt-delete-btn' data-comt-no='"+myComtList.comtNo+"' data-comt-writer='"+myComtList.comtWriter+"' data-c-board-type='"+myComtList.cBoardType+"'>삭제</button>"
+						                                    +"</div>"
+						                                +"</div>"
+						                            +"</div>"
+						                        +"</div>";				
+	        						
+	        					}
 		                        tabContainer.append(commentHtml);
 			                }
 		                }
@@ -690,58 +718,61 @@
 		                	}
 		                	//hasMoreData = false;
 		                } else {
-		                	
 			                for (var i = 0; i < data.length; i++) {
 			                	var likedList = data[i];
-			                	
-			                	var boardType = null;
-			                	var detailUrl = null;
-			                	if(likedList.boardType === 'M') {
-			                		boardType = "모꾸";
-			                		detailUrl = "/moqoo/detail?moqooNo=";
-			                	} else if(likedList.boardType === 'J'){
-			                		boardType = "지꾸";
-			                		detailUrl = "/jiqoo/detail?jiqooNo=";
-			                	}
-			
-	        					var likeHtml = "<div class='listContent row'>"+
-					                           	"	<a href='"+detailUrl+likedList.postNo+"'>"+
-					                           	"		<div class='text-start' style='margin-top:10px;'>"+
-			                        			"			<span class='post-catagory'>"+boardType+"</span>"+
-			                        			"		</div>"+
-					                       		"	<div class='post-header'>"+
-					                       		"		<div class='category'>"+
-					                       		"			<img class='category-img' alt='카테고리' src='"+likedList.cImgPath+"'>"+
-					                       		"		</div>"+
-					                       		"		<div class='location'>"+
-					                       		"			<span class='location-text'>"+likedList.postW3w+"</span>"+
-					                       		"		</div>"+
-					                       		"	</div>"+
-					                   			"	<div class='title text-start'>"+likedList.postTitle+"</div>"+
-					                   			"	<hr>"+
-					                       		"	<div class='jiqoo-writer-info'>"+
-					                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
-					            if (likedList.writerPhotoPath !== null && likedList.writerPhotoPath !== '') {               	
-					            	likeHtml += "			<img src='" + likedList.writerPhotoPath + "'><br>";
-	                            } else {
-	                            	likeHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
-	                            }
-					            	likeHtml +="		</div>"+
-					                           	"		<div class='jiqoo-writer'>"+
-					                           	"			<div class='author text-start'>"+likedList.postWriter+"</div>"+
-							                	"          	<div>"+
-							                   	"				<span>"+likedList.postDate+"</span>"+
-							                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
-							                   	"				<span>"+likedList.viewCount+"</span>"+
-						                   		"			</div>"+
-					                           	"		</div>"+
-					                       		"	</div>"+
-// 					                   			"	<div class='content text-start'>"+likedList.jiqooContent+"</div>"+
-					                       		"	</a>"+
-										    	"</div>";
-			
-		                        tabContainer.append(likeHtml);
-			                }
+			                	if(likedList.postStatus === 'A') {
+	        						var likeHtml = "<div class='listContent row admin-delete'>"+
+						     						"관리자가 삭제한 글입니다."+
+											    	"</div>";
+	        					} else {
+				                	var boardType = null;
+				                	var detailUrl = null;
+				                	if(likedList.boardType === 'M') {
+				                		boardType = "모꾸";
+				                		detailUrl = "/moqoo/detail?moqooNo=";
+				                	} else if(likedList.boardType === 'J'){
+				                		boardType = "지꾸";
+				                		detailUrl = "/jiqoo/detail?jiqooNo=";
+				                	}
+				
+		        					var likeHtml = "<div class='listContent row'>"+
+						                           	"	<a href='"+detailUrl+likedList.postNo+"'>"+
+						                           	"		<div class='text-start' style='margin-top:10px;'>"+
+				                        			"			<span class='post-catagory'>"+boardType+"</span>"+
+				                        			"		</div>"+
+						                       		"	<div class='post-header'>"+
+						                       		"		<div class='category'>"+
+						                       		"			<img class='category-img' alt='카테고리' src='"+likedList.cImgPath+"'>"+
+						                       		"		</div>"+
+						                       		"		<div class='location'>"+
+						                       		"			<span class='location-text'>"+likedList.postW3w+"</span>"+
+						                       		"		</div>"+
+						                       		"	</div>"+
+						                   			"	<div class='title text-start'>"+likedList.postTitle+"</div>"+
+						                   			"	<hr>"+
+						                       		"	<div class='jiqoo-writer-info'>"+
+						                           	"		<div id='profile-img' class='jiqooProfile text-start' >";
+						            if (likedList.writerPhotoPath !== null && likedList.writerPhotoPath !== '') {               	
+						            	likeHtml += "			<img src='" + likedList.writerPhotoPath + "'><br>";
+		                            } else {
+		                            	likeHtml += "			<img src='../resources/assets/img/no-profile.png'><br>";
+		                            }
+						            	likeHtml +="		</div>"+
+						                           	"		<div class='jiqoo-writer'>"+
+						                           	"			<div class='author text-start'>"+likedList.postWriter+"</div>"+
+								                	"          	<div>"+
+								                   	"				<span>"+likedList.postDate+"</span>"+
+								                   	"				<span style='margin:0 5px 0 20px;'>조회수</span>"+
+								                   	"				<span>"+likedList.viewCount+"</span>"+
+							                   		"			</div>"+
+						                           	"		</div>"+
+						                       		"	</div>"+
+	// 					                   			"	<div class='content text-start'>"+likedList.jiqooContent+"</div>"+
+						                       		"	</a>"+
+											    	"</div>";
+	        					}
+					    	tabContainer.append(likeHtml);
+        					}
 		                }
 
 // 		                isLoading = false;
@@ -996,6 +1027,59 @@
 			    }
 			});
 			//-----------------------------------------------------------------------------------------------------
+			
+			// 마이페이지 댓글 삭제
+			
+			$("#tabContainer").on("click", ".comt-delete-btn", function() {
+				if(confirm("댓글을 삭제하시겠습니까?")){
+					const comtNo = $(this).data('comt-no');
+					const comtWriter = $(this).data('comt-writer');
+					const userId = $("#userId").val();
+					const cBoardType = $(this).data('c-board-type');
+					console.log("댓글번호 : " + comtNo);
+					console.log("댓글작성자 : " + comtWriter);
+					console.log("로그인유저 : " +userId);
+					console.log("보드타입 : " +cBoardType);
+					if(comtWriter === userId && cBoardType === 'J') {
+						$.ajax({
+							url: "/jiqoo/delComment",
+							data: {comtNo : comtNo},
+							type: "GET",
+							success:function(result){
+								if(result > 0) {
+				                    alert("삭제가 완료되었습니다.");
+				                    location.reload();
+								} else {
+				                    alert("삭제가 완료되지 않았습니다.");
+								}
+							},
+							error:function(error){
+								console.log(error);
+								alert("[서버오류] 삭제가 완료되지 않았습니다.");
+							}
+						});
+					} else if(comtWriter === userId && cBoardType === 'M') {
+						$.ajax({
+							url: "/moqoo/delComment",
+							data: {comtNo : comtNo},
+							type: "GET",
+							success:function(result){
+								if(result > 0) {
+				                    alert("삭제가 완료되었습니다.");
+				                    location.reload();
+								} else {
+				                    alert("삭제가 완료되지 않았습니다.");
+								}
+							},
+							error:function(error){
+								console.log(error);
+								alert("[서버오류] 삭제가 완료되지 않았습니다.");
+							}
+						});
+					}
+				}
+			});
+				
 			
 	        // $.datepicker.setDefaults({
 	        //     prevText: "이전달",

@@ -1,3 +1,47 @@
+
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
+@font-face {
+  font-family: 'IBMPlexSansKR-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+:root {
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-primary: 'Black Han Sans', sans-serif;
+  --color-primary: #8BC34A;
+  --color-secondary: #388E3C;
+  --color-default : #FFF59D;
+}
+body {
+/*   font-family: "Open Sans", sans-serif; */
+  font-family: var(--font-default);
+  color: #444444;
+}
+
+/* a { */
+/*   color: #8BC34A; */
+/*   text-decoration: none; */
+/* } */
+
+/* a:hover { */
+/*   color: #8BC34A; */
+/*   text-decoration: none; */
+/* } */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  font-family: var(--font-default);
+}
+
 a:link, a:visited {
 	color: black;
 }
@@ -141,13 +185,13 @@ main {
 	justify-content: center;
 }
 
-.follow-btn, .change-photo-btn {
+.follow-btn, .change-photo-btn, .comt-delete-btn {
 	background-color: #8BC34A;
 	color: white;
 	min-width: 85px; 
 }
 
-.follow-btn:hover, change-photo-btn:hover {
+.follow-btn:hover, change-photo-btn:hover, .comt-delete-btn:hover {
 	background-color: #388E3C;
 	color: white;
 }
@@ -402,7 +446,7 @@ main {
 }
 
 /* 마이페이지 네비탭 */
-.nav-item {
+.min-nav-item {
 	min-width: 100px;
 }
 /* 네비탭 모바일화면 */
@@ -515,7 +559,17 @@ main {
     margin-right: 10px;
 }
 
-
+/* 관리자 삭제 div */
+.admin-delete {
+	background-color: #ffb0b0;
+    color: black;
+    font-weight: 600;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
 /**************** 지꾸 css ****************/
 .post-catagory {
 	font-size: 20px;
