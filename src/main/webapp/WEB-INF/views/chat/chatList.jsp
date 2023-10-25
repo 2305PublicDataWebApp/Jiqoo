@@ -215,11 +215,11 @@
 										class="bi bi-three-dots-vertical"></i></span>
 									<div class="action_menu">
 										<ul>
-											<li><a href="#" data-bs-toggle="modal"
+											<li id="profileLi"><a href="#" data-bs-toggle="modal"
 												data-bs-target="#profileModal"> <i
 													class="bi bi-person-vcard"></i>프로필 보기
 											</a></li>
-											<li><a href="#" data-bs-toggle="modal"
+											<li id="inviteLi"><a href="#" data-bs-toggle="modal"
 												data-bs-target="#inviteModal"> <i
 													class="bi bi-person-add"></i> 초대하기
 											</a></li>
@@ -508,10 +508,26 @@
 			      alt: user.userNickname,
 			      src: userPhoto
 			    });
+
 			    var userName = $("<p>").text(user.userNickname);
 			    userBox.on("click", function() {
 			        location.href = "/user/profile?userId=" + user.userId;
 			      });
+			    userBox.hover(
+	    		  function() { // 마우스 호버(올라갈 때) 이벤트 핸들러
+	    		    $(this).css({
+	    		      "cursor": "pointer",
+	    		      "transform": "scale(1.05)" // 살짝 커지는 효과
+	    		    });
+	    		  },
+	    		  function() { // 마우스 호버 해제(내려갈 때) 이벤트 핸들러
+	    		    $(this).css({
+	    		      "cursor": "auto", // 커서를 기본값(자동)으로 되돌립니다.
+	    		      "transform": "scale(1)" // 다시 원래 크기로 돌아갑니다.
+	    		    });
+	    		  }
+	    		);
+
 			    userBox.append(userImg, userName);
 			    userProfile.append(userBox);
 			  });
@@ -1193,7 +1209,9 @@
 	                var listItem = '<li class="a_active" id="chat-room-' + chatRoom.chatRoom.chatNo + '">';
 	                listItem += '<input type="hidden" class="chat-room-id" value="' + chatRoom.chatRoom.chatNo + '">';
 	                listItem += '<input type="hidden" class="chat-room-name" value="' + chatName + '">';
-	                // ... 이하 생략
+	                if(chatRoom.chatRoom.refMoqooNo !== 0 ) {
+	                	listItem += '<input type="hidden" class="chat-room-moqooNo" value="' + chatRoom.chatRoom.refMoqooNo + '">';
+	                }
 	                listItem += '<div class="d-flex bd-highlight">';
 		            listItem += '<div class="img_cont">';
 		            listItem += '<img src="' + photo + '" class="rounded-circle user_img" id="chat-list-img">';
@@ -1267,6 +1285,11 @@
 	            disconnectWebSocket();
 	            // 예를 들어, 클릭 시 채팅방을 열고 필요한 정보를 가져오는 코드:
 	            chatRoomId = $(this).find(".chat-room-id").val();
+	            var moqooNo = 0;
+	            if($(this).find(".chat-room-moqooNo")) {
+	            	moqooNo = $(this).find(".chat-room-moqooNo").val();
+	            }
+	            console.log(moqooNo + "모꾸");
 	            if($('#hiddenChatNo')) {
 					$('#hiddenChatNo').remove();
 				}
@@ -1309,6 +1332,17 @@
 	            $("#chatName").text(chatRoomName);
 	            chatImg = $(this).find("#chat-list-img").attr("src");
 				$("#info-img").attr("src", chatImg);
+				if(moqooNo !== 0 && moqooNo !== undefined) {
+					$("#inviteLi").hide();
+					$("#profileLi a").html("<i class='bi bi-person-vcard'></i> 모꾸로 이동하기");
+					$("#profileLi").on('click', function(){
+						location.href = '/moqoo/detail?moqooNo=' + moqooNo;
+					})
+				}else {
+					 $("#inviteLi").show();
+					  $("#profileLi a").html("<i class='bi bi-person-vcard'></i> 프로필 보기"); // "프로필 보기"로 변경
+					  $("#profileLi").off('click'); 
+				}
 	            $.ajax({
 	                url : "/chat/users",
 	                data : {
