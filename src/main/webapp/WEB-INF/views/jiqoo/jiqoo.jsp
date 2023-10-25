@@ -137,9 +137,8 @@
 									<input type="date" class="form-control" id="date" name="jiqooDate"
 										required>
 								</div>
-								<div class="col-md-2 c-btn">
-									<span>카테고리</span> <i class="bi bi-caret-down-fill"
-										onclick="toggleCC()"></i>
+								<div class="col-md-2 c-btn" onclick="toggleCC()">
+									<span>카테고리</span> <i class="bi bi-caret-down-fill"></i>
 								</div>
 								<div class="category-container" style="display: none;">
 									<div class="category-list">

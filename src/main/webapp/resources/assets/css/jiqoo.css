@@ -17,14 +17,15 @@
   font-style: normal;
 }
 :root {
-  --font-default : 'Nanum Gothic', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
 }
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "IBMPlexSansKR-Regular";
   color: #444444;
 }
 
@@ -45,7 +46,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: 'Nanum Gothic', sans-serif;
+  font-family: var(--font-default);
 }
 
 /*--------------------------------------------------------------

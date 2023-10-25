@@ -17,7 +17,8 @@
   font-style: normal;
 }
 :root {
-  --font-default : 'Nanum Gothic', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
@@ -45,7 +46,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: 'Nanum Gothic', sans-serif;
+  font-family: var(--font-default);
 }
 /*--------------------------------------------------------------
 # tab
@@ -112,6 +113,7 @@ p {
 
 /* 결과 목록 아이템 스타일 */
 .result-item {
+  box-shadow: 3px 4px 6px #d5d5d5;
   border: 1px solid #ddd;
   padding: 20px;
   margin-bottom: 50px;

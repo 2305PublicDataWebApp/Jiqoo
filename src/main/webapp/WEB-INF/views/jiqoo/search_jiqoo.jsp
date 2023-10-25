@@ -668,7 +668,7 @@
 		    userInfo.append(userNickname, postDate);
 
 		    postLink.append(postHeader, postMain);
-		    listItem.append(postLink, postMain);
+		    listItem.append(postLink);
 
 		    return listItem;
 		}

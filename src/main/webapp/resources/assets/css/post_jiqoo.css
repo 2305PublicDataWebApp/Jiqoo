@@ -17,7 +17,8 @@
   font-style: normal;
 }
 :root {
-  --font-default : 'Nanum Gothic', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
@@ -45,7 +46,7 @@ h4,
 h5,
 h6,
 p {
-  font-family: 'Nanum Gothic', sans-serif;
+  font-family: var(--font-default);
 }
 
 #container {
