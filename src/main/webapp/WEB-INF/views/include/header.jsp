@@ -34,7 +34,7 @@
           <!-- 알람아이콘 -->
           <li class="nav-item dropdown alarm">
           	<a class="nav-link nav-icon" href="javascript:void(0)" data-bs-toggle="dropdown" id="alarm-count" >
-          	<i style="font-size:26px;" class="bi bi-bell"></i>
+          	
 <%--           	<c:if test=""><i style="font-size:26px;" class="bi bi-bell"></i><span class="badge bg-primary badge-number" id="alarm-count">0</span></c:if> --%>
           	</a>
           	
@@ -54,9 +54,9 @@
 <!--               <hr class="dropdown-divider"> -->
 <!--             </li> -->
             
-            <li class="dropdown-footer">
+            <!-- <li class="dropdown-footer">
               <a href="#">전체 알림 보기</a>
-            </li>
+            </li> -->
 
           </ul>
           <!-- End 드롭다운 알림목록 -->
@@ -78,21 +78,21 @@
 	            </c:if>
 	          </a>
 	            <ul>
-	            	<li><a href="/user/myPage" style="font-size:1.3em;">마이페이지</a></li>
+	            	<li><a href="/user/myPage" style="font-size:1.1em;">마이페이지</a></li>
 					<c:if test="${sessionScope.accessToken eq null }">
-						<li><a href="/user/modify" style="font-size:1.3em;">회원정보수정</a></li>
+						<li><a href="/user/modify" style="font-size:1.1em;">회원정보수정</a></li>
 					</c:if>
 					<c:if test="${sessionScope.accessToken ne null }">
-						<li><a href="/user/modifySns" style="font-size:1.3em;">회원정보수정</a></li>
+						<li><a href="/user/modifySns" style="font-size:1.1em;">회원정보수정</a></li>
 					</c:if>
 					<c:if test="${sessionScope.accessToken eq null }">
-						<li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+						<li><a href="/user/logout" style="font-size:1.1em;">로그아웃</a></li>
 					</c:if>
 					<c:if test="${sessionScope.accessToken ne null and sessionScope.platformType eq 'kakao'}">
-						<li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
+						<li><a href="https://kauth.kakao.com/oauth/logout?client_id=18a1ca5fc86fe7e244209cf690a986e4&logout_redirect_uri=http://localhost:9999/user/logout" style="font-size:1.1em;">로그아웃</a></li> 
 					</c:if>
 					<c:if test="${sessionScope.accessToken ne null and sessionScope.platformType eq 'naver'}">
-						<li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li> 
+						<li><a href="/user/logout" style="font-size:1.1em;">로그아웃</a></li> 
 					</c:if>
 	            </ul>
 	          </li>
@@ -100,11 +100,11 @@
           <c:if test="${sessionScope.userId ne null && sessionScope.adminYn eq 'Y'}">
 	          <li class="dropdown"><a class="nav-link" href="/admin/main"><i style="font-size:26px;" class="bi bi-person-badge"></i></a>
 	            <ul>
-	              <li><a href="/admin/userlist" style="font-size:1.3em;">회원 관리</a></li>
-	              <li><a href="/admin/jiqoolist" style="font-size:1.3em;">지꾸 관리</a></li>
-	              <li><a href="/admin/moqoolist" style="font-size:1.3em;">모꾸 관리</a></li>
-	              <li><a href="/admin/chatlist" style="font-size:1.3em;">채팅방 관리</a></li>
-	              <li><a href="/user/logout" style="font-size:1.3em;">로그아웃</a></li>
+	              <li><a href="/admin/userlist" style="font-size:1.1em;">회원 관리</a></li>
+	              <li><a href="/admin/jiqoolist" style="font-size:1.1em;">지꾸 관리</a></li>
+	              <li><a href="/admin/moqoolist" style="font-size:1.1em;">모꾸 관리</a></li>
+	              <li><a href="/admin/chatlist" style="font-size:1.1em;">채팅방 관리</a></li>
+	              <li><a href="/user/logout" style="font-size:1.1em;">로그아웃</a></li>
 	            </ul>
 	          </li>
           </c:if>
@@ -141,6 +141,7 @@
 				let $socketAlert = $('div#socketAlert');
 				$socketAlert.html(event.data)
 				$socketAlert.css('display', 'block');
+				$socketAlert.css('color', 'black');
 // 				$socketAlert.css('visibility', 'visible');
 				alarmCount();
 				
@@ -174,18 +175,20 @@
 		        data : {'toUserId' : toUserId },
 		        
 		        success : function(data){
-		        		console.log(data);
-			         	console.log("알람수 카운트 성공");
-			         	if(data > 0) {
-							$("#alarm-count").append("<span class='badge bg-primary badge-number'>"+data+"</span>'");		
-							$("#alert-header").text("새로운 알림이 있습니다");
-						}else {
-							
-							$("#alert-header").text("새로운 알림이 없습니다");
-							$(".notification-item").remove();
-						}
-						
-		        }, 
+	        		console.log(data);
+		         	console.log("알람수 카운트 성공");
+		         	if(data > 0) {
+//			         		<i style="font-size:26px;" class="bi bi-bell"></i><span class="badge bg-primary badge-number">17</span>'</a>
+		         		$("#alarm-count").html("");		
+						$("#alarm-count").append("<i style='font-size:26px;' class='bi bi-bell'></i><span class='badge bg-primary badge-number'>"+data+"</span>'");		
+						$("#alert-header").text("새로운 알림이 있습니다");
+					}else {
+						$("#alarm-count").append("<i style='font-size:26px;' class='bi bi-bell'></i>");	
+						$("#alert-header").text("새로운 알림이 없습니다");
+						$(".notification-item").remove();
+					}
+					
+	      		}, 
 		        error : function(){ 
 					alert("ajax 오류")
 				} 
