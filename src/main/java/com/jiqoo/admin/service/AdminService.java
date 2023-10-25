@@ -387,6 +387,14 @@ public interface AdminService {
 
 	public List<Map<String, Object>> moqooCountList();
 
+	public Integer getChatSearchListCount(Map<String, String> searchChatMap);
+
+	public List<AdminChat> searchChatByKeyword(PageInfo pInfo, Map<String, String> searchChatMap);
+
+	public Integer countChildComment(Comment comment);
+
+	public Integer changeComment(Comment comment);
+
 
 
 

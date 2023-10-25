@@ -554,6 +554,30 @@ public class AdminServiceImpl implements AdminService {
 		return moqooCountList;
 	}
 
+	@Override
+	public Integer getChatSearchListCount(Map<String, String> searchChatMap) {
+		Integer totalSearchChatCount = adminStore.getChatSearchListCount(sqlSession, searchChatMap);
+		return totalSearchChatCount;
+	}
+
+	@Override
+	public List<AdminChat> searchChatByKeyword(PageInfo pInfo, Map<String, String> searchChatMap) {
+		List<AdminChat> searchChatList = adminStore.searchChatByKeyword(sqlSession, pInfo, searchChatMap);
+		return searchChatList;
+	}
+
+	@Override
+	public Integer countChildComment(Comment comment) {
+		Integer countChildComt = adminStore.countChildComment(sqlSession, comment);
+		return countChildComt;
+	}
+
+	@Override
+	public Integer changeComment(Comment comment) {
+		Integer changeComment = adminStore.changeComment(sqlSession, comment);
+		return changeComment;
+	}
+
 
 
 

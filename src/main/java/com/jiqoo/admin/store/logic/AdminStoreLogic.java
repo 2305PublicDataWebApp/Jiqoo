@@ -587,6 +587,34 @@ public class AdminStoreLogic implements AdminStore {
 		return moqooCountList;
 	}
 
+	@Override
+	public Integer getChatSearchListCount(SqlSession sqlSession, Map<String, String> searchChatMap) {
+		Integer totalSearchChatCount = sqlSession.selectOne("AdminMapper.getChatSearchListCount", searchChatMap);
+		return totalSearchChatCount;
+	}
+
+	@Override
+	public List<AdminChat> searchChatByKeyword(SqlSession sqlSession, PageInfo pInfo, Map<String, String> searchChatMap) {
+		int limit = pInfo.getRecordCountPerPage();
+		int offset = (pInfo.getCurrentPage() - 1) * limit;
+
+		RowBounds rowBounds = new RowBounds(offset, limit);
+		List<AdminChat> searchChatList = sqlSession.selectList("AdminMapper.searchChatByKeyword",searchChatMap, rowBounds);
+		return searchChatList;
+	}
+
+	@Override
+	public Integer countChildComment(SqlSession sqlSession, Comment comment) {
+		Integer countChildComment = sqlSession.selectOne("AdminMapper.countChildComment", comment);
+		return countChildComment;
+	}
+
+	@Override
+	public Integer changeComment(SqlSession sqlSession, Comment comment) {
+		Integer changeComment = sqlSession.selectOne("AdminMapper.changeComment", comment);
+		return changeComment;
+	}
+
 
 
 

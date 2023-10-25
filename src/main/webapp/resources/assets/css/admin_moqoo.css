@@ -10,21 +10,19 @@
 # General
 --------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
-
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
-
 :root {
-  --font-default : 'IBMPlexSansKR-Regular', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
-  
 }
 body {
   font-family: "Open Sans", sans-serif;
@@ -46,12 +44,10 @@ h2,
 h3,
 h4,
 h5,
-h6
-{
-  --font-family: 'Nanum Gothic', sans-serif;
-  font-family: 'Black Han Sans', sans-serif;
+h6,
+p {
+  font-family: 'Nanum Gothic', sans-serif;
 }
-p { font-family: 'Nanum Gothic', sans-serif; }
 
 
 /*--------------------------------------------------------------
@@ -1287,7 +1283,8 @@ main {
 }
 
 .card-title {
-  font-family: var(--font-primary);
+   font-family: var(--font-default);
+    font-weight : bold;
   font-size: 2em;
   text-align: center;
 }
@@ -1376,16 +1373,14 @@ select {
   color : #fff;
 }
 
-/*테이블*/
+/*--------------------------------------------------------------
+# 테이블
+--------------------------------------------------------------*/
 #user-main table { 
   width : 100%;
   margin : 0 auto;
   text-align: center;
   border-collapse: collapse;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-style: hidden;
-  --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
   cursor : default;
 }
@@ -1393,24 +1388,18 @@ select {
 #user-main table thead { 
   font-family: var(--font-default);
   font-size: 1.2em;
-  --border-bottom: 2px solid  #DCE775;
-  --border-bottom: 2px solid #DAE4ED;
-  --border-bottom: 2px solid #ccc;
 }
 #user-main table thead .hover:hover {
   color : var(--color-secondary);
 }
 
 #user-main table tbody {
-  --font-family: var(--font-default);
   font-size: 1em;
 }
 
 tr {
   height : 55px;
-  --border-bottom: 1px solid  #DCE775;
   border-bottom: 1px solid #DAE4ED;
-  --border-bottom: 1px solid #ccc;
 }
 
 tbody tr:hover {
@@ -1418,9 +1407,7 @@ tbody tr:hover {
 }
 
 td {
-  --vertical-align : middle;
   padding: 10px;
-  --max-width : 520px;
   white-space: nowrap;
   overflow : hidden;
   text-overflow : ellipsis;
@@ -1456,7 +1443,7 @@ td {
   background-color: var(--color-secondary); 
   font-family: var(--font-primary);
   border-radius: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
 }
 
 /*조회버튼*/
@@ -1482,7 +1469,6 @@ td {
   font-size: 1.5em;
   border : none;
   text-align: center;
-  --vertical-align: middle;  
 }
 .delete-btn:hover {
   background-color: red;
@@ -1496,6 +1482,17 @@ td {
   height: 38px;
 }
 
+.complete {
+  background-color: #ccc; 
+  color : #fff;
+  width: 110px;
+  height: 40px;
+  border : none;
+  font-size: 1.5em;
+  text-align: center;
+  padding : 2px;
+  margin : 10px 20px 10px 10px;
+}
 
 /*--------------------------------------------------------------
 # 모달

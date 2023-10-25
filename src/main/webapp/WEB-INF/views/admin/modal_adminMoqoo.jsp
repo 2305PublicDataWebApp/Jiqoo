@@ -29,30 +29,26 @@
 			</div>
 			<div class="modal-body">
 				<h3 style="display: inline">
-					<i class="bi bi-sticky"></i> ${moqooList.moqooTitle}
-				</h3> <!-- 타이틀 -->
+					<i class="bi bi-sticky"></i> ${moqooList.moqooTitle} <!-- 타이틀 -->
+				</h3> 
 				<span><i class="bi bi-pencil"></i> ${moqooList.moqooWriter} </span>&nbsp; <!-- 작성자 -->
 				<span><i class="bi bi-calendar-week"></i> 
 					<fmt:parseDate value='${moqooList.moqooDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='moqooDate' /> 
-					<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm" />
-				</span>&nbsp;  <!-- 작성일자 --> 
+					<fmt:formatDate value="${moqooDate}" pattern="yy/MM/dd HH:mm" />  <!-- 작성일자 --> 
+				</span>&nbsp; 
 				<span><i class="bi bi-eye"></i>${moqooList.mViewCount} </span>
 				<br>
 				<h5 style="display: inline">
-					<i class="bi bi-tag"></i> ${moqooList.category}
+					<i class="bi bi-tag"></i> ${moqooList.category} <!-- 카테고리 -->
 				</h5>
 				&nbsp;&nbsp;
-				<!-- 카테고리 -->
+				
 				<h5 style="display: inline">
-					<i class="bi bi-globe"></i> ${moqooList.moqooW3W}
+					<i class="bi bi-globe"></i> ${moqooList.moqooW3W} <!-- W3W -->
 				</h5>
 				&nbsp;
-				<!-- W3W -->
-
-				<span><i class="bi bi-clock"></i> ${moqooList.moqooDay}</span>&nbsp;
-				<!-- 모임일자 -->
-				<span><i class="bi bi-people"></i> ${moqooList.moqooJoin}</span>&nbsp;
-				<!-- 모임인원 -->
+				<span><i class="bi bi-clock"></i> ${moqooList.moqooDay}</span>&nbsp; <!-- 모임일자 -->
+				<span><i class="bi bi-people"></i> ${moqooList.moqooJoin}</span>&nbsp; <!-- 모임인원 -->
 
 				<div id="map${i.count }" class="map"
 					style="width: 100%; height: 350px;"></div>
@@ -99,9 +95,10 @@
 					<c:if test="${moqooStatus eq 'Y'}">
 						<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${moqooList.moqooNo}', '${moqooList.moqooWriter}');">삭제</button>
 					</c:if>
-					<c:if test="${moqooStatus eq 'A'}">	
-						<button type="button" class="button revival-btn" onclick="reviveMoqooByA('${moqooList.moqooNo }', '${moqooList.moqooWriter}');">복원</button>
+					<c:if test="${moqooStatus eq 'A' || moqooStatus eq 'N' }">	
+						<div class="button complete">삭제완료</div>
 					</c:if>	
+				
 
 				</div>
 			</div>

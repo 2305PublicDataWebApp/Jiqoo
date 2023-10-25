@@ -33,7 +33,8 @@
   font-weight: 500;
   color: #012970;
   --font-family: "Poppins", sans-serif;
-  font-family: 'Black Han Sans', sans-serif;
+  font-family: 'IBMPlexSansKR-Regular';
+  font-weight:bold;
   --margin-bottom: 0;
 }
 

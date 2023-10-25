@@ -236,7 +236,14 @@
 									</div>
 								</div>
 								<div id="report-btn">
-									<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${search.moqooNo}');">삭제</button>
+								<c:set var="moqooStatus" value="${search.moqooStatus}"></c:set>
+									<c:if test="${moqooStatus eq 'Y'}">
+										<button type="button" class="button delete-btn" onclick="deleteMoqooByA('${search.moqooNo}');">삭제</button>
+									</c:if>
+									<c:if test="${moqooStatus eq 'A'|| moqooStatus eq 'N' }">	
+<%-- 										<button type="button" class="button revival-btn" onclick="reviveMoqooByA('${search.moqooNo }', '${search.moqooWriter}');">복원</button> --%>
+										<div class="button complete">삭제완료</div>
+									</c:if>	
 								</div>
 							</div>
 						</div>
@@ -450,6 +457,20 @@
 		    }
 		  }
 		});
+		
+		//모꾸 강제삭제
+		function deleteMoqooByA(moqooNo){
+			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deletemoqoo?moqooNo=" +moqooNo;
+			}
+		}
+		
+		//강제삭제 지꾸 복원 
+		function reviveMoqooByA(moqooNo){
+			if(confirm ("정말 복원시키겠습니까?")){
+				location.href = "/admin/moqoorevival?moqooNo=" + moqooNo;
+			}
+		}
 	</script>
 
 

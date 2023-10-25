@@ -33,12 +33,12 @@
           <li><a class="nav-link" href="/moqoo/moqoo">모꾸</a></li>
           <!-- 알람아이콘 -->
           <li class="nav-item dropdown alarm">
-          	<a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown" id="alarm-count" >
-<!--           	<i style="font-size:26px;" class="bi bi-bell"></i> -->
+          	<a class="nav-link nav-icon" href="javascript:void(0)" data-bs-toggle="dropdown" id="alarm-count" >
+          	<i style="font-size:26px;" class="bi bi-bell"></i>
 <%--           	<c:if test=""><i style="font-size:26px;" class="bi bi-bell"></i><span class="badge bg-primary badge-number" id="alarm-count">0</span></c:if> --%>
           	</a>
           	
-          <c:if test="${userId ne null }">
+          <c:if test="${userId ne null }">  <!-- 로그인 안되어있을때 알람 목록 안보이기 -->
           <!-- 드롭다운 알람목록 -->
           <ul class="dropdown-menu dropdown-menu-arrow notifications">
             <li class="dropdown-header" id="alert-header">
@@ -177,11 +177,10 @@
 		        		console.log(data);
 			         	console.log("알람수 카운트 성공");
 			         	if(data > 0) {
-//				       		$('#alarm-count').text(data);
 							$("#alarm-count").append("<span class='badge bg-primary badge-number'>"+data+"</span>'");		
 							$("#alert-header").text("새로운 알림이 있습니다");
 						}else {
-							$("#alarm-count").append("<i style='font-size:26px;' class='bi bi-bell'></i>")
+							
 							$("#alert-header").text("새로운 알림이 없습니다");
 							$(".notification-item").remove();
 						}
@@ -227,17 +226,18 @@
 						else if(alertType == "jlike"){ //지꾸좋아요
 							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
+							
 						}else if(alertType == "mcomment"){  //모꾸 댓글달림
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 댓글을 달았습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 댓글을 달았습니다</a></span>';
 // 							alarm += '<div class="small text-gray-500" style="text-align:right;">'+value.alertCreateDate+'</div>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "mcocomment"){  //모꾸 대댓글달림
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 대댓글을 달았습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 대댓글을 달았습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "mlike"){ //모꾸좋아요
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showJAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.title+' 에 좋아요 했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "follow"){  //팔로우
@@ -249,15 +249,15 @@
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqoook"){  //모임요청승인 
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 모임 멤버로 승인했습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 을 모임 멤버로 승인했습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqoono"){  //모임요청거절
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님은 '+value.toUserId+' 의 모임에 참여할 수 없습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님은 '+value.toUserId+' 의 모임에 참여할 수 없습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						else if(alertType == "moqooreque"){  //모임신청받음
-							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 의 모임에 참가신청을 보냈습니다</a></span>';
+							alarm += '<span class="font-weight-bold"><a href="#"  onclick="showMAlert('+value.boardNo+',\''+value.fromUserId+'\');">'+value.fromUserId+'님이 '+value.toUserId+' 의 모임에 참가신청을 보냈습니다</a></span>';
 							alarm += '<hr class="dropdown-divider">'
 						}
 						
@@ -277,7 +277,7 @@
 	//목록끝
 	
 	//목록삭제
-	function showJAlert(boardNo,fromUserId){ //댓글, 대댓글달림,  좋아요
+	function showJAlert(boardNo,fromUserId){ //지꾸 댓글, 대댓글달림,  좋아요 -> 알림클릭시 페이지로 이동
 		console.log("alarmClick")
 		 $.ajax({
 		        url : '/alert/deletealarm',
@@ -289,6 +289,20 @@
 		        }
 		    });
 		location.href="/jiqoo/detail?jiqooNo="+boardNo;
+	}
+	
+	function showMAlert(boardNo,fromUserId){ //모꾸 댓글, 대댓글달림,  좋아요 -> 알림클릭시 페이지로 이동
+		console.log("alarmClick")
+		 $.ajax({
+		        url : '/alert/deletealarm',
+		        type : 'post',
+		        data : {'boardNo':boardNo, 'fromUserId' : fromUserId },
+		        dataType : "json", 
+		        
+		        success : function(){
+		        }
+		    });
+		location.href="/moqoo/detail?moqooNo="+boardNo;
 	}
 	
 	function deleteAlert(boardNo,fromUserId){ // 팔로우 (알람삭제만)

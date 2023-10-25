@@ -113,7 +113,8 @@
 						</c:if>
 						<c:if test="${fn:contains(userStatus, 'A')}"> <!-- 강퇴 시킨 회원일때 -->
 <%-- 						<c:if test="${fn:indexOf(userStatus, 'N') eq 0 }"> --%>
-							<button type="button" class="button revival-btn" onclick="reviveUserByA('${user.userId }');">복원</button>
+<%-- 							<button type="button" class="button revival-btn" onclick="reviveUserByA('${user.userId }');">복원</button> --%>
+							<div class="button complete" );">탈퇴완료</div>
 						</c:if>
 				
 
@@ -197,12 +198,12 @@
 								<small>가입일 : ${user.uCreateDate } </small><br> 
 								<small>탈퇴일 : <c:if test="${user.uDeleteDate eq null}"> - </c:if> 
 												<c:if test="${user.uDeleteDate ne null}"> ${user.uDeleteDate } </c:if></small><br> 
-								<small>복원여부 : 
+<!-- 								<small>복원여부 :  -->
 <%-- 									<c:set var="userStatus" value="${userList.userStatus}"></c:set> --%>
 <%-- 									<c:if test="${fn:contains(userStatus, 'A')}"> - </c:if> --%>
 <%-- 									<c:if test="${!fn:contains(userStatus, 'A') && user.uDeleteDate ne null}"> - </c:if> --%>
 <%-- 									<c:if test="${fn:contains(userStatus, 'Y')&& user.uDeleteDate ne null}">복원됨</c:if> --%>
-								</small>
+<!-- 								</small> -->
 							</div>
 							<!-- <button type="button" id="resign-btn" class="button">탈퇴처리</button> -->
 						</div>
@@ -354,7 +355,8 @@
 															<button type="button" class="button delete-btn" onclick="deleteJiqooByA(${jiqooList.jiqooNo}, '${jiqooList.jiqooWriter}');">삭제</button>
 														</c:if>
 														<c:if test="${jiqooStatus eq 'A'}">	
-															<button type="button" class="button revival-btn" onclick="reviveJiqooByA(${jiqooList.jiqooNo }, '${jiqooList.jiqooWriter}');">복원</button>
+<%-- 															<button type="button" class="button revival-btn" onclick="reviveJiqooByA(${jiqooList.jiqooNo }, '${jiqooList.jiqooWriter}');">복원</button> --%>
+															<div class="button complete">삭제완료</div>
 														</c:if>	
 														<!-- 숫자에는 '' 붙이지 않음  -->
 													</div>
@@ -573,13 +575,13 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:if test="${uComtList eq null}">
+								<c:if test="${comtList eq null}">
 									<tr>
 										<td colspan="7">${noComtMsg}</td>
 									</tr>
 								</c:if>
 								
-								<c:forEach var="comtList" items="${uComtList}" varStatus="i">
+								<c:forEach var="comtList" items="${comtList}" varStatus="i">
 									<tr>
 										<td class="list-no" scope="row">${(pInfoComt.totalCount - i.index) - ( (pInfoComt.currentPage - 1)  *  5 ) }</td>
 										<td>${comtList.comtContent}</td>
@@ -798,25 +800,55 @@
 				location.href = "/admin/deleteComt?comtNo=" + comtNo +"&userId=" + userId;
 			}
 		}
-// 		var userReport = document.querySelector("#r-reason").innerHTML;						
-// 		var compressedResult = compressString(userReport);
-// 		function compressString(userReport) {
-// 			let compressedString = '';
-// 			let count = 1;
-
-// 			for (let i = 0; i < userReport.length; i++) {
-// 				if (userReport[i] === userReport[i + 1] || (userReport[i] === '\n' && userReport[i + 1] === '\n')) {
-// 					count++;
-// 				} else {
-// 					compressedString += userReport[i];
-// 					if (count > 1) {
-// 						compressedString += `(${count})`;
-// 					}
-// 					count = 1;
-// 				}
-// 			}
-// 			return compressedString;
-// 		}
+		
+		//jiqooStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("jiqoo-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var jiqooStatusCell = rows[i].getElementsByTagName("td")[4];
+		      if (jiqooStatusCell) {
+		        var jiqooStatus = jiqooStatusCell.textContent;
+		        if (jiqooStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
+		
+		
+		//moqooStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("moqoo-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var moqooStatusCell = rows[i].getElementsByTagName("td")[3];
+		      if (moqooStatusCell) {
+		        var moqooStatus = moqooStatusCell.textContent;
+		        if (moqooStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
+		
+		//comtStatus가 A(강퇴)일 때 열 색을 빨간색으로 변경 
+		  document.addEventListener("DOMContentLoaded", function() {
+		    var table = document.getElementById("cmt-table");
+		    var rows = table.getElementsByTagName("tr");
+		    
+		    for (var i = 0; i < rows.length; i++) {
+		      var comtStatusCell = rows[i].getElementsByTagName("td")[3]; 
+		      if (comtStatusCell) {
+		        var comtStatus = comtStatusCell.textContent;
+		        if (comtStatus.includes('A')) {
+		          rows[i].style.color = 'red';
+		        }
+		      }
+		    }
+		  });
 		
 		
 	</script>

@@ -123,18 +123,23 @@
   box-shadow: 0px 0px 30px rgba(127, 137, 161, 0.25);
   transition: 0.3s;
   border-radius: 4px;
+  
 }
 
 .navbar .dropdown ul li {
   min-width: 200px;
+
+ 
 }
 
 .navbar .dropdown ul a {
   padding: 10px 20px;
   font-size: 14px;
-  font-weight: 500;
+/*   font-weight: 500; */
+	font-weight:bold;
   text-transform: none;
   color: black;
+   font-family: var(--font-default);
 }
 
 .navbar .dropdown ul a i {
@@ -304,34 +309,37 @@
 
 #socketAlert{
 	width:500px;
-	height:50px;
+	height:auto;
 	background-color:#388E3C;
 	opacity: 0.8;
 	transition: background-color 0.3s ease;
 	border-radius : 10px;
 	margin:5px auto;
 	text-align : center;
+	vertical-align:middle;
+	white-space: nowrap;
+  	overflow : hidden;
+  	text-overflow : ellipsis;
+  	-webkit-line-clamp: 1;
 }
 
-.navbar .nav-icon {
+#alarm-count {
     --font-size: 22px;
     --color: #012970;
     --margin-right: 25px;
     position: relative;
+
 }
 
 .navbar .badge {
 	position: absolute;
-    inset: 3px -3px auto auto;
+    inset: 8px -2px auto auto;
     font-weight: normal;
     font-size: 10px;
     padding: 3px 6px;
+     font-family: var(--font-default);
   
 }
-
-/* .navbar  .notifications { */
-/*   inset: 8px -15px auto auto !important; */
-/* } */
 
 .navbar .notifications .notification-item {
   display: flex;
@@ -340,20 +348,6 @@
   transition: 0.3s;
 }
 
-/* .navbar .notifications .alarm-list:hover { */
-/*   background-color: #f6f9ff; */
-/* } */
-
-/* .navbar .notifications .notification-item i { */
-/*   margin: 0 20px 0 10px; */
-/*   font-size: 24px; */
-/* } */
-
-/* .navbar .notifications .notification-item h4 { */
-/*   font-size: 16px; */
-/*   font-weight: 600; */
-/*   margin-bottom: 5px; */
-/* } */
 
 .navbar .notifications .notification-item p {
   font-size: 13px;

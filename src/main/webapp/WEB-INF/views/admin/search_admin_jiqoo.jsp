@@ -119,7 +119,7 @@
 										<option value="jiqooCtgr" <c:if test="${searchCondition eq 'jiqooCtgr'}">selected</c:if>>카테고리</option>
 										<option value="jiqooW3W" <c:if test="${searchCondition eq 'jiqooW3W'}">selected</c:if>>W3W</option>
 										<option value="jiqooNo" <c:if test="${searchCondition eq 'jiqooNo'}">selected</c:if>>번호</option>
-									</select> <input type="search" name="searchKeyword" id="search-content" value=""${searchKeyword }>
+									</select> <input type="search" name="searchKeyword" id="search-content" value="${searchKeyword }">
 									<button type="submit" id="search-button">
 										<i class="bi bi-search"></i>
 									</button>
@@ -257,7 +257,14 @@
 														</div>		
 													</div>
 													<div id="report-btn">
-														<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${search.jiqooNo}');">삭제</button>
+														<c:set var="jiqooStatus" value="${search.jiqooStatus}"></c:set>
+														<c:if test="${jiqooStatus eq 'Y'}">
+															<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${search.jiqooNo}');">삭제</button>
+														</c:if>
+														<c:if test="${jiqooStatus eq 'A' || jiqooStatus eq 'N' }">	
+<%-- 															<button type="button" class="button revival-btn" onclick="reviveJiqooByA('${search.jiqooNo }', '${search.jiqooWriter}');">복원</button> --%>
+															<div class="button complete">삭제완료</div>
+														</c:if>	
 													</div>
 												</div>
 											</div>
@@ -475,6 +482,20 @@
 		    }
 		  }
 		});
+	
+		//모꾸 강제삭제
+		function deleteJiqooByA(jiqooNo){
+			if(confirm ("정말 삭제하시겠습니까?")){
+				location.href = "/admin/deletejiqoo?jiqooNo=" +jiqooNo;
+			}
+		}
+		
+		//강제삭제 지꾸 복원 
+		function reviveJiqooByA(jiqooNo){
+			if(confirm ("정말 복원시키겠습니까?")){
+				location.href = "/admin/jiqoorevival?jiqooNo=" + jiqooNo;
+			}
+		}
 	</script>
 
 </body>

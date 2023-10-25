@@ -33,7 +33,8 @@
     <link href="../resources/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
     <!-- Template CSS File -->
-    <link href="../resources/assets/css/admin_chat.css" rel="stylesheet">
+    <!-- <link href="../resources/assets/css/admin.css" rel="stylesheet"> -->
+    <link href="../resources/assets/css/search_admin_chat.css" rel="stylesheet">
     <link href="../resources/assets/css/header.css" rel="stylesheet">
     <link href="../resources/assets/css/footer.css" rel="stylesheet">  
     
@@ -92,13 +93,13 @@
                 <form action="/admin/chatsearch" method="get">
                   <div id="search-wrap" class="d-flex justify-content-center align-items-center">
                     <select name="searchCondition">
-                      <option value="participants">아이디</option>
-                      <option value="chatName">채팅방이름</option>
-                      <option value="cCreateDate">생성일</option>
-                      <option value="msgSendDate">마지막채팅</option>
-                      <option value="chatNo">번호</option>
+                      <option value="participants" <c:if test="${searchCondition eq 'participants'}">selected</c:if>>아이디</option>
+                      <option value="chatName" <c:if test="${searchCondition eq 'chatName'}">selected</c:if>>채팅방이름</option>
+                      <option value="cCreateDate" <c:if test="${searchCondition eq 'cCreateDate'}">selected</c:if>>생성일</option>
+                      <option value="msgSendDate" <c:if test="${searchCondition eq 'msgSendDate'}">selected</c:if>>마지막채팅</option>
+                      <option value="chatNo" <c:if test="${searchCondition eq 'chatNo'}">selected</c:if>>번호</option>
                     </select>
-                    <input type="text" name="searchKeyword" id="search-content">
+                    <input type="text" name="searchKeyword" id="search-content" value="${searchKeyword }">
                     <button type="submit" id="search-button"><i class="bi bi-search"></i></button>
                   </div>
                 </form>
@@ -108,45 +109,45 @@
               <!-- 테이블 -->
               <table id="chatList">
                 <colgroup>
-                  <col scope="col" width ="10%" class="col2"> <!--#-->
+                  <col scope="col" width ="10%" > <!--#-->
                   <col scope="col" width ="7%" > <!--채팅방이름-->
-                  <col scope="col" width ="10%" class="col1"> <!--프로필.-->
+                  <col scope="col" width ="10%" > <!--프로필-->
                   <col scope="col" width ="25%" > <!--참여자목록-->
                   <col scope="col" width ="5%" > <!--총인원-->
-                  <col scope="col" width ="10%" class="col1"> <!--채팅생성일.-->
-                  <col scope="col" width ="15%" class="col1"> <!--마지막채팅전송일자.-->
+                  <col scope="col" width ="10%" > <!--채팅생성일-->
+                  <col scope="col" width ="15%" > <!--마지막채팅전송일자-->
                   <col scope="col" width ="5%" > <!--신고수-->
-                  <col scope="col" width ="15%" class="col3"> <!--삭제버튼-->
+                  <col scope="col" width ="15%" > <!--삭제버튼-->
                   
                 </colgroup>
                 <thead>
                   <tr>
-                    <th scope="col" class="col2">#</th>
+                    <th scope="col">#</th>
                     <th scope="col" onclick="sortTable(0)" class="hover">채팅방명</th>
-                    <th scope="col" class="col1">프로필</th>
+                    <th scope="col">프로필</th>
                     <th scope="col" onclick="sortTable(1)" class="hover">참여자목록</th>
-                    <th scope="col" onclick="sortTable(2)" class="hover">인원</th>
-                    <th scope="col" onclick="sortTable(3)" class="hover col1">채팅생성일</th>
-                    <th scope="col" onclick="sortTable(4)" class="hover col1">마지막채팅</th>
+                    <th scope="col" onclick="sortTable(2)" class="hover">총인원</th>
+                    <th scope="col" onclick="sortTable(3)" class="hover">채팅생성일</th>
+                    <th scope="col" onclick="sortTable(4)" class="hover">마지막채팅</th>
                     <th scope="col" onclick="sortTable(5)" class="hover">신고</th>
-                    <th scope="col" class="col3">상세</th>
+                    <th scope="col" >상세</th>
                   </tr>
                 </thead>
                 
                 <tbody>
-	                <c:forEach var="chatRoomAllList" items="${chatRoomAllList}" varStatus="i">
+	                <c:forEach var="searchChatList" items="${searchChatList}" varStatus="i">
 	                  <tr>
 	                    <td class="list-no" scope="row">${(pInfo.totalCount - i.index) - ( (pInfo.currentPage - 1)  *  15 ) }</td> <!-- # -->
-	                    <td title="${chatRoomAllList.chatName }">${chatRoomAllList.chatName }</td>  <!-- 채팅방이름 -->
-	                    <td class="col1">
-	                      <img src="${chatRoomAllList.cImagePath}" style="width:50px"> <!-- 프로필 -->
+	                    <td title="${searchChatList.chatName }">${searchChatList.chatName }</td>  <!-- 채팅방이름 -->
+	                    <td>
+	                      <img src="${searchChatList.cImagePath}" style="width:50px"> <!-- 프로필 -->
 	                    </td>
-	                    <td title="${chatRoomAllList.participants }">${chatRoomAllList.participants }</td> <!-- 참여자목록 -->
-	                    <td>${chatRoomAllList.participantCount }</td> <!-- 총인원 -->
-	                    <td class="col1"><fmt:formatDate pattern="yy-MM-dd" value="${chatRoomAllList.cCreateDate }"/></td> <!-- 채팅생성일 -->
-	                    <td class="col1"><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${chatRoomAllList.msgSendDate }"/></td> <!-- 마지막채팅 -->
-	                    <td>${chatRoomAllList.reportCount }</td>
-	                    <td class="col3">
+	                    <td title="${searchChatList.participants }">${searchChatList.participants }</td> <!-- 참여자목록 -->
+	                    <td>${searchChatList.participantCount }</td> <!-- 총인원 -->
+	                    <td><fmt:formatDate pattern="yy-MM-dd" value="${searchChatList.cCreateDate }"/></td> <!-- 채팅생성일 -->
+	                    <td><fmt:formatDate pattern="yy-MM-dd HH:mm:ss" value="${searchChatList.msgSendDate }"/></td> <!-- 마지막채팅 -->
+	                    <td>${searchChatList.reportCount }</td>
+	                    <td>
 	                       <button type="button" class="button show-detail-btn" data-bs-toggle="modal" data-bs-target="#detailChatModal${i.count }">조회</button>
 	                    </td>
 	                  </tr>
@@ -158,35 +159,35 @@
 									<div class="modal-header">
 										<div class="modal-title fs-5" id="exampleModalLabel">
 											<h3>
-												<i class="bi bi-bookmark-heart"></i> ${chatRoomAllList.chatNo} 번째 채팅방
+												<i class="bi bi-bookmark-heart"></i> ${searchChatList.chatNo} 번째 채팅방
 											</h3>
 										</div>
 										<button type="button" class="btn-close" data-bs-dismiss="modal"
 											aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										<h4 style="display: inline"><i class="bi bi-stickies"></i> ${chatRoomAllList.chatName} </span>&nbsp; <!-- 채팅방명 -->
+										<h4 style="display: inline"><i class="bi bi-stickies"></i> ${searchChatList.chatName} </span>&nbsp; <!-- 채팅방명 -->
 										<span><i class="bi bi-calendar-week"></i> 
-<%-- 											<fmt:parseDate value='${chatRoomAllList.cCreateDate}' pattern="yyyy.MM.dd HH:mm:ss.SSS" var='cCreateDate' />  --%>
-											<fmt:formatDate value="${chatRoomAllList.cCreateDate}" pattern="yy.MM.dd HH:mm" /> <!-- 생성일자 -->
+											<fmt:parseDate value='${searchChatList.cCreateDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='cCreateDate' /> 
+											<fmt:formatDate value="${cCreateDate}" pattern="yy/MM/dd HH:mm" /> <!-- 생성일자 -->
 										</span>&nbsp;  
 										<br>
 										<h5 style="display: inline">
-											<i class="bi bi-people"></i> ${chatRoomAllList.participants} ( ${chatRoomAllList.participantCount} ) <!-- 참여인원 -->
+											<i class="bi bi-people"></i> ${searchChatList.participants} ( ${searchChatList.participantCount} ) <!-- 참여인원 -->
 										</h5>
 										&nbsp;
 										<span><i class="bi bi-clock"></i> 
-											<fmt:parseDate value='${chatRoomAllList.msgSendDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='msgSendDate' /> 
+											<fmt:parseDate value='${searchChatList.msgSendDate}' pattern="yyyy-MM-dd HH:mm:ss.SSS" var='msgSendDate' /> 
 											<fmt:formatDate value="${msgSendDate}" pattern="yy/MM/dd HH:mm:ss" /> <!-- 생성일자 -->
 										</span>&nbsp;&nbsp;
 						
 										
 										<!-- 모임인원 -->
 										<div id="report-reason">
-											<div id="r-title">신고사유(${chatRoomAllList.reportCount})</div>
+											<div id="r-title">신고사유(${searchChatList.reportCount})</div>
 											
 											<div id="r-reason">
-												<c:forEach var="chatReport" items="${chatRoomAllList.reportList}" varStatus="i">
+												<c:forEach var="chatReport" items="${searchChatList.reportList}" varStatus="i">
 													<script>
 														var reportContent = "${chatReport.chatReportContent}";
 														var reportCount = "${chatReport.reportCount}";
@@ -220,7 +221,7 @@
 											
 										</div>
 										<div id="report-btn">
-											<button type="button" class="button delete-btn" onclick="deleteChatRoomByA('${chatRoomAllList.chatNo}');">삭제</button>
+											<button type="button" class="button delete-btn" onclick="deleteChatRoomByA('${searchChatList.chatNo}');">삭제</button>
 										</div>
 									</div>
 								</div>
@@ -240,6 +241,8 @@
 					<c:if test="${pInfo.startNavi != 1}">
 						<c:url var="prevUrl" value="/admin/chatlist">
 							<c:param name="page" value="${pInfo.startNavi -1 }"></c:param>
+							<c:param name="searchCondition" value="${searchCondition}"></c:param>
+							<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 						</c:url>
 						<a href="${prevUrl}"><i class="bi bi-caret-left"></i></a>
 					</c:if>
@@ -248,6 +251,8 @@
 						var="p">
 						<c:url var="pageUrl" value="/admin/chatlist">
 							<c:param name="page" value="${p}"></c:param>
+							<c:param name="searchCondition" value="${searchCondition}"></c:param>
+							<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 						</c:url>
 						<c:choose>
 							<c:when test="${p == pInfo.currentPage}">
@@ -266,6 +271,8 @@
 					<c:if test="${pInfo.endNavi != pInfo.naviTotalCount}">
 						<c:url var="nextUrl" value="/admin/chatlist">
 							<c:param name="page" value="${pInfo.endNavi + 1}"></c:param>
+							<c:param name="searchCondition" value="${searchCondition}"></c:param>
+							<c:param name="searchKeyword" value="${searchKeyword}"></c:param>
 						</c:url>
 						<a href="${nextUrl}"><i class="bi bi-caret-right"></i></a>
 					</c:if>

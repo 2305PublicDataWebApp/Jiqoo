@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -816,7 +817,7 @@
                         <th>아이디</th>
                         <th>W3W</th>
                         <th>내용</th>
-                        <th>추천</th>
+                        <th>No.</th>
                         <th>신고</th>
                       </tr>
                     </thead>
@@ -831,13 +832,31 @@
                         <td>${todayJiqoo.jiqooWriter}</td> <!-- todayJiqoo.user.userId -->
                         <td>${todayJiqoo.jiqooW3W}</td>
                         <td>
-                          <a class="modal-link modal-link-jq" data-bs-toggle="modal" href="#jiqooModal" >
+                          <a class="modal-link modal-link-jq" data-bs-toggle="modal" href="#jiqooModal${i.count }" >
                           	<c:out value='${todayJiqoo.jiqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
                           </a>
                         </td>
-                        <td>0</td>
+                        <td>${todayJiqoo.jiqooNo}</td>
                         <td>0</td>
                       </tr>
+                      
+                      <!-- 지꾸Modal -->
+				        <div class="modal fade" id="jiqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				          <div class="modal-dialog">
+				            <div class="modal-content">
+				              <div class="modal-header">
+				                <h1 class="modal-title fs-5" id="exampleModalLabel"> ${todayJiqoo.jiqooTitle}</h1>
+				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				              </div>
+				              <div class="modal-body">
+				                ${todayJiqoo.jiqooContent}
+				              </div>
+				              <div class="modal-footer">
+				                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				              </div>
+				            </div>
+				          </div>
+				        </div>
                     </c:forEach>
                   </tbody>
                 </table>
@@ -864,7 +883,7 @@
                         <th>아이디</th>
                         <th>W3W</th>
                         <th>내용</th>
-                        <th>추천</th>
+                        <th>No.</th>
                         <th>신고</th>
                       </tr>
                     </thead>
@@ -879,13 +898,30 @@
 	                        <td>${todayMoqoo.moqooWriter}</td>
 	                        <td>${todayMoqoo.moqooW3W}</td>
 	                        <td>
-	                          	<a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal" >
+	                          	<a class="modal-link modal-link-mq" data-bs-toggle="modal" href="#moqooModal${i.count }" >
 	                          		<c:out value='${todayMoqoo.moqooContent.replaceAll("\\\<.*?\\\>","")}' />  <!-- 내용중 문자열만 출력하기 -->
 								</a>
 	                        </td>
-	                        <td>0</td>
+	                        <td>${todayMoqoo.moqooNo}</td>
 	                        <td>0</td>
 	                      </tr>
+	                       <!-- 모꾸Modal -->
+					        <div class="modal fade" id="moqooModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					          <div class="modal-dialog">
+					            <div class="modal-content">
+					              <div class="modal-header">
+					                <h1 class="modal-title fs-5" id="exampleModalLabel">${todayMoqoo.moqooTitle}</h1>
+					                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					              </div>
+					              <div class="modal-body">
+					                ${todayMoqoo.moqooContent}
+					              </div>
+					              <div class="modal-footer">
+					                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					              </div>
+					            </div>
+					          </div>
+					        </div>
                       </c:forEach>
 
                     </tbody>
@@ -934,13 +970,30 @@
 						  </td>
 	                      <td>${todayComment.comtWriter }</td>
 	                      <td>
-	                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal" >
+	                        <a class="modal-link modal-link-cmt" data-bs-toggle="modal" href="#cmtModal${i.count }" >
 	                        ${todayComment.comtContent }
 	                      </a>
 	                    </td>
-	                      <td>0</td>
+	                      <td>${todayComment.comtNo }</td>
 	                      <td>0</td>
 	                    </tr>
+	                     <!-- 댓글 Modal -->
+				        <div class="modal fade" id="cmtModal${i.count }" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				          <div class="modal-dialog">
+				            <div class="modal-content">
+				              <div class="modal-header">
+				                <h1 class="modal-title fs-5" id="exampleModalLabel">${todayComment.comtNo }번째 댓글</h1>
+				                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				              </div>
+				              <div class="modal-body">
+				                ${todayComment.comtContent }
+				              </div>
+				              <div class="modal-footer">
+				                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				              </div>
+				            </div>
+				          </div>
+				        </div>
                     </c:forEach>
                     
                   </tbody>
@@ -999,64 +1052,6 @@
 
 
         <!-- ======= Modal =======  -->
-        <!-- 지꾸Modal -->
-        <div class="modal fade" id="jiqooModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">지꾸 title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                ...
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 모꾸Modal -->
-        <div class="modal fade" id="moqooModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                ...
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 댓글 Modal -->
-        <div class="modal fade" id="cmtModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">댓글내용</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                ...
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
           <!-- 신고 Modal -->
           <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">

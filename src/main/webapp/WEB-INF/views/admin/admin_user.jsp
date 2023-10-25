@@ -48,6 +48,9 @@
 <link href="../resources/assets/css/header.css" rel="stylesheet">
 <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
+<!-- jQuery cdn -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" ></script>
+
 <!-- =======================================================
     * Template Name: Bootslander
     * Updated: Sep 18 2023 with Bootstrap v5.3.2

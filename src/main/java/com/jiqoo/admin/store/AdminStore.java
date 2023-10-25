@@ -458,6 +458,14 @@ public interface AdminStore {
 
 	public List<Map<String, Object>> moqooCountList(SqlSession sqlSession);
 
+	public Integer getChatSearchListCount(SqlSession sqlSession, Map<String, String> searchChatMap);
+
+	public List<AdminChat> searchChatByKeyword(SqlSession sqlSession, PageInfo pInfo, Map<String, String> searchChatMap);
+
+	public Integer countChildComment(SqlSession sqlSession, Comment comment);
+
+	public Integer changeComment(SqlSession sqlSession, Comment comment);
+
 
 
 

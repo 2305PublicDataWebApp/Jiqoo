@@ -469,6 +469,32 @@
 		    }
 		  }
 		});
+		
+
+		
+		
+// 		$(".delete-btn").on("click", function() { // .delete-btn 버튼을 누를 때 동작 
+
+// 		    // 클릭한 삭제 버튼의 부모 요소에 해당하는 댓글 내용을 찾습니다.
+// 		    const commentText = $(this).closest(".comment").find(".comment-text");
+
+// 		    // 댓글 쓴 사람이 관리자가 아니고, 관리자 권한이 없을 때
+// 		    if (comtList.comtWriter !== 'admin' && adminYn !== 'Y') {
+// 		        // 댓글 내용을 "관리자에 의해 비공개된 댓글입니다"로 변경
+// 		        commentText.text("관리자에 의해 비공개된 댓글입니다");
+
+// 		        // 삭제된 댓글입니다라는 텍스트가 포함되어 있다면 텍스트 색상을 빨간색으로 변경
+// 		        if (commentText.text().includes('관리자에 의해 비공개된 댓글입니다')) {
+// 		            commentText.css({ color: 'red' });
+// 		        }
+
+// 		        // 추가 작업 (예를 들어, 서버로 삭제 요청을 보내거나 다른 동작을 수행)을 할 수 있음
+
+// 		    } else {
+// 		        // 관리자가 아닐 때, 또는 관리자 권한이 없을 때 경고 메시지 표시
+// 		        alert("관리자만 삭제할 수 있습니다");
+// 		    }
+// 		});
 	</script>
 	
 

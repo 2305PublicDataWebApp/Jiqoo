@@ -28,8 +28,8 @@
 	<!-- 알람리스트 -->
 	<select id="selectAlarmList"  resultType="Alert">
 		SELECT * FROM 
-		(SELECT * FROM ALERT_TBL WHERE TO_USER_ID = #{toUserId} ) 
-		WHERE rowNUM &lt;=6 ORDER BY ALERT_CREATE_DATE DESC
+		(SELECT * FROM ALERT_TBL WHERE TO_USER_ID = #{toUserId} ORDER BY ALERT_CREATE_DATE DESC ) 
+		WHERE rowNUM &lt;=6 
 	</select>
 	
 	<!-- 알람리스트 삭제 -->

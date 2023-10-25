@@ -82,10 +82,11 @@
 				<div id="report-btn">
 					<c:set var="jiqooStatus" value="${jiqooList.jiqooStatus}"></c:set>
 					<c:if test="${jiqooStatus eq 'Y'}">
-						<button type="button" class="button delete-btn" onclick="deleteJiqooByA('${jiqooList.jiqooNo}', '${jiqooList.jiqooWriter}');">삭제</button>
+						<button type="button" class="button delete-btn" onclick="deleteJiqooByA(${jiqooList.jiqooNo}, '${jiqooList.jiqooWriter}');">삭제</button>
 					</c:if>
-					<c:if test="${jiqooStatus eq 'A'}">	
-						<button type="button" class="button revival-btn" onclick="reviveJiqooByA('${jiqooList.jiqooNo }', '${jiqooList.jiqooWriter}');">복원</button>
+					<c:if test="${jiqooStatus eq 'A' || jiqooStatus eq 'N' }">	
+<%-- 						<button type="button" class="button revival-btn" onclick="reviveJiqooByA(${jiqooList.jiqooNo }, '${jiqooList.jiqooWriter}');">복원</button> --%>
+						<div class="button complete">삭제완료</div>
 					</c:if>	
 					
 				</div>

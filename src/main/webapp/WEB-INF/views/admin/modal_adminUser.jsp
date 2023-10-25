@@ -25,9 +25,6 @@
 					<div id="r-title">신고사유(${user.count})</div>
 					<c:forEach var="userReport" items="${user.reportList}" varStatus="i">
 						<div id="r-reason">
-<%-- 							${ userReport.reportContent}, ${ userReport.reportPostNo}, ${ userReport.reportType} --%>
-<%-- 							<c:if test="${ userReport.reportPostNo ne 0 } ">${ userReport.reportContent} , ${ userReport.reportPostNo}, ${ userReport.reportType}</c:if> --%>
-<%-- 							<c:if test="${ userReport.reportPostNo eq 0 } ">${ userReport.reportContent}</c:if> --%>
 						</div>
 						
 						<script>
@@ -63,7 +60,7 @@
 					</c:forEach>
 				</div>
 				<div id="report-btn">
-					<button type="button" class="button mx-2" onclick="resetReportByA('${user.userId}');">리셋</button>
+<%-- 					<button type="button" class="button mx-2" onclick="resetReportByA('${user.userId}');">리셋</button> --%>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 				</div>
 			</div>

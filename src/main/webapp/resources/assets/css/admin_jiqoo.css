@@ -10,21 +10,19 @@
 # General
 --------------------------------------------------------------*/
 @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Gothic:wght@700&display=swap');
-
 @font-face {
   font-family: 'IBMPlexSansKR-Regular';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
-
 :root {
-  --font-default : 'IBMPlexSansKR-Regular', sans-serif;
+  --font-default : 'IBMPlexSansKR-Regular';
+  --font-secondary : 'Nanum Gothic', sans-serif;
   --font-primary: 'Black Han Sans', sans-serif;
   --color-primary: #8BC34A;
   --color-secondary: #388E3C;
   --color-default : #FFF59D;
-  
 }
 body {
   font-family: "Open Sans", sans-serif;
@@ -1286,7 +1284,8 @@ main {
 }
 
 .card-title {
-  font-family: var(--font-primary);
+   font-family: var(--font-default);
+    font-weight : bold;
   font-size: 2em;
   text-align: center;
 }
@@ -1383,10 +1382,6 @@ select {
   margin : 0 auto;
   text-align: center;
   border-collapse: collapse;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-style: hidden;
-  --box-shadow: 0 0 0 1px #DAE4ED;
   table-layout: fixed;
   cursor : default;
 }
@@ -1394,24 +1389,19 @@ select {
 #user-main table thead { 
   font-family: var(--font-default);
   font-size: 1.2em;
-  --border-bottom: 2px solid  #DCE775;
-  --border-bottom: 2px solid #DAE4ED;
-  --border-bottom: 2px solid #ccc;
+
 }
 #user-main table thead .hover:hover {
   color : var(--color-secondary);
 }
 
 #user-main table tbody {
-  --font-family: var(--font-default);
   font-size: 1em;
 }
 
 tr {
   height : 55px;
-  --border-bottom: 1px solid  #DCE775;
   border-bottom: 1px solid #DAE4ED;
-  --border-bottom: 1px solid #ccc;
 }
 
 tbody tr:hover {
@@ -1420,7 +1410,6 @@ tbody tr:hover {
 
 td {
   padding: 10px;
-  --max-width : 520px;
   white-space: nowrap;
   overflow : hidden;
   text-overflow : ellipsis;
@@ -1482,7 +1471,6 @@ td {
   font-size: 1.5em;
   border : none;
   text-align: center;
-  --vertical-align: middle;  
 }
 .delete-btn:hover {
   background-color: red;
@@ -1496,6 +1484,18 @@ td {
   height: 38px;
 }
 
+.complete {
+  background-color: #ccc; 
+  color : #fff;
+  width: 110px;
+  height: 40px;
+  border : none;
+  font-size: 1.5em;
+  text-align: center;
+  padding : 2px;
+  margin : 10px 20px 10px 10px;
+}
+
 
 /*--------------------------------------------------------------
 # 모달
@@ -1507,9 +1507,6 @@ td {
   font-family: var(--font-primary);
 }
 .map {
-  --width : 100%;
-  --height : 300px;
-  --max-height : 500px;
   border-radius: 10px;
   border : 1px solid #ccc;
   margin : 10px auto;
@@ -1600,17 +1597,17 @@ td {
 }
 
   
- .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
-    .wrap * {padding: 0;margin: 0;}
-    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
-    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
-    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
-    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
-    .info .close:hover {cursor: pointer;}
-    .info .body {position: relative;overflow: hidden;}
-    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
-    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
-    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
-    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
-    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
-    .info .link {color: #5085BB;}
+/*  .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;} */
+/*     .wrap * {padding: 0;margin: 0;} */
+/*     .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;} */
+/*     .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;} */
+/*     .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;} */
+/*     .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');} */
+/*     .info .close:hover {cursor: pointer;} */
+/*     .info .body {position: relative;overflow: hidden;} */
+/*     .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;} */
+/*     .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;} */
+/*     .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;} */
+/*     .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;} */
+/*     .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')} */
+/*     .info .link {color: #5085BB;} */

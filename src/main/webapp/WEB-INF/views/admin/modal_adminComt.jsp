@@ -82,7 +82,11 @@
 						<button type="button" class="button delete-btn" onclick="deleteComtByA(${comtList.comtNo}, '${comtList.comtWriter}');">삭제</button>
 					</c:if>
 					<c:if test="${fn:contains(comtStatus, 'A')}">
-						<button type="button" class="button revival-btn" onclick="reviveComtByA('${comtList.comtNo }', '${comtList.comtWriter}');">복원</button>
+<%-- 						<button type="button" class="button revival-btn" onclick="reviveComtByA('${comtList.comtNo }', '${comtList.comtWriter}');">복원</button> --%>
+						<div class="button complete">삭제완료</div>
+					</c:if>	
+					<c:if test="${fn:contains(comtStatus, 'N')}">
+						<div class="button complete">본인삭제</div>
 					</c:if>	
 					
 				</div>
@@ -92,23 +96,23 @@
 </div>
 </c:forEach>
 <script>
-$(document).ready(function(){
-	updateComt();
-});
+// $(document).ready(function(){
+// 	updateComt();
+// });
 
-function updateComt() { 
-	const commentText = $("<p class='comment-text'>").val();
-	if(comtList.comtStatus == 'A' && comtList.comtWriter !== 'admin'){
-	// comtStatus가 A && 댓글 쓴 사람이 관리자가 아님 
-		// 댓글 내용을 변경
-       commentText.text("관리자에 의해 삭제된 댓글입니다");
+// function updateComt() { 
+// 	const commentText = $("<p class='comment-text'>").val();
+// 	if(comtList.comtStatus == 'A' && comtList.comtWriter !== 'admin'){
+// 	// comtStatus가 A && 댓글 쓴 사람이 관리자가 아님 
+// 		// 댓글 내용을 변경
+//        commentText.text("관리자에 의해 삭제된 댓글입니다");
 	
-    	// 삭제된 댓글입니다라는 텍스트가 포함되어 있다면 텍스트 색상을 빨간색으로 변경
-       if (commentText.text().includes('관리자에 의해 삭제된 댓글입니다')) {
-           commentText.css({ color: 'red' });
-       }
-	}
-} 
+//     	// 삭제된 댓글입니다라는 텍스트가 포함되어 있다면 텍스트 색상을 빨간색으로 변경
+//        if (commentText.text().includes('관리자에 의해 삭제된 댓글입니다')) {
+//            commentText.css({ color: 'red' });
+//        }
+// 	}
+// } 
 
 
 

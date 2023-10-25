@@ -71,8 +71,8 @@ public class AlertHandler extends TextWebSocketHandler{
 				
 				//웹소켓으로 전달 될 메시지는 전달받을 사용자가 접속되어 있을 때만 전송
 				//작성자가 로그인 해서 있다면 (실시간 접속시)
-				WebSocketSession comtWriterSession = userSessionsMap.get(comtWriter); //메세지 받을 세션 조회 //대댓달린경우 댓글 달린 작성자에게 알림전송
-				WebSocketSession boardWriterSession = userSessionsMap.get(boardWriter); //댓글 달린 경우 글 쓴 작성자에게 알림전송 
+				WebSocketSession comtWriterSession = userSessionsMap.get(comtWriter); //메세지 받을 세션 조회 
+				WebSocketSession boardWriterSession = userSessionsMap.get(boardWriter);  
 				
 				System.out.println("boardWriterSession="+userSessionsMap.get(boardWriter));
 				System.out.println("boardWriterSession"+boardWriterSession);
@@ -101,7 +101,7 @@ public class AlertHandler extends TextWebSocketHandler{
 						//comtWriter = 대댓단사람 , boardWriter = 댓글단사람
 						
 						TextMessage tmpMsg = new TextMessage
-								(boardWriter + "님이 "+ title+" 에 대댓글을 달았습니다!");
+								(boardWriter  + "님이 "+ title+" 에 대댓글을 달았습니다!");
 						comtWriterSession.sendMessage(tmpMsg); //댓글작성자에게 메세지 보냄 
 					}
 					
