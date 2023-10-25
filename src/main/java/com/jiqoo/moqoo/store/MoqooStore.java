@@ -204,11 +204,27 @@ public interface MoqooStore {
 	List<Moqoo> loadMoreMoqooAllList(SqlSession sqlSession, Map<String, Object> params);
 
 	
+//	/**
+//	 * 게시글 신고하기
+//	 * @param sqlSession
+//	 * @param report
+//	 * @return
+//	 */
+//	int insertReport(SqlSession sqlSession, Report report);
+
 	/**
-	 * 게시글 신고하기
+	 * 모꾸 게시글 신고
 	 * @param sqlSession
 	 * @param report
 	 * @return
 	 */
-	int insertReport(SqlSession sqlSession, Report report);
+	int insertMoqooReport(SqlSession sqlSession, Report report);
+
+	/**
+	 * 모꾸 댓글 신고
+	 * @param sqlSession
+	 * @param report
+	 * @return
+	 */
+	int insertMoqooComtReport(SqlSession sqlSession, Report report);
 }

@@ -161,10 +161,22 @@ public class MoqooStoreLogic implements MoqooStore{
 		return list;
 	}
 	
-	// 게시글 신고하기
+//	// 게시글 신고하기
+//	@Override
+//	public int insertReport(SqlSession sqlSession, Report report) {
+//		int result = sqlSession.insert("MoqooMapper.insertReport", report);
+//		return result;
+//	}
+
 	@Override
-	public int insertReport(SqlSession sqlSession, Report report) {
-		int result = sqlSession.insert("MoqooMapper.insertReport", report);
+	public int insertMoqooReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("MoqooMapper.insertMoqooReport", report);
+		return result;
+	}
+
+	@Override
+	public int insertMoqooComtReport(SqlSession sqlSession, Report report) {
+		int result = sqlSession.insert("MoqooMapper.insertMoqooComtReport", report);
 		return result;
 	}
 

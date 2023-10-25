@@ -33,7 +33,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   
   <!-- Template Main CSS File -->
-  <link href="../resources/assets/css/jiqoo.css" rel="stylesheet">
+<!--   <link href="../resources/assets/css/jiqoo.css" rel="stylesheet"> -->
   <link href="../resources/assets/css/header.css" rel="stylesheet">
   <link href="../resources/assets/css/footer.css" rel="stylesheet">
 
@@ -100,6 +100,14 @@
 		    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
 		    cursor: pointer;
 		    }
+		    
+		    #map {
+			  margin: 0 auto;
+			  margin-bottom: 80px;
+			  border-radius: 10px;
+/* 			  width:80% */
+			  height:800px;
+			}
 		    
         </style>
 </head>

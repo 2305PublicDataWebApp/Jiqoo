@@ -64,8 +64,16 @@
 		INSERT INTO MOQOO_TBL VALUES(#{moqooNo }, #{moqooW3W }, #{moqooDay }, #{category }, #{moqooTitle }, #{moqooThumName }, #{moqooThumRename }, #{moqooThumPath }, #{moqooContent }, #{moqooJoin }, #{moqooWriter }, DEFAULT, DEFAULT, DEFAULT, #{moqooLat }, #{moqooLng }, DEFAULT )
 	</insert>
 	
-	<insert id="insertReport"> 
+<!-- 	<insert id="insertReport">  -->
+<!-- 		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, #{reportUserId }, #{reportPostNo }, NULL, 'M')  -->
+<!-- 	</insert> -->
+
+	<insert id="insertMoqooReport"> 
 		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, #{reportUserId }, #{reportPostNo }, NULL, 'M') 
+	</insert>
+	
+	<insert id="insertMoqooComtReport"> 
+		INSERT INTO REPORT_TBL VALUES(SEQ_REPORT_NO.NEXTVAL, #{reportWriter }, #{reportContent }, DEFAULT, #{reportUserId }, NULL, #{reportComtNo }, 'MC') 
 	</insert>
 	
 	<update id="updateMoqoo">
@@ -127,7 +135,7 @@
 		MOQOO_WRITER = USER_ID
 		JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
 		WHERE MOQOO_STATUS = 'Y'
-		ORDER BY MOQOO_DAY DESC
+		ORDER BY MOQOO_DATE DESC
 	</select>
 	
 	<select id="selectMoqooSearchList" resultMap="MoqooResultMap">
@@ -135,7 +143,7 @@
         JOIN USER_TBL ON USER_ID = MOQOO_WRITER
         JOIN CATEGORY_TBL ON MOQOO_TAGS = C_NAME
         WHERE (MOQOO_TITLE LIKE '%' || #{searchValue } || '%' OR REGEXP_REPLACE(MOQOO_CONTENT, '&lt;[^>]*>', '', 1, 0) LIKE '%' || #{searchValue } || '%')
-        ORDER BY MOQOO_DAY DESC
+        ORDER BY MOQOO_DATE DESC
 	</select>
 	
 	<select id="loadInitialMoqooAllList" resultMap="MoqooResultMap">
@@ -147,7 +155,7 @@
 			    JOIN USER_TBL ON M.MOQOO_WRITER = USER_ID
 			    JOIN CATEGORY_TBL C ON M.MOQOO_TAGS = C_NAME
 			    WHERE MOQOO_STATUS = 'Y'
-			    ORDER BY MOQOO_DAY DESC
+			    ORDER BY MOQOO_DATE DESC
 			) A
 			WHERE ROWNUM &lt;= 10
 		)
@@ -164,7 +172,7 @@
 			    JOIN USER_TBL U ON M.MOQOO_WRITER = U.USER_ID
 			    JOIN CATEGORY_TBL C ON M.MOQOO_TAGS = C.C_NAME
 			    WHERE M.MOQOO_STATUS = 'Y'
-			    ORDER BY M.MOQOO_DAY DESC
+			    ORDER BY M.MOQOO_DATE DESC
 			)A
 		WHERE ROWNUM &lt;= (#{offset} + #{limit})
 		)

@@ -243,7 +243,7 @@ public class MoqooController {
 			String userId = (String) session.getAttribute("userId");
 			if(userId != null && !userId.equals("")) {
 				report.setReportWriter(userId);
-				int result = moqooService.insertReport(report);
+				int result = moqooService.insertMoqooReport(report);
 				if(result > 0) {
 					return "redirect:/moqoo/moqoo";
 				}
@@ -263,6 +263,17 @@ public class MoqooController {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "/moqoo/moqoo");
 			return "common/message";
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/moqoo/report")
+	public String reportMoqoo(@ModelAttribute Report report) {
+		int result = moqooService.insertMoqooComtReport(report);
+		if(result > 0) {
+			return "moqooComtReport";
+		}else {
+			return "fail";
 		}
 	}
 	
@@ -305,9 +316,7 @@ public class MoqooController {
 			}
 			int result = moqooService.updateMoqoo(moqoo);
 			if(result > 0) {
-				model.addAttribute("msg", "게시물이 수정되었습니다.");
-				model.addAttribute("url", "/moqoo/detail?moqooNo=" + moqoo.getMoqooNo());
-				return "moqoo/post_moqoo";
+				return "redirect:/moqoo/detail?moqooNo=" + moqoo.getMoqooNo();
 			}
 			else {
 				model.addAttribute("msg", "게시물이 수정에 실패하였습니다.");

@@ -171,9 +171,16 @@ public class MoqooServiceImpl implements MoqooService {
 		return list;
 	}
 
+
 	@Override
-	public int insertReport(Report report) {
-		int result = moqooStore.insertReport(sqlSession, report);
+	public int insertMoqooReport(Report report) {
+		int result = moqooStore.insertMoqooReport(sqlSession, report);
+		return result;
+	}
+
+	@Override
+	public int insertMoqooComtReport(Report report) {
+		int result = moqooStore.insertMoqooComtReport(sqlSession, report);
 		return result;
 	}
 }

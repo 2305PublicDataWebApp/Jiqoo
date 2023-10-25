@@ -181,11 +181,18 @@ public interface MoqooService {
 
 	
 	/**
-	 * 게시글 신고하기
+	 * 모꾸 신고
 	 * @param report
 	 * @return
 	 */
-	int insertReport(Report report);
+	int insertMoqooReport(Report report);
+
+	/**
+	 * 모꾸 댓글 신고
+	 * @param report
+	 * @return
+	 */
+	int insertMoqooComtReport(Report report);
 
 	
 }
