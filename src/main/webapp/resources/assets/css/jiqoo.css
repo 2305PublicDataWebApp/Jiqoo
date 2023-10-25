@@ -58,6 +58,7 @@ p {
 	justify-content: space-evenly; 
 	width: 345px;
 	margin: 0 auto;
+	margin-top: 40px;
 }
 #main .btn-get-started {
 	text-transform: uppercase;
@@ -134,9 +135,18 @@ html, body {
     transition: 0.5s;
 }
 
+.info-image {
+	height: 150px;
+    /* object-fit: cover; */
+    overflow: hidden;
+}
+
 .infoWindow img{
-	max-width: 100%; /* 이미지의 최대 너비를 부모 요소(게시물 내의 <p>)의 너비에 맞게 조절 */
-    height: auto; /* 이미지의 높이를 자동으로 조절하여 비율 유지 */
+/* 	max-width: 100%; 이미지의 최대 너비를 부모 요소(게시물 내의 <p>)의 너비에 맞게 조절 */
+/*     height: auto; 이미지의 높이를 자동으로 조절하여 비율 유지 */
+width: 220px;
+    height: 150px;
+    object-fit: cover;
 }
 
 .infoWindow a {

@@ -253,9 +253,9 @@ p {
       }
       
       #backbtn-container {
-      	position: absolute;
-	    bottom: -217px;
-	    right: 208px;
+      	width: 80%;
+    	text-align: right;
+    	margin-bottom: 60px;
       }
       
       .backbtn {
@@ -412,7 +412,6 @@ p {
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
-	margin-top: 70px;
 }
 
 .comment-form textarea, .reply-form textarea, .modify-form input {
@@ -598,7 +597,7 @@ background-color: rgba(0,0,0,0.2);
   outline: none;
 }
 .modal-footer .btn {
-  font-family: var(--font-primary);
+  font-family: var(--font-default);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 .send-report {

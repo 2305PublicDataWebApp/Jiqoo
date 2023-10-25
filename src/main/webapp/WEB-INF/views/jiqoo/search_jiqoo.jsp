@@ -588,19 +588,31 @@
 		    var categoryImg = $('<img class="category-img" alt=""/>').attr('src', data.category.cImgPath);
 		    var location = $('<div class="location"><span class="location-text">' + data.jiqooW3W + '</span></div');
 		    var userInfoContainer = $('<div class="user-info-container row">');
-		    var userInfo = $('<div class="user-info col-sm-12">');
+		    var userInfo = $('<div class="user-info col-md-6 col-sm-12">');
 		    var profileImg = $('<div class="profile-img col-4" class="col-sm-12">');
-		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', data.user.userPhotoPath);
-			
+		    var photophoto;
+		    if(data.user.userPhotoPath == null || data.user.userPhotoPath == "" || data.user.userPhotoPath == undefined) {
+		    	photophoto = "../resources/assets/img/no-profile.png";
+		    }else {
+		    	photophoto = data.user.userPhotoPath;
+		    }
+		    var profileImage = $('<img alt="프로필 이미지" class="profile-image">').attr('src', photophoto);
+
 		    var userNickname = $('<div class="user-nickname">' + data.user.userNickname + '</div>');
-		 	// jCreateDate 값을 나타내기 위한 업데이트
+		    // jCreateDate 값을 나타내기 위한 업데이트
 		    var postDate = $('<div class="info col-lg-6 col-sm-12">' + formatDate(data.jCreateDate) + '</div>');
 
-		    
 		    var postMain = $('<div class="post-main row">');
 		    var postInfo = $('<div class="post-info col">');
-		    
-		    var title = $('<div class="title">' + data.jiqooTitle + '</div>');
+
+		    var title = data.jiqooTitle; // 제목 문자열
+		    var maxLength = 10; // 원하는 최대 길이
+
+		    if (title.length > maxLength) {
+		        title = title.substring(0, maxLength) + "...";
+		    }
+
+		    var titleDiv = $('<div class="title">' + title + '</div>');
 
 		    // <p>와 <img> 요소를 추출하는 함수
 		    function parseContent(content) {
@@ -612,6 +624,12 @@
 		        var pContent = '';
 		        for (var i = 0; i < pElements.length; i++) {
 		            pContent += pElements[i].innerHTML;
+		        }
+
+		        // 만약 pContent의 길이가 특정 길이를 초과하면 자르고 "..."을 추가
+		        var maxContentLength = 20; // 원하는 최대 길이로 설정하세요
+		        if (pContent.length > maxContentLength) {
+		            pContent = pContent.substring(0, maxContentLength) + '...';
 		        }
 
 		        // <img> 요소를 추출
@@ -630,23 +648,22 @@
 
 		    // 부모 <div>를 추가
 		    var contentContainer = $('<div class="content-container row">');
-		    
+
 		    // <p> 내용과 썸네일 이미지를 각각의 <div>에 추가
-		    var pContentDiv = $('<div class="p-content-div col-md-6 col-sm-12">').append(parsedContent.pContent);
-		    var thumbnailDiv = $('<div class="thumbnail-div col-md-6 col-sm-12">');
+		    var pContentDiv = $('<div class="p-content-div col-md-8 col-sm-12">').append(parsedContent.pContent);
+		    var thumbnailDiv = $('<div class="thumbnail-div col-md-4 col-sm-12">');
 		    if (parsedContent.imgSource) {
 		        var thumbnailImage = $('<img class="thumbnail-image" alt="썸네일" src="' + parsedContent.imgSource + '">');
 		        thumbnailDiv.append(thumbnailImage);
 		    }
 
-		    
 		    category.append(categoryImg);
 		    postHeader.append(category, location);
 		    profileImg.append(profileImage);
 
 		    // 각 요소를 부모 <div>에 추가
 		    postMain.append(postInfo, thumbnailDiv);
-		    postInfo.append(userInfoContainer, title, pContentDiv);
+		    postInfo.append(userInfoContainer, titleDiv, pContentDiv);
 		    userInfoContainer.append(profileImg, userInfo);
 		    userInfo.append(userNickname, postDate);
 
@@ -697,28 +714,12 @@
 	      });
 	  });
 	  
-// 	  let categoryShown = false;
+	// 버튼 클릭 시 팝업 창 열기
+	  document.getElementById("open-map-btn").onclick = function() {
+	    // 팝업 창을 열기 위한 윈도우.open 함수 사용
+	    window.open("popupW3WMap", "Popup", "width=1200,height=800,resizable=no");
+	  };
 
-// 	  function showCategory() {
-// 	      const categoryContainer = document.querySelector(".category-container");
-// 	      if (!categoryShown) {
-// 	          categoryContainer.style.display = "block";
-// 	          categoryShown = true;
-// 	      }
-// 	  }
-
-// 	  function hideCategory() {
-// 	      const categoryContainer = document.querySelector(".category-container");
-// 	      categoryContainer.style.display = "none";
-// 	  }
-
-// 	  document.querySelector("#show-ctgr-btn").addEventListener("mouseenter", function () {
-// 	      showCategory();
-// 	  });
-
-// 	  document.querySelector(".category-container").addEventListener("mouseleave", function () {
-// 	      hideCategory();
-// 	  });
 
 	</script>
 </body>

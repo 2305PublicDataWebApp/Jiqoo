@@ -52,7 +52,7 @@
         --color-default : #FFF59D;
         }
         body {
-        font-family: "Open Sans", sans-serif;
+        font-family: 'IBMPlexSansKR-Regular';
         color: #444444;
         margin: 0px;
         height: 100%;

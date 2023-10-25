@@ -151,8 +151,14 @@
 					<div id="title">${jiqoo.jiqooTitle }</div>
 					<div id="writer-info">
 						<div id="profile-img" class="col-sm-12">
-							<img src="${jiqoo.user.userPhotoPath }" alt="프로필 이미지"
-								class="profile-image">
+							<c:choose>
+							    <c:when test="${empty data.user.userPhotoPath}">
+							        <img src="../resources/assets/img/no-profile.png" alt="프로필 이미지" class="profile-image">
+							    </c:when>
+							    <c:otherwise>
+							        <img src="${data.user.userPhotoPath}" alt="프로필 이미지" class="profile-image">
+							    </c:otherwise>
+							</c:choose>
 						</div>
 						<div class="col-md-10">
 							<div class="author">${jiqoo.user.userNickname }</div>
@@ -193,7 +199,7 @@
 					</c:if>
 				</div>
 			</div>
-			<div id="backbtn-container">
+			<div id="backbtn-container" class="mx-auto">
 				<button class="btn backbtn" onclick="goBack()">뒤로가기</button>
 			</div>
 			<!-- ======= Modal ======= -->
@@ -220,9 +226,9 @@
 										<input type="date" class="form-control" id="date"
 											name="jiqooDate" value="${jiqoo.jiqooDate }" required>
 									</div>
-									<div class="col-md-2 c-btn">
+									<div class="col-md-2 c-btn " onclick="toggleCC()">
 										<span>카테고리</span> <i class="bi bi-caret-down-fill"
-											onclick="toggleCC()"></i>
+											></i>
 									</div>
 									<div class="category-container" style="display: none;">
 										<div class="category-list">
@@ -348,24 +354,24 @@
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
-        data:data, 
-        type:"POST", 
-        url:"/uploadSummernoteImageFile", 
-        /* dataType:"JSON", */ 
-        enctype:'multipart/form-data',
-        contentType:false, 
-        processData:false
-        
-    }).done(function(data) {
-    	console.log(data)
-    	var imgNode = $("<img>");
-    	imgNode.attr("src", data);
-    	$(".note-editable").append(imgNode);
-    }).fail(function(a,b,c){
-    	console.log(a);
-    	console.log(b);
-    	console.log(c);
-    });
+	        data:data, 
+	        type:"POST", 
+	        url:"/uploadSummernoteImageFile", 
+	        /* dataType:"JSON", */ 
+	        enctype:'multipart/form-data',
+	        contentType:false, 
+	        processData:false
+	        
+	    }).done(function(data) {
+	    	console.log(data)
+	    	var imgNode = $("<img>");
+	    	imgNode.attr("src", data);
+	    	$(".note-editable").append(imgNode);
+	    }).fail(function(a,b,c){
+	    	console.log(a);
+	    	console.log(b);
+	    	console.log(c);
+	    });
         }
 
         
@@ -501,9 +507,13 @@
 	        $(obj).closest('.comment').append(formDiv);
 	    }
 	};
+	
+	// 게시글 신고
 	$("#send-jiqoo-report").on("click", function() {
+		jiqooNo = "${jiqoo.jiqooNo}";
 		var jiqooWriter = "${jiqoo.jiqooWriter}";
 		var jiqooReportContent = $("#reportSelect").val();
+		console.log(jiqooNo, jiqooWriter, jiqooReportContent);
 		 if($("#reportSelect").val() === "etc") {
 			 jiqooReportContent = $("#customReason").val();
 		 }
@@ -514,7 +524,7 @@
 				reportContent : jiqooReportContent,
 				reportPostNo : jiqooNo,
 				reportUserId : jiqooWriter,
-				reportType : 'J'
+				reportType : "J"
 			},
 			type : "get",
 			success : function(data){
@@ -525,52 +535,6 @@
 			}
 		})
 	})
-// 	$("#send-comt-report").on("click", function() {
-// 	 	var commentNo = $('#comtReportModal').data('commentNo'); // 모달 내의 데이터 읽기
-// 	    var commentWriter = $('#comtReportModal').data('commentWriter'); // 모달 내의 데이터 읽기
-// 	    var jiqooReportContent = $("#reportSelect").val();
-// 		console.log(commentNo, commentWriter); 
-// 	    if($("#reportSelect").val() === "etc") {
-// 			 jiqooReportContent = $("#customReason").val();
-// 		 }
-// 		$.ajax({
-// 			url : "/jiqoo/report",
-// 			data : {
-// 				reportWriter : currentUserId,
-// 				reportContent : jiqooReportContent,
-// 				reportComtNo : commentNo,
-// 				reportUserId : commentWriter,
-// 				reportType : 'JC'
-// 			},
-// 			type : "get",
-// 			success : function(data){
-// 				if(data == "jiqooComtReport") {
-// 					$('#comtReportModal').modal('hide');
-// 					alert("게시물 신고가 완료되었습니다.");
-// 				}
-// 			}
-// 		})
-// 	})
-	
-	
-// 	$(document).on('click', 'a[data-commentNo][data-commentWriter]', function(event) {
-// 	  event.preventDefault();
-// 	  var commentNo = $(this).data('commentNo');
-// 	  var commentWriter = $(this).data('commentWriter');
-// 	  // 모달 열 때 데이터를 설정
-// 	  $('#comtReportModal').data('commentNo', commentNo);
-// 	  $('#comtReportModal').data('commentWriter', commentWriter);
-	  
-// // 	  var hiddenComtNo = $('<input>').attr({
-// // 		  type : 'hidden',
-// // 		  value : comment
-// // 	  })
-// // 	  $('#comtReportModal').append(hiddenComtNo);
-// 	  // 나머지 모달 열기 및 필드 업데이트 코드 추가
-// 	  $('#comtReportModal').modal('show');
-// 	  // 나머지 필드 업데이트 코드도 추가
-// 	});
-
 	
 	
 
@@ -1067,6 +1031,8 @@
 		          };
   	      }
       }
+   
+   
 
 //       var openComtReportModal = createComtReportModal();
 

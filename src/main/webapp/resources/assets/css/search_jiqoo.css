@@ -153,6 +153,7 @@ p {
 
 .user-nickname {
 	font-size: 20px;
+	font-weight: 600;
 }
 
 .title {
@@ -177,11 +178,14 @@ p {
   width: 125px;
 }
 
+.thumbnail-div {
+	width: 230px;
+}
+
 .thumbnail-div img {
     max-width: 100%; /*이미지의 최대 너비를 부모 요소(게시물 내의 <p>)의 너비에 맞게 조절 */
     height: auto; /* 이미지의 높이를 자동으로 조절하여 비율 유지 */
     border-radius: 10px;
-    width:300px;
 }
 
 /* 신고하기 버튼 스타일 */
@@ -385,7 +389,7 @@ p {
   height: ato;
   background-color: white;
   position: absolute;
-  top: 127px;
+  top: 135px;
   right: 16px;
   z-index: 1;
   box-shadow: rgba(0, 0, 0, 0.1);
