@@ -257,4 +257,20 @@ public interface UserStore {
 	 */
 	int insertUserReport(SqlSession sqlSession, Report report);
 
+	/**
+	 * 프로필 사진 변경 Store
+	 * @param sqlSession
+	 * @param user
+	 * @return
+	 */
+	int updateUserPhoto(SqlSession sqlSession, User user);
+
+	/**
+	 * 프로필 사진 삭제 Store
+	 * @param sqlSession
+	 * @param userId
+	 * @return
+	 */
+	int deletePhoto(SqlSession sqlSession, String userId);
+
 }

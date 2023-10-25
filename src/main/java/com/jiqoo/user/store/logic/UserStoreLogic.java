@@ -199,5 +199,17 @@ public class UserStoreLogic implements UserStore{
 		return result;
 	}
 
+	@Override
+	public int updateUserPhoto(SqlSession sqlSession, User user) {
+		int result = sqlSession.update("UserMapper.updateUserPhoto", user);
+		return result;
+	}
+
+	@Override
+	public int deletePhoto(SqlSession sqlSession, String userId) {
+		int result = sqlSession.update("UserMapper.deletePhoto", userId);
+		return result;
+	}
+
 
 }

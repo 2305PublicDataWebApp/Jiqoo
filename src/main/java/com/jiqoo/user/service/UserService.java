@@ -211,6 +211,20 @@ public interface UserService {
 	 */
 	int insertUserReport(Report report);
 
+	/**
+	 * 프로필사진변경 service
+	 * @param user
+	 * @return
+	 */
+	int updateUserPhoto(User user);
+
+	/**
+	 * 프로필사진삭제 service
+	 * @param userId
+	 * @return
+	 */
+	int deletePhoto(String userId);
+
 
 
 }

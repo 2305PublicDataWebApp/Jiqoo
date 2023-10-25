@@ -100,12 +100,12 @@
 <%--                     <input type="text" value="${user.checkIsFollow}"> --%>
                     <c:if test="${sessionScope.userId ne null and sessionScope.userId ne follower.userId}">
 		                <c:if test="${user.checkIsFollow}">
-		                    <button class="btn btn-sm unfollow-btn" data-user-id="${user.userId}">Unfollow</button>
+		                    <button class="btn btn-sm follow unfollow-btn" data-user-id="${user.userId}">Unfollow</button>
 		                </c:if>
 		                <c:if test="${not user.checkIsFollow}">
-		                    <button class="btn btn-sm follow-btn" data-user-id="${user.userId}">Follow</button>
+		                    <button class="btn btn-sm follow follow-btn" data-user-id="${user.userId}">Follow</button>
 		                </c:if>
-                    <button class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</button>
+                    <a href="/chat/list" class="btn btn-sm profile-btn" style="margin-left: 40px;">Message</a>
                     <a class="btn btn-sm profile-btn" style="margin-left: 40px;" data-bs-toggle="modal" data-bs-target="#postReportModal"><i class="bi bi-exclamation-triangle"></i> Report</a>
 	                </c:if>
                     </div>

@@ -132,7 +132,7 @@
                                 <input type="email" class="form-control" id="userEmail" name="userEmail" oninput="emailCheck()" placeholder="이메일을 입력해주세요">
                             </div>
                             <div class="col-4 col-sm-2">
-                                <button class="btn btn-sm regBtn" type="button" onclick="emailDuplicate()">메일인증</button>
+                                <button class="btn btn-sm regBtn" type="button" id="emailDupl" onclick="emailDuplicate()" disabled>메일인증</button>
                             </div>
                             <div>
                             	<p class="checkMessage" id="mailMsg"></p>
@@ -146,7 +146,7 @@
                                 <input type="text" class="form-control" id="userEmailCheck" name="userEmailCheck" placeholder="인증번호를 입력해주세요">
                             </div>
                             <div class="col-4 col-sm-2">
-                                <button class="btn btn-sm regBtn" type="button" onclick="codeCheck()">인증확인</button>
+                                <button class="btn btn-sm regBtn" type="button" id="emailCode" onclick="codeCheck()" disabled>인증확인</button>
                             </div>
                              <div>
                             	<p class="checkMessage" id="mailCheckMsg"></p>
@@ -380,6 +380,7 @@
 			    	showEmailMsg("* 올바른 메일 형식을 입력해주세요", "red");
 				} else {
 					showEmailMsg("* 메일인증을 진행해주세요.", "red");
+					$("#emailDupl").attr("disabled", false);
 				}
 			}
 			
@@ -440,6 +441,7 @@
 			                	console.log(checkCode);
 			                    alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
 			    				showEmailMsg("* 메일발송완료. 발송된 인증번호를 입력해주세요.", "red");
+			    				$("#emailCode").attr("disabled", false);
 			                }
 			    		},
 			    		error : function(){

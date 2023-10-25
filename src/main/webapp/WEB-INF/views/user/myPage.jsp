@@ -262,6 +262,7 @@
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
                         <button type="button" class="btn btn-sm change-photo-btn" id="photoChange" >변경</button>
+                        <button type="button" class="btn btn-sm change-photo-btn" id="photoDelete" >삭제</button>
                         <button type="button" class="btn btn-sm change-photo-btn" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
@@ -337,6 +338,8 @@
 // 	            if (isLoading || !hasMoreData) {
 // 	                return;
 // 	            }
+	        	isLoading = false;
+	            loadingInProgress = false;
 	            tabContainer.empty();
 	            currentPage = 1;
 	            perPage = 3;
@@ -351,26 +354,29 @@
 	    	var loadingInProgress = false;
 	        
 	        $(window).scroll(function() {
-		        	loadingInProgress = true;
-		        	if ($(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
-						console.log('스크롤이벤트실행중');
-						var result = 0;
-						if(!loadMoreType || loadMoreType === "jiqoo") {
-//	 						isLoading = true;
-							loadJiqooList(currentPage, perPage);
-						}else if(loadMoreType === "moqoo") {
-							loadMoqooList(currentPage, perPage);
-						}else if(loadMoreType === "myComment") {
-							loadComments(currentPage, perPage);
-						}else if(loadMoreType === "like") {
-							loadLikedPosts(currentPage, perPage);
+		        	//loadingInProgress = true;
+		        	if (!isLoading && !loadingInProgress && hasMoreData) {
+			        	if ($(window).scrollTop() + $(window).height() >= $(document).height() - 400) {
+							console.log('스크롤이벤트실행중');
+							var result = 0;
+							if(!loadMoreType || loadMoreType === "jiqoo") {
+	//	 						isLoading = true;
+								loadJiqooList(currentPage, perPage);
+							}else if(loadMoreType === "moqoo") {
+								loadMoqooList(currentPage, perPage);
+							}else if(loadMoreType === "myComment") {
+								loadComments(currentPage, perPage);
+							}else if(loadMoreType === "like") {
+								loadLikedPosts(currentPage, perPage);
+							}
+							//loadTabData(dataType);
 						}
-						//loadTabData(dataType);
-					}
+		        	}
 	        });
 
 	        
 	        function loadTabData(dataType) {
+	        	
             	console.log("loadTabData함수 : " + dataType);
             	var count = 0;
 	            if (dataType === 'jiqoo') { // dataType이 'jiqoo'이면 지꾸 데이터 로드
@@ -1033,6 +1039,28 @@
 			        return;
 			    }
 			});
+        	
+			$("#photoDelete").on("click", function(){
+				if(confirm("프로필 사진을 삭제하시겠습니까?")) {
+					$.ajax({
+			            url: "/user/deletePhoto",
+			            type: "GET",
+			            success: function(result) {
+			                if (result === "success") {
+			                    alert("프로필 사진이 삭제되었습니다.");
+			                    $(".modal").modal("hide");
+			                    location.reload();
+			                } else {
+			                    alert("프로필 사진이 삭제되지 않았습니다. 다시 시도해주세요.");
+			                }
+			            },
+			            error: function(error) {
+			            	console.log(error);
+			                alert("[서버오류] 관리자에게 문의바랍니다.");
+			            }
+			        });
+				}
+			})
 			//-----------------------------------------------------------------------------------------------------
 			
 			// 마이페이지 댓글 삭제

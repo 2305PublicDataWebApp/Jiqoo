@@ -116,7 +116,19 @@
 	
 	<update id="updateUserPw">
 		UPDATE USER_TBL
-		SET USER_PW = #{userPw}
+		SET USER_PHOTO_NAME = #{userPw}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="updateUserPhoto">
+		UPDATE USER_TBL
+		SET USER_PHOTO_NAME = #{userPhotoName}, USER_PHOTO_RENAME = #{userPhotoRename}, USER_PHOTO_PATH = #{userPhotoPath}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="deletePhoto">
+		UPDATE USER_TBL
+		SET USER_PHOTO_NAME = NULL, USER_PHOTO_RENAME = NULL, USER_PHOTO_PATH = NULL
 		WHERE USER_ID = #{userId}
 	</update>
 	
