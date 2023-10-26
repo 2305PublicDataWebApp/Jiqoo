@@ -1332,6 +1332,8 @@
 	            $("#chatName").text(chatRoomName);
 	            chatImg = $(this).find("#chat-list-img").attr("src");
 				$("#info-img").attr("src", chatImg);
+				$("#unreadCount-" + chatRoomId).text("");
+                $("#unreadCount-" + chatRoomId).hide();
 				if(moqooNo !== 0 && moqooNo !== undefined) {
 					$("#inviteLi").hide();
 					$("#profileLi a").html("<i class='bi bi-person-vcard'></i> 모꾸로 이동하기");
