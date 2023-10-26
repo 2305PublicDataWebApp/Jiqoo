@@ -117,7 +117,7 @@ p {
     padding-left: 0px;
 }
 
-#findInfo a:link, #find a:visited {
+#findInfo a:link, #findInfo a:visited {
     text-decoration: none;
     color: #ccc;
 }

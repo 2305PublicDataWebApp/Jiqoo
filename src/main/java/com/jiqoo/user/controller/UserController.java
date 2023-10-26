@@ -161,7 +161,7 @@ public class UserController {
 					user.setUserPhotoRename((String) userPhotoMap.get("fileRename"));
 					user.setUserPhotoPath((String) userPhotoMap.get("filePath"));
 				}
-				int result = userService.updateUser(user);
+				int result = userService.updateUserPhoto(user);
 				if (result > 0) {
 					System.out.println("프로필 사진 변경 성공");
 				    session.setAttribute("userPhotoPath", user.getUserPhotoPath());
@@ -298,7 +298,21 @@ public class UserController {
 			return "fail";
 		}
 	}
-
+	
+	// 프로필 사진 삭제
+	@ResponseBody
+	@GetMapping("/deletePhoto")
+	public String deletePhoto(HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+		int result = userService.deletePhoto(userId);
+		if(result > 0) {
+			session.setAttribute("userPhotoPath", null);
+			return "success";
+		} else {
+			return "fail";
+		}
+	}
+	
 	// 회원탈퇴 실행
 	@ResponseBody
 	@GetMapping("/delete")
@@ -472,7 +486,9 @@ public class UserController {
 			session.setAttribute("userPhotoPath", kakaoUser.getUserPhotoPath());
 			session.setAttribute("adminYn", kakaoUser.getAdminYn());
 			System.out.println("카카오 로그인 성공");
-			return "redirect:/";
+			model.addAttribute("msg", "카카오 회원가입 완료");
+			model.addAttribute("url", "/");
+			return "common/message";
 		} else {
 			System.out.println("카카오 로그인 실패");
 			model.addAttribute("msg", "카카오 로그인 실패");
@@ -542,6 +558,7 @@ public class UserController {
 			session.setAttribute("userEmail", uOne.getUserEmail());
 			session.setAttribute("userNickname", uOne.getUserNickname());
 			session.setAttribute("userPhotoPath", uOne.getUserPhotoPath());
+			session.setAttribute("platformType", uOne.getPlatformType());
 			session.setAttribute("adminYn", uOne.getAdminYn());
 			return "true";
 		} else {

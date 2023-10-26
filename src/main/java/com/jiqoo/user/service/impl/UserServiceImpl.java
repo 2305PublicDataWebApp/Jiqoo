@@ -192,5 +192,17 @@ public class UserServiceImpl implements UserService{
 		return result;
 	}
 
+	@Override
+	public int updateUserPhoto(User user) {
+		int result = userStore.updateUserPhoto(sqlSession, user);
+		return result;
+	}
+
+	@Override
+	public int deletePhoto(String userId) {
+		int result = userStore.deletePhoto(sqlSession, userId);
+		return result;
+	}
+
 
 }

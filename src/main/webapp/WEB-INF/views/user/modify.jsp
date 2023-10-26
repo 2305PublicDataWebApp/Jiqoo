@@ -277,6 +277,7 @@
                     </div>
                     <div class="modal-footer" style="justify-content: center; padding: 20px; border: 0;">
                         <button type="button" class="btn btn-sm regBtn" id="photoChange" >변경</button>
+                        <button type="button" class="btn btn-sm regBtn" id="photoDelete" >삭제</button>
                         <button type="button" class="btn btn-sm regBtn" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
@@ -683,6 +684,27 @@
 			    }
         	});
         	
+			$("#photoDelete").on("click", function(){
+				if(confirm("프로필 사진을 삭제하시겠습니까?")) {
+					$.ajax({
+			            url: "/user/deletePhoto",
+			            type: "GET",
+			            success: function(result) {
+			                if (result === "success") {
+			                    alert("프로필 사진이 삭제되었습니다.");
+			                    $(".modal").modal("hide");
+			                    location.reload();
+			                } else {
+			                    alert("프로필 사진이 삭제되지 않았습니다. 다시 시도해주세요.");
+			                }
+			            },
+			            error: function(error) {
+			            	console.log(error);
+			                alert("[서버오류] 관리자에게 문의바랍니다.");
+			            }
+			        });
+				}
+			})
         	
         	// 정보수정
         	$("#submitBtn").on("click", function(event) {

@@ -125,7 +125,7 @@
                 <ul>
                     <li><a data-bs-toggle="modal" href="#findIdModal">아이디찾기</a></li>
                     <li><a data-bs-toggle="modal" href="#findPwModal">비밀번호찾기</a></li>
-                    <li><a href="/user/register">회원가입</a></li>
+                    <li><a href="/user/register" >회원가입</a></li>
                 </ul>
             </div>
             
