@@ -1,6 +1,6 @@
 # Jiqoo
 
-![jiqooLogo](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/4c393233-d519-478c-ab2e-15bec1fc4131)
+![jiqooLogo](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/0c078435-8002-493a-85f1-6e13ca7e9ea7)
 # 지꾸
 No.1 지도 다이어리
 <br>
@@ -33,7 +33,7 @@ No.1 지도 다이어리
 
 ## 🌏 팀 소개 및 팀원 소개
 ### 꽃보다 파이널 
-![지꾸_기획발표-003](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/31117ebe-83b2-486d-bb32-11b8d34e063d)
+![역할](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/730eaae7-d7b1-47f7-84ba-c286becbf487)
 
 <br><br><br>
 
@@ -82,3 +82,9 @@ No.1 지도 다이어리
 모꾸 관리 | 관리자는 모든 모꾸글을 관리자 페이지에서 조회하고 관리할 수 있다. 
 채팅 관리 | 관리자는 모든 채팅방을 관리자 페이지에서 조회하고 관리할 수 있다. 
 신고 관리 | 관리자는 신고 내역을 관리하고 각 10회 이상 신고가 누적된 대상을 삭제할 수 있다.
+
+<br><br><br>
+
+## 🖼️ 구현화면
+### 메인페이지
+![localhost_9999_ (1)](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/9d787cf0-9c63-43d6-8f13-34e404f502e3)
