@@ -94,7 +94,7 @@
    		<span id="action_menu_btn"><i class="bi bi-three-dots-vertical"></i></span>
 		<div class="action_menu">
 		  <ul>
-			<li><a href="/user/myPage"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
+			<li><a href="/user/profile?userId=${moqoo.user.userId }"><i class="bi bi-person-vcard"></i> 프로필보기</a></li>
 			<li><a href="javascript:void(0);" id="report-text" data-bs-toggle="modal" data-bs-target="#postReportModal"><i class="bi bi-exclamation-triangle"></i> 신고하기</a></li>
 		  </ul>
 		</div>
