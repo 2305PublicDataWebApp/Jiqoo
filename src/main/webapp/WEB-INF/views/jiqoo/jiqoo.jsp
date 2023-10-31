@@ -69,6 +69,7 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+
   <style>
   #container {overflow:hidden;height:800px;position:relative;}
 #mapWrapper {width:100%;height:800px;z-index:1;}
@@ -370,8 +371,15 @@ function showMyMap(){
 			         	// 사용자 정의 컨텐츠를 가져오는 함수 호출
 			            var contentData = parseContent(data[i].jiqooContent);
 	
+			            var photophoto;
+					    if(data[i].user.userPhotoPath == null || data[i].user.userPhotoPath == "" || data[i].user.userPhotoPath == undefined) {
+					    	photophoto = "../resources/assets/img/no-profile.png";
+					    }else {
+					    	photophoto = data[i].user.userPhotoPath;
+					    }
+			         	
 			            var overlayContent = '<div class="infoWindow" id="custom-' + data[i].jiqooNo + '">' +
-			                '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+			                '<div class="info-header"><div id="userProfile"><img src="'+ photophoto +'" alt="프로필사진"></div><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
 			                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
 			                '<div class="info-content">' + contentData.pContent + '</div>';
 	
@@ -662,29 +670,45 @@ function showAllMap() {
 		         	// 사용자 정의 컨텐츠를 가져오는 함수 호출
 		            var contentData = parseContent(data[i].jiqooContent);
 
+		            var photophoto;
+				    if(data[i].user.userPhotoPath == null || data[i].user.userPhotoPath == "" || data[i].user.userPhotoPath == undefined) {
+				    	photophoto = "../resources/assets/img/no-profile.png";
+				    }else {
+				    	photophoto = data[i].user.userPhotoPath;
+				    }
+		         	
 		            var overlayContent = '<div class="infoWindow" id="custom-' + data[i].jiqooNo + '">' +
-		                '<div class="info-header"><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
-		                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
-		                '<div class="info-content">' + contentData.pContent + '</div>';
+		                '<div class="info-header"><div id="userProfile"><img src="'+ photophoto +'" alt="프로필사진"></div><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+		                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>';
 
+	                var rvOverlayContent = '<div class="infoWindow" id="custom-' + data[i].jiqooNo + '">' +
+	                '<div class="info-header"><div id="userProfile"><img src="'+ photophoto +'" alt="프로필사진"></div><a href="/jiqoo/detail?jiqooNo=' + data[i].jiqooNo + '">' +
+	                data[i].jiqooW3W + ' <i class="bi bi-arrow-right-circle-fill"></i></a></div>' +
+	                '<div class="info-content">' + data[i].jiqooContent + '</div>';
+
+		                
 		            if (contentData.imgSource) {
-		                overlayContent += '<div class="info-image">' +
+		                rvOverlayContent += '<div class="info-image">' +
 		                    contentData.imgSource +
 		                    '</div>';
 		            }
 
 		            overlayContent += '</div>';
+		            rvOverlayContent += '</div>';
 
+		            
 		            var customOverlay = new kakao.maps.CustomOverlay({
 		                content: overlayContent, // 커스텀 오버레이의 내용 설정
 		                position: marker.getPosition(), // 오버레이 위치 설정
 		                clickable: true // 오버레이 클릭 가능
 		            });
+
 		            var rvCustomOverlay = new kakao.maps.CustomOverlay({
-		                content: overlayContent, // 커스텀 오버레이의 내용 설정
+		                content: rvOverlayContent, // 커스텀 오버레이의 내용 설정
 		                position: marker.getPosition(), // 오버레이 위치 설정
 		                clickable: true // 오버레이 클릭 가능
 		            });
+
 
 		            // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
 		            var overlayClicked = false;
