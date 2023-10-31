@@ -69,6 +69,16 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <style>
+  #container {overflow:hidden;height:800px;position:relative;}
+#mapWrapper {width:100%;height:800px;z-index:1;}
+#rvWrapper {width:50%;height:800px;top:0;right:0;position:absolute;z-index:0;}
+#container.view_roadview #mapWrapper {width: 50%;}
+#roadviewControl {position:absolute;top:5px;left:5px;width:42px;height:42px;z-index: 1;cursor: pointer; background: url(https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png) 0 -450px no-repeat;}
+#roadviewControl.active {background-position:0 -350px;}
+#close {position: absolute;padding: 4px;top: 5px;left: 5px;cursor: pointer;background: #fff;border-radius: 4px;border: 1px solid #c8c8c8;box-shadow: 0px 1px #888;}
+#close .img {display: block;background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/rv_close.png) no-repeat;width: 14px;height: 14px;}
+  </style>
 </head>
 
 <body>
@@ -116,7 +126,16 @@
 			</div>
 		</div>
 		
-		<div id="map"></div>
+		<div id="container">
+		    <div id="rvWrapper">
+		        <div id="roadview" style="width:100%;height:100%;"></div> <!-- 로드뷰를 표시할 div 입니다 -->
+		        <div id="close" title="로드뷰닫기"><span class="img"></span></div>
+		    </div>
+		    <div id="mapWrapper">
+		        <div id="map"></div> <!-- 지도를 표시할 div 입니다 -->
+		        <div id="roadviewControl" ></div>
+		    </div>
+		</div>
 
 		<button type="button" class="btn insert-jiqoo-btn" id="confirmButton">지꾸 +</button>
 		<!-- ======= Modal ======= -->
@@ -246,13 +265,11 @@
             data = new FormData(); 
             data.append("file",file); 
             $.ajax({ 
-		        data:data, 
-		        type:"POST", 
-		        url:"/uploadSummernoteImageFile", 
-		        /* dataType:"JSON", */ 
-		        enctype:'multipart/form-data',
-		        contentType:false, 
-		        processData:false
+            	url: '/upload-image', // 서버 업로드 엔드포인트 URL
+	            type: 'POST',
+	            data: data,
+	            contentType: false,
+	            processData: false
 		        
 		    }).done(function(data) {
 		    	console.log(data);
@@ -290,6 +307,10 @@ document.getElementById("open-map-btn").onclick = function() {
 //지도
 
 var map = null;
+var overlayOn = false, // 지도 위에 로드뷰 오버레이가 추가된 상태를 가지고 있을 변수
+container = document.getElementById('container'), // 지도와 로드뷰를 감싸고 있는 div 입니다
+mapWrapper = document.getElementById('mapWrapper'), // 지도를 감싸고 있는 div 입니다
+rvContainer = document.getElementById('roadview'); //로드뷰를 표시할 div 입니다
 var mapContainer = document.getElementById('map') // 지도를 표시할 div 
     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -399,16 +420,86 @@ function showMyMap(){
 		}
 	
 function showAllMap() {
+	var mapCenter;
+	var rv;
+	var rvClient;
 	  navigator.geolocation.getCurrentPosition(function(position) {
 	    var lat = position.coords.latitude; // 위도
 	    var lon = position.coords.longitude; // 경도
-
+		mapCenter = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
 	    var mapOption = {
 	      center: new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude), // 지도의 중심좌표
 	      level: 4 // 지도의 확대 레벨
 	    };
 
 	    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	    rv = new kakao.maps.Roadview(rvContainer); 
+
+		// 좌표로부터 로드뷰 파노라마 ID를 가져올 로드뷰 클라이언트 객체를 생성합니다 
+		rvClient = new kakao.maps.RoadviewClient(); 
+		kakao.maps.event.addListener(rv, 'position_changed', function() {
+
+		    // 현재 로드뷰의 위치 좌표를 얻어옵니다 
+		    var rvPosition = rv.getPosition();
+
+		    // 지도의 중심을 현재 로드뷰의 위치로 설정합니다
+		    map.setCenter(rvPosition);
+
+		    // 지도 위에 로드뷰 도로 오버레이가 추가된 상태이면
+		    if(overlayOn) {
+		        // 마커의 위치를 현재 로드뷰의 위치로 설정합니다
+		        marker.setPosition(rvPosition);
+		    }
+		});
+		var markImage = new kakao.maps.MarkerImage(
+			    'https://t1.daumcdn.net/localimg/localimages/07/2018/pc/roadview_minimap_wk_2018.png',
+			    new kakao.maps.Size(26, 46),
+			    {
+			        // 스프라이트 이미지를 사용합니다.
+			        // 스프라이트 이미지 전체의 크기를 지정하고
+			        spriteSize: new kakao.maps.Size(1666, 168),
+			        // 사용하고 싶은 영역의 좌상단 좌표를 입력합니다.
+			        // background-position으로 지정하는 값이며 부호는 반대입니다.
+			        spriteOrigin: new kakao.maps.Point(705, 114),
+			        offset: new kakao.maps.Point(13, 46)
+			    }
+			);
+		// 드래그가 가능한 마커를 생성합니다
+		var marker = new kakao.maps.Marker({
+		    image : markImage,
+		    position: mapCenter,
+		    draggable: true
+		});
+		kakao.maps.event.addListener(marker, 'dragend', function(mouseEvent) {
+
+		    // 현재 마커가 놓인 자리의 좌표입니다 
+		    var position = marker.getPosition();
+
+		    // 마커가 놓인 위치를 기준으로 로드뷰를 설정합니다
+		    toggleRoadview(position, rvClient, rv);
+		});
+	    kakao.maps.event.addListener(map, 'click', function(mouseEvent){
+		    
+		    // 지도 위에 로드뷰 도로 오버레이가 추가된 상태가 아니면 클릭이벤트를 무시합니다 
+		    if(!overlayOn) {
+		        return;
+		    }
+
+		    // 클릭한 위치의 좌표입니다 
+		    var position = mouseEvent.latLng;
+
+		    // 마커를 클릭한 위치로 옮깁니다
+		    marker.setPosition(position);
+
+		    // 클락한 위치를 기준으로 로드뷰를 설정합니다
+		    toggleRoadview(position, rvClient, rv);
+		});
+	    $("#roadviewControl").on('click', function(){
+			setRoadviewRoad(marker, rvClient, rv);
+		})
+		$("#close").on('click', function(){
+			 closeRoadview(marker);
+		})
 	  });
 
 	  if (btnMyMap.hasClass("qoo")) {
@@ -420,7 +511,139 @@ function showAllMap() {
 
 	  // 커스텀 오버레이 배열을 선언합니다
 	  var customOverlays = [];
+	//전달받은 좌표(position)에 가까운 로드뷰의 파노라마 ID를 추출하여
+	//로드뷰를 설정하는 함수입니다
+	function toggleRoadview(position, rvClient, rv){
+	 rvClient.getNearestPanoId(position, 50, function(panoId) {
+	     // 파노라마 ID가 null 이면 로드뷰를 숨깁니다
+	     if (panoId === null) {
+	         toggleMapWrapper(true, position);
+	     } else {
+	      toggleMapWrapper(false, position);
 
+	         // panoId로 로드뷰를 설정합니다
+	         rv.setPanoId(panoId, position);
+	     }
+	 });
+	}
+	function toggleOverlay(active, marker, rvClient, rv) {
+	    if (active) {
+	        overlayOn = true;
+
+	        // 지도 위에 로드뷰 도로 오버레이를 추가합니다
+	        map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+
+	        // 지도 위에 마커를 표시합니다
+	        marker.setMap(map);
+
+	        // 마커의 위치를 지도 중심으로 설정합니다 
+	        marker.setPosition(map.getCenter());
+
+	        // 로드뷰의 위치를 지도 중심으로 설정합니다
+	        toggleRoadview(map.getCenter(), rvClient, rv);
+	    } else {
+	        overlayOn = false;
+
+	        // 지도 위의 로드뷰 도로 오버레이를 제거합니다
+	        map.removeOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
+
+	        // 지도 위의 마커를 제거합니다
+	        marker.setMap(null);
+	    }
+	}
+	function toggleMapWrapper(active, position) {
+	    if (active) {
+
+	        // 지도를 감싸고 있는 div의 너비가 100%가 되도록 class를 변경합니다 
+	        container.className = '';
+
+	        // 지도의 크기가 변경되었기 때문에 relayout 함수를 호출합니다
+	        map.relayout();
+
+	        // 지도의 너비가 변경될 때 지도중심을 입력받은 위치(position)로 설정합니다
+	        map.setCenter(position);
+	    } else {
+
+	        // 지도만 보여지고 있는 상태이면 지도의 너비가 50%가 되도록 class를 변경하여
+	        // 로드뷰가 함께 표시되게 합니다
+	        if (container.className.indexOf('view_roadview') === -1) {
+	            container.className = 'view_roadview';
+
+	            // 지도의 크기가 변경되었기 때문에 relayout 함수를 호출합니다
+	            map.relayout();
+
+	            // 지도의 너비가 변경될 때 지도중심을 입력받은 위치(position)로 설정합니다
+	            map.setCenter(position);
+	        }
+	    }
+	}
+	function setRoadviewRoad(marker, rvClient, rv) {
+		var control = document.getElementById('roadviewControl');
+
+	    // 버튼이 눌린 상태가 아니면
+	    if (control.className.indexOf('active') === -1) {
+	        control.className = 'active';
+
+	        // 로드뷰 도로 오버레이가 보이게 합니다
+	        toggleOverlay(true, marker, rvClient, rv);
+
+	        // marker를 사용하여 로드뷰 위치를 설정하려면 다음과 같이 할 수 있습니다.
+	        var position = marker.getPosition();
+	        toggleRoadview(position, rvClient, rv);
+	    } else {
+	        control.className = '';
+
+	        // 로드뷰 도로 오버레이를 제거합니다
+	        toggleOverlay(false, marker, rvClient, rv);
+	    }
+	}
+
+	// 로드뷰에서 X버튼을 눌렀을 때 로드뷰를 지도 뒤로 숨기는 함수입니다
+	function closeRoadview(marker) {
+	    var position = marker.getPosition();
+	    toggleMapWrapper(true, position);
+	}
+
+	function parseContent(content) {
+	    var parser = new DOMParser();
+	    var doc = parser.parseFromString(content, 'text/html');
+
+	 // <p> 요소를 추출
+	    var pElements = doc.querySelectorAll('p');
+	    var pContent = '';
+
+	    for (var i = 0; i < pElements.length; i++) {
+	        var innerHTML = pElements[i].innerHTML.trim(); // 텍스트 내용을 얻고 좌우 공백을 제거
+	        if (innerHTML) { // 비어있지 않은 경우에만 <p> 요소 추가
+	            pContent += '<p>' + innerHTML + '</p>';
+	        }
+	    }
+
+	    // <img> 요소를 추출
+	    var imgElements = doc.querySelectorAll('img');
+	    var imgSource = ''; // 이미지가 없을 경우 빈 문자열
+	    if (imgElements.length > 0) {
+	        // 이미지가 있을 경우 img 태그 생성
+	        imgSource = imgElements[0].getAttribute('src');
+	        imgSource = '<img src="' + imgSource + '" alt="Image">';
+	    }
+
+	    // 만약 pContent의 길이가 특정 길이를 초과하면 자르고 "..."을 추가
+	    var maxContentLength = 10; // 원하는 최대 길이로 설정하세요
+	    if (pContent.length > maxContentLength) {
+	        pContent = pContent.substring(0, maxContentLength) + '...';
+	    }
+	    
+	    // <p><br></p>를 제거
+	    pContent = pContent.replace(/<p><br><\/p>/g, '');
+
+	    return {
+	        pContent: pContent,
+	        imgSource: imgSource
+	    };
+	}
+	
+	
 	  $.ajax({
 		    url: "/jiqoo/showAllMap", // 서버에서 데이터를 가져올 URL
 		    type: "GET", // GET 요청 사용
@@ -457,10 +680,17 @@ function showAllMap() {
 		                position: marker.getPosition(), // 오버레이 위치 설정
 		                clickable: true // 오버레이 클릭 가능
 		            });
+		            var rvCustomOverlay = new kakao.maps.CustomOverlay({
+		                content: overlayContent, // 커스텀 오버레이의 내용 설정
+		                position: marker.getPosition(), // 오버레이 위치 설정
+		                clickable: true // 오버레이 클릭 가능
+		            });
 
 		            // 클릭된 마커의 커스텀 오버레이를 닫기 위한 클릭 상태 변수
 		            var overlayClicked = false;
-
+		            
+					rvCustomOverlay.setMap(rv);
+					
 		            (function (customOverlay, marker) { // 클로저 함수 사용
 		                kakao.maps.event.addListener(marker, 'click', function () { // 마커 클릭 이벤트 등록
 		                    if (customOverlay.getMap()) {
@@ -480,51 +710,14 @@ function showAllMap() {
 
 		                customOverlays.push(customOverlay); // 커스텀 오버레이 배열에 추가
 		            })(customOverlay, marker);
+
+		           
 		        }
 		    }
 		});
 
 	}
 
-
-function parseContent(content) {
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(content, 'text/html');
-
- // <p> 요소를 추출
-    var pElements = doc.querySelectorAll('p');
-    var pContent = '';
-
-    for (var i = 0; i < pElements.length; i++) {
-        var innerHTML = pElements[i].innerHTML.trim(); // 텍스트 내용을 얻고 좌우 공백을 제거
-        if (innerHTML) { // 비어있지 않은 경우에만 <p> 요소 추가
-            pContent += '<p>' + innerHTML + '</p>';
-        }
-    }
-
-    // <img> 요소를 추출
-    var imgElements = doc.querySelectorAll('img');
-    var imgSource = ''; // 이미지가 없을 경우 빈 문자열
-    if (imgElements.length > 0) {
-        // 이미지가 있을 경우 img 태그 생성
-        imgSource = imgElements[0].getAttribute('src');
-        imgSource = '<img src="' + imgSource + '" alt="Image">';
-    }
-
-    // 만약 pContent의 길이가 특정 길이를 초과하면 자르고 "..."을 추가
-    var maxContentLength = 10; // 원하는 최대 길이로 설정하세요
-    if (pContent.length > maxContentLength) {
-        pContent = pContent.substring(0, maxContentLength) + '...';
-    }
-    
-    // <p><br></p>를 제거
-    pContent = pContent.replace(/<p><br><\/p>/g, '');
-
-    return {
-        pContent: pContent,
-        imgSource: imgSource
-    };
-}
 
 
 	
