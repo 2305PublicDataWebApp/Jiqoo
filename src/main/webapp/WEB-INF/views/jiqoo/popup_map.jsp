@@ -150,7 +150,7 @@
          <div id="map-container">
         <what3words-map
           id="w3w-map"
-          api_key="RVOKZN3U"
+          api_key="DSNFCQLC"
           map_api_key="AIzaSyDT4QB__1EdEWo0BUhOUH6XEN4nKpwE57E"
           disable_default_ui
           fullscreen_control
