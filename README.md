@@ -1,12 +1,11 @@
 # Jiqoo
 
 ![jiqooLogo](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/0c078435-8002-493a-85f1-6e13ca7e9ea7)
-# 지꾸
-No.1 지도 다이어리
 <br>
 <br>
 <br>
-## 🌏 프로젝트 목적
+
+## 🌏 프로젝트 소개
 
 ### 다꾸? 이젠 지꾸!
 
@@ -14,6 +13,24 @@ No.1 지도 다이어리
 <br>
 <br>
 <br>
+
+## 🌞 기획 의도
+✔ <b>위치 기반 기억 저장소</b> 
+- What 3 Words와 카카오맵 지도 API를 결합하여 지구상의 모든 장소에 자신의 특별한 순간과 
+추억을 기록 가능 <br>
+
+✔ <b>지도를 나의 다이어리로!</b>
+- 단순히 위치를 파악하는 용도의 지도를 넘어서 공간을 새로운 시각으로 바라봄 <br>
+
+✔ <b>커뮤니티 및 상호작용 강화</b>
+- 공간에 대한 다양한 사람들의 추억들을 시각화하여 일상의 즐거움을 공유함으로써 건전한 공감 커뮤니티를 형성 <br>
+
+✔ <b>지리적 탐험 촉진</b>
+- 사용자들로 하여금 새로운 장소를 발견하고자 하는 욕구를 자극하여 플랫폼 이용 빈도 증대 <br>
+
+<br>
+<br>
+
 ## 📆 개발 기간
 
 2023.09.26 - 2023.10.26
@@ -21,19 +38,43 @@ No.1 지도 다이어리
 <br>
 <br>
 ## 💻 개발 환경
-<img src="https://img.shields.io/badge/Apache%20Tomcat-F8DC75?style=flat&logo=Apache%20Tomcat&logoColor=white"> <img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=flat&logo=Apache%20Maven&logoColor=white"> 
-<img src="https://img.shields.io/badge/Mybatis-000000?style=flat&logo=Mybatis&logoColor=white"> <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white">
-<br>
-<img src="https://img.shields.io/badge/spring-6DB33F?style=flat&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=HTML5&logoColor=white">
-<img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=CSS3&logoColor=white"> <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=JavaScript&logoColor=white">
-<img src="https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jQuery&logoColor=white"> <img src="https://img.shields.io/badge/JAVA-4682B4?style=flat&logo=JAVA&logoColor=white">
-<img src="https://img.shields.io/badge/Oracle-F80000?style=flat&logo=Oracle&logoColor=white"> <img src="https://img.shields.io/badge/Ajax-D3D3D3?style=flat&logo=Ajax&logoColor=white">
-<img src="https://img.shields.io/badge/JSON-000000?style=flat&logo=JSON&logoColor=white"> <img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=Bootstrap&logoColor=white">
+:heavy_check_mark: **FRONT :** 
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=HTML5&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=CSS3&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/bootstrap-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/></a>
+
+:heavy_check_mark: **BACK :** 
+<img src="https://img.shields.io/badge/Apache%20Tomcat-F8DC75?style=flat&logo=Apache%20Tomcat&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/Oracle-F80000?style=flat&logo=Oracle&logoColor=white"></a>
+<img src="https://img.shields.io/badge/apachemaven-C71A36?style=flat-square&logo=apachemaven&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/Ajax-D3D3D3?style=flat&logo=Ajax&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/JAVA-4682B4?style=flat&logo=JAVA&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/Mybatis-000000?style=flat&logo=Mybatis&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/JSP-000000?style=flat&logo=JSP&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/jquery-0769AD?style=flat&logo=jquery&logoColor=white"/></a>
+
+:heavy_check_mark: **TOOLS :** 
+<img src="https://img.shields.io/badge/eclipseide-2C2255?style=flat-square&logo=eclipseidep&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/spring-6DB33F?style=flat-square&logo=spring&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/visualstudiocode-007ACC?style=flat-square&logo=visualstudiocode&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=GitHub&logoColor=white" /><a>
+<img src="https://img.shields.io/badge/intellijidea-000000?style=flat-square&logo=intellijidea&logoColor=white"/></a>
+
+:heavy_check_mark: **ETC :** 
+<img src="https://img.shields.io/badge/notion-007ACC?style=flat-square&logo=notione&logoColor=white"/></a>
+<img src="https://img.shields.io/badge/slack-4A154B?style=flat-square&logo=slacke&logoColor=white"/></a>
 <br><br><br>
 
 ## 🌏 팀 소개 및 팀원 소개
 ### 꽃보다 파이널 
 ![역할](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/730eaae7-d7b1-47f7-84ba-c286becbf487)
+
+🐶 **채성실** https://github.com/chaeseongsil <br>
+🐑 **정다희** https://github.com/jgoooood <br>
+🐎 **이기윤** https://github.com/gynlee0904 <br>
+🐰 **강수예** https://github.com/kangssuu <br>
+🐉 **배소진** https://github.com/xasiak <br>
 
 <br><br><br>
 
@@ -88,3 +129,18 @@ No.1 지도 다이어리
 ## 🖼️ 구현화면
 ### 메인페이지
 ![localhost_9999_ (1)](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/9d787cf0-9c63-43d6-8f13-34e404f502e3)
+<br>
+### 지꾸
+![localhost_9999_jiqoo_mapList](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/2dbd96ed-5e81-4356-9140-3907bbd80432)
+<br>
+### 모꾸
+![image](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/13ea527b-0d89-4b1f-9293-6b4c4e47bf7a)
+<br>
+### 채팅화면
+![localhost_9999_chat_list_(1)](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/ea3c3b1b-a524-4146-b7ca-ede27c5c5834)
+<br>
+### 마이페이지
+![localhost_9999_user_myPage](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/477084ef-7591-4d66-b86e-41f4560166df)
+<br>
+### 관리자페이지
+![localhost_9999_admin_main_(1)](https://github.com/2305PublicDataWebApp/Jiqoo/assets/134674198/c651fa6c-717e-4c1b-a531-9030c1771d15)
