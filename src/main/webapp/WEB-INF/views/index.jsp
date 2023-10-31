@@ -32,7 +32,7 @@
   <link href="../resources/assets/css/header.css" rel="stylesheet">
   <link href="../resources/assets/css/footer.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=86452fa459f600c914e3aa3a57039abd"></script>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3ea3305868854dddd122f045e5c21b59"></script>
   <!-- =======================================================
   * Template Name: Bootslander
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
